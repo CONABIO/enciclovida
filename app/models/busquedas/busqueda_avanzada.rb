@@ -8,6 +8,7 @@ class BusquedaAvanzada < Busqueda
     tipo_distribucion
     uso
     ambiente
+    region
     solo_categoria
 
     return unless por_id_o_nombre

@@ -74,6 +74,12 @@ module BusquedasHelper
     select_tag('ambiente', options_for_select(options), opc)
   end
 
+  def selectRegiones(opciones={})
+    opc = @@opciones.merge(opciones)
+    options = @regiones.map{ |k,v| [t("regiones.#{k.estandariza}"), v.map{ |val| [k.estandariza == 'estado' ? t("estados.#{val.nombre_region.estandariza}", default: val.nombre_region) : t("ecorregiones-marinas.#{val.nombre_region.estandariza}", default: val.nombre_region), val.id, { class: "#{val.nombre_region.estandariza}-ev-icon f-fuentes" }] }] }
+    select_tag('reg', grouped_options_for_select(options), opc)
+  end
+
   # Si la búsqueda ya fue realizada y se desea generar un checklist, unicamente se añade un parametro extra y se realiza la búsqueda as usual
   def checklist(datos)
     if datos[:totales] > 0

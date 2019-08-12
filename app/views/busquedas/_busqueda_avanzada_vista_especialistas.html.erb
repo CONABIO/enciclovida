@@ -82,7 +82,16 @@
   <fieldset>
     <legend><h5 class="text-primary"><strong>Ambientes</strong></h5></legend>
     <div class="checkbox">
-      <%= selectAmbientes.html_safe %>
+      <%= selectAmbiente.html_safe %>
+    </div>
+  </fieldset>
+</div>
+
+<div class="col-xs-12 <%= 'col-sm-5 col-md-3 col-lg-3' if(params[:action] != 'resultados') %>">
+  <fieldset>
+    <legend><h5 class="text-primary"><strong>Regiones (reportadas en literatura)</strong></h5></legend>
+    <div class="checkbox">
+      <%= selectRegiones.html_safe %>
     </div>
   </fieldset>
 </div>
