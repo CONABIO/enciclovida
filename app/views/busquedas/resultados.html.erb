@@ -132,6 +132,8 @@
                 $('#estatus_descargar_taxa').empty().html('La descarga esta en proceso');
             }
         });
+
+
     });
 </script>
 
@@ -157,16 +159,20 @@
     <% if params[:busqueda]=='avanzada' %>
       <button id="toggleFiltros" class="btn btn-sm btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button"><span class="glyphicon"></span></button>
     <% end %>
-    <button type="button" class="btn btn-link pull-right" data-toggle="modal" data-target="#myModal">
+
+    <button type="button" class="btn btn-link pull-right" data-toggle="modal" data-target="#modal-descargas">
       Descargar &nbsp;<span class="glyphicon glyphicon-save"></span>
     </button>
-    <% if @totales > 0 && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
+
+    <% if @totales > 0 && params[:busqueda] == 'avanzada' && params[:id].present? %>
       <button type="button" class="btn btn-link pull-right" url="<%= checklist({request: request.original_url, totales: @totales}) %>" id="boton_checklist">
         Listado para Revisión (✓)
       </button>
     <% end %>
   </div>
+
   <hr />
+
   <% if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
     <%= render :file => 'busquedas/avanzada' %>
     <script type="text/javascript">
@@ -234,13 +240,13 @@
 
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<!-- Modal descargas -->
+<div class="modal fade" id="modal-descargas" tabindex="-1" role="dialog" aria-labelledby="modal-descargas-label">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Descarga resultados</h4>
+        <h4 class="modal-title" id="modal-descargas-label">Descarga resultados</h4>
       </div>
       <div class="modal-body">
         <p>
@@ -263,3 +269,5 @@
     </div>
   </div>
 </div>
+
+
