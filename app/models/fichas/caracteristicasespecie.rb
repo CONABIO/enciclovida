@@ -3,8 +3,6 @@ class Fichas::Caracteristicasespecie < Ficha
 	self.table_name = "#{CONFIG.bases.fichasespecies}.caracteristicasespecie"
 	self.primary_keys = :especieId,  :idpregunta,  :idopcion
 
-	# validates_uniqueness_of :especieId, :scope => :idpregunta
-
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
   # DESDE HABITAT
@@ -52,8 +50,6 @@ end
 
 
 =begin
-
-
 	belongs_to :t_geoforma,-> {where('cat_preguntas.idpregunta = ?', 7)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion', :primary_key => :idopcion
 	belongs_to :t_tipoVegetacionSecundaria,-> {where('cat_preguntas.idpregunta = ?', 2)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion', :primary_key => :idopcion
 	belongs_to :t_tipovegetmundial,-> {where('cat_preguntas.idpregunta = ?', 3)}, :class_name => 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion', :primary_key => :idopcion

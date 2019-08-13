@@ -1,60 +1,35 @@
 <div class='nested-fields'>
-  <%= f.input :habitatId, :as => :hidden%>
-  <%= f.input :especieId, :as => :hidden%>
+  <%= f.input :habitatId, :as => :hidden %>
+  <%= f.input :especieId, :as => :hidden %>
   <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideAmbienteDesarrolloEspecie($(this))' } %>
   <hr>
 
   <fieldset class="apartados">
     <legend class="text-primary"> Ecorregiones </legend>
-    <%= f.association :ecorregion,
-      label_method: :descripcion,
-      value_method: :ecorregionId,
-      :as => :select,
-      input_html: {
-          class: 'form-control selectpicker',
-          multiple: true,
-          'data-live-search': 'true',
-          'title': t('general.seleccionar_opciones'),
-          'data-selected-text-format': 'count > 3'
-      }
-    %>
-
-    <%=
-       link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información adicional'.html_safe, f_taxon, :info_ecorregiones,
-                               partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x',
-                               render_options: {locals: { titulo: "Información adicional", id_pregunta: Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones] }},
-                               :class => 'btn btn-info btn-sm',
-                               role: 'tab',
-                               "data-toggle" => 'tab',
-                               "aria-controls" => 'info_ecorregiones',
-                               'data-association-insertion-node' => '#info_ecorregiones',
-                               'data-association-insertion-method' => 'append',
-                               href: '#info_ecorregiones',
-                               style: 'display: none') if @taxon.new_record? || (!@taxon.new_record? && @taxon.info_ecorregiones.empty?)
-    %>
-
-    <div id="<%= ambi_id_div %>">
-      <%= f_taxon.simple_fields_for :info_ecorregiones do |info| %>
-        <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: ambi_titulo, id_pregunta: ambi_pregunta} %>
-      <% end %>
+    <%= select_multiple_de_catalogos(f, :ecorregion, :descripcion, :ecorregionId) %>
+    <div class="apartadoFicha ficha-Prioritaria">
+      <%=
+        parametros = {
+            :acceso => @taxon.ambi_info_ecorregiones,
+            :modelo => f_taxon,
+            :association => :ambi_info_ecorregiones,
+            :titulo => "Información adicional",
+            :el_div => "info_ecorregiones",
+            :pregunta => Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones]
+        }
+        agrega_info_adicional(parametros)
+      %>
+      <div id="dato_<%= parametros[:el_div] %>">
+        <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+          <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+        <% end %>
+      </div>
     </div>
-
   </fieldset>
 
   <fieldset class="apartados">
     <legend class="text-primary"> Ecosistemas </legend>
-    <%= f.association :ecosistema,
-      label_method: :tipoecosistema,
-      value_method: :ecosistemaid,
-      :as => :select,
-      input_html: {
-          class: 'form-control selectpicker',
-          multiple: true,
-          'data-live-search': 'true',
-          'title': t('general.seleccionar_opciones'),
-          'data-selected-text-format': 'count > 3'
-      }
-    %>
+    <%= select_multiple_de_catalogos(f, :ecosistema, :tipoecosistema, :ecosistemaid) %>
   </fieldset>
 
   <div id="ambiente-solo-terrestre">
@@ -84,38 +59,47 @@
     <%= f.input :VegetacionSecundaria, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "vegetacion-secundaria")', name: 'opcion-vegetacion-secundaria'} %>
     <div id="vegetacion-secundaria">
 
+
     </div>
 
     <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
       <%=
-        ambi_titulo = "d) Mencionar las especies asociadas"
-        ambi_pregunta = Fichas::Observacionescarac::PREGUNTAS[:ambi_especies_asociadas]
-        ambi_id_div = 'info_ambi_especies_asociadas'
-        link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar especies asociadas'.html_safe, f_taxon, :ambi_especies_asociadas, partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', render_options: {locals: { titulo: ambi_titulo, id_pregunta: ambi_pregunta}}, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => ambi_id_div, 'data-association-insertion-node' => '#' + ambi_id_div, 'data-association-insertion-method' => 'append', href: '#' + ambi_id_div)
+        parametros = {
+            :acceso => @taxon.ambi_especies_asociadas,
+            :modelo => f_taxon,
+            :association => :ambi_especies_asociadas,
+            :agregar => "Agregar especies asociadas",
+            :titulo => "d) Mencionar las especies asociadas",
+            :el_div => "especies_asociadas",
+            :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_especies_asociadas]
+        }
+        agrega_info_adicional(parametros)
       %>
-      <div id="<%= ambi_id_div %>">
-        <%= f_taxon.simple_fields_for :ambi_especies_asociadas do |info| %>
-          <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: ambi_titulo, id_pregunta: ambi_pregunta} %>
+      <div id="dato_<%= parametros[:el_div] %>">
+        <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+          <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
         <% end %>
       </div>
     </div>
 
     <div class="apartadoFicha ficha-Invasora">
       <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.vegetacion_mundial') %></h3>
-
-
       <%=
-        ambi_titulo = "Información adicional"
-        ambi_pregunta = Fichas::Observacionescarac::PREGUNTAS[:ambi_vegetacion_esp_mundo]
-        ambi_id_div = 'info_ambi_vegetacion_esp_mundo'
-        link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar especies asociadas'.html_safe, f_taxon, :ambi_vegetacion_esp_mundo, partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', render_options: {locals: { titulo: ambi_titulo, id_pregunta: ambi_pregunta}}, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => ambi_id_div, 'data-association-insertion-node' => '#' + ambi_id_div, 'data-association-insertion-method' => 'append', href: '#' + ambi_id_div)
+        parametros = {
+            :acceso => @taxon.ambi_vegetacion_esp_mundo,
+            :modelo => f_taxon,
+            :association => :ambi_vegetacion_esp_mundo,
+            :titulo => "Información adicional",
+            :el_div => "ambi_vegetacion_esp_mundo",
+            :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_vegetacion_esp_mundo]
+        }
+        agrega_info_adicional(parametros)
       %>
-      <div id="<%= ambi_id_div %>">
-        <%= f_taxon.simple_fields_for :ambi_vegetacion_esp_mundo do |info| %>
-          <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: ambi_titulo, id_pregunta: ambi_pregunta} %>
+      <div id="dato_<%= parametros[:el_div] %>">
+        <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+          <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
         <% end %>
       </div>
-
     </div>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.int_altitudinal') %></h3>
@@ -131,7 +115,11 @@
                       :group_method => :last,
                       group_label_method: :first,
                       label_method: :descn2,
-                      value_method: :idopcion,
+                      #value_method: :idopcion,
+                      value_method: ->(obj){
+                        detalle = "#{obj.idpregunta}, #{obj.idopcion}"
+                        detalle
+                      },
                       input_html: {
                           :multiple => true,
                           class: 'form-control selectpicker',
@@ -143,16 +131,20 @@
     <%= f.input :climaAdicional %>
 
     <div class="apartadoFicha ficha-Invasora">
-
       <%=
-        ambi_titulo = "Información adicional"
-        ambi_pregunta = Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico]
-        ambi_id_div = 'info_ambi_info_clima_exotico'
-        link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información adicional'.html_safe, f_taxon, :ambi_info_clima_exotico, partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', render_options: {locals: { titulo: ambi_titulo, id_pregunta: ambi_pregunta}}, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => ambi_id_div, 'data-association-insertion-node' => '#' + ambi_id_div, 'data-association-insertion-method' => 'append', href: '#' + ambi_id_div)
+        parametros = {
+            :acceso => @taxon.ambi_info_clima_exotico,
+            :modelo => f_taxon,
+            :association => :ambi_info_clima_exotico,
+            :titulo => "Información adicional",
+            :el_div => "ambi_info_clima_exotico",
+            :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico]
+        }
+        agrega_info_adicional(parametros)
       %>
-      <div id="<%= ambi_id_div %>">
-        <%= f_taxon.simple_fields_for :ambi_info_clima_exotico do |info| %>
-          <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: ambi_titulo, id_pregunta: ambi_pregunta} %>
+      <div id="dato_<%= parametros[:el_div] %>">
+        <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+          <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
         <% end %>
       </div>
     </div>

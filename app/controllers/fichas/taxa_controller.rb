@@ -80,15 +80,7 @@ class Fichas::TaxaController < Fichas::FichasController
           # Parámetros desde taxón:
           :resumenEspecie, :descEspecie, :largoinicialhembras, :largofinalhembras, :edadinicialhembras, :edadfinalhembras, :tiempoedadhembra, :pesoinicialhembras, :pesofinalhembras, :especiesSmilares, :origen, :descripcionOrigen, :presencia, :adicinalPresencia, :invasora, :adicionalInvasora, :id, :_destroy,
 
-          legislaciones_attributes: [
-              :legislacionId,
-              :especieId,
-              :nombreLegislacion,
-              :estatusLegalProteccion,
-              :infoAdicional,
-              :id,
-              :_destroy
-          ],
+          legislaciones_attributes: [:legislacionId, :especieId, :nombreLegislacion, :estatusLegalProteccion, :infoAdicional, :id, :_destroy],
 
           habitats_attributes: [
               { ecorregion_ids: [] },
@@ -99,37 +91,10 @@ class Fichas::TaxaController < Fichas::FichasController
 
           t_clima_ids: [],
 
-          info_ecorregiones_attributes: [
-              :id,
-              :especieId,
-              :idpregunta,
-              :infoadicional,
-              :_destroy
-          ],
-
-          ambi_especies_asociadas_attributes: [
-              :id,
-              :especieId,
-              :idpregunta,
-              :infoadicional,
-              :_destroy
-          ],
-
-          ambi_vegetacion_esp_mundo_attributes: [
-              :id,
-              :especieId,
-              :idpregunta,
-              :infoadicional,
-              :_destroy
-          ],
-
-          ambi_info_clima_exotico_attributes: [
-              :id,
-              :especieId,
-              :idpregunta,
-              :infoadicional,
-              :_destroy
-          ],
+          ambi_info_ecorregiones_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_especies_asociadas_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_vegetacion_esp_mundo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_info_clima_exotico_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
 
           distribuciones_attributes: [
               :pai_ids,
@@ -163,14 +128,22 @@ class Fichas::TaxaController < Fichas::FichasController
           ]
       )
 
-      p[:info_ecorregiones_attributes].each do |k,v|
+      itera_preguntas_observaciones(p)
+
+      p
+    end
+
+  def itera_preguntas_observaciones(p)
+    lista = %w(ambi_info_ecorregiones_attributes ambi_especies_asociadas_attributes ambi_vegetacion_esp_mundo_attributes ambi_info_clima_exotico_attributes)
+    lista.each do |acceso|
+      p[acceso].each do |k,v|
         break unless v["id"].present?
         ids = v["id"].split(' ')
         v["id"] = ids
       end
-
-      p
     end
+    p
+  end
 end
 
 
