@@ -136,10 +136,12 @@ class Fichas::TaxaController < Fichas::FichasController
   def itera_preguntas_observaciones(p)
     lista = %w(ambi_info_ecorregiones_attributes ambi_especies_asociadas_attributes ambi_vegetacion_esp_mundo_attributes ambi_info_clima_exotico_attributes)
     lista.each do |acceso|
-      p[acceso].each do |k,v|
-        break unless v["id"].present?
-        ids = v["id"].split(' ')
-        v["id"] = ids
+      if p.key?(acceso)
+        p[acceso].each do |k,v|
+          break unless v["id"].present?
+          ids = v["id"].split(' ')
+          v["id"] = ids
+        end
       end
     end
     p

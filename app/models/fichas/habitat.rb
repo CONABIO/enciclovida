@@ -22,7 +22,6 @@ class Fichas::Habitat < Ficha
 
 	# Cat_preguntas: CONSIDERANDO QUE EN ESTA TABLA EDSTÂN TODOS LOS CATALOGOS JUNTOS
 	has_many :t_clima, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-
   has_many :t_climaexo, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
   has_many :t_tipoVegetacionSecundaria, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
   has_many :t_tipovegetmundial, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies

@@ -8,16 +8,9 @@
     <legend class="text-primary"> Ecorregiones </legend>
     <%= select_multiple_de_catalogos(f, :ecorregion, :descripcion, :ecorregionId) %>
     <div class="apartadoFicha ficha-Prioritaria">
-      <%=
-        parametros = {
-            :acceso => @taxon.ambi_info_ecorregiones,
-            :modelo => f_taxon,
-            :association => :ambi_info_ecorregiones,
-            :titulo => "Información adicional",
-            :el_div => "info_ecorregiones",
-            :pregunta => Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones]
-        }
-        agrega_info_adicional(parametros)
+      <%
+        parametros = {:acceso => @taxon.ambi_info_ecorregiones, :modelo => f_taxon, :association => :ambi_info_ecorregiones, :titulo => "Información adicional", :el_div => "info_ecorregiones", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones]}
+        #agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
         <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
@@ -64,15 +57,7 @@
 
     <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
       <%=
-        parametros = {
-            :acceso => @taxon.ambi_especies_asociadas,
-            :modelo => f_taxon,
-            :association => :ambi_especies_asociadas,
-            :agregar => "Agregar especies asociadas",
-            :titulo => "d) Mencionar las especies asociadas",
-            :el_div => "especies_asociadas",
-            :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_especies_asociadas]
-        }
+        parametros = {:acceso => @taxon.ambi_especies_asociadas,:modelo => f_taxon,:association => :ambi_especies_asociadas,:agregar => "Agregar especies asociadas",:titulo => "d) Mencionar las especies asociadas",:el_div => "especies_asociadas",:pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_especies_asociadas]}
         agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
@@ -86,12 +71,7 @@
       <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.vegetacion_mundial') %></h3>
       <%=
         parametros = {
-            :acceso => @taxon.ambi_vegetacion_esp_mundo,
-            :modelo => f_taxon,
-            :association => :ambi_vegetacion_esp_mundo,
-            :titulo => "Información adicional",
-            :el_div => "ambi_vegetacion_esp_mundo",
-            :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_vegetacion_esp_mundo]
+            :acceso => @taxon.ambi_vegetacion_esp_mundo, :modelo => f_taxon, :association => :ambi_vegetacion_esp_mundo, :titulo => "Información adicional", :el_div => "ambi_vegetacion_esp_mundo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_vegetacion_esp_mundo]
         }
         agrega_info_adicional(parametros)
       %>
@@ -109,17 +89,13 @@
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.clima') %></h3>
     <% c_clima = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:clima]).group_by(&:descn1) %>
-    <%= f_taxon.association :t_clima,
+    <%= f_taxon.association :t_climas,
                       :as => :grouped_select,
                       collection: c_clima,
                       :group_method => :last,
                       group_label_method: :first,
                       label_method: :descn2,
-                      #value_method: :idopcion,
-                      value_method: ->(obj){
-                        detalle = "#{obj.idpregunta}, #{obj.idopcion}"
-                        detalle
-                      },
+                      value_method: :idopcion,
                       input_html: {
                           :multiple => true,
                           class: 'form-control selectpicker',
@@ -132,14 +108,7 @@
 
     <div class="apartadoFicha ficha-Invasora">
       <%=
-        parametros = {
-            :acceso => @taxon.ambi_info_clima_exotico,
-            :modelo => f_taxon,
-            :association => :ambi_info_clima_exotico,
-            :titulo => "Información adicional",
-            :el_div => "ambi_info_clima_exotico",
-            :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico]
-        }
+        parametros = {:acceso => @taxon.ambi_info_clima_exotico, :modelo => f_taxon, :association => :ambi_info_clima_exotico, :titulo => "Información adicional", :el_div => "ambi_info_clima_exotico", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico]}
         agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
