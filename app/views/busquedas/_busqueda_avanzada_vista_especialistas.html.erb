@@ -8,9 +8,9 @@
 <div class="col-xs-12 <%= 'col-sm-6 col-md-4 col-lg-3' if(params[:action] != 'resultados') %>">
   <fieldset>
     <div class="form-group">
-	    <legend><h5 class="text-primary"><strong>Búsqueda por nombre:</strong></h5></legend>
-	    <%= hidden_field_tag :id, nil %>
-	    <%= hidden_field_tag :busqueda, :avanzada %>
+      <legend><h5 class="text-primary"><strong>Búsqueda por nombre:</strong></h5></legend>
+      <%= hidden_field_tag :id, nil %>
+      <%= hidden_field_tag :busqueda, :avanzada %>
 
       <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...',
                          :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
@@ -29,54 +29,42 @@
 <div class="col-xs-12 <%= 'col-sm-6 col-md-5 col-lg-5' if(params[:action] != 'resultados') %>">
   <fieldset>
     <legend><h5 class="text-primary"><strong>Categorías de riesgo y comercio internacional</strong></h5></legend>
-    <div class="checkbox">
-      <%= checkboxEstadoConservacion.html_safe %>
-    </div>
+    <%= checkboxEstadoConservacion.html_safe %>
   </fieldset>
 </div>
 
 <div class="col-xs-12 <%= 'col-sm-6 col-md-3 col-lg-3 col-sm-offset-1 col-md-offset-0 col-lg-offset-0' if(params[:action] != 'resultados') %>">
   <fieldset>
     <legend><h5 class="text-primary"><strong>Tipo de distribución</strong></h5></legend>
-    <div class="checkbox">
-      <%= checkboxTipoDistribucion.html_safe %>
-    </div>
+    <%= checkboxTipoDistribucion.html_safe %>
   </fieldset>
 </div>
 
 <div class="col-xs-12 <%= 'col-sm-5 col-md-3 col-lg-3' if(params[:action] != 'resultados') %>">
   <fieldset>
     <legend><h5 class="text-primary"><strong>Usos</strong></h5></legend>
-    <div class="checkbox">
-      <%= selectUsos.html_safe %>
-    </div>
+    <%= selectUsos.html_safe %>
   </fieldset>
 </div>
 
 <div class="col-xs-12 <%= 'col-sm-5 col-md-3 col-lg-3' if(params[:action] != 'resultados') %>">
   <fieldset>
     <legend><h5 class="text-primary"><strong>Ambiente</strong></h5></legend>
-    <div class="checkbox">
-      <%= selectAmbiente.html_safe %>
-    </div>
+    <%= selectAmbiente.html_safe %>
   </fieldset>
 </div>
 
 <div class="col-xs-12 <%= 'col-sm-5 col-md-3 col-lg-3' if(params[:action] != 'resultados') %>">
   <fieldset>
     <legend><h5 class="text-primary"><strong>Distribución (reportada en literatura)</strong></h5></legend>
-    <div class="checkbox">
-      <%= selectRegiones.html_safe %>
-    </div>
+    <%= selectRegiones.html_safe %>
   </fieldset>
 </div>
 
 <div class="col-xs-12 <%= 'col-sm-5 col-md-3 col-lg-3' if(params[:action] != 'resultados') %>">
   <fieldset>
     <legend><h5 class="text-primary"><strong>Especies prioritarias para la conservación</strong></h5></legend>
-    <div class="checkbox">
-      <%= checkboxPrioritaria.html_safe %>
-    </div>
+    <%= checkboxPrioritaria.html_safe %>
   </fieldset>
 </div>
 
