@@ -8,55 +8,55 @@
       </div>
       <div class="modal-body">
         <p>
-          Selecciona los datos a exportar para el checklist y se te enviará un correo cuando este listo.
+          <i>Selecciona los datos a exportar para el checklist y se te enviará un correo cuando este listo.</i>
         </p>
 
         <div class="form-group has-feedback">
 
-          <%= label_tag 'correo', 'Correo electrónico *', class: 'control-label' %>
-          <%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...' %>
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <%= label_tag 'correo', 'Correo electrónico *', class: 'control-label' %>
+            <%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...' %>
+          </div>
 
-          <br />
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <%= label_tag 'ambiente', 'Ambiente', class: 'control-label' %>
+            <%= selectAmbiente.html_safe %>
+          </div>
 
-          <%= label_tag 'ambiente', 'Ambiente', class: 'control-label' %>
-          <%= selectAmbiente.html_safe %>
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <%= label_tag 'dist', 'Tipo de distribución', class: 'control-label' %>
+            <%= checkboxTipoDistribucion.html_safe %>
+          </div>
 
-          <br />
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <%= label_tag 'edo_cons', 'Categorías de riesgo y comercio internacional', class: 'control-label' %>
+            <%= checkboxEstadoConservacion.html_safe %>
+          </div>
 
-          <%= label_tag 'dist', 'Tipo de distribución', class: 'control-label' %>
-          <%= checkboxTipoDistribucion.html_safe %>
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <%= label_tag 'reg', 'Distribución (reportada en literatura)', class: 'control-label' %>
+            <%= selectRegiones.html_safe %>
+          </div>
 
-          <br />
-
-          <%= label_tag 'edo_cons', 'Categorías de riesgo y comercio internacional', class: 'control-label' %>
-          <%= checkboxEstadoConservacion.html_safe %>
-
-          <br />
-
-          <%= label_tag 'reg', 'Distribución (reportada en literatura)', class: 'control-label' %>
-          <%= selectRegiones.html_safe %>
-
-          <br />
-
-          <div class="checkbox">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 checkbox">
             <%= checkboxSoloValidos.html_safe %>
           </div>
 
           <br />
 
-          <div class="checkbox">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 checkbox">
             <%= "<label for='nom_com'><span title='Nombres comunes'>Nombres comunes</span></label> #{check_box_tag('nom_com[]', 1, false, class:'form-control')}".html_safe %>
           </div>
 
           <br />
 
-          <div class="checkbox">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 checkbox">
             <%= "<label for='biblio'><span title='Bibliografias'>Bibliografias</span></label> #{check_box_tag('biblio[]', 1, false, class:'form-control')}".html_safe %>
           </div>
 
           <br />
 
-          <div class="checkbox">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 checkbox">
             <%= "<label for='forma'><span title='Formas de crecimiento'>Formas de crecimiento</span></label> #{check_box_tag('forma[]', 1, false, class:'form-control')}".html_safe %>
           </div>
 
