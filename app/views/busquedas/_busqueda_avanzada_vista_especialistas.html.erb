@@ -16,13 +16,6 @@
                          :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
     </div>
 
-    <div class="form-group">
-	    <fieldset>
-	      <legend><h5 class="text-primary"><strong>Resultados por página:</strong></h5></legend>
-	      <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
-	    </fieldset>
-    </div>
-
   </fieldset>
 
   <div id="panelCategoriaTaxonomicaPt" style="display: none;">
@@ -47,15 +40,6 @@
     <legend><h5 class="text-primary"><strong>Tipo de distribución</strong></h5></legend>
     <div class="checkbox">
       <%= checkboxTipoDistribucion.html_safe %>
-    </div>
-  </fieldset>
-</div>
-
-<div class="col-xs-12 <%= 'col-sm-5 col-md-3 col-lg-3' if(params[:action] != 'resultados') %>">
-  <fieldset>
-    <legend><h5 class="text-primary"><strong>Estatus taxonómico</strong></h5></legend>
-    <div class="checkbox">
-      <%= checkboxValidoSinonimo.html_safe %>
     </div>
   </fieldset>
 </div>
@@ -93,5 +77,21 @@
     <div class="checkbox">
       <%= selectRegiones.html_safe %>
     </div>
+  </fieldset>
+</div>
+
+<div class="col-xs-12 <%= 'col-sm-5 col-md-3 col-lg-3' if(params[:action] != 'resultados') %>">
+  <fieldset>
+    <legend><h5 class="text-primary"><strong>Estatus taxonómico (default todos)</strong></h5></legend>
+    <div class="checkbox">
+      <%= checkboxSoloValidos.html_safe %>
+    </div>
+  </fieldset>
+</div>
+
+<div class="col-xs-12 <%= 'col-sm-5 col-md-3 col-lg-3' if(params[:action] != 'resultados') %>">
+  <fieldset>
+    <legend><h5 class="text-primary"><strong>Resultados por página:</strong></h5></legend>
+    <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
   </fieldset>
 </div>

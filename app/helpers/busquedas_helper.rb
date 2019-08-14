@@ -50,16 +50,8 @@ module BusquedasHelper
   end
 
   # REVISADO: Filtros para estatus taxonómico en la busqueda avanzada
-  def checkboxValidoSinonimo (busqueda=nil)
-    checkBoxes = ''
-
-    Especie::ESTATUS_BUSQUEDA.each do |e|
-      checkBoxes += case busqueda
-                    when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
-                    else "<label> #{check_box_tag('estatus[]', e.first, false, id: "estatus_#{e.first}")} <span class = 'btn btn-xs btn-basica' title = #{e.last}>#{e.last}</span></label>"
-                    end
-    end
-    checkBoxes
+  def checkboxSoloValidos
+    "<label for='estatus'><span title='Solo válidos/aceptados'>Solo válidos/aceptados</span></label> #{check_box_tag('estatus[]', 2, false, id: "estatus_2", class:'form-control')}"
   end
 
   def selectUsos(opciones={})
