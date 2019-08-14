@@ -1,3 +1,74 @@
-<%= label_tag 'correo', 'Correo electrónico ', class: 'control-label', id: 'label_correo', style: ('display:none;' if @totales > 0) %>
-<%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...', style: ('display:none;' if @totales > 0) %>
- 
+<!-- Modal checklist -->
+<div class="modal fade" id="modal-checklist" tabindex="-1" role="dialog" aria-labelledby="modal-checklist-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modal-checklist-label">Descarga el checklist para los <%= @totales %> resultados</h4>
+      </div>
+      <div class="modal-body">
+        <p>
+          Selecciona los datos a exportar para el checklist y se te enviará un correo cuando este listo.
+        </p>
+
+        <div class="form-group has-feedback">
+
+          <%= label_tag 'correo', 'Correo electrónico *', class: 'control-label' %>
+          <%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...' %>
+
+          <br />
+
+          <%= label_tag 'ambiente', 'Ambiente', class: 'control-label' %>
+          <%= selectAmbiente.html_safe %>
+
+          <br />
+
+          <%= label_tag 'dist', 'Tipo de distribución', class: 'control-label' %>
+          <%= checkboxTipoDistribucion.html_safe %>
+
+          <br />
+
+          <%= label_tag 'edo_cons', 'Categorías de riesgo y comercio internacional', class: 'control-label' %>
+          <%= checkboxEstadoConservacion.html_safe %>
+
+          <br />
+
+          <%= label_tag 'reg', 'Distribución (reportada en literatura)', class: 'control-label' %>
+          <%= selectRegiones.html_safe %>
+
+          <br />
+
+          <div class="checkbox">
+            <%= checkboxSoloValidos.html_safe %>
+          </div>
+
+          <br />
+
+          <div class="checkbox">
+            <%= "<label for='nom_com'><span title='Nombres comunes'>Nombres comunes</span></label> #{check_box_tag('nom_com[]', 1, false, class:'form-control')}".html_safe %>
+          </div>
+
+          <br />
+
+          <div class="checkbox">
+            <%= "<label for='biblio'><span title='Bibliografias'>Bibliografias</span></label> #{check_box_tag('biblio[]', 1, false, class:'form-control')}".html_safe %>
+          </div>
+
+          <br />
+
+          <div class="checkbox">
+            <%= "<label for='forma'><span title='Formas de crecimiento'>Formas de crecimiento</span></label> #{check_box_tag('forma[]', 1, false, class:'form-control')}".html_safe %>
+          </div>
+
+          <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+          <span id="inputSuccess2Status" class="sr-only">(success)</span>
+          <span id="estatus_descargar_taxa"></span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-success" id="boton_enviar_descarga" <%= 'disabled="disabled"' %>">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>

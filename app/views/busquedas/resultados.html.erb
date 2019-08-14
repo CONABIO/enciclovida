@@ -165,7 +165,7 @@
     </button>
 
     <% if @totales > 0 && params[:busqueda] == 'avanzada' && params[:id].present? %>
-      <button type="button" class="btn btn-link pull-right" url="<%= checklist({request: request.original_url, totales: @totales}) %>" id="boton_checklist">
+      <button type="button" class="btn btn-link pull-right" url="<%= checklist({request: request.original_url, totales: @totales}) %>" id="boton_checklist" data-toggle="modal" data-target="#modal-checklist">
         Listado para Revisión (✓)
       </button>
     <% end %>
@@ -270,33 +270,6 @@
   </div>
 </div>
 
-<!-- Modal checklist -->
-<div class="modal fade" id="modal-checklist" tabindex="-1" role="dialog" aria-labelledby="modal-checklist-label">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modal-checklist-label">Descarga el checklist</h4>
-      </div>
-      <div class="modal-body">
-        <p>
-          Selecciona los datos adicionales para el checklist, se te enviará un correo cuando la descarga termine.
-        </p>
-
-        <div class="form-group has-feedback">
-          <%= render partial: 'form_checklist' %>
-
-          <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-          <span id="inputSuccess2Status" class="sr-only">(success)</span>
-          <span id="estatus_descargar_taxa"></span>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-success" id="boton_enviar_descarga" <%= 'disabled="disabled"' if @totales > 200 %>">Enviar</button>
-      </div>
-    </div>
-  </div>
-</div>
+<%= render partial: 'busquedas/form_checklist' %>
 
 
