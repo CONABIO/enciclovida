@@ -82,6 +82,23 @@
         <% end %>
       </div>
 
+      <div id='prioritaria-conservacion' role="tabpanel" class="tab-pane fade panel-body">
+        <hr />
+        <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
+          <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.prioritarias_conservacion')%></h3>
+          <% # OCUPA:  taxon %>
+          <%= render partial: 'fichas/taxa/seccion_prioritaria/form_prioritaria_conservacion_taxon', locals: {f: f } %>
+        </div>
+        <div class="apartadoFicha ficha-Invasora">
+          <hr />
+          <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.especies_invasoras')%></h3>
+          <%= f.simple_fields_for :invasividad do |info| %>
+            <%= render partial: 'fichas/taxa/seccion_invasoras/form_invasoras_invasividad', locals: {f: info, f_taxon: f } %>
+          <% end %>
+        </div>
+      </div>
+
+
     </div>
   </div>
   <hr />

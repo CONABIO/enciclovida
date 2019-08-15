@@ -5,6 +5,7 @@ class Fichas::Observacionescarac < Ficha
 
   belongs_to :taxon, class_name: 'Fichas::Taxon', :foreign_key => 'especieId'
 
+
 	PREGUNTAS = {
 			:ambi_especies_asociadas => 2,
       :ambi_vegetacion_esp_mundo => 3,
@@ -21,6 +22,8 @@ class Fichas::Observacionescarac < Ficha
 			:infostruct => 16,
 			:infointer => 17,
 			:infocons => 26,
+      :info_ecorregiones => 52,
+      # OPCIONES PARA SECCION 11: ESTA OCULTA Y NUNCA SE MUESTRA....
 			:rutasintro => 32,
 			:mecanismoimpacto => 33,
 			:efectoimpacto => 34,
@@ -34,10 +37,96 @@ class Fichas::Observacionescarac < Ficha
 			:enfermedadesei => 42,
 			:infoarresp => 46,
 			:infoAP => 48,
-			:info_ecorregiones => 52
+      # OPCIONES PARA LAS INVASORAS (QUE YA EXISTE TABLA PARA ESO PERO NI IDEA.....)
+      :edopoblacion => 52,
+      :persistenciapob => 53,
+      :abundanciapob => 54,
+      :historiaintro => 55,
+      :otrossitios => 56,
+      :adahabitat => 57,
+      :adaclima => 58,
+      :congeneres => 59,
+      :frecintro => 61,
+      :impactosei => 62,
+      :impactobio => 63,
+      :impactoeco => 64,
+      :impactoinfra => 65,
+      :impactosocial => 66,
+      :impactootros => 67,
+      :prevencion => 71,
+      :manejocontrol => 72,
+      :erradicacion => 73,
+      :cuarentena => 74,
+      :susceptibilidad => 75,
+      :controlbiol => 76,
+      :regulacion => 77,
+      :benecologicos => 78,
+      :beneconomicos => 79,
+      :bensociales => 80,
+      :conclimatica => 81,
+      :conecologica => 82,
+      :plasconductual => 85,
+      :plasrepro => 86,
+      :hibridacion => 87,
+      :crecimientosei => 90,
+      :spequivalentes => 92,
+      :cca => 93,
+      :fisk => 94,
+      :fiisk => 95,
+      :mfisk => 96,
+      :miisk => 97,
+      :aisk => 98,
+      :tiisk => 99,
+      :pier => 100,
+      :meri => 101,
+      :otroar => 102
 	}
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$sql = "SELECT * FROM observacionescarac WHERE especieId"
 
 =begin
 :infotiposuelo => 6,
