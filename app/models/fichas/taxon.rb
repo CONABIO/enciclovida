@@ -76,7 +76,15 @@ class Fichas::Taxon < Ficha
 	has_many :pier,-> {where('observacionescarac.idpregunta = ?', 100)}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :meri,-> {where('observacionescarac.idpregunta = ?', 101)}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :otroar,-> {where('observacionescarac.idpregunta = ?', 102)}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-
+	has_many :naturalizacion,-> {where('observacionescarac.idpregunta = ?', 36 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+	has_many :mecanismoimpacto,-> {where('observacionescarac.idpregunta = ?', 33 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+	has_many :efectoimpacto,-> {where('observacionescarac.idpregunta = ?', 34 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+	has_many :intensidadimpacto,-> {where('observacionescarac.idpregunta = ?', 35 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+	has_many :especiesasociadas,-> {where('observacionescarac.idpregunta = ?', 37 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+	has_many :plasticidad,-> {where('observacionescarac.idpregunta = ?', 38 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+	has_many :platencia,-> {where('observacionescarac.idpregunta = ?', 40 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+	has_many :seguridad,-> {where('observacionescarac.idpregunta = ?', 41 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+	has_many :enfermedadesei,-> {where('observacionescarac.idpregunta = ?', 42 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 
 	# Acceso desde Cocoon
 	accepts_nested_attributes_for :ambi_info_ecorregiones, allow_destroy: true, reject_if: :all_blank
@@ -135,6 +143,16 @@ class Fichas::Taxon < Ficha
 	accepts_nested_attributes_for :pier, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :meri, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :otroar, allow_destroy: true, reject_if: :all_blank
+
+	accepts_nested_attributes_for :naturalizacion, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :mecanismoimpacto, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :efectoimpacto, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :intensidadimpacto, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :especiesasociadas, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :plasticidad, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :platencia, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :seguridad, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :enfermedadesei, allow_destroy: true, reject_if: :all_blank
 
 
 
@@ -238,18 +256,4 @@ class Fichas::Taxon < Ficha
 end
 
 
-# DE SECCION 11 QUE ESTÄ OCULTA
-#has_many :infocons,-> {where('observacionescarac.idpregunta = ?', 26 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :rutasintro,-> {where('observacionescarac.idpregunta = ?', 32 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :mecanismoimpacto,-> {where('observacionescarac.idpregunta = ?', 33 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :efectoimpacto,-> {where('observacionescarac.idpregunta = ?', 34 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :intensidadimpacto,-> {where('observacionescarac.idpregunta = ?', 35 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :naturalizacion,-> {where('observacionescarac.idpregunta = ?', 36 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :especiesasociadas,-> {where('observacionescarac.idpregunta = ?', 37 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :plasticidad,-> {where('observacionescarac.idpregunta = ?', 38 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :dispersion,-> {where('observacionescarac.idpregunta = ?', 39 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :platencia,-> {where('observacionescarac.idpregunta = ?', 40 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :seguridad,-> {where('observacionescarac.idpregunta = ?', 41 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :enfermedadesei,-> {where('observacionescarac.idpregunta = ?', 42 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :infoarresp,-> {where('observacionescarac.idpregunta = ?', 46 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-#has_many :infoAP,-> {where('observacionescarac.idpregunta = ?', 48 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+

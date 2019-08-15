@@ -124,8 +124,6 @@ end
 
 
 
-
-
 $sql = "SELECT * FROM observacionescarac WHERE especieId"
 
 =begin

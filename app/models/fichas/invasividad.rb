@@ -36,7 +36,23 @@ class Fichas::Invasividad < Ficha
 		"Prohibida".to_sym
 	]
 
+	CCA = [
+		"Alto riesgo-rechazo".to_sym,
+		"Bajo riesgo-Sin restricciones".to_sym,
+		"Posible riesgo- requiere análisis más detallado".to_sym,
+	]
 
+	OTROS_RIESGOS = [
+		"Aceptar-Bajo riesgo".to_sym,
+		"Evaluar-Riesgo medio".to_sym,
+		"Rechazar-Alto riesgo".to_sym
+	]
 
+	MERI = [
+		"Muy Alto".to_sym,
+		"Alto".to_sym,
+		"Medio".to_sym,
+		"Bajo".to_sym
+	]
 
 end

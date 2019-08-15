@@ -144,6 +144,15 @@ class Fichas::TaxaController < Fichas::FichasController
           pier_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           meri_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           otroar_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          naturalizacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          mecanismoimpacto_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          efectoimpacto_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          intensidadimpacto_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          especiesasociadas_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          plasticidad_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          platencia_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          seguridad_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          enfermedadesei_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           # -
 
           habitats_attributes: [
@@ -248,6 +257,15 @@ class Fichas::TaxaController < Fichas::FichasController
       pier_attributes
       meri_attributes
       otroar_attributes
+      naturalizacion_attributes
+      mecanismoimpacto_attributes
+      efectoimpacto_attributes
+      intensidadimpacto_attributes
+      especiesasociadas_attributes
+      plasticidad_attributes
+      platencia_attributes
+      seguridad_attributes
+      enfermedadesei_attributes
     )
     lista.each do |acceso|
       if p.key?(acceso)
