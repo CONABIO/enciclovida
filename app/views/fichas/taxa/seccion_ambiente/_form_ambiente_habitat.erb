@@ -10,7 +10,7 @@
     <div class="apartadoFicha ficha-Prioritaria">
       <%
         parametros = {:acceso => @taxon.ambi_info_ecorregiones, :modelo => f_taxon, :association => :ambi_info_ecorregiones, :titulo => "Información adicional", :el_div => "info_ecorregiones", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones]}
-        #agrega_info_adicional(parametros)
+        agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
         <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
@@ -149,13 +149,29 @@
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_suelo') %></h3>
 
-    <%= f.input :descripcionSuelo %>
+    <%
+      parametros = {:acceso => @taxon.ambi_infotiposuelo, :modelo => f_taxon, :association => :ambi_infotiposuelo, :titulo => "Información adicional", :el_div => "infotiposuelo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infotiposuelo]}
+      agrega_info_adicional(parametros)
+    %>
+    <div id="dato_<%= parametros[:el_div] %>">
+      <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+        <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+      <% end %>
+    </div>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.geoforma') %></h3>
     <%= #select_multiple_nivel_1(f, :t_geoforma, Fichas::Caracteristicasespecie::OPCIONES[:geoforma])
     %>
+    <%
+      parametros = {:acceso => @taxon.ambi_infogeoforma, :modelo => f_taxon, :association => :ambi_infogeoforma, :titulo => "Información adicional", :el_div => "infogeoforma", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infogeoforma]}
+      agrega_info_adicional(parametros)
+    %>
+    <div id="dato_<%= parametros[:el_div] %>">
+      <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+        <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+      <% end %>
+    </div>
 
-    <%= f.input :descripcionGeoforma %>
   </div>
   <%
     # Hasta aquí llega la parte terrestre

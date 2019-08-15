@@ -34,7 +34,15 @@
                         'data-selected-text-format': 'count > 3'
                     }
   %>
-  <%= f.input :descripcionAlimentacion %>
+  <%
+    parametros = {:acceso => @taxon.infoalimenta, :modelo => f_taxon, :association => :infoalimenta, :titulo => "Información adicional", :el_div => "infoalimenta", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoalimenta]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.estrategia_trofica') %></h3>
   <%= f.input :estrategiaTrofica,
@@ -64,9 +72,16 @@
                         'data-selected-text-format': 'count > 3'
                     }
   %>
-
-  <% # FALTA INFO ADICIONAL PARA FORRAGEO 8
+  <%
+    parametros = {:acceso => @taxon.infoaddforrajeo, :modelo => f_taxon, :association => :infoaddforrajeo, :titulo => "Información adicional", :el_div => "infoaddforrajeo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoaddforrajeo]}
+    agrega_info_adicional(parametros)
   %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.conducta') %></h3>
   <%= f.input :conducta %>
@@ -113,8 +128,16 @@
                         'data-selected-text-format': 'count > 3'
                     }
   %>
-  <% # FALTA INFO ADICIONAL PARA HABITO
+  <%
+    parametros = {:acceso => @taxon.infoaddhabito, :modelo => f_taxon, :association => :infoaddhabito, :titulo => "Información adicional", :el_div => "infoaddforrajeo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoaddhabito]}
+    agrega_info_adicional(parametros)
   %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
   <%= f.input :tipopHabito, as: :radio_buttons, :collection => Fichas::Historianatural::PERIODO_ACTIVIDAD, item_wrapper_class: 'radio-inline' %>
   <%= f.input :infoaddperiodoactividad %>
 
@@ -177,7 +200,16 @@
                         'data-selected-text-format': 'count > 3'
                     }
   %>
-  <%= f.input :descTipoDispersion %>
+  <%
+    parametros = {:acceso => @taxon.infodisp, :modelo => f_taxon, :association => :infodisp, :titulo => "Información adicional", :el_div => "infodisp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infodisp]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
   <% c_structdisp = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:structdisp]) %>
   <%= f.association :t_structdisp,
                     label_method: :descn1,
@@ -192,7 +224,15 @@
                         'data-selected-text-format': 'count > 3'
                     }
   %>
-  <%= f.input :descEstDispersora %>
+  <%
+    parametros = {:acceso => @taxon.infostruct, :modelo => f_taxon, :association => :infostruct, :titulo => "Información adicional", :el_div => "infostruct", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infostruct]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
 
   <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.distancia_dispersion') %></h4>
   <%= f.input :distanciadispercioninicial %>
@@ -203,4 +243,9 @@
     generamultiselectn1($Udispersionsei, "dispersionsei", "39","dispersion ")
     observacionescarac WHERE especieId=$IdResev and idpregunta = 39";
   </div>
+
+
+
 </div>
+
+

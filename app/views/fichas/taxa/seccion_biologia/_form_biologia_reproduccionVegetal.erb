@@ -6,7 +6,6 @@
   <div class="apartadoFicha ficha-Invasora">
     b. Arreglo espacial de los órganos reproductores
     generamultiselectn1($Uarregloespacial, "arregloespacial", "46","arreglo espacial ");?>
-
     observacionescarac WHERE especieId=$IdResev and idpregunta = 46
   </div>
 
@@ -120,6 +119,7 @@
   <%
     # INFO ADICIONAL observacionescarac 48
   %>
+
   <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.floracion') %></h4>
   <%= f.input :aperturaFlor,
               collection: Fichas::Reproduccionvegetal::FLORACION_HORARIO_APERTURA,
@@ -242,8 +242,6 @@
     <%= f.input :agentesPolinizacion %>
     <%= f.input :descAgentesPol %>
   </div>
-
-
 
 
 

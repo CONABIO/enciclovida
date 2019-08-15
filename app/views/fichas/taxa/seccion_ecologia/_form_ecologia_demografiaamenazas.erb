@@ -34,6 +34,14 @@
                         'data-selected-text-format': 'count > 3'
                     }
   %>
-  <%= f.input :infoAdicionalInteraccion %>
+  <%
+    parametros = {:acceso => @taxon.infointer, :modelo => f_taxon, :association => :infointer, :titulo => "Información adicional", :el_div => "infointer", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infointer]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
 
 </div>
