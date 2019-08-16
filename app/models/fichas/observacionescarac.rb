@@ -23,7 +23,7 @@ class Fichas::Observacionescarac < Ficha
 			:infointer => 17,
 			:infocons => 26,
       :info_ecorregiones => 52,
-      # OPCIONES PARA SECCION 11: ESTA OCULTA Y NUNCA SE MUESTRA....
+			# OPCIONES PARA LAS INVASORAS Y SECCION 11 OCULTA (QUE YA EXISTE TABLA PARA ESO PERO NI IDEA.....)
 			:rutasintro => 32,
 			:mecanismoimpacto => 33,
 			:efectoimpacto => 34,
@@ -37,7 +37,6 @@ class Fichas::Observacionescarac < Ficha
 			:enfermedadesei => 42,
 			:infoarresp => 46,
 			:infoAP => 48,
-      # OPCIONES PARA LAS INVASORAS (QUE YA EXISTE TABLA PARA ESO PERO NI IDEA.....)
       :edopoblacion => 52,
       :persistenciapob => 53,
       :abundanciapob => 54,

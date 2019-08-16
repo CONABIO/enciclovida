@@ -13,7 +13,7 @@
 
   <div class="row">
     <div class="col-sm-6"><h3> <%= t('general.informacion_de_ficha') %> </h3></div>
-    <div class="col-sm-6"><br><%= f.input :tipoficha, as: :radio_buttons, :collection => Fichas::Taxon::TIPOS_FICHA, item_wrapper_class: 'radio-inline', input_html: {name: 'selectorDeFicha', onclick: 'showOrHideInfoFicha()' } %></div>
+    <div class="col-sm-6"><br><%= f.input :tipoficha, as: :radio_buttons, :collection => Fichas::Taxon::TIPOS_FICHA, item_wrapper_class: 'radio-inline', input_html: {onclick: 'showOrHideInfoFicha()' } %></div>
   </div>
 
   <div id="pestañas" class="panel row">
@@ -96,6 +96,8 @@
         <% end %>
       </div>
 
+
+
       <div id='prioritaria-conservacion' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
         <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
@@ -107,7 +109,7 @@
           <hr />
           <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.especies_invasoras')%></h3>
           <%= f.simple_fields_for :invasividad do |info| %>
-            <%= render partial: 'fichas/taxa/seccion_invasoras/form_invasoras_invasividad', locals: {f: info, f_taxon: f } %>
+            <%= render partial: 'fichas/taxa/seccion_invasoras/form_prioritaria_conservacion_taxon', locals: {f: info, f_taxon: f } %>
           <% end %>
         </div>
       </div>

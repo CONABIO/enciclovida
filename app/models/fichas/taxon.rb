@@ -7,12 +7,24 @@ class Fichas::Taxon < Ficha
 	has_one :especie, through: :scat, source: :especie
 	has_one :habitats, class_name: 'Fichas::Habitat', :foreign_key => 'especieId', inverse_of: :taxon
 
-
+	# - - - - -
+	has_many :distribuciones, :class_name => 'Fichas::Distribucion', :foreign_key => 'especieId', inverse_of: :taxon
+	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId'
+	has_many :conservacion, :class_name => 'Fichas::Conservacion', :foreign_key => 'especieId'
+	has_many :demografiaAmenazas, :class_name=> 'Fichas::Demografiaamenazas', :foreign_key => 'especieId'
+	has_many :endemicas, :class_name => 'Fichas::Endemica', :foreign_key => 'especieId'
+	has_one :historiaNatural, class_name: 'Fichas::Historianatural', :foreign_key => 'especieId'
+	has_one :invasividad, class_name: 'Fichas::Invasividad', :foreign_key => 'especieId'
+	has_many :legislaciones, class_name: 'Fichas::Legislacion', :foreign_key => 'especieId'
+	has_many :metadatos, class_name: 'Fichas::Metadatos', :foreign_key => 'especieId'
+	has_one :nombreComun, class_name: 'Fichas::Nombrecomun', :foreign_key => 'especieId'
+	has_many :productoComercios, class_name: 'Fichas::Productocomercio', :foreign_key => 'especieId'
+	has_many :sinonimos , class_name: 'Fichas::Sinonimo', :foreign_key => 'especieId'
+	has_many :referenciasBibliograficas, class_name: 'Fichas::Referenciabibliografica', :foreign_key => 'especieId'
+	# - - - - -
 
 	has_many :caracteristicas, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => :especieId, inverse_of: :taxon
   has_many :t_climas, through: :caracteristicas
-
-
 	accepts_nested_attributes_for :caracteristicas, allow_destroy: true, reject_if: :all_blank
 
 
@@ -86,7 +98,22 @@ class Fichas::Taxon < Ficha
 	has_many :seguridad,-> {where('observacionescarac.idpregunta = ?', 41 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :enfermedadesei,-> {where('observacionescarac.idpregunta = ?', 42 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 
+
+	accepts_nested_attributes_for :invasividad, allow_destroy: true
+	accepts_nested_attributes_for :caracteristicasEspecies, allow_destroy: true
+	accepts_nested_attributes_for :conservacion, allow_destroy: true
+	accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true
+	accepts_nested_attributes_for :distribuciones, allow_destroy: true
+	accepts_nested_attributes_for :endemicas, allow_destroy: true
+	accepts_nested_attributes_for :habitats, allow_destroy: true
+	accepts_nested_attributes_for :historiaNatural, allow_destroy: true
+  accepts_nested_attributes_for :legislaciones, reject_if: :all_blank, allow_destroy: true
+	accepts_nested_attributes_for :metadatos, allow_destroy: true
+	accepts_nested_attributes_for :productoComercios, allow_destroy: true
+	accepts_nested_attributes_for :referenciasBibliograficas, allow_destroy: true
+
 	# Acceso desde Cocoon
+	# Preguntas de información adicional y observaciones en la tabla Observacionescarac
 	accepts_nested_attributes_for :ambi_info_ecorregiones, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :ambi_especies_asociadas, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :ambi_vegetacion_esp_mundo, allow_destroy: true, reject_if: :all_blank
@@ -100,7 +127,7 @@ class Fichas::Taxon < Ficha
 	accepts_nested_attributes_for :infodisp, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :infostruct, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :infointer, allow_destroy: true, reject_if: :all_blank
-
+	#Preguntas para invasoras
 	accepts_nested_attributes_for :edopoblacion, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :persistenciapob, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :abundanciapob, allow_destroy: true, reject_if: :all_blank
@@ -143,7 +170,6 @@ class Fichas::Taxon < Ficha
 	accepts_nested_attributes_for :pier, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :meri, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :otroar, allow_destroy: true, reject_if: :all_blank
-
 	accepts_nested_attributes_for :naturalizacion, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :mecanismoimpacto, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :efectoimpacto, allow_destroy: true, reject_if: :all_blank
@@ -153,48 +179,6 @@ class Fichas::Taxon < Ficha
 	accepts_nested_attributes_for :platencia, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :seguridad, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :enfermedadesei, allow_destroy: true, reject_if: :all_blank
-
-
-
-
-
-	# - - - - -
-	has_many :distribuciones, :class_name => 'Fichas::Distribucion', :foreign_key => 'especieId', inverse_of: :taxon
-	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId'
-	has_many :conservacion, :class_name => 'Fichas::Conservacion', :foreign_key => 'especieId'
-	has_many :demografiaAmenazas, :class_name=> 'Fichas::Demografiaamenazas', :foreign_key => 'especieId'
-  has_many :endemicas, :class_name => 'Fichas::Endemica', :foreign_key => 'especieId'
-	has_one :historiaNatural, class_name: 'Fichas::Historianatural', :foreign_key => 'especieId'
-  has_one :invasividad, class_name: 'Fichas::Invasividad', :foreign_key => 'especieId'
-	has_many :legislaciones, class_name: 'Fichas::Legislacion', :foreign_key => 'especieId'
-	has_many :metadatos, class_name: 'Fichas::Metadatos', :foreign_key => 'especieId'
-	has_one :nombreComun, class_name: 'Fichas::Nombrecomun', :foreign_key => 'especieId'
-	has_many :productoComercios, class_name: 'Fichas::Productocomercio', :foreign_key => 'especieId'
-	has_many :sinonimos , class_name: 'Fichas::Sinonimo', :foreign_key => 'especieId'
-	has_many :referenciasBibliograficas, class_name: 'Fichas::Referenciabibliografica', :foreign_key => 'especieId'
-
-
-
-
-
-
-
-
-
-	accepts_nested_attributes_for :invasividad, allow_destroy: true
-	accepts_nested_attributes_for :caracteristicasEspecies, allow_destroy: true
-	accepts_nested_attributes_for :conservacion, allow_destroy: true
-	accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true
-	accepts_nested_attributes_for :distribuciones, allow_destroy: true
-	accepts_nested_attributes_for :endemicas, allow_destroy: true
-	accepts_nested_attributes_for :habitats, allow_destroy: true
-	accepts_nested_attributes_for :historiaNatural, allow_destroy: true
-  accepts_nested_attributes_for :legislaciones, reject_if: :all_blank, allow_destroy: true
-	accepts_nested_attributes_for :metadatos, allow_destroy: true
-	accepts_nested_attributes_for :productoComercios, allow_destroy: true
-	accepts_nested_attributes_for :referenciasBibliograficas, allow_destroy: true
-
-
 
 
 	# Sección I: Clasificacion
