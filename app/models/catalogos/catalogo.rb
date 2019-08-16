@@ -20,7 +20,7 @@ class Catalogo < ActiveRecord::Base
   scope :usos, -> { where(nivel1: 11, descripcion: USOS) }
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
-  USOS = ['Medicinal', 'Ornamental']
+  USOS = ['Medicinal','Ornamental','Alimentación animal','Alimentación humana','Ambiental','Artesanía','Combustible','Industrial','Manejo de plagas','Materiales','Melíferas','Sociales/religiosos']
 
   # REVISADO: Regresa true or false si el catalogo es de los permitidos a mostrar
   def es_catalogo_permitido?
