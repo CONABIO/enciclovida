@@ -71,7 +71,21 @@
         <% end %>
       </div>
 
+      <div id='distribucion' role="tabpanel" class="tab-pane fade panel-body">
+        <hr />
+        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.distribucion')%></h3>
 
+        <% # OCUPA: habitat, distribucion, endemica  %>
+        <%= f.simple_fields_for :distribuciones do |info| %>
+          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_distribucion', locals: {f: info, f_taxon: f } %>
+        <% end %>
+        <%= f.simple_fields_for :habitats  do |info| %>
+          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_habitad', locals: { f: info, f_taxon: f } %>
+        <% end %>
+        <%= f.simple_fields_for :endemicas do |info| %>
+          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_endemica', locals: { f: info, f_taxon: f } %>
+        <% end %>
+      </div>
 
       <div id='ambiente' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
