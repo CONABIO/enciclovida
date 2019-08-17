@@ -173,3 +173,8 @@ div.result-img-container{
 .checkbox:not(.explora_por, .valorada) span{
     background-image: linear-gradient(to bottom, #eeeeee 0%, #ffffff 80%);
 }
+
+/*Para las opciones del plugin select con boostrap*/
+ul.dropdown-menu li a span{
+    font-size: .6em;
+}

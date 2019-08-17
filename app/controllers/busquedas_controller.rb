@@ -33,53 +33,6 @@ class BusquedasController < ApplicationController
     end  # Fin if busqueda
   end
 
-  # Servicio que por medio del nombre comun extrae todos los nombres comunes asociados al taxon (servicio para alejandro molina)
-  def nombres_comunes
-    select = "NombreComun.datos_basicos(['nombres_comunes.id'])"
-    select_count = 'NombreComun.datos_count'
-
-    if params[:exact].present? && params[:exact].to_i == 1
-      condiciones = ".caso_sensitivo('nombre_comun', \"#{params[:q].limpia_sql}\").
-                where('especies.id IS NOT NULL')"
-    else
-      condiciones = ".caso_insensitivo('nombre_comun', \"#{params[:q].limpia_sql}\").
-                where('especies.id IS NOT NULL')"
-    end
-
-    sql = select << condiciones + ".distinct.order('nombre_comun ASC')"
-    sql_count = select_count << condiciones
-
-    query = eval(sql).to_sql
-    consulta = Bases.distinct_limpio query
-    totales = eval(sql_count)[0].cuantos
-
-    @data = {}
-    @data[:termino] = params[:q]
-    @data[:numero_resultados] = totales
-    @data[:resultados] = []
-
-    if totales > 0
-      consulta << ' ORDER BY nombre_comun ASC'
-      nombres_comunes = NombreComun.find_by_sql(consulta)
-
-      # Para no repetir los taxones
-      especie_ids = []
-
-      nombres_comunes.each do |nombre_comun|
-        nombre_comun.especies.each do |especie|
-
-          next if especie_ids.include?(especie.id)
-          especie_ids << especie.id
-          nombres = especie.nombres_comunes.map(&:nombre_comun)
-          @data[:resultados] << {nombre_comun_coincidio: nombre_comun.nombre_comun, taxon: especie.nombre_cientifico, nombres_comunes: nombres}
-        end
-      end
-
-    end
-
-    render json: @data.to_json
-  end
-
   # TODO: falta ver el funcionamiento del checklist; ¿talves contempalr la tabla plana?
   def checklist(sin_filtros=false)
     if sin_filtros
@@ -91,6 +44,7 @@ class BusquedasController < ApplicationController
           padres[p.to_i]=''
         end
       end
+
       #Aquí entro al query sin filtros (a pesar de que mi búsqueda fue CON filtros) pq ya tengo todos los papás, ahora necesito sus datos y ordenarlos por campo arbol
       @taxones = Especie.datos_arbol_sin_filtros.where("especies.id in (#{padres.keys.join(',')})").order('arbol')
     end
@@ -135,10 +89,11 @@ class BusquedasController < ApplicationController
     end
 
     @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
-
     @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
-
     @prioritarias = Catalogo.prioritarias
+    @usos = Catalogo.usos
+    @ambientes = Catalogo.ambientes
+    @regiones = Region.dame_regiones_filtro
   end
 
   # TODO: falta ver el funcionamiento del checklist; ¿talves contempalr la tabla plana?
@@ -310,7 +265,7 @@ class BusquedasController < ApplicationController
       case k
         when 'id', 'nombre', 'por_pagina'
           @setParams[k] = v
-        when 'edo_cons', 'dist', 'prior', 'estatus'
+        when 'edo_cons', 'dist', 'prior', 'estatus', 'uso', 'ambiente', 'reg'
           if @setParams[k].present?
             @setParams[k] << v.map{ |x| x.parameterize if x.present?}
           else

@@ -63,12 +63,12 @@ $(document).ready(function()
         return false;
     });
 
-    $('#busqueda_avanzada').on('click', '#boton_checklist', function(){
+/*    $('#busqueda_avanzada').on('click', '#boton_checklist', function(){
         var url = $(this).attr('url');
 
         if (url == "") return false;
         else window.open(url, '_blank');
-    });
+    });*/
 
     $("#busqueda_avanzada").on('submit', '#b_avanzada', function() {
         $("#por_gi :input").attr("disabled", true);  // Deshabilita los grupos iconicos para que los repita en la URI

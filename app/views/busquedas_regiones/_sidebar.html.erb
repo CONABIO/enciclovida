@@ -42,7 +42,7 @@
         <h1 class="sidebar-header">Filtra por tipo de distribución<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
 
         <div class="checkbox explora_por">
-          <%= checkboxTipoDistribucion.gsub('btn-basica ', '').html_safe %>
+          <%= checkboxTipoDistribucion.html_safe %>
         </div>
       </div>
 
@@ -50,7 +50,7 @@
         <h1 class="sidebar-header">Filtra por categoria de riesgo<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
 
         <div class="checkbox explora_por">
-          <%= checkboxEstadoConservacion(true).gsub('btn-basica ', '').html_safe %>
+          <%= checkboxEstadoConservacion.html_safe %>
         </div>
       </div>
     </div>

@@ -31,6 +31,27 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
     end
   end
 
+  # Para el select de usos
+  def uso
+    if params[:uso].present? && params[:uso].any?
+      self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)} IN (?)", params[:uso]).left_joins(:catalogos)
+    end
+  end
+
+  # Para el select de ambiente
+  def ambiente
+    if params[:ambiente].present? && params[:ambiente].any?
+      self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)} IN (?)", params[:ambiente]).left_joins(:catalogos)
+    end
+  end
+
+  # Para el select de las regiones (estados y ecorregiones marinas)
+  def region
+    if params[:reg].present? && params[:reg].any?
+      self.taxones = taxones.where("#{EspecieRegion.table_name}.#{EspecieRegion.attribute_alias(:region_id)} IN (?)", params[:reg]).left_joins(:especies_regiones)
+    end
+  end
+
   def busca_estadisticas
     return unless params[:controller]=='estadisticas'
 
@@ -118,7 +139,7 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
 
   # REVISADO: Condicion para regresar solo los taxones publicos
   def solo_publicos
-    self.taxones = taxones.where("#{Scat.table_name}.#{Scat.attribute_alias(:publico)} = 1").left_joins(:scat)
+    self.taxones = taxones.where("#{Scat.table_name}.#{Scat.attribute_alias(:publico)} = 1")
   end
 
   # REVISADO: ALgunos valores como el offset, pagina y por pagina

@@ -27,14 +27,11 @@
 <div class="row">
   <div class="col-xs-12 col-sm-8 col-md-6 col-lg-6">
     <%= tituloNombreCientifico(@especie, render: 'header') %>
-    <%= ponBotonEditaIDNaturalista if usuario_signed_in? && editarIDNaturalista = tiene_permiso?('Administrador') %>
   </div>
 
   <div class="col-xs-12 col-sm-4 col-md-6 col-lg-6 text-right f-fuentes">
     <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
   </div>
-
-  <%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
 
   <% if (@datos[:especie_o_inferior]) %>
     <div class="col-xs-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
@@ -78,6 +75,10 @@
         <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><sup><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span></sup>".html_safe, @datos[:ficha_naturalista], class: 'noLoad', target: '_blank') %>
       </li>
     <% end %>
+
+    <li>
+      <%= ponBotonEditaIDNaturalista if usuario_signed_in? && editarIDNaturalista = tiene_permiso?('Administrador') %>
+    </li>
   </ul>
 </div>
 <div class="btn-group pull-right" style="z-index: 1;">
@@ -241,4 +242,5 @@
     <div id="comentario" role="tabpanel" class="tab-pane fade panel-body"></div>
   </div>
 
+  <%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
 </div>

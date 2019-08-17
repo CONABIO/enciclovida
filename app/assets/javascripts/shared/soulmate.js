@@ -80,7 +80,8 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 break;
             default:
                 // Para no pasar por el controlador de busquedas, ir directo a la especie, solo busqueda basica
-                window.location.replace('/especies/' + data.id);
+                var nom_cientifico = data.nombre_cientifico.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').replace(/[\(\)]/g, '');
+                window.location.replace('/especies/'  + data.id + '-' + nom_cientifico);
                 $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
         }
     };
