@@ -106,6 +106,17 @@
 
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_invasividad.ruta_introdu') %></h3>
+  <h4 class="titulo_sub_subseccion">Rutas:</h4>
+  <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una ruta'.html_safe, f, :rutas, partial: 'fichas/taxa/seccion_invasoras/form_invasoras_invasividad_rutas', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'invasividad-rutas', 'data-association-insertion-node' => '#invasividad-rutas', 'data-association-insertion-method' => 'append', href: '#invasividad-rutas' %>
+  <div id="invasividad-rutas">
+    <hr class="espacio_ficha">
+    <%= f.simple_fields_for :rutas do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_invasoras/form_invasoras_invasividad_rutas', locals: {f: info} %>
+    <% end %>
+  </div>
+  <hr class="espacio_ficha">
+
+
 
   <%
     parametros = {:acceso => @taxon.frecintro, :modelo => f_taxon, :association => :frecintro, :titulo => "Frecuencia de introducciónn", :el_div => "frecintro", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:frecintro]}

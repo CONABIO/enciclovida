@@ -174,6 +174,11 @@ class Fichas::Taxon < Ficha
 	has_many :referenciasBibliograficas, class_name: 'Fichas::Referenciabibliografica', :foreign_key => 'especieId'
 
 
+	has_many :productocomercio_nal,-> {where('nacionalinternacional = "nacional"')}, class_name: 'Fichas::Productocomercio', :foreign_key => 'especieId'
+	has_many :productocomercio_inter,-> {where('nacionalinternacional = "internacional"')}, class_name: 'Fichas::Productocomercio', :foreign_key => 'especieId'
+
+	accepts_nested_attributes_for :productocomercio_nal, reject_if: :all_blank, allow_destroy: true
+	accepts_nested_attributes_for :productocomercio_inter, reject_if: :all_blank, allow_destroy: true
 
 
 

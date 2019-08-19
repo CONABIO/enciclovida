@@ -1,9 +1,13 @@
 class Fichas::Invasividad < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.invasividad"
-	self.primary_keys = :invaisvidadId #,  :especieId
+	self.primary_keys = :invaisvidadId, :especieId
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId', :primary_key => :especieId
+
+	has_many :rutas, class_name: 'Fichas::Rutas', :foreign_key => 'especieId', :primary_key => :especieId
+
+	accepts_nested_attributes_for :rutas, reject_if: :all_blank, allow_destroy: true
 
 	ESTADO_POBLACION = [
 			"Población en expansión".to_sym,

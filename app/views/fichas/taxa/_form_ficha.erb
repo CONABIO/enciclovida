@@ -112,6 +112,15 @@
         </div>
       </div>
 
+      <div id='importancia' role="tabpanel" class="tab-pane fade panel-body">
+        <hr />
+        <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.importancia')%></h3>
+        <% # OCUPA: historianatural %>
+        <%= f.simple_fields_for :historiaNatural do |info| %>
+          <%= render partial: 'fichas/taxa/seccion_importancia/form_importancia_historiaNatural', locals: {f: info, f_taxon: f } %>
+        <% end %>
+      </div>
+
 
     </div>
   </div>
