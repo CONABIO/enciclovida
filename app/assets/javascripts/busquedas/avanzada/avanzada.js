@@ -74,7 +74,7 @@ $(document).ready(function()
         $("#por_gi :input").attr("disabled", true);  // Deshabilita los grupos iconicos para que los repita en la URI
     });
 
-    $(window).load(function(){
+    $(window).on('load', function(){
         $("html,body").animate({scrollTop: 122}, 1000);
     });
 });

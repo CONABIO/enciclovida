@@ -10,6 +10,7 @@ class BusquedasController < ApplicationController
 
   skip_before_action :set_locale, only: [:cat_tax_asociadas]
   layout false, :only => [:cat_tax_asociadas]
+  layout 'application_new'
 
   # REVISADO: Los filtros de la busqueda avanzada
   def avanzada
