@@ -4,13 +4,11 @@
     <div class="sidebar-tabs">
       <ul role="tablist">
         <li><a href="#busqueda-region-tab" role="tab"><i class="glyphicon glyphicon-search"></i></a></li>
-        <li><a href="#grupos-region-tab" role="tab"><i class="arachnida-ev-icon"></i></a></li>
-        <li><a href="#distribucion-region-tab" role="tab" target="_blank"><i class="endemica-ev-icon"></i></a></li>
-        <li><a href="#cat-riesgo-region-tab" role="tab"><i class="en-peligro-de-extincion-p-ev-icon"></i></a></li>
+        <li><a href="#filtros-tab" role="tab"><i class="glyphicon glyphicon-filter"></i></a></li>
       </ul>
 
       <ul role="tablist">
-        <li><a href="#settings" role="tab"><i class="glyphicon glyphicon-cog"></i></a></li>
+        <li><a href="#settings" role="tab"><i class="glyphicon glyphicon-refresh"></i></a></li>
       </ul>
     </div>
 
@@ -33,26 +31,18 @@
         <%= text_field_tag :region, params.present? ? params[:nombre] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control input-lg' %>
       </div>
 
-      <div class="sidebar-pane" id="grupos-region-tab">
-        <h1 class="sidebar-header">Filtra por grupo<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+      <div class="sidebar-pane" id="filtros-tab">
+        <h1 class="sidebar-header">Filtros adicionales<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+        <h4>Grupo taxonómico</h4>
         <%= checkboxGruposIconicosSnib.html_safe %>
+
+        <h4>Categorías de riesgo y comercio internacional</h4>
+        <%= checkboxEstadoConservacion.html_safe %>
+
+        <h4>Tipo de distribución</h4>
+        <%= checkboxTipoDistribucion.html_safe %>
       </div>
 
-      <div class="sidebar-pane" id="distribucion-region-tab">
-        <h1 class="sidebar-header">Filtra por tipo de distribución<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-
-        <div class="checkbox explora_por">
-          <%= checkboxTipoDistribucion.html_safe %>
-        </div>
-      </div>
-
-      <div class="sidebar-pane" id="cat-riesgo-region-tab">
-        <h1 class="sidebar-header">Filtra por categoria de riesgo<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-
-        <div class="checkbox explora_por">
-          <%= checkboxEstadoConservacion.html_safe %>
-        </div>
-      </div>
     </div>
   </div>
 
