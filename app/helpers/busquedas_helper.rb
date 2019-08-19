@@ -1,7 +1,7 @@
 module BusquedasHelper
 
   # Opciones default para el bootstrap-select plugin
-  @@opciones = { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count > 1', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, title: '- - Selecciona - -', multiple: true }
+  @@opciones = { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, 'data-none-results-text': 'Sin resultados para {0}', 'data-count-selected-text': '{0} seleccionados', title: '- - Selecciona - -', multiple: true }
 
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos
@@ -50,16 +50,8 @@ module BusquedasHelper
   end
 
   # REVISADO: Filtros para estatus taxonómico en la busqueda avanzada
-  def checkboxValidoSinonimo (busqueda=nil)
-    checkBoxes = ''
-
-    Especie::ESTATUS_BUSQUEDA.each do |e|
-      checkBoxes += case busqueda
-                    when "BBShow" then "<label class='checkbox-inline'>#{check_box_tag('estatus[]', e.first, false, :class => :busqueda_atributo_checkbox, :onChange => '$(".checkBoxesOcultos").empty();$("#panelValidoSinonimoBasica  :checked ").attr("checked",true).clone().appendTo(".checkBoxesOcultos");')} #{e.last}</label>"
-                    else "<label> #{check_box_tag('estatus[]', e.first, false, id: "estatus_#{e.first}")} <span class = 'btn btn-xs btn-basica' title = #{e.last}>#{e.last}</span></label>"
-                    end
-    end
-    checkBoxes
+  def checkboxSoloValidos
+    "<label for='estatus'><span title='Solo válidos/aceptados'>Solo válidos/aceptados</span></label> #{check_box_tag('estatus[]', 2, false, id: "estatus_2", class:'form-control')}"
   end
 
   def selectUsos(opciones={})
@@ -72,6 +64,12 @@ module BusquedasHelper
     opc = @@opciones.merge(opciones)
     options = @ambientes.map{ |a| [a.descripcion, a.id, { class: "#{a.descripcion.estandariza}-ev-icon f-fuentes" }] }
     select_tag('ambiente', options_for_select(options), opc)
+  end
+
+  def selectRegiones(opciones={})
+    opc = @@opciones.merge(opciones)
+    options = @regiones.map{ |k,v| [t("regiones.#{k.estandariza}"), v.map{ |val| [k.estandariza == 'estado' ? t("estados.#{val.nombre_region.estandariza}", default: val.nombre_region) : t("ecorregiones-marinas.#{val.nombre_region.estandariza}", default: val.nombre_region), val.id, { class: "#{val.nombre_region.estandariza}-ev-icon f-fuentes" }] }] }
+    select_tag('reg', grouped_options_for_select(options), opc)
   end
 
   # Si la búsqueda ya fue realizada y se desea generar un checklist, unicamente se añade un parametro extra y se realiza la búsqueda as usual

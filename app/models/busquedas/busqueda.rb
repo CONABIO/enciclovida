@@ -45,6 +45,13 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
     end
   end
 
+  # Para el select de las regiones (estados y ecorregiones marinas)
+  def region
+    if params[:reg].present? && params[:reg].any?
+      self.taxones = taxones.where("#{EspecieRegion.table_name}.#{EspecieRegion.attribute_alias(:region_id)} IN (?)", params[:reg]).left_joins(:especies_regiones)
+    end
+  end
+
   # Para las estadisticas dinamicas
   def busca_estadisticas
     if params[:controller]=='estadisticas'
