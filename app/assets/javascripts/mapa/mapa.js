@@ -62,10 +62,10 @@ var cargaMapa = function (id, overlay, opc)
         "Vista Híbrida": GHM_layer
     };
 
-    L.control.layers(baseMaps, overlay).addTo(map);
+    if (opc.collapsed === undefined) opc.collasped = true;
+    L.control.layers(baseMaps, overlay, {collapsed: opc.collasped}).addTo(map);
 
-    if (opc.pantalla_comp)
-        map.addControl(fullscreen);
+    if (opc.pantalla_comp) map.addControl(fullscreen);
 
     map.addControl(zoom);
 };

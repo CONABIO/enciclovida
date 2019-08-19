@@ -199,6 +199,12 @@ $(document).ready(function(){
         else soulmateRegionAsigna(this.id);
     });
 
+    // Cuando le da clic en recargar
+    $('#sidebar').on('click','#recarga-tab',function () {
+        location.reload();
+        return false;
+    });
+
     // Inicializa la carga inicial de las especies
     opciones.filtros.pagina = 1;
     cargaEspecies();

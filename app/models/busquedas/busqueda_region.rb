@@ -2,7 +2,7 @@ class BusquedaRegion < Busqueda
 
   attr_accessor :resp, :query
 
-  ESPECIES_POR_PAGINA = 10.freeze
+  ESPECIES_POR_PAGINA = 5.freeze
 
   def initialize
     self.taxones = []
