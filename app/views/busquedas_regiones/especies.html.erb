@@ -12,7 +12,13 @@
       <% t = taxon[:especie] %>
       <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
         <div class="thumbnail img-responsive">
-          <img src="<%= t.foto_principal %>" alt="<%= t.nombre_cientifico %>">
+
+          <% if t.foto_principal.present? %>
+            <img src="<%= t.foto_principal %>" alt="<%= t.nombre_cientifico %>">
+          <% else %>
+            <i class="ev1-ev-icon"></i>
+          <% end %>
+
           <div class="caption">
             <%= tituloNombreCientifico(t, { render: 'link' }, { target: :_blank }) %>
             <hr />
