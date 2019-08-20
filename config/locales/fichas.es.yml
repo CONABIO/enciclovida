@@ -521,6 +521,16 @@ es:
         culturaUsos: Importancia cultural y usos
         descComIlicito: Efectos reales o potenciales del comercio en el manejo y conservación de la especie
         descUsos: Información adicional
+        productocomercio_nal:
+          #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
+          tipoproducto: Tipo de producto
+          unidadcomerciada: Unidad comerciada
+          cantidadcomerciada: Cantidad comerciada
+        productocomercio_inter:
+          #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
+          tipoproducto: Tipo de producto
+          unidadcomerciada: Unidad comerciada
+          cantidadcomerciada: Cantidad comerciada
       conservacion:
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
         estadoConser: Estado de conservación
@@ -652,6 +662,12 @@ es:
         PierHear: PIER-HEAR
         MERI: MERI
         otro: Otro AR
+
+        rutas:
+          #  * *  S E C C I Ó N   I N V A S O R A S  * *  #
+          categoriaruta: Categoría de ruta
+          rutaintroduccion: Ruta de introducción
+          infoaddrutainvasora: Información adicional
 
         #  * *  S E C C I Ó N   M E T A D A T O S  * *  #
       metadatos:

@@ -100,6 +100,7 @@ class Fichas::TaxaController < Fichas::FichasController
           infodisp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           infostruct_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           infointer_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infocons_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           # --
           # Información sobre las especies invasoras (SECCION EXTRA)
           edopoblacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
@@ -266,6 +267,7 @@ class Fichas::TaxaController < Fichas::FichasController
       platencia_attributes
       seguridad_attributes
       enfermedadesei_attributes
+      infocons_attributes
     )
     lista.each do |acceso|
       if p.key?(acceso)

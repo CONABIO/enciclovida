@@ -1,8 +1,32 @@
 <div class='nested-fields'>
-  generaselectn1($Ucatruta[$r], "catruta", "47","categor�a de ruta");
-  generaselectn2($Urutasei[$r], "rutasei", "32","ruta");
-  <%= f.input :categoriaruta %>
-  <%= f.input :rutaintroduccion %>
+
+  <%= f.input :categoriaruta,
+              collection: Fichas::Cat_Preguntas.where(idpregunta: 47),
+              :as => :select,
+              :group_method => :last,
+              group_label_method: :first,
+              label_method: :descn1,
+              value_method: :idopcion,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion'),
+              }
+  %>
+
+  <%= f.input :rutaintroduccion,
+              collection: Fichas::Cat_Preguntas.where(idpregunta: 32).group_by(&:descn1),
+              :as => :grouped_select,
+              :group_method => :last,
+              group_label_method: :first,
+              label_method: :descn2,
+              value_method: :idopcion,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion'),
+              }
+  %>
   <%= f.input :infoaddrutainvasora %>
   <%= link_to_remove_association 'Borrar ruta', f, :class => 'btn btn-danger btn-sm' %><hr>
 </div>

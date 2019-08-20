@@ -33,6 +33,9 @@ class Fichas::Taxon < Ficha
 	has_many :infodisp,-> {where('observacionescarac.idpregunta = ?', 15 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :infostruct,-> {where('observacionescarac.idpregunta = ?', 16 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :infointer,-> {where('observacionescarac.idpregunta = ?', 17 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+	has_many :infocons,-> {where('observacionescarac.idpregunta = ?', 26 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
+
+
 	#Preguntas para invasoras
 	has_many :edopoblacion,-> {where('observacionescarac.idpregunta = ?', 52)}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :persistenciapob,-> {where('observacionescarac.idpregunta = ?', 53)}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
@@ -100,6 +103,9 @@ class Fichas::Taxon < Ficha
 	accepts_nested_attributes_for :infodisp, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :infostruct, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :infointer, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :infocons, allow_destroy: true, reject_if: :all_blank
+
+
 
 	accepts_nested_attributes_for :edopoblacion, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :persistenciapob, allow_destroy: true, reject_if: :all_blank

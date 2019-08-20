@@ -111,3 +111,24 @@ function showOrHideSegunTipoReproduccion() {
     }
 
 }
+
+
+function reload(div) {
+    console.log(div);
+    //$("#" + div).selectpicker('refresh');
+    setTimeout(function () {
+        $('.selectpicker').selectpicker('refresh');
+    }, 10)
+}
+
+function reloadTiny() {
+    console.log("div");
+    tinymce.remove();
+    setTimeout(function () {
+        tinyMCE.init({
+            selector: 'textarea.form-control'
+        });
+    }, 10)
+
+}
+

@@ -168,18 +168,18 @@
   <hr class="espacio_ficha">
 
   <div id="opcion-reprodAnimal">
-    <%=
+    <#%=
       link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar reproduccionAnimal'.html_safe, f, :reproduccionAnimal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodAnimal', 'data-association-insertion-node' => '#opcion-reprodAnimal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodAnimal',
                               style: 'display: inline;')
     %>
     <%= f.simple_fields_for :reproduccionAnimal do |info| %>
-      <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', locals: {f: info }  %>
+      <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', locals: {f: info, f_taxon: f_taxon}  %>
     <% end %>
   </div>
 
   <div id="opcion-reprodVegetal">
     <%= f.simple_fields_for :reproduccionVegetal do |info| %>
-      <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info }  %>
+      <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info, f_taxon: f_taxon}  %>
     <% end %>
   </div>
 

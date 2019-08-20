@@ -74,6 +74,7 @@ module FichasHelper
         'data-association-insertion-node' => '#dato_' + parametros[:el_div],
         'data-association-insertion-method' => 'append',
         href: '#dato_' + parametros[:el_div],
+        'onclick' => 'reloadTiny()',
         style: 'display: none') if @taxon.new_record? || (!@taxon.new_record? && parametros[:acceso].empty?)
 
     respuesta.html_safe
