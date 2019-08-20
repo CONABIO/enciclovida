@@ -1,7 +1,7 @@
 <div class='nested-fields'>
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.reprod_animal') %></h3>
   <%= f.input :descripcion %>
-  <%= f.input :dimorfismoSexual, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "dimorfismoSexualAnimal")', name: 'opcion-dimorfismoSexualAnimal'} %>
+  <%= f.input :dimorfismoSexual, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "dimorfismoSexualAnimal")'} %>
   <div id="dimorfismoSexualAnimal">
     <%= f.input :additionalInfoDimorfiasmo %>
   </div>

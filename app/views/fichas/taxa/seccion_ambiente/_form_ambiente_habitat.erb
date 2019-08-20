@@ -1,7 +1,7 @@
 <div class='nested-fields'>
   <%= f.input :habitatId, :as => :hidden %>
   <%= f.input :especieId, :as => :hidden %>
-  <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideAmbienteDesarrolloEspecie($(this))' } %>
+  <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideAmbienteDesarrolloEspecie()' } %>
   <hr>
 
   <fieldset class="apartados">
@@ -10,7 +10,7 @@
     <div class="apartadoFicha ficha-Prioritaria">
       <%
         parametros = {:acceso => @taxon.ambi_info_ecorregiones, :modelo => f_taxon, :association => :ambi_info_ecorregiones, :titulo => "Información adicional", :el_div => "info_ecorregiones", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones]}
-        agrega_info_adicional(parametros)
+        #agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
         <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
@@ -49,7 +49,7 @@
 
     <%= f.input :habitatAgropecuario, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
     <%= f.input :zonaUrbana, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
-    <%= f.input :VegetacionSecundaria, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "vegetacion-secundaria")', name: 'opcion-vegetacion-secundaria'} %>
+    <%= f.input :VegetacionSecundaria, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "vegetacion-secundaria")'} %>
     <div id="vegetacion-secundaria">
 
 
