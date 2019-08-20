@@ -10,7 +10,7 @@
 
 
 
-  <%= javascript_include_tag 'application_new', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application_b4', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
@@ -23,7 +23,7 @@
       I18n.fallbacks = true;
   </script>
 
-  <%= stylesheet_link_tag 'application_new', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'application_b4', 'data-turbolinks-track' => true %>
 
   <%= csrf_meta_tags %>
   <%= yield :extrahead %>
@@ -34,9 +34,10 @@
 
 <%= yield :ribbon %>
 
-<header class="container-fluid">
+<nav class="pt-2">
   <%= render :partial => 'shared/brandBar' %>
-</header>
+</nav>
+
 
 <header class="container-fluid">
   <%= yield :extra_title_header %>
@@ -44,7 +45,7 @@
 
 <section id="content" class="container-fluid">
   <div class="row main">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">adfsdffsaf
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <%= yield %>
     </div>
   </div>

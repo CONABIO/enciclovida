@@ -1,0 +1,24 @@
+<div class="dropdown pull-right">
+  <button id="menuEsqSupDer" type="button" class="btn btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <%= usuario_signed_in? ? current_usuario.nombre : " Más" %>...
+    <span class="caret"></span>
+    <i class='vista-<%= I18n.locale.to_s == 'es-cientifico' ? 'especialista' : 'general' %>-ev-icon'></i>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="menuEsqSupDer">
+    <li><%= link_to "<b>Cambiar a la vista #{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'de especialistas'}</b>
+      <i class='vista-#{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'especialista'}-ev-icon'></i>".html_safe, nil,
+                    :name => I18n.locale.to_s, :onClick => 'return cambiaLocale(this.name);', data: { turbolinks: false } %></li>
+    <li role="separator" class="divider"></li>
+    <li><%= link_to '<b>Validación en línea...</b>'.html_safe, validaciones_path, :role => 'button', data: { turbolinks: false } %></li>
+    <li role="separator" class="divider"></li>
+    <li><%= link_to '¿Qué es EncicloVida?', inicio_acerca_path << '?tab=queEs', data: { turbolinks: false } %></li>
+    <li role="separator" class="divider"></li>
+    <% if usuario_signed_in? %>
+      <li><%= link_to 'Administracion de comentarios', admin_path, data: { turbolinks: false } %></li>
+      <li><%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path, data: { turbolinks: false } %></li>
+      <li><%= link_to "Cerrar sesión", destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe, turbolinks: false} %></li>
+    <% else %>
+      <li><%= link_to('<b>Iniciar sesión...</b>'.html_safe, new_usuario_session_path, data: { turbolinks: false }) %></li>
+    <% end %>
+  </ul>
+</div>
