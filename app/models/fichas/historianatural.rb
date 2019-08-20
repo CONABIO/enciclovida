@@ -41,12 +41,16 @@ class Fichas::Historianatural < Ficha
 	has_many :t_vectorespolinizacion, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_agentespolinizacion, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 
+
+	# Acceso a las opciones de catálogo
 	accepts_nested_attributes_for :culturaUsos, allow_destroy: true
 	accepts_nested_attributes_for :reproduccionAnimal, allow_destroy: true
 	accepts_nested_attributes_for :reproduccionVegetal, allow_destroy: true
 	accepts_nested_attributes_for :cat_estrategiaTrofica, allow_destroy: true
 	accepts_nested_attributes_for :pais_importacion, allow_destroy: true
 	accepts_nested_attributes_for :culturaUsos, allow_destroy: true
+
+	# Acceso a las opciones multiples del catálogo grande:
 	accepts_nested_attributes_for :t_habitoPlantas, allow_destroy: true
 	accepts_nested_attributes_for :t_alimentacion, allow_destroy: true
 	accepts_nested_attributes_for :t_forrajeo, allow_destroy: true

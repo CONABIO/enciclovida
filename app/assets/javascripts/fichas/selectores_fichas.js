@@ -6,10 +6,17 @@ $( document ).ready(function() {
     });
 
     // Mostrar u ocultar contenido SEGÚN opciones SI / NO cuando se cargue la  página
-    casos = ['endemicaSI', 'vegetacion-secundaria', 'especie-prioritaria', 'dimorfismoSexualAnimal', 'hibernacionSI', 'territorialidadSI'];
-    for(var i = 0; i < casos.length; i++) {
-        var elID = casos[i];
-        var selector = "input[name='opcion-" + casos[i] + "']:checked";
+    casos = [
+        'fichas_taxon[endemicas_attributes][0][endemicaMexico]', 'endemicaSI',
+        'fichas_taxon[habitats_attributes][VegetacionSecundaria]', 'vegetacion-secundaria',
+        'fichas_taxon[prioritaria]', 'especie-prioritaria',
+        'dimorfismoSexualAnimal',
+        'hibernacionSI',
+        'territorialidadSI'];
+
+    for(var i = 0; i < casos.length; i+=2) {
+        var elID = casos[i+1];
+        var selector = "input[name='" + casos[i] + "']:checked";
         if ($(selector).val() !== undefined)
             showOrHideByName($(selector).val(), elID);
     }
@@ -30,7 +37,7 @@ $(window).load(function(){
 * Ocultar el contenido relacionado a fichas específicas:
 * */
 function showOrHideInfoFicha() {
-    var tipoFicha = $("input[name='selectorDeFicha']:checked").val();
+    var tipoFicha = $("input[name='fichas_taxon[tipoficha]']:checked").val();
     if(tipoFicha !== undefined) {
         // Ocultar todos los apartadosFicha
         $(".apartadoFicha").fadeOut();
@@ -72,7 +79,7 @@ function showOrHideByName(name, iDIV) {
 
 // Función para mostrar las preguntas correspondientes al ambiente de desarrollo de la especie (sección ambiente)
 function showOrHideAmbienteDesarrolloEspecie() {
-    var selector = "input[name='" + 'opcion-AmbienteDesarrolloEspecie' + "']:checked";
+    var selector = "input[name='" + 'fichas_taxon[habitats_attributes][tipoAmbiente]' + "']:checked";
     var theValue = $(selector).val();
     var ambienteTerrestre = '#ambiente-solo-terrestre';
     var ambienteMarino = '#ambiente-solo-marino';
@@ -111,3 +118,24 @@ function showOrHideSegunTipoReproduccion() {
     }
 
 }
+
+
+function reload(div) {
+    console.log(div);
+    //$("#" + div).selectpicker('refresh');
+    setTimeout(function () {
+        $('.selectpicker').selectpicker('refresh');
+    }, 10)
+}
+
+function reloadTiny() {
+    console.log("div");
+    tinymce.remove();
+    setTimeout(function () {
+        tinyMCE.init({
+            selector: 'textarea.form-control'
+        });
+    }, 10)
+
+}
+

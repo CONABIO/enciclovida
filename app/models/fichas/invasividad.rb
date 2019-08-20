@@ -1,9 +1,13 @@
 class Fichas::Invasividad < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.invasividad"
-	self.primary_keys = :invaisvidadId #,  :especieId
+	self.primary_keys = :invaisvidadId, :especieId
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId', :primary_key => :especieId
+
+	has_many :rutas, class_name: 'Fichas::Rutas', :foreign_key => 'especieId', :primary_key => :especieId
+
+	accepts_nested_attributes_for :rutas, reject_if: :all_blank, allow_destroy: true
 
 	ESTADO_POBLACION = [
 			"Población en expansión".to_sym,
@@ -36,7 +40,23 @@ class Fichas::Invasividad < Ficha
 		"Prohibida".to_sym
 	]
 
+	CCA = [
+		"Alto riesgo-rechazo".to_sym,
+		"Bajo riesgo-Sin restricciones".to_sym,
+		"Posible riesgo- requiere análisis más detallado".to_sym,
+	]
 
+	OTROS_RIESGOS = [
+		"Aceptar-Bajo riesgo".to_sym,
+		"Evaluar-Riesgo medio".to_sym,
+		"Rechazar-Alto riesgo".to_sym
+	]
 
+	MERI = [
+		"Muy Alto".to_sym,
+		"Alto".to_sym,
+		"Medio".to_sym,
+		"Bajo".to_sym
+	]
 
 end

@@ -2,11 +2,13 @@
   <%= f.input :estadoConser %>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.manejo_aprov_acciones_conserv') %></h3>
-  <%= #< %= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una info'.html_safe, f, :info_acciones_manejo_c, partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'info-acciones-manejo-c', 'data-association-insertion-node' => '#info-acciones-manejo-c', 'data-association-insertion-method' => 'append', href: '#info-acciones-manejo-c' % >
+  <%
+    parametros = {:acceso => @taxon.infocons, :modelo => f_taxon, :association => :infocons, :titulo => "Información adicional", :el_div => "infocons", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infocons]}
+    agrega_info_adicional(parametros)
   %>
-  <div id="info-acciones-manejo-c">
-    <%= f.simple_fields_for :info_acciones_manejo_c do |info| %>
-      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: t('secciones.s_conservacion.acciones_manejo'), id_pregunta: 30} %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
     <% end %>
   </div>
 
@@ -59,5 +61,7 @@
     <%= f.input :descManejoAprov %>
     <%= f.input :tipoAprovEsp, :as => :select, collection: Fichas::Conservacion::TIPO_APROVECHAMIENTO, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opciones')} %>
   </div>
+
+
 
 </div>

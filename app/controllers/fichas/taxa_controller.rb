@@ -80,15 +80,81 @@ class Fichas::TaxaController < Fichas::FichasController
           # Parámetros desde taxón:
           :resumenEspecie, :descEspecie, :largoinicialhembras, :largofinalhembras, :edadinicialhembras, :edadfinalhembras, :tiempoedadhembra, :pesoinicialhembras, :pesofinalhembras, :especiesSmilares, :origen, :descripcionOrigen, :presencia, :adicinalPresencia, :invasora, :adicionalInvasora, :id, :_destroy,
 
-          legislaciones_attributes: [
-              :legislacionId,
-              :especieId,
-              :nombreLegislacion,
-              :estatusLegalProteccion,
-              :infoAdicional,
-              :id,
-              :_destroy
-          ],
+          legislaciones_attributes: [:legislacionId, :especieId, :nombreLegislacion, :estatusLegalProteccion, :infoAdicional, :id, :_destroy],
+
+          # Opciones multiples que se agregan a Caracteristicaesoecie
+          t_clima_ids: [],
+
+          # Información adicional que se agrega en Observacionscarac
+          ambi_info_ecorregiones_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_especies_asociadas_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_vegetacion_esp_mundo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_info_clima_exotico_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_infotiposuelo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_infogeoforma_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infoalimenta_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infoaddforrajeo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infoaddhabito_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infosistaparea_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infocrianza_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infodisp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infostruct_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infointer_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infocons_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          # --
+          # Información sobre las especies invasoras (SECCION EXTRA)
+          edopoblacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          persistenciapob_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          abundanciapob_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          historiaintro_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          otrossitios_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          adahabitat_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          adaclima_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          congeneres_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          frecintro_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          impactosei_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          impactobio_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          impactoeco_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          impactoinfra_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          impactosocial_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          impactootros_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          prevencion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          manejocontrol_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          erradicacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          cuarentena_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          susceptibilidad_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          controlbiol_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          regulacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          benecologicos_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          beneconomicos_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          bensociales_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          conclimatica_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          conecologica_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          plasconductual_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          plasrepro_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          hibridacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          crecimientosei_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          spequivalentes_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          cca_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          fisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          fiisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          mfisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          miisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          aisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          tiisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          pier_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          meri_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          otroar_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          naturalizacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          mecanismoimpacto_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          efectoimpacto_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          intensidadimpacto_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          especiesasociadas_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          plasticidad_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          platencia_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          seguridad_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          enfermedadesei_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          # -
 
           habitats_attributes: [
               { ecorregion_ids: [] },
@@ -96,8 +162,6 @@ class Fichas::TaxaController < Fichas::FichasController
               :id,
               :_destroy
           ],
-          info_ecorregiones_attributes:
-              [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
 
           distribuciones_attributes: [
               :pai_ids,
@@ -131,14 +195,91 @@ class Fichas::TaxaController < Fichas::FichasController
           ]
       )
 
-      p[:info_ecorregiones_attributes].each do |k,v|
-        break unless v["id"].present?
-        ids = v["id"].split(' ')
-        v["id"] = ids
-      end
+      itera_preguntas_observaciones(p)
 
       p
     end
+
+  def itera_preguntas_observaciones(p)
+    lista = %w(
+      ambi_info_ecorregiones_attributes
+      ambi_especies_asociadas_attributes
+      ambi_vegetacion_esp_mundo_attributes
+      ambi_info_clima_exotico_attributes
+      ambi_infotiposuelo_attributes
+      infoalimenta_attributes
+      infoaddforrajeo_attributes
+      infoaddhabito_attributes
+      infosistaparea_attributes
+      infocrianza_attributes
+      infodisp_attributes
+      infostruct_attributes
+      infointer_attributes
+      ambi_infogeoforma_attributes
+      edopoblacion_attributes
+      persistenciapob_attributes
+      abundanciapob_attributes
+      historiaintro_attributes
+      otrossitios_attributes
+      adahabitat_attributes
+      adaclima_attributes
+      congeneres_attributes
+      frecintro_attributes
+      impactosei_attributes
+      impactobio_attributes
+      impactoeco_attributes
+      impactoinfra_attributes
+      impactosocial_attributes
+      impactootros_attributes
+      prevencion_attributes
+      manejocontrol_attributes
+      erradicacion_attributes
+      cuarentena_attributes
+      susceptibilidad_attributes
+      controlbiol_attributes
+      regulacion_attributes
+      benecologicos_attributes
+      beneconomicos_attributes
+      bensociales_attributes
+      conclimatica_attributes
+      conecologica_attributes
+      plasconductual_attributes
+      plasrepro_attributes
+      hibridacion_attributes
+      crecimientosei_attributes
+      spequivalentes_attributes
+      cca_attributes
+      fisk_attributes
+      fiisk_attributes
+      mfisk_attributes
+      miisk_attributes
+      aisk_attributes
+      tiisk_attributes
+      pier_attributes
+      meri_attributes
+      otroar_attributes
+      naturalizacion_attributes
+      mecanismoimpacto_attributes
+      efectoimpacto_attributes
+      intensidadimpacto_attributes
+      especiesasociadas_attributes
+      plasticidad_attributes
+      platencia_attributes
+      seguridad_attributes
+      enfermedadesei_attributes
+      infocons_attributes
+    )
+    lista.each do |acceso|
+      if p.key?(acceso)
+        p[acceso].each do |k,v|
+          break unless v["id"].present?
+          ids = v["id"].split(' ')
+          v["id"] = ids
+        end
+      end
+    end
+    p
+  end
 end
 
 
@@ -343,3 +484,4 @@ reproduccionVegetal_attributes: [
 ]
 
 =end
+

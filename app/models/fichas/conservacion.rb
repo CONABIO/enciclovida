@@ -13,11 +13,6 @@ class Fichas::Conservacion < Ficha
 	has_many :t_tipopesca, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 	has_many :t_regioncaptura, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 
-  # Extraer las observaciones de la especie a partir de: observacionescarac ¬¬"
-  has_one :info_acciones_manejo_c,-> {where('observacionescarac.idpregunta = ?', 26)}, class_name: 'Fichas::Observacionescarac', :foreign_key => 'especieId', :primary_key => :especieId
-
-  accepts_nested_attributes_for :info_acciones_manejo_c, allow_destroy: true
-
 	accepts_nested_attributes_for :t_esquemamanejo, allow_destroy: true
 	accepts_nested_attributes_for :t_tipopesca, allow_destroy: true
 	accepts_nested_attributes_for :t_regioncaptura, allow_destroy: true
