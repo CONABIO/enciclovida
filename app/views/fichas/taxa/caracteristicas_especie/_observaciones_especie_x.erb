@@ -1,5 +1,7 @@
 <div class='nested-fields'>
-  <%= f.input :especieId %>
-  <%= f.input :idpregunta, input_html: {value: id_pregunta} %>
+  <hr>
+  <%= f.input :especieId, as: :hidden %>
+  <%= f.input :idpregunta, as: :hidden, input_html: {value: id_pregunta} %>
   <%= f.input :infoadicional, as: :text, label: titulo %>
+  <%#= link_to_remove_association 'Borrar información', f, :class => 'btn btn-danger btn-sm' %>
 </div>

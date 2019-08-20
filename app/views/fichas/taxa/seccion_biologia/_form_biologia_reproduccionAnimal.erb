@@ -1,7 +1,7 @@
 <div class='nested-fields'>
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.reprod_animal') %></h3>
   <%= f.input :descripcion %>
-  <%= f.input :dimorfismoSexual, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "dimorfismoSexualAnimal")', name: 'opcion-dimorfismoSexualAnimal'} %>
+  <%= f.input :dimorfismoSexual, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "dimorfismoSexualAnimal")'} %>
   <div id="dimorfismoSexualAnimal">
     <%= f.input :additionalInfoDimorfiasmo %>
   </div>
@@ -21,7 +21,16 @@
                         'data-selected-text-format': 'count > 3'
                     }
   %>
-  <%= f.input :descripcionSistema %>
+  <%
+    parametros = {:acceso => @taxon.infosistaparea, :modelo => f_taxon, :association => :infosistaparea, :titulo => "Información adicional", :el_div => "infosistaparea", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infosistaparea]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
 
   <%= f.input :noEventos,
               collection: Fichas::Reproduccionanimal::EVENTOS_REPROD,
@@ -67,8 +76,14 @@
                     }
   %>
   <%
-    # INFO ADICIONAL observacionescarac 14
+    parametros = {:acceso => @taxon.infocrianza, :modelo => f_taxon, :association => :infocrianza, :titulo => "Información adicional", :el_div => "infocrianza", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infocrianza]}
+    agrega_info_adicional(parametros)
   %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
 
   <%= f.input :noHuevosCrias %>
 
@@ -85,6 +100,7 @@
     %>
     <%= f.input :desCuidadoParental %>
   </div>
+
   <%= f.input :tiempoCuidadoParental %>
 
 </div>

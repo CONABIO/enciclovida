@@ -115,6 +115,15 @@ es:
       dispersion: Dispersión
       distancia_dispersion: Distancia de dispersión
       tiempo_eventos_rep: e) Tiempo entre eventos reproductivos (meses)
+    s_invasividad:
+      #  * *  S E C C I Ó N   I N V A S I V I D A D  * *  #
+      info_poblacion_exo: Información sobre poblaciones exóticas
+      antecedentes_intro: Antecedentes de introducción
+      ruta_introdu: Rutas de introducción
+      impacto_manejo_mitigacion: Impactos, manejo y mitigación
+      compatibilidad_zona_origen: Compatibilidad con zona de origen
+      invasividad: Invasividad
+      result_anali_riesgo_esp: Resultados de análisis de riesgo para la especie
 
     # *  - - - - - - - - - - - - - - - - - - - - * #
   simple_form:
@@ -375,6 +384,8 @@ es:
         habitatAntropico: b) Hábitats antrópicos
         vegetacion_acuatica: Tipos de vegetación acuática especie
         t_clima: Indicar el tipo de clima (solo si está reportado en la bibliografía)
+        t_tipovegetmundial: Tipos de vegetación en los que se desarrolla la especie en el mundo
+        t_climaexo: Clima
         t_suelo: Indicar el tipo de suelo en el que se desarrolla la especie (solo si está reportado en la bibliografía)
         t_geoforma: Geoforma
         t_habitatAntropico: b) Hábitats antrópicos
@@ -510,6 +521,16 @@ es:
         culturaUsos: Importancia cultural y usos
         descComIlicito: Efectos reales o potenciales del comercio en el manejo y conservación de la especie
         descUsos: Información adicional
+        productocomercio_nal:
+          #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
+          tipoproducto: Tipo de producto
+          unidadcomerciada: Unidad comerciada
+          cantidadcomerciada: Cantidad comerciada
+        productocomercio_inter:
+          #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
+          tipoproducto: Tipo de producto
+          unidadcomerciada: Unidad comerciada
+          cantidadcomerciada: Cantidad comerciada
       conservacion:
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
         estadoConser: Estado de conservación
@@ -625,6 +646,28 @@ es:
       culturausos:
         #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
         descripcion: Importancia cultural y usos
+
+      invasividad:
+        #  * *  S E C C I Ó N   I N V A S O R A S  * *  #
+        estadoPoblaciones: Estado de la población
+        persistenciaPob: Persistencia de la población
+        abundanciaPob: Abundancia de la población
+        CCA: Análisis de riesgo CCA
+        FISK: FISK
+        FIISK: FI-ISK
+        MFISK: MFISK
+        MIISK: MI-ISK
+        amphISK: AmphISK
+        TIISK: TI-ISK
+        PierHear: PIER-HEAR
+        MERI: MERI
+        otro: Otro AR
+
+        rutas:
+          #  * *  S E C C I Ó N   I N V A S O R A S  * *  #
+          categoriaruta: Categoría de ruta
+          rutaintroduccion: Ruta de introducción
+          infoaddrutainvasora: Información adicional
 
         #  * *  S E C C I Ó N   M E T A D A T O S  * *  #
       metadatos:

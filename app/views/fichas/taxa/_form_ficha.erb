@@ -54,9 +54,6 @@
       <li role="presentation" >
         <%= link_to 'Referencias', '#referencias', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'referencias' %>
       </li>
-      <li role="presentation" >
-
-      </li>
     </ul>
 
     <div class="tab-content">
@@ -68,7 +65,7 @@
         <hr class="espacio_ficha">
         <hr />
         <h3 class="titulo_subseccion"><%=t('secciones.s_clasificacion.legislaciones')%></h3>
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion' %>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion','onclick' => 'reloadTiny()' %>
         <%= f.simple_fields_for :legislaciones do |info| %>
           <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
         <% end %>
@@ -80,13 +77,13 @@
 
         <% # OCUPA: habitat, distribucion, endemica  %>
         <%= f.simple_fields_for :distribuciones do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_distribucion', locals: {f: info} %>
+          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_distribucion', locals: {f: info, f_taxon: f } %>
         <% end %>
         <%= f.simple_fields_for :habitats  do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_habitad', locals: { f: info} %>
+          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_habitad', locals: { f: info, f_taxon: f } %>
         <% end %>
         <%= f.simple_fields_for :endemicas do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_endemica', locals: { f: info} %>
+          <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_endemica', locals: { f: info, f_taxon: f } %>
         <% end %>
       </div>
 
@@ -105,15 +102,15 @@
 
         <% # OCUPA: habitad, historianatural, demografiaamenazas, * * reproduccionanimal, * * reproduccionvegetal %>
         <%= f.simple_fields_for :habitats do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_habitad', locals: { f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_habitad', locals: { f: info, f_taxon: f } %>
         <% end %>
 
         <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_historiaNatural', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_historiaNatural', locals: {f: info, f_taxon: f } %>
         <% end %>
 
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_demografia_amenazas', locals: { f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_demografia_amenazas', locals: { f: info, f_taxon: f } %>
         <% end %>
       </div>
 
@@ -122,7 +119,7 @@
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.ecologia')%></h3>
         <% # OCUPA: demografiaamenazas, * * interaccion  %>
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_ecologia/form_ecologia_demografiaamenazas', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_ecologia/form_ecologia_demografiaamenazas', locals: {f: info, f_taxon: f } %>
         <% end %>
       </div>
 
@@ -131,7 +128,7 @@
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.genetica')%></h3>
         <% # OCUPA: historianatural %>
         <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_genetica/form_genetica_historiaNatural', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_genetica/form_genetica_historiaNatural', locals: {f: info, f_taxon: f } %>
         <% end %>
       </div>
 
@@ -140,7 +137,7 @@
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.importancia')%></h3>
         <% # OCUPA: historianatural %>
         <%= f.simple_fields_for :historiaNatural do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_importancia/form_importancia_historiaNatural', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_importancia/form_importancia_historiaNatural', locals: {f: info, f_taxon: f } %>
         <% end %>
       </div>
 
@@ -149,10 +146,10 @@
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.estado_de_conservacion')%></h3>
         <% # OCUPA: demografiaamenazas, conservacion, * * amenazadirecta %>
         <%= f.simple_fields_for :demografiaAmenazas do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_demografia_amenazas', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_demografia_amenazas', locals: {f: info, f_taxon: f } %>
         <% end %>
         <%= f.simple_fields_for :conservacion do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_conservacion', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_conservacion', locals: {f: info, f_taxon: f } %>
         <% end %>
       </div>
 
@@ -167,7 +164,7 @@
           <hr />
           <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.especies_invasoras')%></h3>
           <%= f.simple_fields_for :invasividad do |info| %>
-            <%= render partial: 'fichas/taxa/seccion_invasoras/form_prioritaria_conservacion_taxon', locals: {f: info } %>
+            <%= render partial: 'fichas/taxa/seccion_invasoras/form_invasoras_invasividad', locals: {f: info, f_taxon: f } %>
           <% end %>
         </div>
       </div>
@@ -176,7 +173,7 @@
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.necesidades')%></h3>
         <% # OCUPA: taxon  %>
-        <%= render partial: 'fichas/taxa/seccion_necesidad_informacion/form_necesiades_informacion_taxon', locals: {f: f } %>
+        <%= render partial: 'fichas/taxa/seccion_necesidad_informacion/form_necesiades_informacion_taxon', locals: {f: f, f_taxon: f } %>
       </div>
 
       <div id='metadatos' role="tabpanel" class="tab-pane fade panel-body">
@@ -184,7 +181,7 @@
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.metadatos')%></h3>
         <% # OCUPA: taxon  %>
         <%= f.simple_fields_for :metadatos do |info| %>
-          <%= render partial: 'fichas/taxa/seccion_metadatos/form_metadatos', locals: {f: info } %>
+          <%= render partial: 'fichas/taxa/seccion_metadatos/form_metadatos', locals: {f: info, f_taxon: f } %>
         <% end %>
       </div>
 
