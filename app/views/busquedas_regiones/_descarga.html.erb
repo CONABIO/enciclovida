@@ -1,18 +1,24 @@
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modal-descargas-region" tabindex="-1" role="dialog" aria-labelledby="modal-descargas-region-label">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Descarga las especies</h4>
+        <h4 class="modal-title" id="modal-descargas-region-label">Descargas</h4>
       </div>
       <div class="modal-body">
         <p>
-          Para recibir el listado de especies es necesario proporcionar un correo electrónico, al cual
-          se te enviará un archivo excel (.xlsx) con la busqueda correspondiente.
+          Selecciona los datos a descargar y se te enviará un correo cuando este listo.
+        </p>
 
         <div class="form-group has-feedback">
-          <%= label_tag 'correo', 'Correo electrónico ', class: 'control-label', id: 'label_correo' %>
-          <%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...' %>
+
+          <% if usuario_signed_in? %>
+            <%= text_field_tag 'correo', current_usuario.email, class: 'form-control hidden', placeholder: 'correo ...' %>
+          <% else %>
+            <%= label_tag 'correo', 'Correo electrónico ', class: 'control-label' %>
+            <%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...' %>
+          <% end %>
+
           <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
           <span id="inputSuccess2Status" class="sr-only">(success)</span>
 

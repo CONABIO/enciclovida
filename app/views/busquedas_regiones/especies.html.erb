@@ -29,6 +29,12 @@
     <% end %>
   </div>
 
+  <script>
+      $(document).ready(function(){
+          var resp = <%=raw @resp.to_json %>;
+      });
+  </script>
+
 <% else %>
   <p><%= @resp[:msg] %></p>
 <% end %>
