@@ -39,6 +39,36 @@ var cat_tax_asociadas = function(id,nivel,cat)
         });
 };
 
+var asignaFiltros = function(SET_PARAMS)
+{
+    // Escogio de grupo iconico
+    if (SET_PARAMS.id != undefined && SET_PARAMS.nombre == undefined)
+    {
+        $('#id_gi_' + SET_PARAMS.id).prop('checked', true);
+        $('#id').val(SET_PARAMS.id);
+
+    } else if (SET_PARAMS.nombre != undefined) {
+        por_nombre();
+        $('#nombre').val(SET_PARAMS.nombre);
+    }
+
+    if (SET_PARAMS.por_pagina != undefined) $('#por_pagina').val(SET_PARAMS.por_pagina);
+
+    if (SET_PARAMS.edo_cons != undefined) $('#edo_cons').val(SET_PARAMS.edo_cons);
+    if (SET_PARAMS.dist != undefined) $('#dist').val(SET_PARAMS.dist);
+    if (SET_PARAMS.uso != undefined) $('#uso').val(SET_PARAMS.uso);
+    if (SET_PARAMS.prior != undefined) $('#prior').val(SET_PARAMS.prior);
+    if (SET_PARAMS.ambiente != undefined) $('#ambiente').val(SET_PARAMS.ambiente);
+    if (SET_PARAMS.reg != undefined) $('#reg').val(SET_PARAMS.reg);
+
+    if (SET_PARAMS.estatus != undefined)
+    {
+        SET_PARAMS.estatus.forEach(function(valor){
+            $('#estatus_' + valor).prop('checked', true);
+        });
+    }
+};
+
 $(document).ready(function()
 {
     $('#busqueda_avanzada').on('change', ".radio input", function()
@@ -63,12 +93,12 @@ $(document).ready(function()
         return false;
     });
 
-/*    $('#busqueda_avanzada').on('click', '#boton_checklist', function(){
+    $('#busqueda_avanzada').on('click', '#boton-enviar-checklist', function(){
         var url = $(this).attr('url');
 
         if (url == "") return false;
         else window.open(url, '_blank');
-    });*/
+    });
 
     $("#busqueda_avanzada").on('submit', '#b_avanzada', function() {
         $("#por_gi :input").attr("disabled", true);  // Deshabilita los grupos iconicos para que los repita en la URI
@@ -76,6 +106,117 @@ $(document).ready(function()
 
     $(window).load(function(){
         $("html,body").animate({scrollTop: 122}, 1000);
+    });
+
+    $('#pestañas').tabs(); // Inicia los tabs
+    scrolling_page("#resultados-0", settings.nop, settings.url);  // Inicia el scrolling
+
+    /**
+     *  Carga los taxones de la categoria dada
+     **/
+    $("#pestañas").on('click', '.tab_por_categoria', function (){
+        var id_por_categoria = parseInt($(this).attr('categoria_taxonomica_id'));
+        var url = $(this).attr('url');
+
+        if (id_por_categoria == 0)  // tab default
+        {
+            settings.offset = offset[0];
+            settings.cat = 0;
+            settings.url = settings.url_original;
+
+            datos_descarga.url = settings.url_original;
+            datos_descarga.cuantos = settings.totales;
+
+        } else {
+            $.each(POR_CATEGORIA, function (index, value) {
+                if (value.categoria_taxonomica_id == id_por_categoria) {
+
+                    if (offset[value.categoria_taxonomica_id] == undefined)
+                    {
+                        offset[value.categoria_taxonomica_id] = 2;
+                        settings.offset = offset[value.categoria_taxonomica_id];
+                    } else
+                        settings.offset = offset[value.categoria_taxonomica_id];
+
+                    settings.cat = value.categoria_taxonomica_id;
+                    settings.url = value.url;
+
+                    datos_descarga.url = value.url;
+                    datos_descarga.cuantos = value.cuantos;
+                }
+            });
+        }
+
+        // Carga el contenido cuando le da clic en una pestaña por primera vez
+        if ($("#resultados-" + settings.cat).html().length == 0)
+            $("#resultados-" + settings.cat).load(url);
+
+        if (datos_descarga.cuantos > 200)
+        {
+            $('#boton_enviar_descarga').attr('disabled','disabled');
+            $('#correo').show();
+            $('#label_correo').show();
+
+        } else {
+            $('#boton_enviar_descarga').removeAttr('disabled');
+            $('#correo').hide();
+            $('#label_correo').hide();
+        }
+    });
+
+    // Para validar en vivo el correo
+    $(document).on('keyup', '#correo', function(){
+        if( !correoValido($(this).val()) )
+        {
+            $(this).parent().addClass("has-error");
+            $(this).parent().removeClass("has-success");
+
+            $(this).siblings("span:first").addClass("glyphicon-remove");
+            $(this).siblings("span:first").removeClass("glyphicon-ok");
+            $('#boton_enviar_descarga').attr('disabled', 'disabled')
+        } else {
+            $(this).parent().removeClass("has-error");
+            $(this).parent().addClass("has-success");
+            $(this).siblings("span:first").addClass("glyphicon-ok");
+            $(this).siblings("span:first").removeClass("glyphicon-remove");
+            $('#boton_enviar_descarga').removeAttr('disabled')
+        }
+    });
+
+    // Para validar una ultima vez cuando paso la validacion del boton
+    $(document).on('click', '#boton_enviar_descarga', function(){
+        var url_xlsx = datos_descarga.url.replace("resultados?", "resultados.xlsx?");
+
+        // No datos mayores a 200
+        if (datos_descarga.cuantos > 200)
+        {
+            var correo = $('#correo').val();
+
+            if(correoValido(correo))
+            {
+                $.ajax({
+                    url: url_xlsx + "&correo=" + correo,
+                    type: 'GET',
+                    dataType: "json"
+                }).done(function(resp) {
+                    if (resp.estatus == 1)
+                    {
+                        $('#estatus_descargar_taxa').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados que seleccionaste');
+                    } else {
+                        $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
+                    }
+
+                }).fail(function(){
+                    $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
+                });
+
+            } else {
+                return false;
+            }
+        } else {
+            window.location.replace(url_xlsx);
+            $('#estatus_descargar_taxa').empty().html('La descarga esta en proceso');
+        }
     });
 });
 
