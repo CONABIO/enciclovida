@@ -14,8 +14,7 @@
         <div class="form-group has-feedback">
 
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <%= label_tag 'correo', 'Correo electrónico *', class: 'control-label' %>
-            <%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...' %>
+            <%= campoCorreo.html_safe %>
           </div>
 
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

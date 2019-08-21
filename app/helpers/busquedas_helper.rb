@@ -82,4 +82,19 @@ module BusquedasHelper
       ''
     end
   end
+
+  # Para las descargas
+  def campoCorreo
+    html = ''
+
+    if usuario_signed_in?
+      html << text_field_tag('correo', current_usuario.email, class: 'form-control hidden', placeholder: 'correo ...')
+    else
+      html << label_tag('correo', 'Correo electrónico ', class: 'control-label')
+      html << text_field_tag('correo', nil, class: 'form-control', placeholder: 'correo ...')
+    end
+
+    html
+  end
+
 end
