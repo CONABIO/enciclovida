@@ -105,7 +105,7 @@ $(document).ready(function()
     });
 
     $(window).load(function(){
-        $("html,body").animate({scrollTop: 122}, 1000);
+        $("html,body").animate({scrollTop: 80}, 1000);
     });
 
     $('#pestañas').tabs(); // Inicia los tabs
@@ -152,31 +152,12 @@ $(document).ready(function()
             $("#resultados-" + settings.cat).load(url);
     });
 
-    // Para validar en vivo el correo
-    $('#modal-descargas').on('keyup', '#correo', function(){
-        $('#notice-avanzada').empty().addClass('hidden');
 
-        if( !correoValido($(this).val()) )
-        {
-            $(this).parent().addClass("has-error");
-            $(this).parent().removeClass("has-success");
-
-            $(this).siblings("span:first").addClass("glyphicon-remove");
-            $(this).siblings("span:first").removeClass("glyphicon-ok");
-            $('#boton_enviar_descarga').attr('disabled', 'disabled');
-        } else {
-            $(this).parent().removeClass("has-error");
-            $(this).parent().addClass("has-success");
-            $(this).siblings("span:first").addClass("glyphicon-ok");
-            $(this).siblings("span:first").removeClass("glyphicon-remove");
-            $('#boton_enviar_descarga').removeAttr('disabled')
-        }
-    });
 
     // Para validar una ultima vez cuando paso la validacion del boton
-    $('#modal-descargas').on('click', '#boton_enviar_descarga', function(){
+    $('#modal-descarga-lista').on('click', '#boton-descarga-lista', function(){
         var url_xlsx = datos_descarga.url.replace("resultados?", "resultados.xlsx?");
-        var correo = $('#correo').val();
+        var correo = $('#correo-lista').val();
 
         if(correoValido(correo))
         {
@@ -185,7 +166,7 @@ $(document).ready(function()
                 type: 'GET',
                 dataType: "json"
             }).done(function(resp) {
-                $('#modal-descargas').modal('toggle');
+                $('#modal-descarga-lista').modal('toggle');
 
                 if (resp.estatus == 1)
                     $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('hidden').slideDown(600);
@@ -193,12 +174,18 @@ $(document).ready(function()
                     $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('hidden').slideDown(600);
 
             }).fail(function(){
-                $('#modal-descargas').modal('toggle');
+                $('#modal-descarga-lista').modal('toggle');
                 $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('hidden').slideDown(600);
             });
 
         } else
             return false;
     });
+
+    // Para la validacion del correo en la descarga de la lista
+    dameValidacionCorreo('lista', '#notice-avanzada');
+
+    // Para la validacion del correo en la descarga del checklist
+    dameValidacionCorreo('checklist', '#notice-avanzada');
 });
 

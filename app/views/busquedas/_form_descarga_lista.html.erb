@@ -1,10 +1,10 @@
 <!-- Modal descargas -->
-<div class="modal fade" id="modal-descargas" tabindex="-1" role="dialog" aria-labelledby="modal-descargas-label">
+<div class="modal fade" id="modal-descarga-lista" tabindex="-1" role="dialog" aria-labelledby="modal-descarga-lista-label">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modal-descargas-label">Descarga la lista de especies</h4>
+        <h4 class="modal-title" id="modal-descarga-lista-label">Descarga la lista de especies</h4>
       </div>
       <div class="modal-body">
 
@@ -12,18 +12,16 @@
         <p><small>NOTA: Los resultados a descargar varian, de acuerdo a la pestaña que estés consultando</small></p>
 
         <div class="form-group has-feedback">
-
-          <%= campoCorreo.html_safe %>
+          <%= campoCorreo('lista').html_safe %>
 
           <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
           <span id="inputSuccess2Status" class="sr-only">(success)</span>
-          <span id="estatus_descargar_taxa"></span>
         </div>
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <%= botonDescarga.html_safe %>
+        <%= botonDescarga('lista').html_safe %>
       </div>
     </div>
   </div>

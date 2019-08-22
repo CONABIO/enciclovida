@@ -1,10 +1,10 @@
 <!-- Modal checklist -->
-<div class="modal fade" id="modal-checklist" tabindex="-1" role="dialog" aria-labelledby="modal-checklist-label">
+<div class="modal fade" id="modal-descarga-checklist" tabindex="-1" role="dialog" aria-labelledby="modal-descarga-checklist-label">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modal-checklist-label">Descarga el checklist para los <%= @totales %> resultados</h4>
+        <h4 class="modal-title" id="modal-descarga-checklist-label">Descarga el checklist para los <%= @totales %> resultados</h4>
       </div>
       <div class="modal-body">
         <p>
@@ -14,7 +14,10 @@
         <div class="form-group has-feedback">
 
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <%= campoCorreo.html_safe %>
+            <%= campoCorreo('checklist').html_safe %>
+
+            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+            <span id="inputSuccess2Status" class="sr-only">(success)</span>
           </div>
 
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -59,14 +62,11 @@
             <%= "<label for='forma'><span title='Formas de crecimiento'>Formas de crecimiento</span></label> #{check_box_tag('forma[]', 1, false, class:'form-control')}".html_safe %>
           </div>
 
-          <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-          <span id="inputSuccess2Status" class="sr-only">(success)</span>
-          <span id="estatus_descargar_taxa"></span>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-success disabled" id="boton-enviar-checklist">Enviar</button>
+        <%= botonDescarga('checklist').html_safe %>
       </div>
     </div>
   </div>

@@ -65,10 +65,10 @@
         </button>
 
         <ul class="dropdown-menu dropdown-menu-right" style="z-index: 1001;">
-          <li><%= link_to("Lista de especies", nil, 'data-togle': 'modal', 'data-target': '#modal-descargas', 'onclick': "$('#modal-descargas').modal('toggle');return false;") %></li>
+          <li><%= link_to("Lista de especies", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-lista', 'onclick': "$('#modal-descarga-lista').modal('toggle');return false;") %></li>
 
           <% if params[:id].present? %>
-            <li><%= link_to("Checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-checklist', 'onclick': "$('#modal-checklist').modal('toggle');return false;") %></li>
+            <li><%= link_to("Checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;") %></li>
           <% end %>
         </ul>
 
