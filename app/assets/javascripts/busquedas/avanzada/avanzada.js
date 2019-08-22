@@ -33,10 +33,10 @@ var cat_tax_asociadas = function(id,nivel,cat)
                 cat: cat
             }
         }).done(function(html)
-        {
-            $('#datos_cat').html('').html(html);
-            $('#panelCategoriaTaxonomicaPt').show();
-        });
+    {
+        $('#datos_cat').html('').html(html);
+        $('#panelCategoriaTaxonomicaPt').show();
+    });
 };
 
 var asignaFiltros = function(SET_PARAMS)
@@ -186,37 +186,29 @@ $(document).ready(function()
     // Para validar una ultima vez cuando paso la validacion del boton
     $(document).on('click', '#boton_enviar_descarga', function(){
         var url_xlsx = datos_descarga.url.replace("resultados?", "resultados.xlsx?");
+        var correo = $('#correo').val();
 
-        // No datos mayores a 200
-        if (datos_descarga.cuantos > 200)
+        if(correoValido(correo))
         {
-            var correo = $('#correo').val();
+            $.ajax({
+                url: url_xlsx + "&correo=" + correo,
+                type: 'GET',
+                dataType: "json"
+            }).done(function(resp) {
+                $('#modal-descargas').modal('toggle');
 
-            if(correoValido(correo))
-            {
-                $.ajax({
-                    url: url_xlsx + "&correo=" + correo,
-                    type: 'GET',
-                    dataType: "json"
-                }).done(function(resp) {
-                    if (resp.estatus == 1)
-                    {
-                        $('#estatus_descargar_taxa').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados que seleccionaste');
-                    } else {
-                        $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
-                    }
+                if (resp.estatus == 1)
+                    $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').slideDown(600);
+                else
+                    $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').slideDown(600);
 
-                }).fail(function(){
-                    $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
-                });
+            }).fail(function(){
+                $('#modal-descargas').modal('toggle');
+                $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').slideDown(600);
+            });
 
-            } else {
-                return false;
-            }
-        } else {
-            window.location.replace(url_xlsx);
-            $('#estatus_descargar_taxa').empty().html('La descarga esta en proceso');
-        }
+        } else
+            return false;
     });
 });
 
