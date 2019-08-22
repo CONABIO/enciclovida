@@ -97,4 +97,13 @@ module BusquedasHelper
     html
   end
 
+  # El boton de las descargas
+  def botonDescarga
+    if usuario_signed_in?
+      '<button type="button" class="btn btn-success" id="boton_enviar_descarga">Enviar</button>'
+    else
+      '<button type="button" class="btn btn-success" id="boton_enviar_descarga" disabled="disabled">Enviar</button>'
+    end
+  end
+
 end

@@ -150,22 +150,12 @@ $(document).ready(function()
         // Carga el contenido cuando le da clic en una pestaña por primera vez
         if ($("#resultados-" + settings.cat).html().length == 0)
             $("#resultados-" + settings.cat).load(url);
-
-        if (datos_descarga.cuantos > 200)
-        {
-            $('#boton_enviar_descarga').attr('disabled','disabled');
-            $('#correo').show();
-            $('#label_correo').show();
-
-        } else {
-            $('#boton_enviar_descarga').removeAttr('disabled');
-            $('#correo').hide();
-            $('#label_correo').hide();
-        }
     });
 
     // Para validar en vivo el correo
-    $(document).on('keyup', '#correo', function(){
+    $('#modal-descargas').on('keyup', '#correo', function(){
+        $('#notice-avanzada').empty().addClass('hidden');
+
         if( !correoValido($(this).val()) )
         {
             $(this).parent().addClass("has-error");
@@ -173,7 +163,7 @@ $(document).ready(function()
 
             $(this).siblings("span:first").addClass("glyphicon-remove");
             $(this).siblings("span:first").removeClass("glyphicon-ok");
-            $('#boton_enviar_descarga').attr('disabled', 'disabled')
+            $('#boton_enviar_descarga').attr('disabled', 'disabled');
         } else {
             $(this).parent().removeClass("has-error");
             $(this).parent().addClass("has-success");
@@ -184,7 +174,7 @@ $(document).ready(function()
     });
 
     // Para validar una ultima vez cuando paso la validacion del boton
-    $(document).on('click', '#boton_enviar_descarga', function(){
+    $('#modal-descargas').on('click', '#boton_enviar_descarga', function(){
         var url_xlsx = datos_descarga.url.replace("resultados?", "resultados.xlsx?");
         var correo = $('#correo').val();
 
@@ -198,13 +188,13 @@ $(document).ready(function()
                 $('#modal-descargas').modal('toggle');
 
                 if (resp.estatus == 1)
-                    $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').slideDown(600);
+                    $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('hidden').slideDown(600);
                 else
-                    $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').slideDown(600);
+                    $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('hidden').slideDown(600);
 
             }).fail(function(){
                 $('#modal-descargas').modal('toggle');
-                $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').slideDown(600);
+                $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('hidden').slideDown(600);
             });
 
         } else
