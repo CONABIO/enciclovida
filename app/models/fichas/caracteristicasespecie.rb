@@ -43,15 +43,28 @@ class Fichas::Caracteristicasespecie < Ficha
       :tipopesca => 28,
       :regioncaptura => 29,
       :dispersionsei => 39,
+			:naturalizacionsei => 36,
+			:mecanismos => 33,
+			:efectoimpactosei => 34,
+			:intensidadimpactosei => 35,
+			:especiesasociadassei => 37,
+			:plasticidadsei => 38,
+			:platenciasei => 40,
+			:seguridadsei => 41,
+			:enfermedadessei  => 42,
 			:zonaVida => 43,
 			:ecorregionMarinaN1 => 44,
       :habitoPlantas => 45,
+			:arregloespacial => 46,
       :agentespolinizacion => 48,
       :arregloespacialflores => 49,
       :arregloespacialindividuos => 50,
       :arregloespacialpoblaciones => 51,
       :vectorespolinizacion => 53
 	}
+
+
+
 
 end
 
@@ -87,6 +100,8 @@ end
 	belongs_to :t_arregloespacialpoblaciones,-> {where('cat_preguntas.idpregunta = ?', 51)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 	belongs_to :t_vectorespolinizacion,-> {where('cat_preguntas.idpregunta = ?', 53)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 	belongs_to :t_agentespolinizacion,-> {where('cat_preguntas.idpregunta = ?', 48)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_arregloespacial,-> {where('cat_preguntas.idpregunta = ?', 46)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
 
 	# DESDE REPRODUCCION ANIMAL
 	belongs_to :t_sistapareamiento,-> {where('cat_preguntas.idpregunta = ?', 13)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
@@ -94,20 +109,37 @@ end
 
 	# DESDE DEMOGRAFIA AMENAZAS
 	belongs_to :t_interacciones,-> {where('cat_preguntas.idpregunta = ?', 17)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_interacciones,-> {where('cat_preguntas.idpregunta = ?', 17)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
+	# DESDE INVASORAS
+	belongs_to :t_naturalizacionsei,-> {where('cat_preguntas.idpregunta = ?', 36)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_mecanismos,-> {where('caracteristicasespecie.idpregunta = ?', 33)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_efectoimpactosei,-> {where('caracteristicasespecie.idpregunta = ?', 34)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_intensidadimpactosei,-> {where('caracteristicasespecie.idpregunta = ?', 35)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_naturalizacionsei,-> {where('caracteristicasespecie.idpregunta = ?', 36)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_especiesasociadassei,-> {where('caracteristicasespecie.idpregunta = ?', 37)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_plasticidadsei,-> {where('caracteristicasespecie.idpregunta = ?', 38)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_platenciasei,-> {where('caracteristicasespecie.idpregunta = ?', 40)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_seguridadsei,-> {where('caracteristicasespecie.idpregunta = ?', 41)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+	belongs_to :t_enfermedadessei,-> {where('caracteristicasespecie.idpregunta = ?', 42)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
+
+
+
 
 
 TIPOS DE SELECT:
 has_many :artepesca,-> {where('caracteristicasespecie.idpregunta = ?', 30)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 has_many :acuacultura,-> {where('caracteristicasespecie.idpregunta = ?', 31)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :mecanismos,-> {where('caracteristicasespecie.idpregunta = ?', 33)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :efectoimpactosei,-> {where('caracteristicasespecie.idpregunta = ?', 34)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :intensidadimpactosei,-> {where('caracteristicasespecie.idpregunta = ?', 35)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :naturalizacionsei,-> {where('caracteristicasespecie.idpregunta = ?', 36)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :especiesasociadassei,-> {where('caracteristicasespecie.idpregunta = ?', 37)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :plasticidadsei,-> {where('caracteristicasespecie.idpregunta = ?', 38)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :platenciasei,-> {where('caracteristicasespecie.idpregunta = ?', 40)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :seguridadsei,-> {where('caracteristicasespecie.idpregunta = ?', 41)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-has_many :enfermedadessei,-> {where('caracteristicasespecie.idpregunta = ?', 42)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+
+has_many :t_mecanismos,-> {where('caracteristicasespecie.idpregunta = ?', 33)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+has_many :t_efectoimpactosei,-> {where('caracteristicasespecie.idpregunta = ?', 34)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+has_many :t_intensidadimpactosei,-> {where('caracteristicasespecie.idpregunta = ?', 35)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+has_many :t_naturalizacionsei,-> {where('caracteristicasespecie.idpregunta = ?', 36)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+has_many :t_especiesasociadassei,-> {where('caracteristicasespecie.idpregunta = ?', 37)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+has_many :t_plasticidadsei,-> {where('caracteristicasespecie.idpregunta = ?', 38)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+has_many :t_platenciasei,-> {where('caracteristicasespecie.idpregunta = ?', 40)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+has_many :t_seguridadsei,-> {where('caracteristicasespecie.idpregunta = ?', 41)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+has_many :t_enfermedadessei,-> {where('caracteristicasespecie.idpregunta = ?', 42)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
 
 generamultiselectn2($varupdate, $controlname, $pregunta, $texto)
 $Uclima, "clima", "4", "tipo clima "); ?>

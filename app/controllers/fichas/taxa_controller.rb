@@ -44,6 +44,7 @@ class Fichas::TaxaController < Fichas::FichasController
   # PATCH/PUT /taxa/1.json
   def update
     respond_to do |format|
+      puts taxon_params.inspect
       if @taxon.update(taxon_params)
         format.html { redirect_to fichas_front_path(@taxon.IdCAT), notice: 'Taxon was successfully updated.' }
         format.json { render :show, status: :ok, location: @taxon }
@@ -78,12 +79,28 @@ class Fichas::TaxaController < Fichas::FichasController
     def taxon_params
       p = params.require(:fichas_taxon).permit(
           # Parámetros desde taxón:
+          # SECCIÓN CLASIFICACIÓN
           :resumenEspecie, :descEspecie, :especiesSmilares, :origen, :descripcionOrigen, :presencia, :adicinalPresencia, :invasora, :adicionalInvasora,
           :largoinicialhembras, :largofinalhembras, :edadinicialhembras, :edadfinalhembras, :tiempoedadhembra, :pesoinicialhembras, :pesofinalhembras,
           :largoinicialmachos, :largofinalmachos, :edadinicialmachos, :edadfinalmachos, :tiempoedadmacho, :pesoinicialmachos, :pesofinalmachos,
-          :id, :_destroy,
-          legislaciones_attributes: [:legislacionId, :especieId, :nombreLegislacion, :estatusLegalProteccion, :infoAdicional, :id, :_destroy],
 
+          # SECCIÓN ESPECIES PRIORITARIAS
+          :prioritaria, :publicadaEn, :nivelPrioridad, :justificacionPrioritaria,
+
+          # SECCIÓN NECESIDADES
+          :necesidadesEspecie,
+
+          :id, :_destroy,
+
+          legislaciones_attributes: [
+              :legislacionId,
+              :especieId,
+              :nombreLegislacion,
+              :estatusLegalProteccion,
+              :infoAdicional,
+              :id,
+              :_destroy
+          ],
 
           distribuciones_attributes: [
               { pai_ids: [] },
@@ -101,9 +118,6 @@ class Fichas::TaxaController < Fichas::FichasController
               :distribucionOriginal,
               :tipoDistribucion,
               :infoAdicionalTipo,
-              :distribucion_historica, # *
-
-
               :id,
               :_destroy
           ],
@@ -120,6 +134,7 @@ class Fichas::TaxaController < Fichas::FichasController
           ],
 
           endemicas_attributes: [
+              :endemicaMexico,
               :endemicaA,
               :infoAdicionalEndemica,
               :id,
@@ -133,7 +148,6 @@ class Fichas::TaxaController < Fichas::FichasController
               { vegetacion_ids: [] },
               { vegetacion_acuatica_ids: [] },
               :tipoAmbiente,
-
               :tipoVegetacion,
               :estadoHabitat,
               :addinfoestadoHabitat,
@@ -158,8 +172,6 @@ class Fichas::TaxaController < Fichas::FichasController
               :humedadinicial,
               :humedadfinal,
               :infoaddhumedad,
-              :descripcionSuelo,
-              :descripcionGeoforma,
               :biotipos,
               :salinidadinicial,
               :salinidadfinal,
@@ -181,15 +193,82 @@ class Fichas::TaxaController < Fichas::FichasController
               :amplitudmareasinicial,
               :amplitudmareasfinal,
               :infoaddamplitudmareas,
-              :tipoVegetacionexo,
+              #:tipoVegetacionexo,
               :uso,
-
               :id,
               :_destroy
           ],
 
+          historiaNatural_attributes: [
+              :estrategiaTrofica,
+              :descripcionEstrofica,
+              :conducta,
+              :tipopHabito,
+              :infoaddperiodoactividad,
+              :infoaddhibernacion,
+              :infoaddterritorialidad,
+              :ambitoHogareno,
+              :mecanismosDefensa,
+              :infoaddmecdefensa,
+              :distanciadispercioninicial,
+              :distanciadispercionfinal,
+              :variabilidadGenetica,
+              :marcadorGenetico,
+              :secuencias,
+              :mexbol,
+              :ImportanciaBiologica,
+              :funcionEcologica,
+              :importanciaEconomica,
+              :comercioIlicitoNal,
+              :comercioIlicitoInter,
+              :descComIlicito,
+              :descUsos,
+              :id,
+              :_destroy
+          ],
 
+          productocomercio_nal_attributes: [
+              #:nacionalinternacional,
+              #:tipoproducto,
+              #:unidadcomerciada,
+              #:cantidadcomerciada,
+              :id,
+              :_destroy
+          ],
 
+          productocomercio_inter_attributes: [
+              #:nacionalinternacional,
+              #:tipoproducto,
+              #:unidadcomerciada,
+              #:cantidadcomerciada,
+              :id,
+              :_destroy
+          ],
+
+          demografiaAmenazas_attributes: [
+              #:descPresionesAmenazas,
+              #:tendenciaPoblacional,
+              #:descTendenciaPoblacional,
+              :id,
+              :_destroy
+          ],
+
+          conservacion_attributes: [
+              #:estadoConser,
+              #:marcolegal,
+              #:tipoVeda,
+              #:descManejoAprov,
+              #:tipoAprovEsp,
+              :id,
+              :_destroy
+          ],
+
+          referenciasBibliograficas_attributes: [
+              :especieId,
+              :referencia,
+              :id,
+              :_destroy
+          ],
 
 
 
@@ -220,6 +299,9 @@ class Fichas::TaxaController < Fichas::FichasController
           infostruct_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           infointer_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           infocons_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infoAP_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infoarresp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+
           # --
           # Información sobre las especies invasoras (SECCION EXTRA)
           edopoblacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
@@ -283,6 +365,11 @@ class Fichas::TaxaController < Fichas::FichasController
 
   def itera_preguntas_observaciones(p)
     lista = %w(
+      endemicas_attributes
+
+      demografiaAmenazas_attributes
+      conservacion_attributes
+      referenciasBibliograficas_attributes
       ambi_info_ecorregiones_attributes
       ambi_especies_asociadas_attributes
       ambi_vegetacion_esp_mundo_attributes
@@ -295,6 +382,8 @@ class Fichas::TaxaController < Fichas::FichasController
       infocrianza_attributes
       infodisp_attributes
       infostruct_attributes
+      infoAP_attributes
+      infoarresp_attributes
       infointer_attributes
       ambi_infogeoforma_attributes
       edopoblacion_attributes

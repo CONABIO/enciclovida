@@ -1,7 +1,7 @@
 <div class='nested-fields'>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.presiones') %></h3>
-  <%= f.association :amenazaDirecta,
+  <#%= f.association :amenazaDirecta,
               :as => :grouped_select,
               collection: Fichas::Amenazadirecta.all.group_by(&:presionesAmenazas),
               :group_method => :last,

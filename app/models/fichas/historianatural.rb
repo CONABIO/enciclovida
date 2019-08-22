@@ -1,7 +1,7 @@
 class Fichas::Historianatural < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.historianatural"
-	self.primary_keys = :historiaNaturalId,  :especieId
+	self.primary_key = :historiaNaturalId#, :especieId
 
 	belongs_to :cat_estrategiaTrofica, :class_name => 'Fichas::Cat_Estrategiatrofica', :foreign_key => 'IdEstrategia'
 	belongs_to :reproduccionAnimal, :class_name => 'Fichas::Reproduccionanimal', :foreign_key => 'reproduccionAnimalId'
@@ -29,6 +29,8 @@ class Fichas::Historianatural < Ficha
   has_many :t_proposito_com, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
   has_many :t_comintersel, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
   has_many :t_proposito_com_int, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+	has_many :t_arregloespacial, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
+
 
   # Para T ANIMAL
 	has_many :t_sistapareamiento, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
@@ -48,7 +50,7 @@ class Fichas::Historianatural < Ficha
 	accepts_nested_attributes_for :reproduccionVegetal, allow_destroy: true
 	accepts_nested_attributes_for :cat_estrategiaTrofica, allow_destroy: true
 	accepts_nested_attributes_for :pais_importacion, allow_destroy: true
-	accepts_nested_attributes_for :culturaUsos, allow_destroy: true
+
 
 	# Acceso a las opciones multiples del catálogo grande:
 	accepts_nested_attributes_for :t_habitoPlantas, allow_destroy: true

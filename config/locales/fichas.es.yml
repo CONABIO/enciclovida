@@ -361,6 +361,24 @@ es:
         t_proposito_com_int: Propósito del comercio
         t_tipodispersion: Tipo de dispersión
         t_structdisp: Estructura o individuo dispersado
+        #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
+        t_comnalsel: Origen de los especímenes
+        t_proposito_com: Propósito del comercio
+        #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
+        t_interacciones: Interacciones
+        #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
+        t_esquemamanejo: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
+        t_tipopesca: c) Indicar el tipo de aprovechamiento de la especie
+        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+        t_arregloespacialflores: i. Flores
+        t_arregloespacialindividuos: ii. Individuos
+        t_arregloespacialpoblaciones: iii. Poblaciones
+        t_vectorespolinizacion: f) Tipo de polinización
+        t_agentespolinizacion:  i. Vectores de polinización
+        t_arregloespacial: Arreglo espacial de los órganos reproductores
+        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+        t_sistapareamiento: c) Sistemas de apareamiento
+        t_sitioanidacion: j) Sitios de anidación o de crianza
       legislaciones:
         #  * *  S E C C I Ó N   C L A S I F I C A C I Ó N   Y  D E S .  * *  #
         nombreLegislacion: Nombre de legislación
@@ -466,7 +484,6 @@ es:
         parametrosPoblacionales: a) Parámetros poblacionales
         poblacionminviableinicial: b) Población mínima viable
         infoAdicionalInteraccion: Información adicional
-        t_interacciones: Interacciones
         poblacionminviableinicial: 'De:'
         poblacionminviablefinal: 'A:'
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
@@ -509,8 +526,6 @@ es:
         #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
         ImportanciaBiologica: a) Importancia biológica
         funcionEcologica: b) Función ecológica
-        t_comnalsel: Origen de los especímenes
-        t_proposito_com: Propósito del comercio
         importanciaEconomica: Importancia económica
         comercioNal: Comercio nacional
         origenComNal: Origen de los especímenes
@@ -539,8 +554,6 @@ es:
         manejoAprov: Manejo, aprovechamiento y acciones de conservación
         descManejoAprov: a) Describir acciones de manejo y conservación de la especie
         tipoAprovEsp: b) Indicar el tipo de aprovechamiento de la especie
-        t_esquemamanejo: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
-        t_tipopesca: c) Indicar el tipo de aprovechamiento de la especie
         marcolegal: a) Regulaciones aplicables a la especie
         tipoVeda: b) Tipo de veda
       endemicas:
@@ -567,11 +580,8 @@ es:
       reproduccionVegetal:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
         descripcion: a) Generalidades
-        t_arregloespacialflores: i. Flores
-        t_arregloespacialindividuos: ii. Individuos
-        t_arregloespacialpoblaciones: iii. Poblaciones
-        t_vectorespolinizacion: f) Tipo de polinización
-        t_agentespolinizacion:  i. Vectores de polinización
+        patronesFructificacion: b) Cambios en los patrones de fructificación
+        patronesFloracion: Cambios en los patrones de floración
         arregloEspacial: Tipos de expresión sexual
         descripcionArregloespacial: Información adicional
         aislamientoOrganos: c) Aislamiento temporal o espacial de los órganos reproductores
@@ -620,7 +630,6 @@ es:
         additionalInfoDimorfiasmo: Información adicional
         coloracion: Dimorfismo sexual en coloración
         ornamentacion: Dimorfismo sexual en ornamentación
-        t_sistapareamiento: c) Sistemas de apareamiento
         sistemaApareamiento: c) Sistemas de apareamiento
         descripcionSistema: Información adicional
         noEventos: d) Número de eventos reproductivos
@@ -631,7 +640,6 @@ es:
         duracionVidaRepro: h) Duración de vida reproductiva
         frecuenciaApareamineto: i) Epoca del año y frecuencia de apareamiento
         sitioAnidacion: j) Sitios de anidación o de crianza
-        t_sitioanidacion: j) Sitios de anidación o de crianza
         descripcionSitioAnidacion: Información adicional
         noHuevosCrias: k) Número de huevos o crias
         cuidadoParental: l) Cuidado parental
@@ -651,6 +659,15 @@ es:
 
       invasividad:
         #  * *  S E C C I Ó N   I N V A S O R A S  * *  #
+        t_naturalizacionsei: Naturalización
+        t_mecanismos: Mecanismos de impacto
+        t_efectoimpactosei: Efectos del impacto
+        t_intensidadimpactosei: Intensidad del impacto
+        t_especiesasociadassei: Presencia de especies asociadas
+        t_plasticidadsei: Plasticidad ambiental y tolerancia
+        t_platenciasei: Periodo de latencia
+        t_seguridadsei: Riesgo por consumo
+        t_enfermedadessei: Enfermedades
         estadoPoblaciones: Estado de la población
         persistenciaPob: Persistencia de la población
         abundanciaPob: Abundancia de la población
@@ -664,6 +681,7 @@ es:
         PierHear: PIER-HEAR
         MERI: MERI
         otro: Otro AR
+
 
         rutas:
           #  * *  S E C C I Ó N   I N V A S O R A S  * *  #
