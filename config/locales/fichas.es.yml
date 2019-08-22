@@ -693,9 +693,14 @@ es:
       metadatos:
         uriIcono: Uri Icono
         nombre: Nombre metadato
-        Uri: Uri
+        uri: Uri
         titulo: Título
         fechaPublicacion: Fecha de publicación
+        asiciado:
+          rol: Capturista
+          tipoAsociacion: Tipo de asociación
+
+
       responsable:
         nombre: Nombre del responsable
         apellido: Apellido del responsable
@@ -703,9 +708,7 @@ es:
         nombrePuesto: Nombre del puesto
       organizacion:
         nombre: Nombre de la organización
-      asiciado:
-        rol: Capturista
-        tipoAsociacion: Tipo de asociación
+
       pais:
         nombrepais: Nombre del país
       ciudad:

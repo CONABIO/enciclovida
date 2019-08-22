@@ -45,7 +45,6 @@ class Fichas::Taxon < Ficha
 
 	accepts_nested_attributes_for :invasividad, allow_destroy: true
 	accepts_nested_attributes_for :endemicas, allow_destroy: true
-
 	accepts_nested_attributes_for :legislaciones, reject_if: :all_blank, allow_destroy: true
 	accepts_nested_attributes_for :metadatos, allow_destroy: true
 	accepts_nested_attributes_for :productoComercios, allow_destroy: true
