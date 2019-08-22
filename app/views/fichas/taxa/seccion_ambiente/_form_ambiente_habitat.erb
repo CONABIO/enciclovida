@@ -8,9 +8,8 @@
     <legend class="text-primary"> Ecorregiones </legend>
     <%= select_multiple_de_catalogos(f, :ecorregion, :descripcion, :ecorregionId) %>
     <div class="apartadoFicha ficha-Prioritaria">
-      <%
-        parametros = {:acceso => @taxon.ambi_info_ecorregiones, :modelo => f_taxon, :association => :ambi_info_ecorregiones, :titulo => "Información adicional", :el_div => "info_ecorregiones", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones]}
-        #agrega_info_adicional(parametros)
+      <% parametros = {:acceso => @taxon.ambi_info_ecorregiones, :modelo => f_taxon, :association => :ambi_info_ecorregiones, :titulo => "Información adicional", :el_div => "info_ecorregiones", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones]}
+          agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
         <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
@@ -26,12 +25,11 @@
   </fieldset>
 
   <div id="ambiente-solo-terrestre">
-    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.t_vegetacion') %></h3>
 
-    <% c_vegetacion = Fichas::Vegetacion.all.group_by(&:descripcionVegetacion) %>
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.t_vegetacion') %></h3>
     <%= f.association :vegetacion,
           :as => :grouped_select,
-          collection: c_vegetacion,
+          collection: Fichas::Vegetacion.all.group_by(&:descripcionVegetacion),
           :group_method => :last,
           group_label_method: :first,
           label_method: :descripcionSubVegetacion,
@@ -46,19 +44,41 @@
     %>
     <%= f.input :tipoVegetacion %>
 
-
+    <%= f_taxon.association :t_habitatAntropico,
+                      label_method: :descn1,
+                      value_method: :idopcion,
+                      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:habitatAntropico]) ,
+                      :as => :select,
+                      input_html: {
+                          class: 'form-control selectpicker',
+                          multiple: true,
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones'),
+                          'data-selected-text-format': 'count > 3'
+                      }
+    %>
     <%= f.input :habitatAgropecuario, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
     <%= f.input :zonaUrbana, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
     <%= f.input :VegetacionSecundaria, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "vegetacion-secundaria")'} %>
     <div id="vegetacion-secundaria">
-
-
+      <%= f_taxon.association :t_tipoVegetacionSecundaria,
+                        label_method: :descn1,
+                        value_method: :idopcion,
+                        collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:vegetacionSecundaria]),
+                        :as => :select,
+                        input_html: {
+                            class: 'form-control selectpicker',
+                            multiple: true,
+                            'data-live-search': 'true',
+                            'title': t('general.seleccionar_opciones'),
+                            'data-selected-text-format': 'count > 3'
+                        }
+      %>
     </div>
 
     <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
-      <%=
-        parametros = {:acceso => @taxon.ambi_especies_asociadas,:modelo => f_taxon,:association => :ambi_especies_asociadas,:agregar => "Agregar especies asociadas",:titulo => "d) Mencionar las especies asociadas",:el_div => "especies_asociadas",:pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_especies_asociadas]}
-        agrega_info_adicional(parametros)
+      <%= parametros = {:acceso => @taxon.ambi_especies_asociadas,:modelo => f_taxon,:association => :ambi_especies_asociadas,:agregar => "Agregar especies asociadas",:titulo => "d) Mencionar las especies asociadas",:el_div => "especies_asociadas",:pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_especies_asociadas]}
+          agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
         <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
@@ -69,11 +89,21 @@
 
     <div class="apartadoFicha ficha-Invasora">
       <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.vegetacion_mundial') %></h3>
-      <%=
-        parametros = {
-            :acceso => @taxon.ambi_vegetacion_esp_mundo, :modelo => f_taxon, :association => :ambi_vegetacion_esp_mundo, :titulo => "Información adicional", :el_div => "ambi_vegetacion_esp_mundo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_vegetacion_esp_mundo]
-        }
-        agrega_info_adicional(parametros)
+      <%= f_taxon.association :t_tipovegetmundial,
+                        label_method: :descn1,
+                        value_method: :idopcion,
+                        collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipovegetmundial]),
+                        :as => :select,
+                        input_html: {
+                            class: 'form-control selectpicker',
+                            multiple: true,
+                            'data-live-search': 'true',
+                            'title': t('general.seleccionar_opciones'),
+                            'data-selected-text-format': 'count > 3'
+                        }
+      %>
+      <%= parametros = { :acceso => @taxon.ambi_vegetacion_esp_mundo, :modelo => f_taxon, :association => :ambi_vegetacion_esp_mundo, :titulo => "Información adicional", :el_div => "ambi_vegetacion_esp_mundo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_vegetacion_esp_mundo]}
+          agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
         <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
@@ -107,9 +137,24 @@
     <%= f.input :climaAdicional %>
 
     <div class="apartadoFicha ficha-Invasora">
-      <%=
-        parametros = {:acceso => @taxon.ambi_info_clima_exotico, :modelo => f_taxon, :association => :ambi_info_clima_exotico, :titulo => "Información adicional", :el_div => "ambi_info_clima_exotico", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico]}
-        agrega_info_adicional(parametros)
+      <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.clima_exo') %></h3>
+      <%= f_taxon.association :t_climaexo,
+                        :as => :grouped_select,
+                        collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:climaexo]).group_by(&:descn1),
+                        :group_method => :last,
+                        group_label_method: :first,
+                        label_method: :descn2,
+                        value_method: :idopcion,
+                        input_html: {
+                            :multiple => true,
+                            class: 'form-control selectpicker',
+                            'data-live-search': 'true',
+                            'title': t('general.seleccionar_opciones'),
+                            'data-selected-text-format': 'count > 3'
+                        }
+      %>
+      <%= parametros = {:acceso => @taxon.ambi_info_clima_exotico, :modelo => f_taxon, :association => :ambi_info_clima_exotico, :titulo => "Información adicional", :el_div => "ambi_info_clima_exotico", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico]}
+          agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
         <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
@@ -148,10 +193,21 @@
     <%= f.input :infoaddhumedad %>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_suelo') %></h3>
-
-    <%
-      parametros = {:acceso => @taxon.ambi_infotiposuelo, :modelo => f_taxon, :association => :ambi_infotiposuelo, :titulo => "Información adicional", :el_div => "infotiposuelo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infotiposuelo]}
-      agrega_info_adicional(parametros)
+    <%= f_taxon.association :t_suelo,
+                      label_method: :descn1,
+                      value_method: :idopcion,
+                      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:suelo]),
+                      :as => :select,
+                      input_html: {
+                          class: 'form-control selectpicker',
+                          multiple: true,
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones'),
+                          'data-selected-text-format': 'count > 3'
+                      }
+    %>
+    <% parametros = {:acceso => @taxon.ambi_infotiposuelo, :modelo => f_taxon, :association => :ambi_infotiposuelo, :titulo => "Información adicional", :el_div => "infotiposuelo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infotiposuelo]}
+       agrega_info_adicional(parametros)
     %>
     <div id="dato_<%= parametros[:el_div] %>">
       <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
@@ -160,10 +216,22 @@
     </div>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.geoforma') %></h3>
-    <%= #select_multiple_nivel_1(f, :t_geoforma, Fichas::Caracteristicasespecie::OPCIONES[:geoforma])
+    <% c_geoformas = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:geoforma]) %>
+    <%= f_taxon.association :t_geoforma,
+                      label_method: :descn1,
+                      value_method: :idopcion,
+                      collection: c_geoformas,
+                      :as => :select,
+                      input_html: {
+                          class: 'form-control selectpicker',
+                          multiple: true,
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones'),
+                          'data-selected-text-format': 'count > 3'
+                      }
     %>
     <%
-      parametros = {:acceso => @taxon.ambi_infogeoforma, :modelo => f_taxon, :association => :ambi_infogeoforma, :titulo => "Información adicional", :el_div => "infogeoforma", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infogeoforma]}
+      parametros = {:acceso => @taxon.ambi_infogeoforma, :modelo => f_taxon, :association => :ambi_infogeoforma, :titulo => "Información adicional", :el_div => "ambi_infogeoforma", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_infogeoforma]}
       agrega_info_adicional(parametros)
     %>
     <div id="dato_<%= parametros[:el_div] %>">
@@ -171,21 +239,40 @@
         <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
       <% end %>
     </div>
-
   </div>
-  <%
-    # Hasta aquí llega la parte terrestre
-  %>
+  <%# Hasta aquí llega la parte terrestre %>
 
-  <%
-    # Aquí inicia la parte marina
-  %>
+  <%# Aquí inicia la parte marina %>
   <div id="ambiente-solo-marino">
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_habitat') %></h3>
-
+    <%= f_taxon.association :t_ecorregionMarinaN1,
+                      label_method: :descn1,
+                      value_method: :idopcion,
+                      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:ecorregionMarinaN1]),
+                      :as => :select,
+                      input_html: {
+                          class: 'form-control selectpicker',
+                          multiple: true,
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones'),
+                          'data-selected-text-format': 'count > 3'
+                      }
+    %>
 
     <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.ecosistemas') %></h4>
-
+    <%= f_taxon.association :t_zonaVida,
+                      label_method: :descn1,
+                      value_method: :idopcion,
+                      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:zonaVida]),
+                      :as => :select,
+                      input_html: {
+                          class: 'form-control selectpicker',
+                          multiple: true,
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones'),
+                          'data-selected-text-format': 'count > 3'
+                      }
+    %>
     <%= f.input :biotipos %>
 
     <%= f.association :vegetacion_acuatica,

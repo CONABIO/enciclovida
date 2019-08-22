@@ -28,7 +28,7 @@ $( document ).ready(function() {
 });
 
 $(window).load(function(){
-    $(".apartadoFicha").fadeOut();
+    //$(".apartadoFicha").fadeOut();
     showOrHideInfoFicha();
 });
 

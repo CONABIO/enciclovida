@@ -78,12 +78,131 @@ class Fichas::TaxaController < Fichas::FichasController
     def taxon_params
       p = params.require(:fichas_taxon).permit(
           # Parámetros desde taxón:
-          :resumenEspecie, :descEspecie, :largoinicialhembras, :largofinalhembras, :edadinicialhembras, :edadfinalhembras, :tiempoedadhembra, :pesoinicialhembras, :pesofinalhembras, :especiesSmilares, :origen, :descripcionOrigen, :presencia, :adicinalPresencia, :invasora, :adicionalInvasora, :id, :_destroy,
-
+          :resumenEspecie, :descEspecie, :especiesSmilares, :origen, :descripcionOrigen, :presencia, :adicinalPresencia, :invasora, :adicionalInvasora,
+          :largoinicialhembras, :largofinalhembras, :edadinicialhembras, :edadfinalhembras, :tiempoedadhembra, :pesoinicialhembras, :pesofinalhembras,
+          :largoinicialmachos, :largofinalmachos, :edadinicialmachos, :edadfinalmachos, :tiempoedadmacho, :pesoinicialmachos, :pesofinalmachos,
+          :id, :_destroy,
           legislaciones_attributes: [:legislacionId, :especieId, :nombreLegislacion, :estatusLegalProteccion, :infoAdicional, :id, :_destroy],
 
+
+          distribuciones_attributes: [
+              { pai_ids: [] },
+              { estado_ids: [] },
+              { municipio_ids: [] },
+              { pais_inv_ids: [] },
+              { pais_inv2_ids: [] },
+
+              :infoadicionalmexedo,
+              :infoAdicionalMun,
+              :historicaPotencial,
+              :alcanceDistribucion,
+              :infoAdicionalAlcance,
+              :comoExoticaMundial,
+              :distribucionOriginal,
+              :tipoDistribucion,
+              :infoAdicionalTipo,
+              :distribucion_historica, # *
+
+
+              :id,
+              :_destroy
+          ],
+
+          distribucion_historica_attributes: [
+              :especieId,
+              :regLoc,
+              :anioinicial,
+              :mesinicial,
+              :aniofinal,
+              :mesfinal,
+              :id,
+              :_destroy
+          ],
+
+          endemicas_attributes: [
+              :endemicaA,
+              :infoAdicionalEndemica,
+              :id,
+              :_destroy
+          ],
+
+
+          habitats_attributes: [
+              { ecorregion_ids: [] },
+              { ecosistema_ids: [] },
+              { vegetacion_ids: [] },
+              { vegetacion_acuatica_ids: [] },
+              :tipoAmbiente,
+
+              :tipoVegetacion,
+              :estadoHabitat,
+              :addinfoestadoHabitat,
+              :habitatAgropecuario,
+              :zonaUrbana,
+              :temperaturainicial,
+              :temperaturafinal,
+              :intervaloaltitudinalinicial,
+              :intervaloaltitudinalfinal,
+              :infoAddintervaloaltitudinal,
+              :climaAdicional,
+              :infoaddtemperatura,
+              :temperaturainicialexo,
+              :temperaturafinalexo,
+              :infoaddtemperaturaexo,
+              :precipitacioninicial,
+              :precipitacionfinal,
+              :infoaddprecipitacion,
+              :precipitacioninicialexo,
+              :precipitacionfinalexo,
+              :infoaddprecipitacionexo,
+              :humedadinicial,
+              :humedadfinal,
+              :infoaddhumedad,
+              :descripcionSuelo,
+              :descripcionGeoforma,
+              :biotipos,
+              :salinidadinicial,
+              :salinidadfinal,
+              :unidadsalinidad,
+              :oxigenoinicial,
+              :oxigenofinal,
+              :phinicial,
+              :phfinal,
+              :temeperaturainicial,
+              :temeperaturafinal,
+              :corrientes,
+              :infoaddcaracagua,
+              :intervaloaltitudinalacuainicial,
+              :intervaloaltitudinalacuafinal,
+              :infoAddintervaloaltitudinalacua,
+              :interbatimetricoinicial,
+              :interbatimetricofinal,
+              :infoaddinterbatimetrico,
+              :amplitudmareasinicial,
+              :amplitudmareasfinal,
+              :infoaddamplitudmareas,
+              :tipoVegetacionexo,
+              :uso,
+
+              :id,
+              :_destroy
+          ],
+
+
+
+
+
+
           # Opciones multiples que se agregan a Caracteristicaesoecie
-          t_clima_ids: [],
+          #t_clima_ids: [],
+          #t_habitatAntropico_ids: [],
+          #t_geoforma_ids: [],
+          #t_tipovegetmundial_ids: [],
+          #t_climaexo_ids: [],
+          #t_ecorregionMarinaN1_ids: [],
+          #t_zonaVida_ids: [],
+          #t_suelo_ids: [],
+          #t_tipoVegetacionSecundaria_ids: [],
 
           # Información adicional que se agrega en Observacionscarac
           ambi_info_ecorregiones_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
@@ -155,44 +274,6 @@ class Fichas::TaxaController < Fichas::FichasController
           seguridad_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           enfermedadesei_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           # -
-
-          habitats_attributes: [
-              { ecorregion_ids: [] },
-              :tipoAmbiente,
-              :id,
-              :_destroy
-          ],
-
-          distribuciones_attributes: [
-              :pai_ids,
-              :estado_ids,
-              :pais_inv_ids,
-              :pais_inv2_ids,
-              :municipio_ids,
-              :distribucion_historica,
-              :infoadicionalmexedo,
-              :infoAdicionalMun,
-              :historicaPotencial,
-              :alcanceDistribucion,
-              :infoAdicionalAlcance,
-              :comoExoticaMundial,
-              :distribucionOriginal,
-              :tipoDistribucion,
-              :infoAdicionalTipo,
-              :id,
-              :_destroy
-          ],
-
-          distribucion_historica_attributes: [
-              :especieId,
-              :regLoc,
-              :anioinicial,
-              :mesinicial,
-              :aniofinal,
-              :mesfinal,
-              :id,
-              :_destroy
-          ]
       )
 
       itera_preguntas_observaciones(p)
