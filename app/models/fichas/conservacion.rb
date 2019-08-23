@@ -3,20 +3,8 @@ class Fichas::Conservacion < Ficha
 	self.table_name = "#{CONFIG.bases.fichasespecies}.conservacion"
 	self.primary_keys = :conservacionId,  :especieId
 
-	belongs_to :cat_gruposEspecies, :class_name => 'Fichas::Cat_Gruposespecies', :foreign_key => 'Id'
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
-
-  has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId', :primary_key => :especieId
-
-	# Cat_preguntas: CONSIDERANDO QUE EN ESTA TABLA EDSTÂN TODOS LOS CATALOGOS JUNTOS
-	has_many :t_esquemamanejo, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-	has_many :t_tipopesca, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-	has_many :t_regioncaptura, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies
-
-	accepts_nested_attributes_for :t_esquemamanejo, allow_destroy: true
-	accepts_nested_attributes_for :t_tipopesca, allow_destroy: true
-	accepts_nested_attributes_for :t_regioncaptura, allow_destroy: true
-
+	belongs_to :cat_gruposEspecies, :class_name => 'Fichas::Cat_Gruposespecies', :foreign_key => 'Id'
 
 	TIPO_VEDA = [
 			'Permanente'.to_sym,

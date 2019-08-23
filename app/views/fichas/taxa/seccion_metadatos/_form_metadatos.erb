@@ -4,4 +4,12 @@
   <%= f.input :uri %>
   <%= f.input :titulo %>
   <%= f.input :fechaPublicacion, as: :date, html5: true, input_html: {class: 'form-control'} %>
+
+  <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un asociado'.html_safe, f, :asociado, partial: 'fichas/taxa/seccion_metadatos/form_metadatos_asiciado', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'descripcion-asociado', 'data-association-insertion-node' => '#descripcion-asociado', 'data-association-insertion-method' => 'append', href: '#descripcion-asociado' %>
+  <div id="descripcion-asociado">
+    <%= f.simple_fields_for :asociado do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_metadatos/form_metadatos_asiciado', locals: {f: info} %>
+    <% end %>
+  </div>
+
 </div>

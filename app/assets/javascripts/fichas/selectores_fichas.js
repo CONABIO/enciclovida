@@ -7,12 +7,21 @@ $( document ).ready(function() {
 
     // Mostrar u ocultar contenido SEGÚN opciones SI / NO cuando se cargue la  página
     casos = [
-        'fichas_taxon[endemicas_attributes][0][endemicaMexico]', 'endemicaSI',
-        'fichas_taxon[habitats_attributes][VegetacionSecundaria]', 'vegetacion-secundaria',
-        'fichas_taxon[prioritaria]', 'especie-prioritaria',
+        'fichas_taxon[endemicas_attributes][0][endemicaMexico]',
+        'endemicaSI',
+        'fichas_taxon[habitats_attributes][VegetacionSecundaria]',
+        'vegetacion-secundaria',
+        'fichas_taxon[prioritaria]',
+        'especie-prioritaria',
+        'fichas_taxon[historiaNatural_attributes][reproduccionAnimal_attributes][dimorfismoSexual]',
         'dimorfismoSexualAnimal',
+        'fichas_taxon[historiaNatural_attributes][hibernacion]',
         'hibernacionSI',
-        'territorialidadSI'];
+        'fichas_taxon[historiaNatural_attributes][territorialidad]',
+        'territorialidadSI',
+        'fichas_taxon[historiaNatural_attributes][reproduccionAnimal_attributes][cuidadoParental]',
+        'cuidadoParentalAnimal'
+    ];
 
     for(var i = 0; i < casos.length; i+=2) {
         var elID = casos[i+1];
@@ -23,12 +32,13 @@ $( document ).ready(function() {
 
     // Para mostrar correctamente el formulario de la sección Ambiente
     showOrHideAmbienteDesarrolloEspecie();
+
     //  Para mostrar correctamente el formulario de la sección Biologia
     showOrHideSegunTipoReproduccion();
 });
 
 $(window).load(function(){
-    $(".apartadoFicha").fadeOut();
+    //$(".apartadoFicha").fadeOut();
     showOrHideInfoFicha();
 });
 
@@ -38,6 +48,7 @@ $(window).load(function(){
 * */
 function showOrHideInfoFicha() {
     var tipoFicha = $("input[name='fichas_taxon[tipoficha]']:checked").val();
+    //console.log("La ficha actual es: " + tipoFicha);
     if(tipoFicha !== undefined) {
         // Ocultar todos los apartadosFicha
         $(".apartadoFicha").fadeOut();
@@ -48,7 +59,6 @@ function showOrHideInfoFicha() {
         } else {
             $('#pestania-IX').html('Especies prioritarias');
         }
-
         // Construir la clase según el tipo de ficha
         var claseFicha = 'ficha-' + tipoFicha;
         // Mostrar el ID según la clase generada
@@ -103,7 +113,7 @@ function showOrHideAmbienteDesarrolloEspecie() {
 
 // Función para mostrar las preguntas correspondientes al tipo de reproducción de la especie (sección biologia)
 function showOrHideSegunTipoReproduccion() {
-    var selector = "input[name='" + 'opcion-TipoReproduccion' + "']:checked";
+    var selector = "input[name='" + 'fichas_taxon[historiaNatural_attributes][tipoReproduccion]' + "']:checked";
     var theValue = $(selector).val();
     var reprodAnimal = '#opcion-reprodAnimal';
     var reprodVegetal = '#opcion-reprodVegetal';
@@ -118,7 +128,6 @@ function showOrHideSegunTipoReproduccion() {
     }
 
 }
-
 
 function reload(div) {
     console.log(div);
@@ -138,4 +147,3 @@ function reloadTiny() {
     }, 10)
 
 }
-

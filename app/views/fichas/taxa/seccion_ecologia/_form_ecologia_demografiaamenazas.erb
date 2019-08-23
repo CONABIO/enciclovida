@@ -21,7 +21,7 @@
   <%= f.input :poblacionminviablefinal %>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.interacciones') %></h3>
-  <%= f.association :t_interacciones,
+  <%= f_taxon.association :t_interacciones,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:interacciones]),
