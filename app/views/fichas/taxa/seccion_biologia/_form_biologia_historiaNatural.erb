@@ -141,12 +141,12 @@
   <%= f.input :tipopHabito, as: :radio_buttons, :collection => Fichas::Historianatural::PERIODO_ACTIVIDAD, item_wrapper_class: 'radio-inline' %>
   <%= f.input :infoaddperiodoactividad %>
 
-  <%= f.input :hibernacion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "hibernacionSI")', name: 'opcion-hibernacionSI'} %>
+  <%= f.input :hibernacion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "hibernacionSI")'} %>
   <div id="hibernacionSI">
     <%= f.input :infoaddhibernacion %>
   </div>
 
-  <%= f.input :territorialidad, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "territorialidadSI")', name: 'opcion-territorialidadSI'} %>
+  <%= f.input :territorialidad, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "territorialidadSI")'} %>
   <div id="territorialidadSI">
     <%= f.input :infoaddterritorialidad %>
   </div>
@@ -164,7 +164,7 @@
   <%= f.input :infoaddmecdefensa %>
 
   <hr class="espacio_ficha">
-  <%= f.input :tipoReproduccion, as: :radio_buttons, :collection => Fichas::Historianatural::TIPO_REPRODUCCION, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideSegunTipoReproduccion()', name: 'opcion-TipoReproduccion'} %>
+  <%= f.input :tipoReproduccion, as: :radio_buttons, :collection => Fichas::Historianatural::TIPO_REPRODUCCION, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideSegunTipoReproduccion()'} %>
   <hr class="espacio_ficha">
 
   <div id="opcion-reprodAnimal">

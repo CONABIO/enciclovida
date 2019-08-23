@@ -87,7 +87,7 @@
 
   <%= f.input :noHuevosCrias %>
 
-  <%= f.input :cuidadoParental, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "cuidadoParentalAnimal")', name: 'opcion-cuidadoParentalAnimal'} %>
+  <%= f.input :cuidadoParental, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "cuidadoParentalAnimal")'} %>
   <div id="cuidadoParentalAnimal">
     <%= f.input :cuidadoParentalPor,
                 collection: Fichas::Reproduccionanimal::CUIDADO_PARENTAL,

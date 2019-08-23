@@ -200,6 +200,7 @@ class Fichas::TaxaController < Fichas::FichasController
           ],
 
           historiaNatural_attributes: [
+              :tipoReproduccion,
               :estrategiaTrofica,
               :descripcionEstrofica,
               :conducta,
@@ -584,6 +585,7 @@ historiaNatural_attributes: [
 reproduccionAnimal_attributes: [
   :t_sistapareamiento_ids,
   :t_sitioanidacion_ids,
+  :dimorfismoSexual,
   :descripcion,
   :additionalInfoDimorfiasmo,
   :coloracion,
