@@ -13,7 +13,7 @@
 
   <div class="row">
     <div class="col-sm-6"><h3> <%= t('general.informacion_de_ficha') %> </h3></div>
-    <div class="col-sm-6"><br><%= f.input :tipoficha, as: :radio_buttons, :collection => Fichas::Taxon::TIPOS_FICHA, item_wrapper_class: 'radio-inline', input_html: {name: 'selectorDeFicha', onclick: 'showOrHideInfoFicha()' } %></div>
+    <div class="col-sm-6"><br><%= f.input :tipoficha, as: :radio_buttons, :collection => Fichas::Taxon::TIPOS_FICHA, item_wrapper_class: 'radio-inline', input_html: {onclick: 'showOrHideInfoFicha()' } %></div>
   </div>
 
   <div id="pestañas" class="panel row">
@@ -65,7 +65,7 @@
         <hr class="espacio_ficha">
         <hr />
         <h3 class="titulo_subseccion"><%=t('secciones.s_clasificacion.legislaciones')%></h3>
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion','onclick' => 'reloadTiny()' %>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion' %>
         <%= f.simple_fields_for :legislaciones do |info| %>
           <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
         <% end %>

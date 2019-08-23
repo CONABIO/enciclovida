@@ -5,5 +5,4 @@ class Fichas::Productocomercio < Ficha
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
-
 end

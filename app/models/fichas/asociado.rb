@@ -12,4 +12,5 @@ class Fichas::Asociado < Ficha
 
 	has_many :contacto, class_name: 'Fichas::Contacto', through: :relAsociadosContactos
 
+	accepts_nested_attributes_for :contacto, allow_destroy: true, reject_if: :all_blank
 end

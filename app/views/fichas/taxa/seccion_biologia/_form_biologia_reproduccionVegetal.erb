@@ -4,15 +4,26 @@
   <%= f.input :descripcion %>
 
   <div class="apartadoFicha ficha-Invasora">
-    b. Arreglo espacial de los órganos reproductores
-    generamultiselectn1($Uarregloespacial, "arregloespacial", "46","arreglo espacial ");?>
-    observacionescarac WHERE especieId=$IdResev and idpregunta = 46
+    <%= f_taxon.association :t_arregloespacial,
+        label_method: :descn1,
+        value_method: :idopcion,
+        collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacial]),
+        :as => :select,
+        input_html: {
+        class: 'form-control selectpicker',
+        multiple: true,
+        'data-live-search': 'true',
+        'title': t('general.seleccionar_opciones'),
+        'data-selected-text-format': 'count > 3'
+        }
+    %>
+
   </div>
 
   <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
 
     <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.exp_sexual') %></h4>
-    <%= f.association :t_arregloespacialflores,
+    <%= f_taxon.association :t_arregloespacialflores,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialflores]),
@@ -25,7 +36,7 @@
                           'data-selected-text-format': 'count > 3'
                       }
     %>
-    <%= f.association :t_arregloespacialindividuos,
+    <%= f_taxon.association :t_arregloespacialindividuos,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialindividuos]),
@@ -38,7 +49,7 @@
                           'data-selected-text-format': 'count > 3'
                       }
     %>
-    <%= f.association :t_arregloespacialpoblaciones,
+    <%= f_taxon.association :t_arregloespacialpoblaciones,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialpoblaciones]),
@@ -52,8 +63,15 @@
                       }
     %>
     <%
-      # INFO ADICIONAL observacionescarac 46
+      parametros = {:acceso => @taxon.infoarresp, :modelo => f_taxon, :association => :infoarresp, :titulo => "Información adicional", :el_div => "infoarresp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoarresp]}
+      agrega_info_adicional(parametros)
     %>
+    <div id="dato_<%= parametros[:el_div] %>">
+      <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+        <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+      <% end %>
+    </div>
+
   </div>
 
 
@@ -90,7 +108,7 @@
   %>
   <%= f.input :descFecundacion %>
 
-  <%= f.association :t_vectorespolinizacion,
+  <%= f_taxon.association :t_vectorespolinizacion,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:vectorespolinizacion]),
@@ -103,7 +121,7 @@
                         'data-selected-text-format': 'count > 3'
                     }
   %>
-  <%= f.association :t_agentespolinizacion,
+  <%= f_taxon.association :t_agentespolinizacion,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:agentespolinizacion]),
@@ -117,8 +135,14 @@
                     }
   %>
   <%
-    # INFO ADICIONAL observacionescarac 48
+    parametros = {:acceso => @taxon.infoAP, :modelo => f_taxon, :association => :infoAP, :titulo => "Información adicional", :el_div => "infoAP", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoAP]}
+    agrega_info_adicional(parametros)
   %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
 
   <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.floracion') %></h4>
   <%= f.input :aperturaFlor,
@@ -157,8 +181,7 @@
   <%= f.input :addinfotiempoflora %>
 
   <div class="apartadoFicha ficha-Invasora">
-    Cambios en los patrones de floración
-    patronesFloracion
+    <%= f.input :patronesFloracion %>
   </div>
 
   <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.cantidad_nectar') %></h4>
@@ -190,8 +213,7 @@
   <%= f.input :addinfotiempofructi %>
 
   <div class="apartadoFicha ficha-Invasora">
-    b) Cambios en los patrones de fructificaci&oacute;n:
-    patronesFructificacion
+    <%= f.input :patronesFructificacion %>
   </div>
 
   <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.numero_frutos') %></h4>

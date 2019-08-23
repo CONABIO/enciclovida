@@ -340,6 +340,45 @@ es:
         justificacionPrioritaria: Justificación del estatus de especie prioritaria
         #  * *  S E C C I Ó N   N E C E S I D A D E S   I N F O  * *  #
         necesidadesEspecie: Diagnóstico sobre las necesidades de información de la especie
+        #  * *  S E C C I Ó N   A M B I E N T E * *  #
+        t_climas: Indicar el tipo de clima (solo si está reportado en la bibliografía)
+        t_tipovegetmundial: Tipos de vegetación en los que se desarrolla la especie en el mundo
+        t_climaexo: Clima
+        t_suelo: Indicar el tipo de suelo en el que se desarrolla la especie (solo si está reportado en la bibliografía)
+        t_geoforma: Geoforma
+        t_habitatAntropico: b) Hábitats antrópicos
+        t_tipoVegetacionSecundaria: c) Tipo de vegetación secundaria
+        t_ecorregionMarinaN1: a) Ecorregiones
+        t_zonaVida: i. Zona de vida
+        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+        t_habitoPlantas: Hábito en caso de plantas
+        t_alimentacion: Alimentación
+        t_forrajeo: Técnica de forrajeo
+        t_migracion: b) Estatus migratorio
+        t_tipo_migracion: Tipo de migración que realiza la especie
+        t_habito: c) Hábito
+        t_comintersel: Origen de los especímenes
+        t_proposito_com_int: Propósito del comercio
+        t_tipodispersion: Tipo de dispersión
+        t_structdisp: Estructura o individuo dispersado
+        #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
+        t_comnalsel: Origen de los especímenes
+        t_proposito_com: Propósito del comercio
+        #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
+        t_interacciones: Interacciones
+        #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
+        t_esquemamanejo: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
+        t_tipopesca: c) Indicar el tipo de aprovechamiento de la especie
+        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+        t_arregloespacialflores: i. Flores
+        t_arregloespacialindividuos: ii. Individuos
+        t_arregloespacialpoblaciones: iii. Poblaciones
+        t_vectorespolinizacion: f) Tipo de polinización
+        t_agentespolinizacion:  i. Vectores de polinización
+        t_arregloespacial: Arreglo espacial de los órganos reproductores
+        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+        t_sistapareamiento: c) Sistemas de apareamiento
+        t_sitioanidacion: j) Sitios de anidación o de crianza
       legislaciones:
         #  * *  S E C C I Ó N   C L A S I F I C A C I Ó N   Y  D E S .  * *  #
         nombreLegislacion: Nombre de legislación
@@ -383,13 +422,6 @@ es:
         vegetacion: a) Indicar el o los tipos de vegetación en los que se desarrolla la especie
         habitatAntropico: b) Hábitats antrópicos
         vegetacion_acuatica: Tipos de vegetación acuática especie
-        t_clima: Indicar el tipo de clima (solo si está reportado en la bibliografía)
-        t_tipovegetmundial: Tipos de vegetación en los que se desarrolla la especie en el mundo
-        t_climaexo: Clima
-        t_suelo: Indicar el tipo de suelo en el que se desarrolla la especie (solo si está reportado en la bibliografía)
-        t_geoforma: Geoforma
-        t_habitatAntropico: b) Hábitats antrópicos
-        t_tipoVegetacionSecundaria: c) Tipo de vegetación secundaria
         tipoAmbiente: Ambiente en donde se desarrolla la especie
         tipoVegetacion: a) Indicar el o los tipos de vegetación en los que se desarrolla la especie
         tipoVegetacion: Informaciónn adicional
@@ -433,8 +465,6 @@ es:
         humedadinicial: 'De:'
         humedadfinal: 'A:'
         infoaddhumedad: Información adicional
-        t_ecorregionMarinaN1: a) Ecorregiones
-        t_zonaVida: i. Zona de vida
         biotipos: ii. Biotopos
         descripcionSuelo: Información adicional
         descripcionGeoforma: Información adicional
@@ -454,7 +484,6 @@ es:
         parametrosPoblacionales: a) Parámetros poblacionales
         poblacionminviableinicial: b) Población mínima viable
         infoAdicionalInteraccion: Información adicional
-        t_interacciones: Interacciones
         poblacionminviableinicial: 'De:'
         poblacionminviablefinal: 'A:'
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
@@ -464,19 +493,11 @@ es:
         amenazaDirecta: Presiones o amenazas sobre la especie
       historiaNatural:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
-        t_habitoPlantas: Hábito en caso de plantas
-        t_alimentacion: Alimentación
         descripcionAlimentacion: Información adicional
         estrategiaTrofica: Estrategia trófica
         descripcionEstrofica: Información adicional
-        t_forrajeo: Técnica de forrajeo
         cambiar: Información adicional
         conducta: a) Características conductuales
-        t_migracion: b) Estatus migratorio
-        t_tipo_migracion: Tipo de migración que realiza la especie
-        t_habito: c) Hábito
-        t_comintersel: Origen de los especímenes
-        t_proposito_com_int: Propósito del comercio
         pais_importacion: País de importación
         cambiar: Información adicional
         tipopHabito: d) Periodo de actividad
@@ -490,8 +511,6 @@ es:
         mecanismosDefensa: h) Mecanismos de defensa
         infoaddmecdefensa: Información adicional
         tipoReproduccion: Tipo de reproducción
-        t_tipodispersion: Tipo de dispersión
-        t_structdisp: Estructura o individuo dispersado
         infoaddperiodoactividad: Información adicional
         tipoDispersion: Tipo de dispersión
         descTipoDispersion: Información adicional
@@ -507,8 +526,6 @@ es:
         #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
         ImportanciaBiologica: a) Importancia biológica
         funcionEcologica: b) Función ecológica
-        t_comnalsel: Origen de los especímenes
-        t_proposito_com: Propósito del comercio
         importanciaEconomica: Importancia económica
         comercioNal: Comercio nacional
         origenComNal: Origen de los especímenes
@@ -537,8 +554,6 @@ es:
         manejoAprov: Manejo, aprovechamiento y acciones de conservación
         descManejoAprov: a) Describir acciones de manejo y conservación de la especie
         tipoAprovEsp: b) Indicar el tipo de aprovechamiento de la especie
-        t_esquemamanejo: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
-        t_tipopesca: c) Indicar el tipo de aprovechamiento de la especie
         marcolegal: a) Regulaciones aplicables a la especie
         tipoVeda: b) Tipo de veda
       endemicas:
@@ -565,11 +580,8 @@ es:
       reproduccionVegetal:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
         descripcion: a) Generalidades
-        t_arregloespacialflores: i. Flores
-        t_arregloespacialindividuos: ii. Individuos
-        t_arregloespacialpoblaciones: iii. Poblaciones
-        t_vectorespolinizacion: f) Tipo de polinización
-        t_agentespolinizacion:  i. Vectores de polinización
+        patronesFructificacion: b) Cambios en los patrones de fructificación
+        patronesFloracion: Cambios en los patrones de floración
         arregloEspacial: Tipos de expresión sexual
         descripcionArregloespacial: Información adicional
         aislamientoOrganos: c) Aislamiento temporal o espacial de los órganos reproductores
@@ -615,10 +627,10 @@ es:
         #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
         descripcion: a) Generalidades
         dimorfismoSexual: b) Dimorfismo sexual (Indicar sí o no)
+        Cuidadoparentalpor: Cuidado parental por
         additionalInfoDimorfiasmo: Información adicional
         coloracion: Dimorfismo sexual en coloración
         ornamentacion: Dimorfismo sexual en ornamentación
-        t_sistapareamiento: c) Sistemas de apareamiento
         sistemaApareamiento: c) Sistemas de apareamiento
         descripcionSistema: Información adicional
         noEventos: d) Número de eventos reproductivos
@@ -629,7 +641,6 @@ es:
         duracionVidaRepro: h) Duración de vida reproductiva
         frecuenciaApareamineto: i) Epoca del año y frecuencia de apareamiento
         sitioAnidacion: j) Sitios de anidación o de crianza
-        t_sitioanidacion: j) Sitios de anidación o de crianza
         descripcionSitioAnidacion: Información adicional
         noHuevosCrias: k) Número de huevos o crias
         cuidadoParental: l) Cuidado parental
@@ -649,6 +660,15 @@ es:
 
       invasividad:
         #  * *  S E C C I Ó N   I N V A S O R A S  * *  #
+        t_naturalizacionsei: Naturalización
+        t_mecanismos: Mecanismos de impacto
+        t_efectoimpactosei: Efectos del impacto
+        t_intensidadimpactosei: Intensidad del impacto
+        t_especiesasociadassei: Presencia de especies asociadas
+        t_plasticidadsei: Plasticidad ambiental y tolerancia
+        t_platenciasei: Periodo de latencia
+        t_seguridadsei: Riesgo por consumo
+        t_enfermedadessei: Enfermedades
         estadoPoblaciones: Estado de la población
         persistenciaPob: Persistencia de la población
         abundanciaPob: Abundancia de la población
@@ -663,6 +683,7 @@ es:
         MERI: MERI
         otro: Otro AR
 
+
         rutas:
           #  * *  S E C C I Ó N   I N V A S O R A S  * *  #
           categoriaruta: Categoría de ruta
@@ -673,9 +694,14 @@ es:
       metadatos:
         uriIcono: Uri Icono
         nombre: Nombre metadato
-        Uri: Uri
+        uri: Uri
         titulo: Título
         fechaPublicacion: Fecha de publicación
+        asiciado:
+          rol: Capturista
+          tipoAsociacion: Tipo de asociación
+
+
       responsable:
         nombre: Nombre del responsable
         apellido: Apellido del responsable
@@ -683,9 +709,7 @@ es:
         nombrePuesto: Nombre del puesto
       organizacion:
         nombre: Nombre de la organización
-      asiciado:
-        rol: Capturista
-        tipoAsociacion: Tipo de asociación
+
       pais:
         nombrepais: Nombre del país
       ciudad:
