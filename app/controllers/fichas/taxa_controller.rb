@@ -83,15 +83,13 @@ class Fichas::TaxaController < Fichas::FichasController
           :resumenEspecie, :descEspecie, :especiesSmilares, :origen, :descripcionOrigen, :presencia, :adicinalPresencia, :invasora, :adicionalInvasora,
           :largoinicialhembras, :largofinalhembras, :edadinicialhembras, :edadfinalhembras, :tiempoedadhembra, :pesoinicialhembras, :pesofinalhembras,
           :largoinicialmachos, :largofinalmachos, :edadinicialmachos, :edadfinalmachos, :tiempoedadmacho, :pesoinicialmachos, :pesofinalmachos,
-
           # SECCIÓN ESPECIES PRIORITARIAS
           :prioritaria, :publicadaEn, :nivelPrioridad, :justificacionPrioritaria,
-
           # SECCIÓN NECESIDADES
           :necesidadesEspecie,
 
           :id, :_destroy,
-
+          # OK
           legislaciones_attributes: [
               :legislacionId,
               :especieId,
@@ -101,7 +99,7 @@ class Fichas::TaxaController < Fichas::FichasController
               :id,
               :_destroy
           ],
-
+          # NO EN LOS _IDS
           distribuciones_attributes: [
               { pai_ids: [] },
               { estado_ids: [] },
@@ -121,7 +119,7 @@ class Fichas::TaxaController < Fichas::FichasController
               :id,
               :_destroy
           ],
-
+          # OK
           distribucion_historica_attributes: [
               :especieId,
               :regLoc,
@@ -132,7 +130,7 @@ class Fichas::TaxaController < Fichas::FichasController
               :id,
               :_destroy
           ],
-
+          # OK
           endemicas_attributes: [
               :endemicaMexico,
               :endemicaA,
@@ -140,8 +138,7 @@ class Fichas::TaxaController < Fichas::FichasController
               :id,
               :_destroy
           ],
-
-
+          # NO EN LOS _IDS
           habitats_attributes: [
               { ecorregion_ids: [] },
               { ecosistema_ids: [] },
@@ -193,12 +190,11 @@ class Fichas::TaxaController < Fichas::FichasController
               :amplitudmareasinicial,
               :amplitudmareasfinal,
               :infoaddamplitudmareas,
-              #:tipoVegetacionexo,
               :uso,
               :id,
               :_destroy
           ],
-
+=begin
           historiaNatural_attributes: [
               :tipoReproduccion,
               :estrategiaTrofica,
@@ -228,6 +224,72 @@ class Fichas::TaxaController < Fichas::FichasController
               :_destroy
           ],
 
+          reproduccionAnimal_attributes: [
+            :dimorfismoSexual,
+            :descripcion,
+            :additionalInfoDimorfiasmo,
+            :coloracion,
+            :ornamentacion,
+            :descripcionSistema,
+            :noEventos,
+            :descripcionNoEventos,
+            :tiempoentrecriasinicial,
+            :tiempoentrecriasfinal,
+            :tipoFecundacion,
+            :descripcionTipoFec,
+            :edadPrimeraRepro,
+            :duracionVidaRepro,
+            :frecuenciaApareamineto,
+            :noHuevosCrias,
+            :cuidadoParentalPor,
+            :desCuidadoParental,
+            :tiempoCuidadoParental,
+          ],
+
+          reproduccionVegetal_attributes: [
+            :descripcion,
+            :aislamientoOrganos,
+            :descAislaOrganos,
+            :sistReproAsexuales,
+            :DescsistReproAsexuales,
+            :fecuandacion,
+            :descFecundacion,
+            :aperturaFlor,
+            :descApertura,
+            :tiempoFloracion,
+            :addinfolongevidadflor,
+            :mesInicio,
+            :mesFinal,
+            :addinfotiempoflora,
+            :cantidadnectarinicial,
+            :cantidadnectarfinal,
+            :addinfocantidadnectar,
+            :cantidadpolen,
+            :mesInicialFructi,
+            :mesFinalFructi,
+            :addinfotiempofructi,
+            :nofrutosinicial,
+            :nofrutosfinal,
+            :caracFruto,
+            :descCaracFruto,
+            :noEventos,
+            :descNoEventos,
+            :nosemillasinicial,
+            :nosemillasfinal,
+            :tamanioSemilla,
+            :caracToxica,
+            :germinacioninicial,
+            :germinacionfinal,
+            :infoaddgerminacion,
+            :plantulasinicial,
+            :plantulasfinal,
+            :infoaddplantulas,
+            :arregloEspacial,
+            :descripcionArregloespacial,
+            :agentesPolinizacion,
+            :descAgentesPol
+          ],
+
           productocomercio_nal_attributes: [
               #:nacionalinternacional,
               #:tipoproducto,
@@ -253,7 +315,7 @@ class Fichas::TaxaController < Fichas::FichasController
               :id,
               :_destroy
           ],
-
+=end
           conservacion_attributes: [
               #:estadoConser,
               #:marcolegal,
@@ -582,78 +644,6 @@ historiaNatural_attributes: [
 ]
 
 
-reproduccionAnimal_attributes: [
-  :t_sistapareamiento_ids,
-  :t_sitioanidacion_ids,
-  :dimorfismoSexual,
-  :descripcion,
-  :additionalInfoDimorfiasmo,
-  :coloracion,
-  :ornamentacion,
-  :descripcionSistema,
-  :noEventos,
-  :descripcionNoEventos,
-  :tiempoentrecriasinicial,
-  :tiempoentrecriasfinal,
-  :tipoFecundacion,
-  :descripcionTipoFec,
-  :edadPrimeraRepro,
-  :duracionVidaRepro,
-  :frecuenciaApareamineto,
-  :noHuevosCrias,
-  :cuidadoParentalPor,
-  :desCuidadoParental,
-  :tiempoCuidadoParental,
-]
-
-reproduccionVegetal_attributes: [
-  :t_arregloespacialflore_ids,
-  :t_arregloespacialindividuo_ids,
-  :t_arregloespacialpoblacione_ids,
-  :t_vectorespolinizacion_ids,
-  :t_agentespolinizacion_ids,
-  :descripcion,
-  :aislamientoOrganos,
-  :descAislaOrganos,
-  :sistReproAsexuales,
-  :DescsistReproAsexuales,
-  :fecuandacion,
-  :descFecundacion,
-  :aperturaFlor,
-  :descApertura,
-  :tiempoFloracion,
-  :addinfolongevidadflor,
-  :mesInicio,
-  :mesFinal,
-  :addinfotiempoflora,
-  :cantidadnectarinicial,
-  :cantidadnectarfinal,
-  :addinfocantidadnectar,
-  :cantidadpolen,
-  :mesInicialFructi,
-  :mesFinalFructi,
-  :addinfotiempofructi,
-  :nofrutosinicial,
-  :nofrutosfinal,
-  :caracFruto,
-  :descCaracFruto,
-  :noEventos,
-  :descNoEventos,
-  :nosemillasinicial,
-  :nosemillasfinal,
-  :tamanioSemilla,
-  :caracToxica,
-  :germinacioninicial,
-  :germinacionfinal,
-  :infoaddgerminacion,
-  :plantulasinicial,
-  :plantulasfinal,
-  :infoaddplantulas,
-  :arregloEspacial,
-  :descripcionArregloespacial,
-  :agentesPolinizacion,
-  :descAgentesPol
-]
 
 =end
 
