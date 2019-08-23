@@ -4,7 +4,7 @@
   <%= f.input :descripcion %>
 
   <div class="apartadoFicha ficha-Invasora">
-    < %= f.association :t_arregloespacial,
+    <%= f_taxon.association :t_arregloespacial,
         label_method: :descn1,
         value_method: :idopcion,
         collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacial]),
@@ -23,7 +23,7 @@
   <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
 
     <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.exp_sexual') %></h4>
-    < %= f.association :t_arregloespacialflores,
+    <%= f_taxon.association :t_arregloespacialflores,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialflores]),
@@ -36,7 +36,7 @@
                           'data-selected-text-format': 'count > 3'
                       }
     %>
-    < %= f.association :t_arregloespacialindividuos,
+    <%= f_taxon.association :t_arregloespacialindividuos,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialindividuos]),
@@ -49,7 +49,7 @@
                           'data-selected-text-format': 'count > 3'
                       }
     %>
-    < %= f.association :t_arregloespacialpoblaciones,
+    <%= f_taxon.association :t_arregloespacialpoblaciones,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialpoblaciones]),
@@ -61,6 +61,7 @@
                           'title': t('general.seleccionar_opciones'),
                           'data-selected-text-format': 'count > 3'
                       }
+    %>
     <%
       parametros = {:acceso => @taxon.infoarresp, :modelo => f_taxon, :association => :infoarresp, :titulo => "Información adicional", :el_div => "infoarresp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoarresp]}
       agrega_info_adicional(parametros)
@@ -74,7 +75,7 @@
   </div>
 
 
-  < %= f.input :aislamientoOrganos,
+  <%= f.input :aislamientoOrganos,
               collection: Fichas::Reproduccionvegetal::AISLAMIENTO_ORGANOS_REPROD,
               :as => :select,
               input_html: {
@@ -83,7 +84,7 @@
                   'title': t('general.seleccionar_opcion')
               }
   %>
-  < %= f.input :descAislaOrganos %>
+  <%= f.input :descAislaOrganos %>
 
   <%= f.input :sistReproAsexuales,
               collection: Fichas::Reproduccionvegetal::SISTEMAS_REPROD_ASEXUALES,
@@ -107,7 +108,7 @@
   %>
   <%= f.input :descFecundacion %>
 
-  < %= f.association :t_vectorespolinizacion,
+  <%= f_taxon.association :t_vectorespolinizacion,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:vectorespolinizacion]),
@@ -120,7 +121,7 @@
                         'data-selected-text-format': 'count > 3'
                     }
   %>
-  < %= f.association :t_agentespolinizacion,
+  <%= f_taxon.association :t_agentespolinizacion,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:agentespolinizacion]),

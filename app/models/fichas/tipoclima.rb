@@ -5,7 +5,4 @@ class Fichas::Tipoclima < Ficha
 
 	has_many :habitats, class_name: 'Fichas::Habitat'
 
-	has_many :caracteristicaEespecie,-> {where('caracteristicasespecie.idpregunta' => 4)}, class_name: 'Fichas::Caracteristicasespecie', :foreign_key => "especieId"
-	has_many :taxon, :class_name => 'Fichas::Taxon', :through => :caracteristicaEespecie
-
 end

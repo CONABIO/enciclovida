@@ -87,7 +87,7 @@
     <% end %>
   </div>
 
-  < %= f.association :t_naturalizacionsei,
+  <%= f_taxon.association :t_naturalizacionsei,
         label_method: :descn1,
         value_method: :idopcion,
         collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:naturalizacionsei]),
@@ -197,7 +197,7 @@
     <% end %>
   </div>
 
-  < %= f.association :t_mecanismos,
+  <%= f_taxon.association :t_mecanismos,
       label_method: :descn1,
       value_method: :idopcion,
       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:mecanismos]),
@@ -221,7 +221,7 @@
     <% end %>
   </div>
 
-  < %= f.association :t_efectoimpactosei,
+  <%= f_taxon.association :t_efectoimpactosei,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:efectoimpactosei]),
@@ -245,7 +245,7 @@
     <% end %>
   </div>
 
-  < %= f.association :t_intensidadimpactosei,
+  <%= f_taxon.association :t_intensidadimpactosei,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:intensidadimpactosei]),
@@ -395,7 +395,7 @@
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_invasividad.invasividad') %></h3>
 
-  < %= f.association :t_especiesasociadassei,
+  <%= f_taxon.association :t_especiesasociadassei,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:especiesasociadassei]),
@@ -419,7 +419,7 @@
     <% end %>
   </div>
 
-  < %= f.association :t_plasticidadsei,
+  <%= f_taxon.association :t_plasticidadsei,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:plasticidadsei]),
@@ -473,7 +473,7 @@
     <% end %>
   </div>
 
-  <%= f.association :t_platenciasei,
+  <%= f_taxon.association :t_platenciasei,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:platenciasei]),
@@ -497,7 +497,7 @@
     <% end %>
   </div>
 
-  < %= f.association :t_seguridadsei,
+  <%= f_taxon.association :t_seguridadsei,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:seguridadsei]),
@@ -533,7 +533,7 @@
     <% end %>
   </div>
 
-  < %= f.association :t_enfermedadessei,
+  <%= f_taxon.association :t_enfermedadessei,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:enfermedadessei]),

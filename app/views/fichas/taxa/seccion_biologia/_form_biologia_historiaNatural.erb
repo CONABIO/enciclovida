@@ -1,6 +1,6 @@
 <div class='nested-fields'>
 
-  < %= f.association :t_habitoPlantas,
+  <%= f_taxon.association :t_habitoPlantas,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:habitoPlantas]),
@@ -16,7 +16,7 @@
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.alimentacion') %></h3>
   <% c_alimentacion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:alimentacion]).group_by(&:descn1) %>
-  < %= f.association :t_alimentacion,
+  <%= f_taxon.association :t_alimentacion,
                     :as => :grouped_select,
                     collection: c_alimentacion,
                     :group_method => :last,
@@ -59,7 +59,7 @@
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.forrajeo') %></h3>
 
   <% c_forrajeo = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:forrajeo]) %>
-  < %= f.association :t_forrajeo,
+  <%= f_taxon.association :t_forrajeo,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: c_forrajeo,
@@ -86,7 +86,7 @@
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.conducta') %></h3>
   <%= f.input :conducta %>
   <% c_migracion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:migracion]) %>
-  < %= f.association :t_migracion,
+  <%= f_taxon.association :t_migracion,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: c_migracion,
@@ -100,7 +100,7 @@
                     }
   %>
   <% c_tipo_migracion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipo_migracion]) %>
-  < %= f.association :t_tipo_migracion,
+  <%= f_taxon.association :t_tipo_migracion,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: c_tipo_migracion,
@@ -115,7 +115,7 @@
   %>
 
   <% c_habito = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:habito]) %>
-  < %= f.association :t_habito,
+  <%= f_taxon.association :t_habito,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: c_habito,
@@ -168,7 +168,7 @@
   <hr class="espacio_ficha">
 
   <div id="opcion-reprodAnimal">
-    <#%=
+    <%#=
       link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar reproduccionAnimal'.html_safe, f, :reproduccionAnimal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodAnimal', 'data-association-insertion-node' => '#opcion-reprodAnimal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodAnimal',
                               style: 'display: inline;')
     %>
@@ -187,7 +187,7 @@
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.dispersion') %></h3>
   <% c_tipodispersion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipodispersion]) %>
-  < %= f.association :t_tipodispersion,
+  <%= f_taxon.association :t_tipodispersion,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: c_tipodispersion,
@@ -211,7 +211,7 @@
   </div>
 
   <% c_structdisp = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:structdisp]) %>
-  < %= f.association :t_structdisp,
+  <%= f_taxon.association :t_structdisp,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: c_structdisp,
@@ -237,14 +237,6 @@
   <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.distancia_dispersion') %></h4>
   <%= f.input :distanciadispercioninicial %>
   <%= f.input :distanciadispercionfinal %>
-
-  <div class="apartadoFicha ficha-Invasora">
-    Riesgo de dispersión
-    generamultiselectn1($Udispersionsei, "dispersionsei", "39","dispersion ")
-    observacionescarac WHERE especieId=$IdResev and idpregunta = 39";
-  </div>
-
-
 
 </div>
 

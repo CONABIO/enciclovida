@@ -12,7 +12,7 @@
     <% end %>
   </div>
 
-  <#%= f.association :t_esquemamanejo,
+  <%= f_taxon.association :t_esquemamanejo,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:esquemamanejo]),
@@ -26,7 +26,7 @@
                     }
   %>
 
-  <#%= f.association :t_tipopesca,
+  <%= f_taxon.association :t_tipopesca,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipopesca]),
@@ -45,7 +45,7 @@
   <%= f.input :tipoVeda, :as => :select, collection: Fichas::Conservacion::TIPO_VEDA, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
 
   <div style="display: none;">
-    <#%= f.association :t_regioncaptura,
+    <%= f_taxon.association :t_regioncaptura,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:regioncaptura]),
@@ -61,7 +61,5 @@
     <%= f.input :descManejoAprov %>
     <%= f.input :tipoAprovEsp, :as => :select, collection: Fichas::Conservacion::TIPO_APROVECHAMIENTO, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opciones')} %>
   </div>
-
-
 
 </div>

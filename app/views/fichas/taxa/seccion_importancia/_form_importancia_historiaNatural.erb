@@ -17,7 +17,7 @@
       <% end %>
     </div>
 
-    <#%= f.association :t_comnalsel,
+    <%= f_taxon.association :t_comnalsel,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:comnalsel]),
@@ -31,7 +31,7 @@
                       }
     %>
 
-    <#%= f.association :t_proposito_com,
+    <%= f_taxon.association :t_proposito_com,
                       label_method: ->(obj){
                         obj.descn2.blank? ? detalle = obj.descn1 : detalle = "#{obj.descn1} -> #{obj.descn2}"
                         detalle
@@ -59,7 +59,7 @@
       <% end %>
     </div>
 
-    <#%= f.association :t_comintersel,
+    <%= f_taxon.association :t_comintersel,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:comintersel]),
@@ -73,7 +73,7 @@
                       }
     %>
 
-    <#%= f.association :t_proposito_com_int,
+    <%= f_taxon.association :t_proposito_com_int,
                       label_method: ->(obj){
                         obj.descn2.blank? ? detalle = obj.descn1 : detalle = "#{obj.descn1} -> #{obj.descn2}"
                         detalle
@@ -90,7 +90,7 @@
                       }
     %>
 
-    <#%= f.association :pais_importacion,
+    <%= f.association :pais_importacion,
                       label_method: :nombrepais,
                       value_method: :paisId,
                       :as => :select,
@@ -109,7 +109,7 @@
   <%= f.input :descComIlicito %>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_importancia.importancia_cultural') %></h3>
-  <#%= f.association :culturaUsos,
+  <%= f.association :culturaUsos,
                     :as => :grouped_select,
                     collection:Fichas:: Culturausos.all.group_by(&:descripcion),
                     :group_method => :last,
