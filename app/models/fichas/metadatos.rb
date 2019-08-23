@@ -4,6 +4,7 @@ class Fichas::Metadatos < Ficha
 	self.primary_keys = :metadatosId,  :especieId
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
+
 	has_many :relMetadatosAsociados , class_name: 'Fichas::Relmetadatosasociado', :foreign_key => 'asociadoId'
 	has_many :asociado, class_name: 'Fichas::Asociado', through: :relMetadatosAsociados
 

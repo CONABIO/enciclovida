@@ -8,20 +8,23 @@ class Fichas::Taxon < Ficha
 	has_one :habitats, class_name: 'Fichas::Habitat', :foreign_key => 'especieId', inverse_of: :taxon
 
 	has_many :distribuciones, :class_name => 'Fichas::Distribucion', :foreign_key => 'especieId', inverse_of: :taxon
-	has_many :distribucion_historica, class_name: 'Fichas::Distribucionhistorica', :foreign_key => "especieId", inverse_of: :taxon
 	has_many :endemicas, :class_name => 'Fichas::Endemica', :foreign_key => 'especieId', inverse_of: :taxon
-  has_one :historiaNatural, class_name: 'Fichas::Historianatural', :foreign_key => 'especieId', inverse_of: :taxon
-  has_many :productocomercio_nal,-> {where('nacionalinternacional = "nacional"')}, class_name: 'Fichas::Productocomercio', :foreign_key => 'especieId', inverse_of: :taxon
+	has_one :historiaNatural, class_name: 'Fichas::Historianatural', :foreign_key => 'especieId', inverse_of: :taxon
+	has_many :conservacion, :class_name => 'Fichas::Conservacion', :foreign_key => 'especieId', inverse_of: :taxon
+	has_many :demografiaAmenazas, :class_name=> 'Fichas::Demografiaamenazas', :foreign_key => 'especieId', inverse_of: :taxon
+	has_one :invasividad, class_name: 'Fichas::Invasividad', :foreign_key => 'especieId', inverse_of: :taxon
+	has_many :distribucion_historica, class_name: 'Fichas::Distribucionhistorica', :foreign_key => "especieId", inverse_of: :taxon
+
+
+	has_many :productocomercio_nal,-> {where('nacionalinternacional = "nacional"')}, class_name: 'Fichas::Productocomercio', :foreign_key => 'especieId', inverse_of: :taxon
   has_many :productocomercio_inter,-> {where('nacionalinternacional = "internacional"')}, class_name: 'Fichas::Productocomercio', :foreign_key => 'especieId', inverse_of: :taxon
-  has_many :conservacion, :class_name => 'Fichas::Conservacion', :foreign_key => 'especieId', inverse_of: :taxon
-  has_many :demografiaAmenazas, :class_name=> 'Fichas::Demografiaamenazas', :foreign_key => 'especieId', inverse_of: :taxon
   has_many :referenciasBibliograficas, class_name: 'Fichas::Referenciabibliografica', :foreign_key => 'especieId', inverse_of: :taxon
-	has_one :invasividad, class_name: 'Fichas::Invasividad', :foreign_key => 'especieId'
-	has_many :legislaciones, class_name: 'Fichas::Legislacion', :foreign_key => 'especieId'
-	has_many :metadatos, class_name: 'Fichas::Metadatos', :foreign_key => 'especieId'
-	has_one :nombreComun, class_name: 'Fichas::Nombrecomun', :foreign_key => 'especieId'
-	has_many :productoComercios, class_name: 'Fichas::Productocomercio', :foreign_key => 'especieId'
-	has_many :sinonimos , class_name: 'Fichas::Sinonimo', :foreign_key => 'especieId'
+	has_many :legislaciones, class_name: 'Fichas::Legislacion', :foreign_key => 'especieId', inverse_of: :taxon
+	has_many :metadatos, class_name: 'Fichas::Metadatos', :foreign_key => 'especieId', inverse_of: :taxon
+	has_many :productoComercios, class_name: 'Fichas::Productocomercio', :foreign_key => 'especieId', inverse_of: :taxon
+
+	has_many :sinonimos , class_name: 'Fichas::Sinonimo', :foreign_key => 'especieId', inverse_of: :taxon
+	has_one :nombreComun, class_name: 'Fichas::Nombrecomun', :foreign_key => 'especieId', inverse_of: :taxon
 
 
 	accepts_nested_attributes_for :habitats, allow_destroy: true
@@ -46,7 +49,7 @@ class Fichas::Taxon < Ficha
 	# A partir de aquí se obtienen las carácterísticas:
 	has_many :caracteristicas, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => :especieId, inverse_of: :taxon
 
-	# DESDE LA SECCION HISTORIA NATURAL:
+	# DESDE HISTORIA NATURAL:
 	has_many :t_habitoPlantas, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicas
 	has_many :t_alimentacion, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicas
 	has_many :t_forrajeo, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicas
@@ -325,7 +328,4 @@ end
 	accepts_nested_attributes_for :t_esquemamanejo, allow_destroy: true
 	accepts_nested_attributes_for :t_tipopesca, allow_destroy: true
 	accepts_nested_attributes_for :t_regioncaptura, allow_destroy: true
-
-
-
 =end
