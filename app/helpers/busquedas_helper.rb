@@ -82,4 +82,28 @@ module BusquedasHelper
       ''
     end
   end
+
+  # Para las descargas
+  def campoCorreo(recurso)
+    html = ''
+
+    if usuario_signed_in?
+      html << text_field_tag('correo-' + recurso, current_usuario.email, class: 'form-control hidden', placeholder: 'correo ...')
+    else
+      html << label_tag('correo-'+recurso, 'Correo electrónico ', class: 'control-label')
+      html << text_field_tag('correo-'+recurso, nil, class: 'form-control', placeholder: 'correo ...')
+    end
+
+    html
+  end
+
+  # El boton de las descargas
+  def botonDescarga(recurso)
+    if usuario_signed_in?
+      "<button type='button' class='btn btn-success' id='boton-descarga-#{recurso}'>Enviar</button>"
+    else
+      "<button type='button' class='btn btn-success' id='boton-descarga-#{recurso}' disabled='disabled'>Enviar</button>"
+    end
+  end
+
 end

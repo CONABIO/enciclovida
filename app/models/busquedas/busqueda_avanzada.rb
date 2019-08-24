@@ -36,7 +36,6 @@ class BusquedaAvanzada < Busqueda
   # REVISADO: Regresa en formato de cheklist o para consulta en busqueda avanzada
   def resultados
     if params[:checklist] == '1'
-      self.taxones = taxones.datos_arbol_con_filtros
       checklist
     else
       self.taxones = taxones.select_basico.order(:nombre_cientifico)
@@ -51,6 +50,16 @@ class BusquedaAvanzada < Busqueda
         end
       end
     end  # End checklist
+  end
+
+
+  private
+
+  def checklist
+    self.taxones = taxones.select_ancestry
+    ancestry = taxones.map(&:ancestry)
+
+    puts ancestros.inspect + '--------------'
   end
 
 end

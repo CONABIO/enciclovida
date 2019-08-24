@@ -222,18 +222,7 @@ class BusquedasController < ApplicationController
     lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
     @atributos = columnas
 
-    if @totales <= 200  # Si son menos de 200, es optimo para bajarlo en vivo
-      # el nombre de la lista es cuando la bajo ya que no metio un correo
-      lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
-      @taxones = lista.datos_descarga(@taxones)
-
-      if Rails.env.production?  # Solo en produccion la guardo
-        render(xlsx: 'resultados') if lista.save
-      else
-        render xlsx: 'resultados'
-      end
-
-    elsif @totales > 200  # Creamos el excel y lo mandamos por correo por medio de delay_job, mas de 200
+    if @totales > 0  # Creamos el excel y lo mandamos por correo por medio de delay_job, mas de 200
       # Para saber si el correo es correcto y poder enviar la descarga
       if Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
         # el nombre de la lista es cuando la solicito? y el correo
@@ -264,16 +253,16 @@ class BusquedasController < ApplicationController
       next unless v.present?
 
       case k
-        when 'id', 'nombre', 'por_pagina'
-          @setParams[k] = v
-        when 'edo_cons', 'dist', 'prior', 'estatus', 'uso', 'ambiente', 'reg'
-          if @setParams[k].present?
-            @setParams[k] << v.map{ |x| x.parameterize if x.present?}
-          else
-            @setParams[k] = v.map{ |x| x.parameterize if x.present?}
-          end
+      when 'id', 'nombre', 'por_pagina'
+        @setParams[k] = v
+      when 'edo_cons', 'dist', 'prior', 'estatus', 'uso', 'ambiente', 'reg'
+        if @setParams[k].present?
+          @setParams[k] << v.map{ |x| x.parameterize if x.present?}
         else
-          next
+          @setParams[k] = v.map{ |x| x.parameterize if x.present?}
+        end
+      else
+        next
       end
     end
   end
