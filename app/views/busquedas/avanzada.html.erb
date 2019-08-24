@@ -25,7 +25,7 @@
 
 <% if params[:action] != 'resultados' %>
   <% content_for(:extra_title_header) do %>
-    <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'busqueda-avanzada', titulo: 'Búsqueda avanzada', subtitulo: '(Selecciona un ícono o una combinación de íconos y presiona buscar)'} %>
+    <%= render :partial => 'shared_b4/tituloBuscador', locals: {icon_class: 'busqueda-avanzada', titulo: 'Búsqueda avanzada', subtitulo: '(Selecciona un ícono o una combinación de íconos y presiona buscar)'} %>
   <% end %>
 <% end %>
 
