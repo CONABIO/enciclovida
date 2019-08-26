@@ -4,7 +4,7 @@ class Fichas::Caracteristicasespecie < Ficha
 	self.primary_keys = :especieId
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
-	belongs_to :opciones_pregunta, :class_name => 'Fichas::Cat_Preguntas', foreign_key: :idopcion, primary_key: :idopcion
+	belongs_to :opciones_preguntas, :class_name => 'Fichas::Cat_Preguntas', foreign_key: :idopcion, primary_key: :idopcion
 
 	OPCIONES = {
 			:habitatAntropico => 1,
@@ -60,9 +60,6 @@ end
 
 
 =begin
-
-
-
 
 	#:source => <name>'
 	belongs_to :t_climas,-> {where('cat_preguntas.idpregunta = ?', 4)}, :class_name => 'Fichas::Cat_Preguntas', foreign_key: :idopcion, primary_key: :idopcion

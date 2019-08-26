@@ -89,6 +89,10 @@ class Fichas::TaxaController < Fichas::FichasController
           :necesidadesEspecie,
 
           :id, :_destroy,
+
+          # Opciones multiples que se agregan a Caracteristicaesoecie
+          opciones_pregunta_ids: [],
+
           # OK
           legislaciones_attributes: [
               :legislacionId,
@@ -335,7 +339,7 @@ class Fichas::TaxaController < Fichas::FichasController
 
 
 
-          # Opciones multiples que se agregan a Caracteristicaesoecie
+
           #t_clima_ids: [],
           #t_habitatAntropico_ids: [],
           #t_geoforma_ids: [],

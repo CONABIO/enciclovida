@@ -124,8 +124,57 @@ es:
       compatibilidad_zona_origen: Compatibilidad con zona de origen
       invasividad: Invasividad
       result_anali_riesgo_esp: Resultados de análisis de riesgo para la especie
-
     # *  - - - - - - - - - - - - - - - - - - - - * #
+  opciones_multiples:
+   #  * *  S E C C I Ó N   A M B I E N T E * *  #
+    t_climas: Indicar el tipo de clima (solo si está reportado en la bibliografía)
+    t_tipovegetmundial: Tipos de vegetación en los que se desarrolla la especie en el mundo
+    t_climaexo: Clima
+    t_suelo: Indicar el tipo de suelo en el que se desarrolla la especie (solo si está reportado en la bibliografía)
+    t_geoforma: Geoforma
+    t_habitatAntropico: b) Hábitats antrópicos
+    t_tipoVegetacionSecundaria: c) Tipo de vegetación secundaria
+    t_ecorregionMarinaN1: a) Ecorregiones
+    t_zonaVida: i. Zona de vida
+    #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+    t_habitoPlantas: Hábito en caso de plantas
+    t_alimentacion: Alimentación
+    t_forrajeo: Técnica de forrajeo
+    t_migracion: b) Estatus migratorio
+    t_tipo_migracion: Tipo de migración que realiza la especie
+    t_habito: c) Hábito
+    t_comintersel: Origen de los especímenes
+    t_proposito_com_int: Propósito del comercio
+    t_tipodispersion: Tipo de dispersión
+    t_structdisp: Estructura o individuo dispersado
+    #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
+    t_comnalsel: Origen de los especímenes
+    t_proposito_com: Propósito del comercio
+    #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
+    t_interacciones: Interacciones
+    #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
+    t_esquemamanejo: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
+    t_tipopesca: c) Indicar el tipo de aprovechamiento de la especie
+    #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+    t_arregloespacialflores: i. Flores
+    t_arregloespacialindividuos: ii. Individuos
+    t_arregloespacialpoblaciones: iii. Poblaciones
+    t_vectorespolinizacion: f) Tipo de polinización
+    t_agentespolinizacion:  i. Vectores de polinización
+    t_arregloespacial: Arreglo espacial de los órganos reproductores
+    #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
+    t_sistapareamiento: c) Sistemas de apareamiento
+    t_sitioanidacion: j) Sitios de anidación o de crianza
+    #  * *  S E C C I Ó N   I N V A S O R A S * *  #
+    t_naturalizacionsei: Naturalización
+    t_mecanismos: Mecanismos de impacto
+    t_efectoimpactosei: Efectos del impacto
+    t_intensidadimpactosei: Intensidad del impacto
+    t_especiesasociadassei: Presencia de especies asociadas
+    t_plasticidadsei: Plasticidad ambiental y tolerancia
+    t_platenciasei: Periodo de latencia
+    t_seguridadsei: Riesgo por consumo
+    t_enfermedadessei: Enfermedades
   simple_form:
     prompts:
       fichas_taxon:
@@ -340,45 +389,6 @@ es:
         justificacionPrioritaria: Justificación del estatus de especie prioritaria
         #  * *  S E C C I Ó N   N E C E S I D A D E S   I N F O  * *  #
         necesidadesEspecie: Diagnóstico sobre las necesidades de información de la especie
-        #  * *  S E C C I Ó N   A M B I E N T E * *  #
-        t_climas: Indicar el tipo de clima (solo si está reportado en la bibliografía)
-        t_tipovegetmundial: Tipos de vegetación en los que se desarrolla la especie en el mundo
-        t_climaexo: Clima
-        t_suelo: Indicar el tipo de suelo en el que se desarrolla la especie (solo si está reportado en la bibliografía)
-        t_geoforma: Geoforma
-        t_habitatAntropico: b) Hábitats antrópicos
-        t_tipoVegetacionSecundaria: c) Tipo de vegetación secundaria
-        t_ecorregionMarinaN1: a) Ecorregiones
-        t_zonaVida: i. Zona de vida
-        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
-        t_habitoPlantas: Hábito en caso de plantas
-        t_alimentacion: Alimentación
-        t_forrajeo: Técnica de forrajeo
-        t_migracion: b) Estatus migratorio
-        t_tipo_migracion: Tipo de migración que realiza la especie
-        t_habito: c) Hábito
-        t_comintersel: Origen de los especímenes
-        t_proposito_com_int: Propósito del comercio
-        t_tipodispersion: Tipo de dispersión
-        t_structdisp: Estructura o individuo dispersado
-        #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
-        t_comnalsel: Origen de los especímenes
-        t_proposito_com: Propósito del comercio
-        #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
-        t_interacciones: Interacciones
-        #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
-        t_esquemamanejo: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
-        t_tipopesca: c) Indicar el tipo de aprovechamiento de la especie
-        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
-        t_arregloespacialflores: i. Flores
-        t_arregloespacialindividuos: ii. Individuos
-        t_arregloespacialpoblaciones: iii. Poblaciones
-        t_vectorespolinizacion: f) Tipo de polinización
-        t_agentespolinizacion:  i. Vectores de polinización
-        t_arregloespacial: Arreglo espacial de los órganos reproductores
-        #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
-        t_sistapareamiento: c) Sistemas de apareamiento
-        t_sitioanidacion: j) Sitios de anidación o de crianza
       legislaciones:
         #  * *  S E C C I Ó N   C L A S I F I C A C I Ó N   Y  D E S .  * *  #
         nombreLegislacion: Nombre de legislación
@@ -660,15 +670,6 @@ es:
 
       invasividad:
         #  * *  S E C C I Ó N   I N V A S O R A S  * *  #
-        t_naturalizacionsei: Naturalización
-        t_mecanismos: Mecanismos de impacto
-        t_efectoimpactosei: Efectos del impacto
-        t_intensidadimpactosei: Intensidad del impacto
-        t_especiesasociadassei: Presencia de especies asociadas
-        t_plasticidadsei: Plasticidad ambiental y tolerancia
-        t_platenciasei: Periodo de latencia
-        t_seguridadsei: Riesgo por consumo
-        t_enfermedadessei: Enfermedades
         estadoPoblaciones: Estado de la población
         persistenciaPob: Persistencia de la población
         abundanciaPob: Abundancia de la población

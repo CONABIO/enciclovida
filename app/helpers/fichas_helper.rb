@@ -36,13 +36,16 @@ module FichasHelper
   end
 
 
-  # Regresar un multiple select
-  def select_multiple_nivel_1(modelo, association, pregunta)
+  # Regresar un multiple select de nivel uno
+  def select_multiple_nivel_1(modelo, association, pregunta, label)
+
+    num_pregunta = Fichas::Caracteristicasespecie::OPCIONES[pregunta]
 
     modelo.association association,
         label_method: :descn1,
         value_method: :idopcion,
-        collection: Fichas::Cat_Preguntas.where(idpregunta: pregunta),
+        collection: Fichas::Cat_Preguntas.where(idpregunta: num_pregunta),
+        label: label,
         :as => :select,
         input_html: {
         class: 'form-control selectpicker',
@@ -50,6 +53,28 @@ module FichasHelper
         'data-live-search': 'true',
         'title': t('general.seleccionar_opciones'),
         }
+  end
+
+  # Regresar un multiple select de nivel dos (agrupado)
+  def select_multiple_nivel_2(modelo, association, pregunta, label)
+
+    collection = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[pregunta]).group_by(&:descn1)
+
+    modelo.association association,
+        :as => :grouped_select,
+        collection: collection,
+        :group_method => :last,
+        group_label_method: :first,
+        label_method: :descn2,
+        value_method: :idopcion,
+        label: label,
+        input_html: {
+        :multiple => true,
+        class: 'form-control selectpicker',
+        'data-live-search': 'true',
+        'title': t('general.seleccionar_opciones'),
+        'data-selected-text-format': 'count > 3'
+    }
   end
 
   def agrega_info_adicional(parametros = { :titulo => "Información adicional", :agregar => "Agregar información adicional" } )

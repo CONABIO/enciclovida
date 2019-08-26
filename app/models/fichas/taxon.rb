@@ -48,7 +48,7 @@ class Fichas::Taxon < Ficha
 	# - - - - - -   Características sobre cierta especie ( OPCIONES MULTIPLES ) - - - - - - #
 	# A partir de aquí se obtienen las carácterísticas:
 	has_many :caracteristicas, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => :especieId, inverse_of: :taxon
-  has_many :opciones_pregunta, through: :caracteristicas
+  has_many :opciones_preguntas, through: :caracteristicas
 
 
 	# DESDE HISTORIA NATURAL:
