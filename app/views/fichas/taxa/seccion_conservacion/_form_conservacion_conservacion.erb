@@ -12,52 +12,15 @@
     <% end %>
   </div>
 
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:esquemamanejo]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
-
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipopesca]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :esquemamanejo, t('opciones_multiples.t_esquemamanejo')) %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipopesca, t('opciones_multiples.t_tipopesca')) %>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.marco_legal_nacional_e_internacional') %></h3>
   <%= f.input :marcolegal %>
   <%= f.input :tipoVeda, :as => :select, collection: Fichas::Conservacion::TIPO_VEDA, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
 
   <div style="display: none;">
-    <%= f_taxon.association :opciones_preguntas,
-                      label_method: :descn1,
-                      value_method: :idopcion,
-                      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:regioncaptura]),
-                      :as => :select,
-                      input_html: {
-                          class: 'form-control selectpicker',
-                          multiple: true,
-                          'data-live-search': 'true',
-                          'title': t('general.seleccionar_opciones'),
-                          'data-selected-text-format': 'count > 3'
-                      }
-    %>
+    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :regioncaptura, t('opciones_multiples.t_regioncaptura')) %>
     <%= f.input :descManejoAprov %>
     <%= f.input :tipoAprovEsp, :as => :select, collection: Fichas::Conservacion::TIPO_APROVECHAMIENTO, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opciones')} %>
   </div>
