@@ -77,6 +77,30 @@ module FichasHelper
     }
   end
 
+  # Regresar un multiple select de nivel tres (agrupado y con paréntesis)
+  def select_multiple_nivel_3(modelo, association, pregunta, label)
+
+    collection = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[pregunta]).group_by(&:descn1)
+
+    modelo.association association,
+          :as => :grouped_select,
+          collection: collection,
+          :group_method => :last,
+          group_label_method: :first,
+          label_method: ->(obj){
+            obj.descn3.blank? ? obj.descn2 : "#{obj.descn2} (#{obj.descn3})"
+          },
+          value_method: :idopcion,
+          label: label,
+          input_html: {
+          :multiple => true,
+          class: 'form-control selectpicker',
+          'data-live-search': 'true',
+          'title': t('general.seleccionar_opciones'),
+          'data-selected-text-format': 'count > 3'
+    }
+  end
+
   def agrega_info_adicional(parametros = { :titulo => "Información adicional", :agregar => "Agregar información adicional" } )
 
     respuesta = ""
