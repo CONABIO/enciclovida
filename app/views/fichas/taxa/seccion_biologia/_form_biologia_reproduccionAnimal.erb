@@ -8,19 +8,7 @@
   <%= f.input :coloracion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
   <%= f.input :ornamentacion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
 
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:sistapareamiento]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :sistapareamiento, t('opciones_multiples.t_sistapareamiento')) %>
   <%
     parametros = {:acceso => @taxon.infosistaparea, :modelo => f_taxon, :association => :infosistaparea, :titulo => "Información adicional", :el_div => "infosistaparea", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infosistaparea]}
     agrega_info_adicional(parametros)
@@ -62,19 +50,7 @@
   <%= f.input :duracionVidaRepro %>
   <%= f.input :frecuenciaApareamineto %>
 
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:sitioanidacion]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :sitioanidacion, t('opciones_multiples.t_sitioanidacion')) %>
   <%
     parametros = {:acceso => @taxon.infocrianza, :modelo => f_taxon, :association => :infocrianza, :titulo => "Información adicional", :el_div => "infocrianza", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infocrianza]}
     agrega_info_adicional(parametros)

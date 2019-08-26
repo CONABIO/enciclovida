@@ -1,39 +1,9 @@
 <div class='nested-fields'>
 
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:habitoPlantas]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habitoPlantas, t('opciones_multiples.t_habitoPlantas')) %>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.alimentacion') %></h3>
-  <% c_alimentacion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:alimentacion]).group_by(&:descn1) %>
-  <%= f_taxon.association :opciones_preguntas,
-                    :as => :grouped_select,
-                    collection: c_alimentacion,
-                    :group_method => :last,
-                    group_label_method: :first,
-                    label_method: ->(obj){
-                      obj.descn3.blank? ? detalle = obj.descn2 : detalle = "#{obj.descn2} (#{obj.descn3})"
-                      detalle
-                    },
-                    value_method: :idopcion,
-                    input_html: {
-                        :multiple => true,
-                        class: 'form-control selectpicker',
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_3(f_taxon, :opciones_preguntas, :alimentacion, t('opciones_multiples.t_alimentacion')) %>
   <%
     parametros = {:acceso => @taxon.infoalimenta, :modelo => f_taxon, :association => :infoalimenta, :titulo => "Información adicional", :el_div => "infoalimenta", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoalimenta]}
     agrega_info_adicional(parametros)
@@ -57,21 +27,7 @@
   <%= f.input :descripcionEstrofica %>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.forrajeo') %></h3>
-
-  <% c_forrajeo = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:forrajeo]) %>
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: c_forrajeo,
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :forrajeo, t('opciones_multiples.t_forrajeo')) %>
   <%
     parametros = {:acceso => @taxon.infoaddforrajeo, :modelo => f_taxon, :association => :infoaddforrajeo, :titulo => "Información adicional", :el_div => "infoaddforrajeo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoaddforrajeo]}
     agrega_info_adicional(parametros)
@@ -85,49 +41,9 @@
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.conducta') %></h3>
   <%= f.input :conducta %>
-  <% c_migracion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:migracion]) %>
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: c_migracion,
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
-  <% c_tipo_migracion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipo_migracion]) %>
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: c_tipo_migracion,
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
-
-  <% c_habito = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:habito]) %>
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: c_habito,
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :migracion, t('opciones_multiples.t_migracion')) %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipo_migracion, t('opciones_multiples.t_tipo_migracion')) %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habito, t('opciones_multiples.t_habito')) %>
   <%
     parametros = {:acceso => @taxon.infoaddhabito, :modelo => f_taxon, :association => :infoaddhabito, :titulo => "Información adicional", :el_div => "infoaddforrajeo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoaddhabito]}
     agrega_info_adicional(parametros)
@@ -186,20 +102,7 @@
   <hr class="espacio_ficha">
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.dispersion') %></h3>
-  <% c_tipodispersion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipodispersion]) %>
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: c_tipodispersion,
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipodispersion, t('opciones_multiples.t_tipodispersion')) %>
   <%
     parametros = {:acceso => @taxon.infodisp, :modelo => f_taxon, :association => :infodisp, :titulo => "Información adicional", :el_div => "infodisp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infodisp]}
     agrega_info_adicional(parametros)
@@ -210,20 +113,7 @@
     <% end %>
   </div>
 
-  <% c_structdisp = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:structdisp]) %>
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: c_structdisp,
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :structdisp, t('opciones_multiples.t_structdisp')) %>
   <%
     parametros = {:acceso => @taxon.infostruct, :modelo => f_taxon, :association => :infostruct, :titulo => "Información adicional", :el_div => "infostruct", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infostruct]}
     agrega_info_adicional(parametros)

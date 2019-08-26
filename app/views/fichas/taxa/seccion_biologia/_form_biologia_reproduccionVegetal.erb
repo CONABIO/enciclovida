@@ -4,64 +4,15 @@
   <%= f.input :descripcion %>
 
   <div class="apartadoFicha ficha-Invasora">
-    <%= f_taxon.association :opciones_preguntas,
-        label_method: :descn1,
-        value_method: :idopcion,
-        collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacial]),
-        :as => :select,
-        input_html: {
-        class: 'form-control selectpicker',
-        multiple: true,
-        'data-live-search': 'true',
-        'title': t('general.seleccionar_opciones'),
-        'data-selected-text-format': 'count > 3'
-        }
-    %>
-
+    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacial, t('opciones_multiples.t_arregloespacial')) %>
   </div>
 
   <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
 
     <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.exp_sexual') %></h4>
-    <%= f_taxon.association :opciones_preguntas,
-                      label_method: :descn1,
-                      value_method: :idopcion,
-                      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialflores]),
-                      :as => :select,
-                      input_html: {
-                          class: 'form-control selectpicker',
-                          multiple: true,
-                          'data-live-search': 'true',
-                          'title': t('general.seleccionar_opciones'),
-                          'data-selected-text-format': 'count > 3'
-                      }
-    %>
-    <%= f_taxon.association :opciones_preguntas,
-                      label_method: :descn1,
-                      value_method: :idopcion,
-                      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialindividuos]),
-                      :as => :select,
-                      input_html: {
-                          class: 'form-control selectpicker',
-                          multiple: true,
-                          'data-live-search': 'true',
-                          'title': t('general.seleccionar_opciones'),
-                          'data-selected-text-format': 'count > 3'
-                      }
-    %>
-    <%= f_taxon.association :opciones_preguntas,
-                      label_method: :descn1,
-                      value_method: :idopcion,
-                      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialpoblaciones]),
-                      :as => :select,
-                      input_html: {
-                          class: 'form-control selectpicker',
-                          multiple: true,
-                          'data-live-search': 'true',
-                          'title': t('general.seleccionar_opciones'),
-                          'data-selected-text-format': 'count > 3'
-                      }
-    %>
+    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacialflores, t('opciones_multiples.t_arregloespacialflores')) %>
+    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacialindividuos, t('opciones_multiples.t_arregloespacialindividuos')) %>
+    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacialpoblaciones, t('opciones_multiples.t_arregloespacialpoblaciones')) %>
     <%
       parametros = {:acceso => @taxon.infoarresp, :modelo => f_taxon, :association => :infoarresp, :titulo => "Información adicional", :el_div => "infoarresp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoarresp]}
       agrega_info_adicional(parametros)
@@ -71,7 +22,6 @@
         <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
       <% end %>
     </div>
-
   </div>
 
 
@@ -108,32 +58,8 @@
   %>
   <%= f.input :descFecundacion %>
 
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:vectorespolinizacion]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:agentespolinizacion]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :vectorespolinizacion, t('opciones_multiples.t_vectorespolinizacion')) %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :agentespolinizacion, t('opciones_multiples.t_agentespolinizacion')) %>
   <%
     parametros = {:acceso => @taxon.infoAP, :modelo => f_taxon, :association => :infoAP, :titulo => "Información adicional", :el_div => "infoAP", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoAP]}
     agrega_info_adicional(parametros)
