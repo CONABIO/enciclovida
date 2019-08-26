@@ -21,19 +21,7 @@
   <%= f.input :poblacionminviablefinal %>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.interacciones') %></h3>
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:interacciones]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :interacciones, t('opciones_multiples.t_interacciones')) %>
   <%
     parametros = {:acceso => @taxon.infointer, :modelo => f_taxon, :association => :infointer, :titulo => "Información adicional", :el_div => "infointer", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infointer]}
     agrega_info_adicional(parametros)

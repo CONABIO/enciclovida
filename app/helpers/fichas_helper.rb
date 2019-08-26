@@ -55,6 +55,27 @@ module FichasHelper
         }
   end
 
+  # Regresar un multiple select de nivel uno pero con descripción de la opción con un '->'
+  def select_multiple_nivel_1_1(modelo, association, pregunta, label)
+
+    num_pregunta = Fichas::Caracteristicasespecie::OPCIONES[pregunta]
+
+    modelo.association association,
+        label_method: ->(obj){
+         obj.descn2.blank? ? obj.descn1 : "#{obj.descn1} -> #{obj.descn2}"
+        },
+        value_method: :idopcion,
+        collection: Fichas::Cat_Preguntas.where(idpregunta: num_pregunta),
+        label: label,
+        :as => :select,
+        input_html: {
+           class: 'form-control selectpicker',
+           multiple: true,
+           'data-live-search': 'true',
+           'title': t('general.seleccionar_opciones'),
+        }
+  end
+
   # Regresar un multiple select de nivel dos (agrupado)
   def select_multiple_nivel_2(modelo, association, pregunta, label)
 

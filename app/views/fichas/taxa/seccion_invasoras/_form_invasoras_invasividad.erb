@@ -87,19 +87,7 @@
     <% end %>
   </div>
 
-  <%= f_taxon.association :opciones_preguntas,
-        label_method: :descn1,
-        value_method: :idopcion,
-        collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:naturalizacionsei]),
-        :as => :select,
-        input_html: {
-            class: 'form-control selectpicker',
-            multiple: true,
-            'data-live-search': 'true',
-            'title': t('general.seleccionar_opciones'),
-            'data-selected-text-format': 'count > 3'
-        }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :naturalizacionsei, t('opciones_multiples.t_naturalizacionsei')) %>
 
   <%
     parametros = {:acceso => @taxon.naturalizacion, :modelo => f_taxon, :association => :naturalizacion, :titulo => "Información adicional", :el_div => "naturalizacion", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:naturalizacion]}
@@ -110,8 +98,6 @@
       <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
     <% end %>
   </div>
-
-
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_invasividad.ruta_introdu') %></h3>
   <h4 class="titulo_sub_subseccion">Rutas:</h4>
@@ -197,19 +183,7 @@
     <% end %>
   </div>
 
-  <%= f_taxon.association :opciones_preguntas,
-      label_method: :descn1,
-      value_method: :idopcion,
-      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:mecanismos]),
-      :as => :select,
-      input_html: {
-        class: 'form-control selectpicker',
-        multiple: true,
-        'data-live-search': 'true',
-        'title': t('general.seleccionar_opciones'),
-        'data-selected-text-format': 'count > 3'
-      }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :mecanismos, t('opciones_multiples.t_mecanismos')) %>
 
   <%
     parametros = {:acceso => @taxon.mecanismoimpacto, :modelo => f_taxon, :association => :mecanismoimpacto, :titulo => "Información adicional", :el_div => "mecanismoimpacto", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:mecanismoimpacto]}
@@ -221,19 +195,7 @@
     <% end %>
   </div>
 
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:efectoimpactosei]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :efectoimpactosei, t('opciones_multiples.t_efectoimpactosei')) %>
 
   <%
     parametros = {:acceso => @taxon.efectoimpacto, :modelo => f_taxon, :association => :efectoimpacto, :titulo => "Información adicional", :el_div => "efectoimpacto", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:efectoimpacto]}
@@ -245,19 +207,7 @@
     <% end %>
   </div>
 
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:intensidadimpactosei]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :intensidadimpactosei, t('opciones_multiples.t_intensidadimpactosei')) %>
 
   <%
     parametros = {:acceso => @taxon.intensidadimpacto, :modelo => f_taxon, :association => :intensidadimpacto, :titulo => "Información adicional", :el_div => "intensidadimpacto", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:intensidadimpacto]}
@@ -395,19 +345,7 @@
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_invasividad.invasividad') %></h3>
 
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:especiesasociadassei]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :especiesasociadassei, t('opciones_multiples.t_especiesasociadassei')) %>
 
   <%
     parametros = {:acceso => @taxon.especiesasociadas, :modelo => f_taxon, :association => :especiesasociadas, :titulo => "Información adicional", :el_div => "especiesasociadas", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:especiesasociadas]}
@@ -419,19 +357,7 @@
     <% end %>
   </div>
 
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:plasticidadsei]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :plasticidadsei, t('opciones_multiples.t_plasticidadsei')) %>
 
   <%
     parametros = {:acceso => @taxon.plasticidad, :modelo => f_taxon, :association => :plasticidad, :titulo => "Información adicional", :el_div => "plasticidad", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:plasticidad]}
@@ -473,19 +399,7 @@
     <% end %>
   </div>
 
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:platenciasei]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :platenciasei, t('opciones_multiples.t_platenciasei')) %>
 
   <%
     parametros = {:acceso => @taxon.platencia, :modelo => f_taxon, :association => :platencia, :titulo => "Información adicional", :el_div => "platencia", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:platencia]}
@@ -497,19 +411,7 @@
     <% end %>
   </div>
 
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:seguridadsei]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :seguridadsei, t('opciones_multiples.t_seguridadsei')) %>
 
   <%
     parametros = {:acceso => @taxon.seguridad, :modelo => f_taxon, :association => :seguridad, :titulo => "Información adicional", :el_div => "seguridad", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:seguridad]}
@@ -521,8 +423,6 @@
     <% end %>
   </div>
 
-
-
   <%
     parametros = {:acceso => @taxon.crecimientosei, :modelo => f_taxon, :association => :crecimientosei, :titulo => "Condiciones óptimas para su crecimiento", :el_div => "crecimientosei", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:crecimientosei]}
     agrega_info_adicional(parametros)
@@ -533,19 +433,7 @@
     <% end %>
   </div>
 
-  <%= f_taxon.association :opciones_preguntas,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:enfermedadessei]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :enfermedadessei, t('opciones_multiples.t_enfermedadessei')) %>
 
   <%
     parametros = {:acceso => @taxon.enfermedadesei, :modelo => f_taxon, :association => :enfermedadesei, :titulo => "Información adicional", :el_div => "enfermedadesei", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:enfermedadesei]}
