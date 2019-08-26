@@ -4,7 +4,7 @@
   <%= f.input :descripcion %>
 
   <div class="apartadoFicha ficha-Invasora">
-    <%= f_taxon.association :t_arregloespacial,
+    <%= f_taxon.association :opciones_pregunta,
         label_method: :descn1,
         value_method: :idopcion,
         collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacial]),
@@ -23,7 +23,7 @@
   <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
 
     <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.exp_sexual') %></h4>
-    <%= f_taxon.association :t_arregloespacialflores,
+    <%= f_taxon.association :opciones_pregunta,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialflores]),
@@ -36,7 +36,7 @@
                           'data-selected-text-format': 'count > 3'
                       }
     %>
-    <%= f_taxon.association :t_arregloespacialindividuos,
+    <%= f_taxon.association :opciones_pregunta,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialindividuos]),
@@ -49,7 +49,7 @@
                           'data-selected-text-format': 'count > 3'
                       }
     %>
-    <%= f_taxon.association :t_arregloespacialpoblaciones,
+    <%= f_taxon.association :opciones_pregunta,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:arregloespacialpoblaciones]),
@@ -108,7 +108,7 @@
   %>
   <%= f.input :descFecundacion %>
 
-  <%= f_taxon.association :t_vectorespolinizacion,
+  <%= f_taxon.association :opciones_pregunta,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:vectorespolinizacion]),
@@ -121,7 +121,7 @@
                         'data-selected-text-format': 'count > 3'
                     }
   %>
-  <%= f_taxon.association :t_agentespolinizacion,
+  <%= f_taxon.association :opciones_pregunta,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:agentespolinizacion]),

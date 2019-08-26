@@ -44,7 +44,7 @@
     %>
     <%= f.input :tipoVegetacion %>
 
-    <%= f_taxon.association :t_habitatAntropico,
+    <%= f_taxon.association :opciones_pregunta,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:habitatAntropico]) ,
@@ -61,7 +61,7 @@
     <%= f.input :zonaUrbana, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
     <%= f.input :VegetacionSecundaria, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "vegetacion-secundaria")'} %>
     <div id="vegetacion-secundaria">
-      <%= f_taxon.association :t_tipoVegetacionSecundaria,
+      <%= f_taxon.association :opciones_pregunta,
                         label_method: :descn1,
                         value_method: :idopcion,
                         collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:vegetacionSecundaria]),
@@ -89,7 +89,7 @@
 
     <div class="apartadoFicha ficha-Invasora">
       <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.vegetacion_mundial') %></h3>
-      <%= f_taxon.association :t_tipovegetmundial,
+      <%= f_taxon.association :opciones_pregunta,
                         label_method: :descn1,
                         value_method: :idopcion,
                         collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipovegetmundial]),
@@ -119,7 +119,7 @@
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.clima') %></h3>
     <% c_clima = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:clima]).group_by(&:descn1) %>
-    <%= f_taxon.association :t_climas,
+    <%= f_taxon.association :opciones_pregunta,
                       :as => :grouped_select,
                       collection: c_clima,
                       :group_method => :last,
@@ -138,7 +138,7 @@
 
     <div class="apartadoFicha ficha-Invasora">
       <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.clima_exo') %></h3>
-      <%= f_taxon.association :t_climaexo,
+      <%= f_taxon.association :opciones_pregunta,
                         :as => :grouped_select,
                         collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:climaexo]).group_by(&:descn1),
                         :group_method => :last,
@@ -193,7 +193,7 @@
     <%= f.input :infoaddhumedad %>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_suelo') %></h3>
-    <%= f_taxon.association :t_suelo,
+    <%= f_taxon.association :opciones_pregunta,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:suelo]),
@@ -217,7 +217,7 @@
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.geoforma') %></h3>
     <% c_geoformas = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:geoforma]) %>
-    <%= f_taxon.association :t_geoforma,
+    <%= f_taxon.association :opciones_pregunta,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: c_geoformas,
@@ -245,7 +245,7 @@
   <%# Aquí inicia la parte marina %>
   <div id="ambiente-solo-marino">
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_habitat') %></h3>
-    <%= f_taxon.association :t_ecorregionMarinaN1,
+    <%= f_taxon.association :opciones_pregunta,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:ecorregionMarinaN1]),
@@ -260,7 +260,7 @@
     %>
 
     <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.ecosistemas') %></h4>
-    <%= f_taxon.association :t_zonaVida,
+    <%= f_taxon.association :opciones_pregunta,
                       label_method: :descn1,
                       value_method: :idopcion,
                       collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:zonaVida]),

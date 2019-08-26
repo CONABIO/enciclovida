@@ -8,7 +8,7 @@
   <%= f.input :coloracion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
   <%= f.input :ornamentacion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
 
-  <%= f_taxon.association :t_sistapareamiento,
+  <%= f_taxon.association :opciones_pregunta,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:sistapareamiento]),
@@ -62,7 +62,7 @@
   <%= f.input :duracionVidaRepro %>
   <%= f.input :frecuenciaApareamineto %>
 
-  <%= f_taxon.association :t_sitioanidacion,
+  <%= f_taxon.association :opciones_pregunta,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:sitioanidacion]),

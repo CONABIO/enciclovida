@@ -1,6 +1,6 @@
 <div class='nested-fields'>
 
-  <%= f_taxon.association :t_habitoPlantas,
+  <%= f_taxon.association :opciones_pregunta,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:habitoPlantas]),
@@ -16,7 +16,7 @@
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.alimentacion') %></h3>
   <% c_alimentacion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:alimentacion]).group_by(&:descn1) %>
-  <%= f_taxon.association :t_alimentacion,
+  <%= f_taxon.association :opciones_pregunta,
                     :as => :grouped_select,
                     collection: c_alimentacion,
                     :group_method => :last,
@@ -59,7 +59,7 @@
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.forrajeo') %></h3>
 
   <% c_forrajeo = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:forrajeo]) %>
-  <%= f_taxon.association :t_forrajeo,
+  <%= f_taxon.association :opciones_pregunta,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: c_forrajeo,
@@ -86,7 +86,7 @@
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.conducta') %></h3>
   <%= f.input :conducta %>
   <% c_migracion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:migracion]) %>
-  <%= f_taxon.association :t_migracion,
+  <%= f_taxon.association :opciones_pregunta,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: c_migracion,
@@ -100,7 +100,7 @@
                     }
   %>
   <% c_tipo_migracion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipo_migracion]) %>
-  <%= f_taxon.association :t_tipo_migracion,
+  <%= f_taxon.association :opciones_pregunta,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: c_tipo_migracion,
@@ -115,7 +115,7 @@
   %>
 
   <% c_habito = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:habito]) %>
-  <%= f_taxon.association :t_habito,
+  <%= f_taxon.association :opciones_pregunta,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: c_habito,
@@ -187,7 +187,7 @@
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.dispersion') %></h3>
   <% c_tipodispersion = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipodispersion]) %>
-  <%= f_taxon.association :t_tipodispersion,
+  <%= f_taxon.association :opciones_pregunta,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: c_tipodispersion,
@@ -211,7 +211,7 @@
   </div>
 
   <% c_structdisp = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:structdisp]) %>
-  <%= f_taxon.association :t_structdisp,
+  <%= f_taxon.association :opciones_pregunta,
                     label_method: :descn1,
                     value_method: :idopcion,
                     collection: c_structdisp,
