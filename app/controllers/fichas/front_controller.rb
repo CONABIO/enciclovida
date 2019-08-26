@@ -36,13 +36,13 @@ class Fichas::FrontController < Fichas::FichasController
   def ambiente_de_desarrollo_de_especie
 
     @habitat = @taxon.habitats
-    @tipoClima = @habitat.tipoclima
-    @suelo = @habitat.suelo
-    @geoforma = @habitat.geoforma
+    @tipoClima = "" # @habitat.tipoclima
+    @suelo = "" # @habitat.suelo
+    @geoforma = "" # @habitat.geoforma
     @ecorregion = @habitat.ecorregion.first
     @ecosistema = @habitat.ecosistema.first
     #@cat_eacorregionwwf = Cat_Ecorregionwwf.find_by(IdEcorregion: @ecorregion.ecorregionId)
-    @habitatAntropico = @habitat.habitatAntropico
+    @habitatAntropico = "" # @habitat.habitatAntropico
 
     render json: {
         taxon: @taxon,
@@ -149,13 +149,13 @@ class Fichas::FrontController < Fichas::FichasController
 
     @habitat = @taxon.habitats || Fichas::Habitat.new
     # III. Tipo de ambiente en donde se desarrolla la especie
-    @tipoClima = @habitat.tipoclima
-    @suelo = @habitat.suelo
-    @geoforma = @habitat.geoforma
+    @tipoClima = "" # @habitat.tipoclima
+    @suelo = "" # @habitat.suelo
+    @geoforma = "" # @habitat.geoforma
     @ecorregion = @habitat.ecorregion.first
     @ecosistema = @habitat.ecosistema.first
     #@cat_eacorregionwwf = Cat_Ecorregionwwf.find_by(IdEcorregion: @ecorregion.ecorregionId)
-    @habitatAntropico = @habitat.habitatAntropico
+    @habitatAntropico = "" # @habitat.habitatAntropico
 
     # IV. Biología de la especie
     @demografiaAmenazas = @taxon.demografiaAmenazas.first || Fichas::Demografiaamenazas.new

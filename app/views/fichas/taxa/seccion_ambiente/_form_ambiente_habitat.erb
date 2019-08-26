@@ -9,7 +9,7 @@
     <%= select_multiple_de_catalogos(f, :ecorregion, :descripcion, :ecorregionId) %>
     <div class="apartadoFicha ficha-Prioritaria">
       <% parametros = {:acceso => @taxon.ambi_info_ecorregiones, :modelo => f_taxon, :association => :ambi_info_ecorregiones, :titulo => "Información adicional", :el_div => "info_ecorregiones", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones]}
-          agrega_info_adicional(parametros)
+          #agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
         <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
