@@ -83,8 +83,11 @@ es:
       marco_legal_nacional_e_internacional: Marco legal nacional e internacional
       presiones: Presiones o amenazas sobre la especie
       acciones_manejo: a) Describir acciones de manejo y conservación de la especie
+      descripcion_manejo: b) Describir acciones de manejo y conservación de la especie
       tendencia_p: Tendencia poblacional
+      tipo_aprov_pesa_acua: Tipo de aprovechamiento en pesca y acuacultura
       estado_conservacion: Estado de conservación
+      talla_captura: Tallas de captura
     #  * *  S E C C I Ó N   D I S T R I B U C I Ó N  * *  #
     s_distribucion:
       distribucion_historica: Distribución histórica
@@ -153,8 +156,12 @@ es:
     #  * *  S E C C I Ó N   E C O L O G Í A  * *  #
     t_interacciones: Interacciones
     #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
-    t_esquemamanejo: b) Esquema de manejo en el cual la especie es aprovechada o gestionada
-    t_tipopesca: c) Indicar el tipo de aprovechamiento de la especie
+    t_esquemamanejo: a) Esquema de manejo en el cual la especie es aprovechada o gestionada
+    t_tipoaprovechamiento: c) Indicar el tipo de aprovechamiento de la especie
+    t_tipopesca: Tipo de pesca
+    t_regioncaptura: Región de captura
+    t_artepesca: Tipo de arte de pesca
+    t_acuacultura: Acuacultura
     #  * *  S E C C I Ó N   B I O L O G Í A  * *  #
     t_arregloespacialflores: i. Flores
     t_arregloespacialindividuos: ii. Individuos
@@ -205,6 +212,9 @@ es:
         infoAdicionalInteraccion: Redactar en un p&aacute;rrafo la naturaleza de las interacciones intraespec&iacute;ficas y/o interespec&iacute;ficas
         poblacionminviableinicial: Número mínimo de individuos para que la población persista
         poblacionminviablefinal: Número mínimo de individuos para que la población persista
+      conservacion:
+      tallacapturainicial: De 10cm a 400cm
+      tallacapturafinal: De 10cm a 400cm
     hints:
       fichas_taxon:
         resumenEspecie: Breve descripci&oacute;n coloquial que incluya las caracter&iacute;sticas distintivas de la especie, incluyendo en la medida de lo posible, informaci&oacute;n sobre la morfolog&iacute;a,distribuci&oacute;n, biolog&iacute;a, ecolog&iacute;a, importancia y estado de conservaci&oacute;n. Incluir impactos principales en caso de especies invasoras.
@@ -215,6 +225,14 @@ es:
         presencia: Indicar si la especie est&aacute; presente o no en territorio mexicano.
         adicinalPresencia: Informaci&oacute;n adicional sobre la presencia de la especie
         adicionalInvasora: Informaci&oacute;n adicional sobre el estatus invasor de la especie
+        largoinicialhembras: Centímetros (cm)
+        largofinalhembras: Centímetros (cm)
+        largoinicialmachos: Centímetros (cm)
+        largofinalmachos: Centímetros (cm)
+        pesoinicialhembras: Gramos
+        pesofinalhembras: Gramos
+        pesoinicialmachos: Gramos
+        pesofinalmachos: Gramos
       endemicas:
         endemicaA: Si es end&eacute;mica, especificar regi&oacute;n (ej. mesoam&eacute;rica, ej. Neovolc&aacute;nico, etc.).
       distribuciones:
@@ -566,6 +584,9 @@ es:
         tipoAprovEsp: b) Indicar el tipo de aprovechamiento de la especie
         marcolegal: a) Regulaciones aplicables a la especie
         tipoVeda: b) Tipo de veda
+        tipoCaptura: Tipo de captura
+        grupoEspecies: Grupos de especies
+        infoaddveda: Información adicional
       endemicas:
         #  * *  S E C C I O N   D I S T R I B U C I O N  * *  #
         endemismo: Endemismo

@@ -39,7 +39,7 @@ $( document ).ready(function() {
 
 $(window).load(function(){
     //$(".apartadoFicha").fadeOut();
-    showOrHideInfoFicha();
+    //showOrHideInfoFicha();
 });
 
 
