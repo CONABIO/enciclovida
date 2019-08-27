@@ -20,7 +20,7 @@
 <div style="width: 100%; float:left;">
   <ul>
     <% @taxones.each do |taxon| %>
-        <%= "<li style='margin-left: #{taxon.ancestry.length*2}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, render: 'link')}-#{taxon.tipos_distribuciones.map(&:descripcion)}</span></li>".html_safe %>
+        <%= "<li style='margin-left: #{taxon.ancestry.length*5}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, render: 'link')}-#{taxon.tipos_distribuciones.map(&:descripcion)}</span></li>".html_safe %>
     <% end %>
   </ul>
   <p class="enlaces_acciones">
