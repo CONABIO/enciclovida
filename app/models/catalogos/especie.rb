@@ -306,14 +306,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   def tipo_distribucion(opc={})
     response = []
 
-    if opc[:tab_catalogos]
-      tipos_distribuciones.uniq.each do |distribucion|
-        response << distribucion.descripcion
-      end
-    else
-      tipos_distribuciones.distribuciones_vista_general.uniq.each do |distribucion|
-        response << distribucion.descripcion
-      end
+    tipos_distribuciones.uniq.each do |distribucion|
+      response << distribucion.descripcion
     end
 
     {'Tipo de distribución' => response}
