@@ -31,10 +31,6 @@ class Fichas::Taxon < Ficha
 	accepts_nested_attributes_for :conservacion, allow_destroy: true
 
 
-
-
-
-
 	has_one :invasividad, class_name: 'Fichas::Invasividad', :foreign_key => 'especieId', inverse_of: :taxon
 	has_many :metadatos, class_name: 'Fichas::Metadatos', :foreign_key => 'especieId', inverse_of: :taxon
 

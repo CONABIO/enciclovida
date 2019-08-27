@@ -163,6 +163,7 @@
         <div class="apartadoFicha ficha-Invasora">
           <hr />
           <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.especies_invasoras')%></h3>
+          <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Invasividad'.html_safe, f, :invasividad, partial: 'fichas/taxa/seccion_invasoras/form_invasoras_invasividad', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo, 'data-association-insertion-node' => '#prioritaria-conservacion', 'data-association-insertion-method' => 'append', href: '#prioritaria-conservacion', style: 'display: none;') if :invasividad.empty? %>
           <%= f.simple_fields_for :invasividad do |info| %>
             <%= render partial: 'fichas/taxa/seccion_invasoras/form_invasoras_invasividad', locals: {f: info, f_taxon: f } %>
           <% end %>

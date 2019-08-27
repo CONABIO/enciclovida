@@ -213,8 +213,8 @@ es:
         poblacionminviableinicial: Número mínimo de individuos para que la población persista
         poblacionminviablefinal: Número mínimo de individuos para que la población persista
       conservacion:
-      tallacapturainicial: De 10cm a 400cm
-      tallacapturafinal: De 10cm a 400cm
+        tallacapturainicial: De 10cm a 400cm
+        tallacapturafinal: De 10cm a 400cm
     hints:
       fichas_taxon:
         resumenEspecie: Breve descripci&oacute;n coloquial que incluya las caracter&iacute;sticas distintivas de la especie, incluyendo en la medida de lo posible, informaci&oacute;n sobre la morfolog&iacute;a,distribuci&oacute;n, biolog&iacute;a, ecolog&iacute;a, importancia y estado de conservaci&oacute;n. Incluir impactos principales en caso de especies invasoras.
@@ -566,16 +566,16 @@ es:
         culturaUsos: Importancia cultural y usos
         descComIlicito: Efectos reales o potenciales del comercio en el manejo y conservación de la especie
         descUsos: Información adicional
-        productocomercio_nal:
-          #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
-          tipoproducto: Tipo de producto
-          unidadcomerciada: Unidad comerciada
-          cantidadcomerciada: Cantidad comerciada
-        productocomercio_inter:
-          #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
-          tipoproducto: Tipo de producto
-          unidadcomerciada: Unidad comerciada
-          cantidadcomerciada: Cantidad comerciada
+      productocomercio_nal:
+        #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
+        tipoproducto: Tipo de producto
+        unidadcomerciada: Unidad comerciada
+        cantidadcomerciada: Cantidad comerciada
+      productocomercio_inter:
+        #  * *  S E C C I Ó N   I M P O R T A N C I A  * *  #
+        tipoproducto: Tipo de producto
+        unidadcomerciada: Unidad comerciada
+        cantidadcomerciada: Cantidad comerciada
       conservacion:
         #  * *  S E C C I Ó N   C O N S E R V A C I O N  * *  #
         estadoConser: Estado de conservación
