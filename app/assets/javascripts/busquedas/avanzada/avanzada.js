@@ -104,9 +104,12 @@ $(document).ready(function()
         $("#por_gi :input").attr("disabled", true);  // Deshabilita los grupos iconicos para que los repita en la URI
     });
 
+    /*
     $(window).on('load', function(){
         $("html,body").animate({scrollTop: 122}, 1000);
     });
+
+     */
 
     $('#pestañas').tabs(); // Inicia los tabs
     scrolling_page("#resultados-0", settings.nop, settings.url);  // Inicia el scrolling

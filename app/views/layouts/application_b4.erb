@@ -32,30 +32,25 @@
 
 <%= yield :ribbon %>
 
-<nav class="pt-2">
-  <%= render :partial => 'shared/brandBar' %>
-
-</nav>
-
-
-<header class="container">
+<header class="container-fluid">
+  <%= render :partial => 'shared_b4/brandBar' %>
   <%= yield :extra_title_header %>
 </header>
 
 <section id="content" class="container-fluid">
   <div class="row main">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="col-12">
       <%= yield %>
     </div>
   </div>
 </section>
 
 <footer class="social">
-  <%= render :partial => 'shared/footer_social' %>
+  <%= render :partial => 'shared_b4/footer_social' %>
 </footer>
 
 <footer class="legal">
-  <%= render :partial => 'shared/footer_legal' %>
+  <%= render :partial => 'shared_b4/footer_legal' %>
 </footer>
 
 <%= yield :extrajs_carrusel %>

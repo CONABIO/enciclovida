@@ -27,25 +27,25 @@
 }
 
 /*Brandbar es la plequita negra al inicio de cada página*/
-#brandBar {
+#brandBar, #contenedor-titulo-busquedas{
   background-repeat: no-repeat !important;
   background-attachment: fixed !important;
   background-size: cover !important;
   background-position: bottom !important;
-  background-color: rgba(51, 51, 51, 0.75);
-  padding: 30px;
+  background-color: #839a4e;
+  /*padding: 30px;*/
 }
 #brandBar .dropdown {
   position: fixed;
-  right: 0;
-  top: 0;
+  right: -3px;
+  top: -3px;
   z-index: 1001;
 }
 #menuEsqSupDer{/*Esto es para hacer redondito el icono de "Más..."*/
-  border-bottom-left-radius: 2px;
-  font-weight: bold;
+  /*border-bottom-left-radius: 2px;*/
+  /*font-weight: bold;*/
 }
-.vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.5em!important; color: #555555;}
+.vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.25rem!important;}
 
 #brandBar .form-group{margin: 4px 0;}
 #brandBar .btn-group{min-width: 100%;}
@@ -73,8 +73,8 @@
   text-shadow: 1px 1px 1px #a0a0a0;
   color: #423434 !important;
 }
+/*
 .contenedor-titulo-busquedas{
-  height: 104px;
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8));
   background: #544a22;
   background-repeat: no-repeat !important;
@@ -82,18 +82,21 @@
   background-size: cover !important;
   background-position: bottom !important;
 }
+*/
+
 .titulo-busquedas{
   /*width: 1032px;*/
   /*margin: 8px auto;*/
-  font-size: 3rem;
+  /*font-size: 3rem;*/
   /*font-family: "acumin-pro-extra-condensed";*/
   -webkit-text-shadow: 2px 2px 2px #000;
   -moz-text-shadow: 2px 2px 2px #000;
   -ms-text-shadow: 2px 2px 2px #000;
   -o-text-shadow: 2px 2px 2px #000;
   text-shadow: 2px 2px 2px #000;
-  color: #ffffff;
+  color: #ececec;
 }
+/*
 .contenedor-titulo-busquedas .liner {
   width: 50px;
   height: 5px;
@@ -102,9 +105,11 @@
   background: #fafafa;
   position: absolute;
 }
+
+ */
 footer {
-  padding: 25px 0;
-  text-align: center;
+  /*padding: 25px 0;*/
+  /*text-align: center;*/
 }
 footer.social {
   background-color:#104C5B;
@@ -113,7 +118,7 @@ footer.legal {
   background-color:#3D3D3D;
 }
 footer.legal p {
-  font-size:12px;
+  /*font-size:12px;*/
 }
 
 /*Para que los títulos de los buscadores en el inicio y del brandbar, salgan orientados hacia el otro lado*/
