@@ -29,16 +29,50 @@ $( document ).ready(function() {
         if ($(selector).val() !== undefined)
             showOrHideByName($(selector).val(), elID);
     }
+    // - - - - - - - - - - - - - - - - - - -  --  - - - - - - - - -  - - -
 
     // Para mostrar correctamente el formulario de la sección Ambiente
     showOrHideAmbienteDesarrolloEspecie();
 
     //  Para mostrar correctamente el formulario de la sección Biologia
     showOrHideSegunTipoReproduccion();
+
+    // - - - - - - - - - - - - - - - - - - -  --  - - - - - - - - -  - - -
+
+    // LISTENERS PARA COOCON
+    $('#clasificacion-descripcion')
+        .on('cocoon:before-insert', function (event) {
+            // Antes de insertar una legislación, verificar el total (máximo 4)
+            var legislaciones = document.getElementsByClassName("nueva_legislacion").length;
+            if (legislaciones > 3){
+                confirm("No pueden haber más de 4 legislaciones");
+                event.preventDefault();
+            }
+        })
+
+        .on("cocoon:before-remove", function (event) {
+            console.log('before remove');
+            var confirmation = confirm("Estás seguro?");
+            if( confirmation === false ){
+                event.preventDefault();
+            }
+        });
+
+    $('#importancia')
+
+        .on("cocoon:before-remove", function (event) {
+            var confirmation = confirm("Estás seguro?");;
+            if( confirmation === false ){
+                event.preventDefault();
+            }
+        });
+
+
+    Validar();
 });
 
 $(window).load(function(){
-    //$(".apartadoFicha").fadeOut();
+    $(".apartadoFicha").fadeOut();
     showOrHideInfoFicha();
 });
 
@@ -129,21 +163,18 @@ function showOrHideSegunTipoReproduccion() {
 
 }
 
-function reload(div) {
-    console.log(div);
-    //$("#" + div).selectpicker('refresh');
+// Recargan los imputs selectpicker y tinyMCE nuevos
+function reload(classe) {
     setTimeout(function () {
-        $('.selectpicker').selectpicker('refresh');
+        $('.' + classe).selectpicker('refresh');
+        reloadTiny(classe);
     }, 10)
 }
 
-function reloadTiny() {
-    console.log("div");
-    tinymce.remove();
+function reloadTiny(classe) {
     setTimeout(function () {
         tinyMCE.init({
-            selector: 'textarea.form-control'
+            selector: '.tiny_' + classe
         });
     }, 10)
-
 }

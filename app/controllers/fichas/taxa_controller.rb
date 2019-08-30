@@ -16,6 +16,15 @@ class Fichas::TaxaController < Fichas::FichasController
   def new
     @form_params = { url: '/fichas/taxa', method: 'post' }
     @taxon = Fichas::Taxon.new
+    @taxon.habitats = Fichas::Habitat.new
+    @taxon.distribuciones.new
+    @taxon.endemicas.new
+    @taxon.historiaNatural = Fichas::Historianatural.new
+    @taxon.demografiaAmenazas = Fichas::Demografiaamenazas.new
+    @taxon.conservacion.new
+    @taxon.invasividad = Fichas::Invasividad.new
+    @taxon.metadatos.new
+    @taxon.referenciasBibliograficas.new
   end
 
   # GET /taxa/1/edit
@@ -79,6 +88,8 @@ class Fichas::TaxaController < Fichas::FichasController
     def taxon_params
       p = params.require(:fichas_taxon).permit(
           # Parámetros desde taxón:
+          :tipoficha,
+          :IdCAT,
           # SECCIÓN CLASIFICACIÓN
           :resumenEspecie, :descEspecie, :especiesSmilares, :origen, :descripcionOrigen, :presencia, :adicinalPresencia, :invasora, :adicionalInvasora,
           :largoinicialhembras, :largofinalhembras, :edadinicialhembras, :edadfinalhembras, :tiempoedadhembra, :pesoinicialhembras, :pesofinalhembras,
@@ -89,6 +100,10 @@ class Fichas::TaxaController < Fichas::FichasController
           :necesidadesEspecie,
 
           :id, :_destroy,
+
+          # Opciones multiples que se agregan a Caracteristicaesoecie
+          opciones_pregunta_ids: [],
+
           # OK
           legislaciones_attributes: [
               :legislacionId,
@@ -99,9 +114,9 @@ class Fichas::TaxaController < Fichas::FichasController
               :id,
               :_destroy
           ],
-          # NO EN LOS _IDS
+
           distribuciones_attributes: [
-              { pai_ids: [] },
+              { pai_ids: [] }, # PENDIENTE
               { estado_ids: [] },
               { municipio_ids: [] },
               { pais_inv_ids: [] },
@@ -116,20 +131,23 @@ class Fichas::TaxaController < Fichas::FichasController
               :distribucionOriginal,
               :tipoDistribucion,
               :infoAdicionalTipo,
+              :uso,
               :id,
               :_destroy
           ],
-          # OK
-          distribucion_historica_attributes: [
-              :especieId,
-              :regLoc,
-              :anioinicial,
-              :mesinicial,
-              :aniofinal,
-              :mesfinal,
-              :id,
-              :_destroy
-          ],
+
+          # ERROR
+          #distribucion_historica_attributes: [
+          #    :especieId,
+          #    :regLoc,
+          #    :anioinicial,
+          #    :mesinicial,
+          #    :aniofinal,
+          #    :mesfinal,
+          #    :id,
+          #    :_destroy
+          #],
+
           # OK
           endemicas_attributes: [
               :endemicaMexico,
@@ -138,12 +156,12 @@ class Fichas::TaxaController < Fichas::FichasController
               :id,
               :_destroy
           ],
-          # NO EN LOS _IDS
+
           habitats_attributes: [
               { ecorregion_ids: [] },
               { ecosistema_ids: [] },
-              { vegetacion_ids: [] },
-              { vegetacion_acuatica_ids: [] },
+              { vegetacion_ids: [] }, # PENDIENTE
+              { vegetacion_acuatica_ids: [] }, # PENDIENTE
               :tipoAmbiente,
               :tipoVegetacion,
               :estadoHabitat,
@@ -190,12 +208,17 @@ class Fichas::TaxaController < Fichas::FichasController
               :amplitudmareasinicial,
               :amplitudmareasfinal,
               :infoaddamplitudmareas,
+              :tipoVegetacionexo,
               :uso,
               :id,
               :_destroy
           ],
-=begin
+
+          # OK
           historiaNatural_attributes: [
+              { culturaUso_ids: [],
+                pais_importacion_ids: [],
+              },
               :tipoReproduccion,
               :estrategiaTrofica,
               :descripcionEstrofica,
@@ -220,131 +243,145 @@ class Fichas::TaxaController < Fichas::FichasController
               :comercioIlicitoInter,
               :descComIlicito,
               :descUsos,
+              :hibernacion,
+              :territorialidad,
               :id,
-              :_destroy
+              :_destroy,
+              {# OK
+                reproduccionVegetal_attributes: [
+                    :descripcion,
+                    :aislamientoOrganos,
+                    :descAislaOrganos,
+                    :sistReproAsexuales,
+                    :DescsistReproAsexuales,
+                    :fecuandacion,
+                    :descFecundacion,
+                    :aperturaFlor,
+                    :descApertura,
+                    :tiempoFloracion,
+                    :addinfolongevidadflor,
+                    :mesInicio,
+                    :mesFinal,
+                    :addinfotiempoflora,
+                    :cantidadnectarinicial,
+                    :cantidadnectarfinal,
+                    :addinfocantidadnectar,
+                    :cantidadpolen,
+                    :mesInicialFructi,
+                    :mesFinalFructi,
+                    :addinfotiempofructi,
+                    :nofrutosinicial,
+                    :nofrutosfinal,
+                    :caracFruto,
+                    :descCaracFruto,
+                    :noEventos,
+                    :descNoEventos,
+                    :nosemillasinicial,
+                    :nosemillasfinal,
+                    :tamanioSemilla,
+                    :caracToxica,
+                    :germinacioninicial,
+                    :germinacionfinal,
+                    :infoaddgerminacion,
+                    :plantulasinicial,
+                    :plantulasfinal,
+                    :infoaddplantulas,
+                    :arregloEspacial,
+                    :descripcionArregloespacial,
+                    :agentesPolinizacion,
+                    :descAgentesPol,
+                    :patronesFloracion,
+                    :patronesFructificacion,
+                    :id,
+                    :_destroy
+                ]
+              },
+              {# OK
+                reproduccionAnimal_attributes: [
+                    :dimorfismoSexual,
+                    :descripcion,
+                    :additionalInfoDimorfiasmo,
+                    :coloracion,
+                    :ornamentacion,
+                    :descripcionSistema,
+                    :noEventos,
+                    :descripcionNoEventos,
+                    :tiempoentrecriasinicial,
+                    :tiempoentrecriasfinal,
+                    :tipoFecundacion,
+                    :descripcionTipoFec,
+                    :edadPrimeraRepro,
+                    :duracionVidaRepro,
+                    :frecuenciaApareamineto,
+                    :noHuevosCrias,
+                    :cuidadoParental,
+                    :cuidadoParentalPor,
+                    :desCuidadoParental,
+                    :tiempoCuidadoParental,
+                    :id,
+                    :_destroy
+                ]
+              }
           ],
-
-          reproduccionAnimal_attributes: [
-            :dimorfismoSexual,
-            :descripcion,
-            :additionalInfoDimorfiasmo,
-            :coloracion,
-            :ornamentacion,
-            :descripcionSistema,
-            :noEventos,
-            :descripcionNoEventos,
-            :tiempoentrecriasinicial,
-            :tiempoentrecriasfinal,
-            :tipoFecundacion,
-            :descripcionTipoFec,
-            :edadPrimeraRepro,
-            :duracionVidaRepro,
-            :frecuenciaApareamineto,
-            :noHuevosCrias,
-            :cuidadoParentalPor,
-            :desCuidadoParental,
-            :tiempoCuidadoParental,
-          ],
-
-          reproduccionVegetal_attributes: [
-            :descripcion,
-            :aislamientoOrganos,
-            :descAislaOrganos,
-            :sistReproAsexuales,
-            :DescsistReproAsexuales,
-            :fecuandacion,
-            :descFecundacion,
-            :aperturaFlor,
-            :descApertura,
-            :tiempoFloracion,
-            :addinfolongevidadflor,
-            :mesInicio,
-            :mesFinal,
-            :addinfotiempoflora,
-            :cantidadnectarinicial,
-            :cantidadnectarfinal,
-            :addinfocantidadnectar,
-            :cantidadpolen,
-            :mesInicialFructi,
-            :mesFinalFructi,
-            :addinfotiempofructi,
-            :nofrutosinicial,
-            :nofrutosfinal,
-            :caracFruto,
-            :descCaracFruto,
-            :noEventos,
-            :descNoEventos,
-            :nosemillasinicial,
-            :nosemillasfinal,
-            :tamanioSemilla,
-            :caracToxica,
-            :germinacioninicial,
-            :germinacionfinal,
-            :infoaddgerminacion,
-            :plantulasinicial,
-            :plantulasfinal,
-            :infoaddplantulas,
-            :arregloEspacial,
-            :descripcionArregloespacial,
-            :agentesPolinizacion,
-            :descAgentesPol
-          ],
-
+          # OK
           productocomercio_nal_attributes: [
-              #:nacionalinternacional,
-              #:tipoproducto,
-              #:unidadcomerciada,
-              #:cantidadcomerciada,
+              :nacionalinternacional,
+              :tipoproducto,
+              :unidadcomerciada,
+              :cantidadcomerciada,
               :id,
               :_destroy
           ],
-
+          # OK
           productocomercio_inter_attributes: [
-              #:nacionalinternacional,
-              #:tipoproducto,
-              #:unidadcomerciada,
-              #:cantidadcomerciada,
+              :nacionalinternacional,
+              :tipoproducto,
+              :unidadcomerciada,
+              :cantidadcomerciada,
               :id,
               :_destroy
           ],
-
+          # OK
           demografiaAmenazas_attributes: [
-              #:descPresionesAmenazas,
-              #:tendenciaPoblacional,
-              #:descTendenciaPoblacional,
+              { amenazaDirectum_ids: [] },
+              :organizacionSocial,
+              :infoaddorgsocial,
+              :tamanioPoblacional,
+              :abundancia,
+              :densidad,
+              :patronOcupacion,
+              :descripcionPatron,
+              :parametrosPoblacionales,
+              :poblacionminviableinicial,
+              :poblacionminviablefinal,
+              :descPresionesAmenazas,
+              :tendenciaPoblacional,
+              :descTendenciaPoblacional,
               :id,
               :_destroy
           ],
-=end
+          # OK
           conservacion_attributes: [
-              #:estadoConser,
-              #:marcolegal,
-              #:tipoVeda,
-              #:descManejoAprov,
-              #:tipoAprovEsp,
+              :estadoConser,
+              :descManejoAprov,
+              :tipoAprovEsp,
+              :grupoEspecies,
+              :tallacapturainicial,
+              :tallacapturafinal,
+              :tipoCaptura,
+              :marcolegal,
+              :tipoVeda,
+              :infoaddveda,
               :id,
               :_destroy
           ],
-
+          # OK
           referenciasBibliograficas_attributes: [
               :especieId,
               :referencia,
               :id,
               :_destroy
           ],
-
-
-
-          # Opciones multiples que se agregan a Caracteristicaesoecie
-          #t_clima_ids: [],
-          #t_habitatAntropico_ids: [],
-          #t_geoforma_ids: [],
-          #t_tipovegetmundial_ids: [],
-          #t_climaexo_ids: [],
-          #t_ecorregionMarinaN1_ids: [],
-          #t_zonaVida_ids: [],
-          #t_suelo_ids: [],
-          #t_tipoVegetacionSecundaria_ids: [],
 
           # Información adicional que se agrega en Observacionscarac
           ambi_info_ecorregiones_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
@@ -365,7 +402,6 @@ class Fichas::TaxaController < Fichas::FichasController
           infoAP_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           infoarresp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
 
-          # --
           # Información sobre las especies invasoras (SECCION EXTRA)
           edopoblacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           persistenciapob_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
@@ -428,11 +464,12 @@ class Fichas::TaxaController < Fichas::FichasController
 
   def itera_preguntas_observaciones(p)
     lista = %w(
-      endemicas_attributes
-
-      demografiaAmenazas_attributes
-      conservacion_attributes
       referenciasBibliograficas_attributes
+      conservacion_attributes
+      productocomercio_nal_attributes
+      productocomercio_inter_attributes
+      endemicas_attributes
+      distribucion_historica_attributes
       ambi_info_ecorregiones_attributes
       ambi_especies_asociadas_attributes
       ambi_vegetacion_esp_mundo_attributes
@@ -514,136 +551,3 @@ class Fichas::TaxaController < Fichas::FichasController
     p
   end
 end
-
-
-
-=begin
-habitats_attributes: {
-    info_ecorregiones_attributes:
-        [:habitatId, :especieId, :idpregunta, :infoadicional, :_destroy]
-}
-
-
-
-habitats_attributes: [
-  :t_habitatAntropico_ids,
-  :t_tipoVegetacionSecundarium_ids,
-  :t_clima_ids,
-  :t_suelo_ids,
-  :t_geoforma_ids,
-  :t_ecorregionMarinaN1_ids,
-  :t_zonaVida_ids,
-  :vegetacion_acuatica_ids,
-  :ecosistema_ids,
-  :vegetacion_ids,
-  :tipoVegetacion,
-  :estadoHabitat,
-  :addinfoestadoHabitat,
-  :habitatAgropecuario,
-  :zonaUrbana,
-  :temperaturainicial,
-  :temperaturafinal,
-  :intervaloaltitudinalinicial,
-  :intervaloaltitudinalfinal,
-  :infoAddintervaloaltitudinal,
-  :climaAdicional,
-  :infoaddtemperatura,
-  :temperaturainicialexo,
-  :temperaturafinalexo,
-  :infoaddtemperaturaexo,
-  :precipitacioninicial,
-  :precipitacionfinal,
-  :infoaddprecipitacion,
-  :precipitacioninicialexo,
-  :precipitacionfinalexo,
-  :infoaddprecipitacionexo,
-  :humedadinicial,
-  :humedadfinal,
-  :infoaddhumedad,
-  :descripcionSuelo,
-  :descripcionGeoforma,
-  :biotipos,
-  :salinidadinicial,
-  :salinidadfinal,
-  :unidadsalinidad,
-  :oxigenoinicial,
-  :oxigenofinal,
-  :phinicial,
-  :phfinal,
-  :temeperaturainicial,
-  :temeperaturafinal,
-  :corrientes,
-  :infoaddcaracagua,
-  :intervaloaltitudinalacuainicial,
-  :intervaloaltitudinalacuafinal,
-  :infoAddintervaloaltitudinalacua,
-  :interbatimetricoinicial,
-  :interbatimetricofinal,
-  :infoaddinterbatimetrico,
-  :amplitudmareasinicial,
-  :amplitudmareasfinal,
-  :infoaddamplitudmareas,
-  :tipoVegetacionexo,
-  :uso,
-  :id,
-  :_destroy
-]
-
-
-endemicas_attributes: [
-  :endemicaA,
-  :infoAdicionalEndemica,
-  :id,
-  :_destroy
-]
-
-
-historiaNatural_attributes: [
-  :t_habitoPlanta_ids,
-  :t_alimentacion_ids,
-  :t_forrajeo_ids,
-  :t_migracion_ids,
-  :t_tipo_migracion_ids,
-  :t_habito_ids,
-  :t_tipodispersion_ids,
-  :t_structdisp_ids,
-  :t_comnalsel_ids,
-  :t_proposito_com_ids,
-  :t_comintersel_ids,
-  :t_proposito_com_int_ids,
-  :culturaUso_ids,
-  :pais_importacion_ids,
-  :descripcionAlimentacion,
-  :estrategiaTrofica,
-  :descripcionEstrofica,
-  :conducta,
-  :tipopHabito,
-  :infoaddperiodoactividad,
-  :infoaddhibernacion,
-  :infoaddterritorialidad,
-  :ambitoHogareno,
-  :mecanismosDefensa,
-  :infoaddmecdefensa,
-  :descTipoDispersion,
-  :descEstDispersora,
-  :distanciadispercioninicial,
-  :distanciadispercionfinal,
-  :variabilidadGenetica,
-  :marcadorGenetico,
-  :secuencias,
-  :mexbol,
-  :ImportanciaBiologica,
-  :funcionEcologica,
-  :importanciaEconomica,
-  :comercioIlicitoNal,
-  :comercioIlicitoInter,
-  :descComIlicito,
-  :descUsos,
-  :id,
-  :_destroy
-]
-
-
-
-=end
-

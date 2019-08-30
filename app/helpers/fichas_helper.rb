@@ -36,13 +36,16 @@ module FichasHelper
   end
 
 
-  # Regresar un multiple select
-  def select_multiple_nivel_1(modelo, association, pregunta)
+  # Regresar un multiple select de nivel uno
+  def select_multiple_nivel_1(modelo, association, pregunta, label)
+
+    num_pregunta = Fichas::Caracteristicasespecie::OPCIONES[pregunta]
 
     modelo.association association,
         label_method: :descn1,
         value_method: :idopcion,
-        collection: Fichas::Cat_Preguntas.where(idpregunta: pregunta),
+        collection: Fichas::Cat_Preguntas.where(idpregunta: num_pregunta),
+        label: label,
         :as => :select,
         input_html: {
         class: 'form-control selectpicker',
@@ -50,6 +53,90 @@ module FichasHelper
         'data-live-search': 'true',
         'title': t('general.seleccionar_opciones'),
         }
+  end
+
+  # Regresar un multiple select de nivel uno pero con descripción de la opción con un '->'
+  def select_multiple_nivel_1_1(modelo, association, pregunta, label)
+
+    num_pregunta = Fichas::Caracteristicasespecie::OPCIONES[pregunta]
+
+    modelo.association association,
+        label_method: ->(obj){
+         obj.descn2.blank? ? obj.descn1 : "#{obj.descn1} -> #{obj.descn2}"
+        },
+        value_method: :idopcion,
+        collection: Fichas::Cat_Preguntas.where(idpregunta: num_pregunta),
+        label: label,
+        :as => :select,
+        input_html: {
+           class: 'form-control selectpicker',
+           multiple: true,
+           'data-live-search': 'true',
+           'title': t('general.seleccionar_opciones'),
+        }
+  end
+
+  # Regresar un multiple select de nivel dos (agrupado)
+  def select_multiple_nivel_2(modelo, association, pregunta, label)
+
+    collection = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[pregunta]).group_by(&:descn1)
+
+    modelo.association association,
+        :as => :grouped_select,
+        collection: collection,
+        :group_method => :last,
+        group_label_method: :first,
+        label_method: :descn2,
+        value_method: :idopcion,
+        label: label,
+        input_html: {
+        :multiple => true,
+        class: 'form-control selectpicker',
+        'data-live-search': 'true',
+        'title': t('general.seleccionar_opciones'),
+        'data-selected-text-format': 'count > 3'
+    }
+  end
+
+  # Regresar un multiple select de nivel tres (agrupado y con paréntesis)
+  def select_multiple_nivel_3(modelo, association, pregunta, label)
+
+    collection = Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[pregunta]).group_by(&:descn1)
+
+    modelo.association association,
+          :as => :grouped_select,
+          collection: collection,
+          :group_method => :last,
+          group_label_method: :first,
+          label_method: ->(obj){
+            obj.descn3.blank? ? obj.descn2 : "#{obj.descn2} (#{obj.descn3})"
+          },
+          value_method: :idopcion,
+          label: label,
+          input_html: {
+          :multiple => true,
+          class: 'form-control selectpicker',
+          'data-live-search': 'true',
+          'title': t('general.seleccionar_opciones'),
+          'data-selected-text-format': 'count > 3'
+    }
+  end
+
+  def nuevo_modelo_asociado(parametros)
+
+    link_to_add_association(
+        "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>#{parametros[:nombre]}".html_safe,
+        f,
+        :habitats,
+        partial: 'fichas/taxa/seccion_ambiente/form_ambiente_habitat',
+        :class => 'btn btn-info btn-sm',
+        render_options: { locals: { f_taxon: f} },
+        role: 'tab', "data-toggle" => 'tab',
+        "aria-controls" => 'ambiente',
+        'data-association-insertion-node' => '#ambiente',
+        'data-association-insertion-method' => 'append',
+        href: '#ambiente', style: 'display: none;'
+    ) if @taxon.new_record?
   end
 
   def agrega_info_adicional(parametros = { :titulo => "Información adicional", :agregar => "Agregar información adicional" } )

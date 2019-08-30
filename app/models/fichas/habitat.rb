@@ -20,14 +20,14 @@ class Fichas::Habitat < Ficha
 	has_many :vegetacion_acuatica, class_name: 'Fichas::Vegetacionacuatica', through: :relVegetacionesAcuaticasHabitats
 
   # Acceso a las opciones de catálogo
-	accepts_nested_attributes_for :ecorregion, allow_destroy: true
-	accepts_nested_attributes_for :ecosistema, allow_destroy: true
-  accepts_nested_attributes_for :vegetacion, allow_destroy: true
-  accepts_nested_attributes_for :vegetacion_acuatica, allow_destroy: true
-	accepts_nested_attributes_for :relEcosistemasHabitats, allow_destroy: true
-	accepts_nested_attributes_for :relHabitatsVegetaciones, allow_destroy: true
+	accepts_nested_attributes_for :ecorregion, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :ecosistema, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :vegetacion, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :vegetacion_acuatica, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :relEcosistemasHabitats, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :relHabitatsVegetaciones, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :relEcorregionesHabitats, allow_destroy: true, reject_if: :all_blank
-	accepts_nested_attributes_for :relVegetacionesAcuaticasHabitats, allow_destroy: true
+	accepts_nested_attributes_for :relVegetacionesAcuaticasHabitats, allow_destroy: true, reject_if: :all_blank
 
 	ESTADOS_HABITAT = [
       'Hostil o muy limitante'.to_sym,

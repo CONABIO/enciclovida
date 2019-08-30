@@ -3,7 +3,7 @@ class Fichas::Reproduccionvegetal < Ficha
 	self.table_name = "#{CONFIG.bases.fichasespecies}.reproduccionvegetal"
 	self.primary_key = 'reproduccionVegetalId'
 
-	belongs_to :cat_caracfruto, :class_name => 'Fichas::Cat_Caracfruto', :foreign_key => 'IdFruto'
+	has_one :cat_caracfruto, :class_name => 'Fichas::Cat_Caracfruto', :foreign_key => 'IdFruto'
 	has_one :historiaNatural, class_name: 'Fichas::Historianatural', :foreign_key => 'reproduccionVegetalId'
 
 	AISLAMIENTO_ORGANOS_REPROD = [
