@@ -26,6 +26,7 @@
                             'data-selected-text-format': 'count > 3'
                         }
       %>
+      <h3 class="titulo_sub_subseccion"><%= t('secciones.s_distribucion.distribucion_mexico_si') %></h3>
     </div>
 
     <%= f.association :estado,
@@ -67,7 +68,7 @@
   <div class="apartadoFicha ficha-CITES">
     <fieldset class="apartados">
       <legend class="text-primary"> <%= t('secciones.s_distribucion.distribucion_historica') %> </legend>
-      <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar distribución '.html_safe, f_taxon, :distribucion_historica, partial: 'fichas/taxa/seccion_distribucion/form_distribucion_distribucionhistorica', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'distribucion-historica-CITES', 'data-association-insertion-node' => '#distribucion-historica-CITES', 'data-association-insertion-method' => 'append', href: '#distribucion-historica-CITES', 'onclick' => 'reload("distribucion-historica-CITES")' %>
+      <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar distribución '.html_safe, f_taxon, :distribucion_historica, partial: 'fichas/taxa/seccion_distribucion/form_distribucion_distribucionhistorica', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'distribucion-historica-CITES', 'data-association-insertion-node' => '#distribucion-historica-CITES', 'data-association-insertion-method' => 'append', href: '#distribucion-historica-CITES', 'onclick' => 'reload("seccion_distribucion")' %>
       <hr>
       <div id="distribucion-historica-CITES">
         <%= f_taxon.simple_fields_for :distribucion_historica do |info| %>

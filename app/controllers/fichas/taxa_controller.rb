@@ -16,6 +16,15 @@ class Fichas::TaxaController < Fichas::FichasController
   def new
     @form_params = { url: '/fichas/taxa', method: 'post' }
     @taxon = Fichas::Taxon.new
+    @taxon.habitats = Fichas::Habitat.new
+    @taxon.distribuciones.new
+    @taxon.endemicas.new
+    @taxon.historiaNatural = Fichas::Historianatural.new
+    @taxon.demografiaAmenazas = Fichas::Demografiaamenazas.new
+    @taxon.conservacion.new
+    @taxon.invasividad = Fichas::Invasividad.new
+    @taxon.metadatos.new
+    @taxon.referenciasBibliograficas.new
   end
 
   # GET /taxa/1/edit
@@ -80,7 +89,7 @@ class Fichas::TaxaController < Fichas::FichasController
       p = params.require(:fichas_taxon).permit(
           # Parámetros desde taxón:
           :tipoficha,
-
+          :IdCAT,
           # SECCIÓN CLASIFICACIÓN
           :resumenEspecie, :descEspecie, :especiesSmilares, :origen, :descripcionOrigen, :presencia, :adicinalPresencia, :invasora, :adicionalInvasora,
           :largoinicialhembras, :largofinalhembras, :edadinicialhembras, :edadfinalhembras, :tiempoedadhembra, :pesoinicialhembras, :pesofinalhembras,

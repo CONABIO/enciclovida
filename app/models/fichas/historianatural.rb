@@ -15,11 +15,11 @@ class Fichas::Historianatural < Ficha
 	has_many :culturaUsos, class_name: 'Fichas::Culturausos', through: :relHistoriasNaturalesUsos
 	
 	# Acceso a las opciones de catálogo
-	accepts_nested_attributes_for :culturaUsos, allow_destroy: true
-	accepts_nested_attributes_for :reproduccionAnimal, allow_destroy: true
-	accepts_nested_attributes_for :reproduccionVegetal, allow_destroy: true
-	accepts_nested_attributes_for :cat_estrategiaTrofica, allow_destroy: true
-	accepts_nested_attributes_for :pais_importacion, allow_destroy: true
+	accepts_nested_attributes_for :culturaUsos, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :reproduccionAnimal, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :reproduccionVegetal, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :cat_estrategiaTrofica, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :pais_importacion, allow_destroy: true, reject_if: :all_blank
 
 
 	FUNCIONES_ECOLOGICAS = [

@@ -83,16 +83,18 @@
   <%= f.input :tipoReproduccion, as: :radio_buttons, :collection => Fichas::Historianatural::TIPO_REPRODUCCION, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideSegunTipoReproduccion()'} %>
   <hr class="espacio_ficha">
 
-  <div id="opcion-reprodAnimal">
+  <div id="opcion-reprodAnimal" style="display: none">
     <%#=
-      link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar reproduccionAnimal'.html_safe, f, :reproduccionAnimal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal',render_options: {locals: { f_taxon: f_taxon}}, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodAnimal', 'data-association-insertion-node' => '#opcion-reprodAnimal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodAnimal', style: 'display: none;')
+      link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie'.html_safe, f, :reproduccionAnimal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', render_options: {locals: { f_taxon: f_taxon}}, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodAnimal', 'data-association-insertion-node' => '#opcion-reprodAnimal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodAnimal')
     %>
     <%= f.simple_fields_for :reproduccionAnimal do |info| %>
       <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', locals: {f: info, f_taxon: f_taxon}  %>
     <% end %>
   </div>
 
-  <div id="opcion-reprodVegetal">
+  <div id="opcion-reprodVegetal" style="display: none">
+    <%#=
+      link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie'.html_safe, f, :reproduccionVegetal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', render_options: {locals: { f_taxon: f_taxon}}, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodVegetal', 'data-association-insertion-node' => '#opcion-reprodVegetal', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion' %>
     <%= f.simple_fields_for :reproduccionVegetal do |info| %>
       <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info, f_taxon: f_taxon}  %>
     <% end %>

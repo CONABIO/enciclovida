@@ -65,7 +65,7 @@
         <hr class="espacio_ficha">
         <hr />
         <h3 class="titulo_subseccion"><%=t('secciones.s_clasificacion.legislaciones')%></h3>
-        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion' %>
+        <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una legislacion'.html_safe, f, :legislaciones, partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion', 'data-association-insertion-node' => '#clasificacion-descripcion', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion', 'onclick' => 'reload("seccion_clasificacion")' %>
         <%= f.simple_fields_for :legislaciones do |info| %>
           <%= render partial: 'fichas/taxa/seccion_clasificacion/form_clasificacion_y_descripcion_legislacion', locals: {f: info} %>
         <% end %>
@@ -79,6 +79,19 @@
         <%= f.simple_fields_for :distribuciones do |info| %>
           <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_distribucion', locals: {f: info, f_taxon: f } %>
         <% end %>
+        <%#= link_to_add_association(
+                '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Distribucion'.html_safe,
+                f,
+                :habitats,
+                partial: 'fichas/taxa/seccion_distribucion/form_distribucion_habitad',
+                :class => 'btn btn-info btn-sm',
+                render_options: { locals: { f_taxon: f} },
+                role: 'tab', "data-toggle" => 'tab',
+                "aria-controls" => 'distribucion',
+                'data-association-insertion-node' => '#distribucion',
+                'data-association-insertion-method' => 'append',
+                href: '#distribucion', style: 'display: none;'
+            ) if @taxon.new_record? || @taxon.habitats.blank? %>
         <%= f.simple_fields_for :habitats  do |info| %>
           <%= render partial: 'fichas/taxa/seccion_distribucion/form_distribucion_habitad', locals: { f: info, f_taxon: f } %>
         <% end %>
@@ -90,6 +103,20 @@
       <div id='ambiente' role="tabpanel" class="tab-pane fade panel-body">
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.ambiente')%></h3>
+        <%#= link_to_add_association(
+                '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Invasividad'.html_safe,
+                f,
+                :habitats,
+                partial: 'fichas/taxa/seccion_ambiente/form_ambiente_habitat',
+                :class => 'btn btn-info btn-sm',
+                render_options: { locals: { f_taxon: f} },
+                role: 'tab', "data-toggle" => 'tab',
+                "aria-controls" => 'ambiente',
+                'data-association-insertion-node' => '#ambiente',
+                'data-association-insertion-method' => 'append',
+                href: '#ambiente', style: 'display: none;'
+            ) if @taxon.new_record? || @taxon.habitats.blank? %>
+
         <% # OCUPA: habitat  * * ecorregion, ecosistema, suelo, geoforma %>
         <%= f.simple_fields_for :habitats do |info| %>
           <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_habitat', locals: { f: info, f_taxon: f } %>
@@ -163,7 +190,7 @@
         <div class="apartadoFicha ficha-Invasora">
           <hr />
           <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.especies_invasoras')%></h3>
-          <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Invasividad'.html_safe, f, :invasividad, partial: 'fichas/taxa/seccion_invasoras/form_invasoras_invasividad', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo, 'data-association-insertion-node' => '#prioritaria-conservacion', 'data-association-insertion-method' => 'append', href: '#prioritaria-conservacion', style: 'display: none;') if :invasividad.empty? %>
+          <%#= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Invasividad'.html_safe, f, :invasividad, partial: 'fichas/taxa/seccion_invasoras/form_invasoras_invasividad', render_options: { locals: { f_taxon: f} }, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'prioritaria-conservacion', 'data-association-insertion-node' => '#prioritaria-conservacion', 'data-association-insertion-method' => 'append', href: '#prioritaria-conservacion', style: 'display: none;') if @taxon.invasividad.blank? %>
           <%= f.simple_fields_for :invasividad do |info| %>
             <%= render partial: 'fichas/taxa/seccion_invasoras/form_invasoras_invasividad', locals: {f: info, f_taxon: f } %>
           <% end %>

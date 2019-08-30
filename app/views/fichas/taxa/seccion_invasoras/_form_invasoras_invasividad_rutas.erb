@@ -8,7 +8,7 @@
               label_method: :descn1,
               value_method: :idopcion,
               input_html: {
-                  class: 'form-control selectpicker',
+                  class: 'form-control selectpicker seccion_invasora',
                   'data-live-search': 'true',
                   'title': t('general.seleccionar_opcion'),
               }
@@ -22,11 +22,11 @@
               label_method: :descn2,
               value_method: :idopcion,
               input_html: {
-                  class: 'form-control selectpicker',
+                  class: 'form-control selectpicker tiny_seccion_invasora',
                   'data-live-search': 'true',
                   'title': t('general.seleccionar_opcion'),
               }
   %>
-  <%= f.input :infoaddrutainvasora %>
+  <%= f.input :infoaddrutainvasora, input_html: { class: 'tiny_seccion_invasora'} %>
   <%= link_to_remove_association 'Borrar ruta', f, :class => 'btn btn-danger btn-sm' %><hr>
 </div>

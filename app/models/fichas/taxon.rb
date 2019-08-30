@@ -16,7 +16,8 @@ class Fichas::Taxon < Ficha
 	has_many :referenciasBibliograficas, class_name: 'Fichas::Referenciabibliografica', :foreign_key => 'especieId', inverse_of: :taxon
 	has_many :legislaciones, class_name: 'Fichas::Legislacion', :foreign_key => 'especieId', inverse_of: :taxon
 	has_many :conservacion, :class_name => 'Fichas::Conservacion', :foreign_key => 'especieId', inverse_of: :taxon
-
+	has_one :invasividad, class_name: 'Fichas::Invasividad', :foreign_key => 'especieId', inverse_of: :taxon
+	has_many :metadatos, class_name: 'Fichas::Metadatos', :foreign_key => 'especieId', inverse_of: :taxon
 
 
 	accepts_nested_attributes_for :habitats, allow_destroy: true, reject_if: :all_blank
@@ -27,27 +28,14 @@ class Fichas::Taxon < Ficha
 	accepts_nested_attributes_for :productocomercio_nal, reject_if: :all_blank, allow_destroy: true
 	accepts_nested_attributes_for :productocomercio_inter, reject_if: :all_blank, allow_destroy: true
 	accepts_nested_attributes_for :legislaciones, reject_if: :all_blank, allow_destroy: true
-	accepts_nested_attributes_for :referenciasBibliograficas, allow_destroy: true
-	accepts_nested_attributes_for :conservacion, allow_destroy: true
-
-
-	has_one :invasividad, class_name: 'Fichas::Invasividad', :foreign_key => 'especieId', inverse_of: :taxon
-	has_many :metadatos, class_name: 'Fichas::Metadatos', :foreign_key => 'especieId', inverse_of: :taxon
+	accepts_nested_attributes_for :referenciasBibliograficas, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :conservacion, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :invasividad, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :metadatos, allow_destroy: true, reject_if: :all_blank
 
 
 	has_many :distribucion_historica, class_name: 'Fichas::Distribucionhistorica', :foreign_key => "especieId", inverse_of: :taxon
-
-
-
-	accepts_nested_attributes_for :invasividad, allow_destroy: true
-	accepts_nested_attributes_for :metadatos, allow_destroy: true
-
-
 	accepts_nested_attributes_for :distribucion_historica, allow_destroy: true
-
-
-
-
 
 
 

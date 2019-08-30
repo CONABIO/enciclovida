@@ -92,6 +92,7 @@ es:
     s_distribucion:
       distribucion_historica: Distribución histórica
       distribucion_mexico: a. Distribución en México
+      distribucion_mexico_si: ¿Distribución en México?
       endemismo: Endemismo
       region: Región
     #  * *  S E C C I Ó N   B I O L O G Í A  * *  #

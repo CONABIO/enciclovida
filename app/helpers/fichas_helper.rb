@@ -122,6 +122,23 @@ module FichasHelper
     }
   end
 
+  def nuevo_modelo_asociado(parametros)
+
+    link_to_add_association(
+        "<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>#{parametros[:nombre]}".html_safe,
+        f,
+        :habitats,
+        partial: 'fichas/taxa/seccion_ambiente/form_ambiente_habitat',
+        :class => 'btn btn-info btn-sm',
+        render_options: { locals: { f_taxon: f} },
+        role: 'tab', "data-toggle" => 'tab',
+        "aria-controls" => 'ambiente',
+        'data-association-insertion-node' => '#ambiente',
+        'data-association-insertion-method' => 'append',
+        href: '#ambiente', style: 'display: none;'
+    ) if @taxon.new_record?
+  end
+
   def agrega_info_adicional(parametros = { :titulo => "Información adicional", :agregar => "Agregar información adicional" } )
 
     respuesta = ""
