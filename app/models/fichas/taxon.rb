@@ -54,7 +54,6 @@ class Fichas::Taxon < Ficha
 	has_many :ambi_info_clima_exotico,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico])}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :ambi_infotiposuelo,-> {where('observacionescarac.idpregunta = ?', 6 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :ambi_infogeoforma,-> {where('observacionescarac.idpregunta = ?', 7 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-  has_many :infoalimenta,-> {where('observacionescarac.idpregunta = ?', 9 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :infoaddforrajeo,-> {where('observacionescarac.idpregunta = ?', 8 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :infoaddhabito,-> {where('observacionescarac.idpregunta = ?', 12 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :infosistaparea,-> {where('observacionescarac.idpregunta = ?', 13 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
@@ -125,7 +124,6 @@ class Fichas::Taxon < Ficha
 	accepts_nested_attributes_for :ambi_info_clima_exotico, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :ambi_infotiposuelo, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :ambi_infogeoforma, allow_destroy: true, reject_if: :all_blank
-	accepts_nested_attributes_for :infoalimenta, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :infoaddforrajeo, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :infoaddhabito, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :infosistaparea, allow_destroy: true, reject_if: :all_blank

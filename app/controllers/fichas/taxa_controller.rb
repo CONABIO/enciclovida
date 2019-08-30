@@ -16,15 +16,6 @@ class Fichas::TaxaController < Fichas::FichasController
   def new
     @form_params = { url: '/fichas/taxa', method: 'post' }
     @taxon = Fichas::Taxon.new
-    @taxon.habitats = Fichas::Habitat.new
-    @taxon.distribuciones.new
-    @taxon.endemicas.new
-    @taxon.historiaNatural = Fichas::Historianatural.new
-    @taxon.demografiaAmenazas = Fichas::Demografiaamenazas.new
-    @taxon.conservacion.new
-    @taxon.invasividad = Fichas::Invasividad.new
-    @taxon.metadatos.new
-    @taxon.referenciasBibliograficas.new
   end
 
   # GET /taxa/1/edit
@@ -245,8 +236,11 @@ class Fichas::TaxaController < Fichas::FichasController
               :descUsos,
               :hibernacion,
               :territorialidad,
+              :reproduccionAnimalId,
+              :reproduccionVegetalId,
               :id,
               :_destroy,
+              {infoalimenta_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy]},
               {# OK
                 reproduccionVegetal_attributes: [
                     :descripcion,
@@ -390,7 +384,6 @@ class Fichas::TaxaController < Fichas::FichasController
           ambi_info_clima_exotico_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           ambi_infotiposuelo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           ambi_infogeoforma_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
-          infoalimenta_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           infoaddforrajeo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           infoaddhabito_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           infosistaparea_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
@@ -475,7 +468,7 @@ class Fichas::TaxaController < Fichas::FichasController
       ambi_vegetacion_esp_mundo_attributes
       ambi_info_clima_exotico_attributes
       ambi_infotiposuelo_attributes
-      infoalimenta_attributes
+
       infoaddforrajeo_attributes
       infoaddhabito_attributes
       infosistaparea_attributes

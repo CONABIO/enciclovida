@@ -5,7 +5,6 @@ class Fichas::Observacionescarac < Ficha
 
   belongs_to :taxon, class_name: 'Fichas::Taxon', :foreign_key => 'especieId'
 
-
 	PREGUNTAS = {
 			:ambi_especies_asociadas => 2,
       :ambi_vegetacion_esp_mundo => 3,

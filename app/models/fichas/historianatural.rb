@@ -6,13 +6,16 @@ class Fichas::Historianatural < Ficha
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
 	has_one :cat_estrategiaTrofica, :class_name => 'Fichas::Cat_Estrategiatrofica', :foreign_key => 'IdEstrategia'
-	has_one :reproduccionAnimal, :class_name => 'Fichas::Reproduccionanimal', :foreign_key => 'reproduccionAnimalId'
-	has_one :reproduccionVegetal, :class_name => 'Fichas::Reproduccionvegetal', :foreign_key => 'reproduccionVegetalId'
+	belongs_to :reproduccionAnimal, :class_name => 'Fichas::Reproduccionanimal', :foreign_key => 'reproduccionAnimalId', optional: true
+	belongs_to :reproduccionVegetal, :class_name => 'Fichas::Reproduccionvegetal', :foreign_key => 'reproduccionVegetalId', optional: true
 
 	has_many :relHistoriasNaturalesPais, class_name: 'Fichas::Relhistorianaturalpais', :foreign_key => 'historiaNaturalId'
 	has_many :relHistoriasNaturalesUsos, class_name: 'Fichas::Relhistorianaturalusos', :foreign_key => 'historiaNaturalId'
   has_many :pais_importacion, class_name: 'Fichas::Pais', through: :relHistoriasNaturalesPais
 	has_many :culturaUsos, class_name: 'Fichas::Culturausos', through: :relHistoriasNaturalesUsos
+
+	has_many :infoalimenta,-> {where('observacionescarac.idpregunta = ?', 9 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	accepts_nested_attributes_for :infoalimenta, allow_destroy: true, reject_if: :all_blank
 	
 	# Acceso a las opciones de catálogo
 	accepts_nested_attributes_for :culturaUsos, allow_destroy: true, reject_if: :all_blank
