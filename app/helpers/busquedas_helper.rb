@@ -106,4 +106,21 @@ module BusquedasHelper
     end
   end
 
+  # Despliega el checklist
+  def generaChecklist(taxon)
+    html = ''
+    nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{taxon.nombre_cientifico}</text>"
+
+    if !taxon.especie_o_inferior?
+      cat = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
+      html << "<text class='f-categoria-taxonomica-checklist'>#{cat}</text> #{nombre_cientifico}"
+    else
+      html << nombre_cientifico
+    end
+
+    html << " #{taxon.nombre_autoridad} estatus:#{taxon.estatus}"
+
+    html
+  end
+
 end
