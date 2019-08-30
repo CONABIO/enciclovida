@@ -5,9 +5,9 @@ class Fichas::Historianatural < Ficha
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
-	belongs_to :cat_estrategiaTrofica, :class_name => 'Fichas::Cat_Estrategiatrofica', :foreign_key => 'IdEstrategia'
-	belongs_to :reproduccionAnimal, :class_name => 'Fichas::Reproduccionanimal', :foreign_key => 'reproduccionAnimalId'
-	belongs_to :reproduccionVegetal, :class_name => 'Fichas::Reproduccionvegetal', :foreign_key => 'reproduccionVegetalId'
+	has_one :cat_estrategiaTrofica, :class_name => 'Fichas::Cat_Estrategiatrofica', :foreign_key => 'IdEstrategia'
+	has_one :reproduccionAnimal, :class_name => 'Fichas::Reproduccionanimal', :foreign_key => 'reproduccionAnimalId'
+	has_one :reproduccionVegetal, :class_name => 'Fichas::Reproduccionvegetal', :foreign_key => 'reproduccionVegetalId'
 
 	has_many :relHistoriasNaturalesPais, class_name: 'Fichas::Relhistorianaturalpais', :foreign_key => 'historiaNaturalId'
 	has_many :relHistoriasNaturalesUsos, class_name: 'Fichas::Relhistorianaturalusos', :foreign_key => 'historiaNaturalId'
@@ -15,11 +15,11 @@ class Fichas::Historianatural < Ficha
 	has_many :culturaUsos, class_name: 'Fichas::Culturausos', through: :relHistoriasNaturalesUsos
 	
 	# Acceso a las opciones de catálogo
-	accepts_nested_attributes_for :culturaUsos, allow_destroy: true
-	accepts_nested_attributes_for :reproduccionAnimal, allow_destroy: true
-	accepts_nested_attributes_for :reproduccionVegetal, allow_destroy: true
-	accepts_nested_attributes_for :cat_estrategiaTrofica, allow_destroy: true
-	accepts_nested_attributes_for :pais_importacion, allow_destroy: true
+	accepts_nested_attributes_for :culturaUsos, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :reproduccionAnimal, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :reproduccionVegetal, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :cat_estrategiaTrofica, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :pais_importacion, allow_destroy: true, reject_if: :all_blank
 
 
 	FUNCIONES_ECOLOGICAS = [

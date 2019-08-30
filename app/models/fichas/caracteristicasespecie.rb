@@ -4,6 +4,65 @@ class Fichas::Caracteristicasespecie < Ficha
 	self.primary_keys = :especieId
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
+	belongs_to :opciones_preguntas, :class_name => 'Fichas::Cat_Preguntas', foreign_key: :idopcion, primary_key: :idopcion
+
+	OPCIONES = {
+			:habitatAntropico => 1,
+			:vegetacionSecundaria => 2,
+			:tipovegetmundial => 3,
+			:clima => 4,
+			:climaexo => 5,
+			:suelo => 6,
+			:geoforma => 7,
+      :forrajeo => 8,
+      :alimentacion => 9,
+      :migracion => 10,
+      :tipo_migracion => 11,
+      :habito => 12,
+			:sistapareamiento => 13,
+			:sitioanidacion => 14,
+      :tipodispersion => 15,
+      :structdisp => 16,
+			:interacciones => 17,
+      :comnalsel => 18,
+      :proposito_com => 20,
+      :comintersel => 22,
+      :proposito_com_int => 24,
+      :esquemamanejo => 26,
+			:tipoaprovechamiento => 27,
+      :tipopesca => 28,
+      :regioncaptura => 29,
+			:artepesca => 30,
+			:acuacultura => 31,
+      :dispersionsei => 39,
+			:naturalizacionsei => 36,
+			:mecanismos => 33,
+			:efectoimpactosei => 34,
+			:intensidadimpactosei => 35,
+			:especiesasociadassei => 37,
+			:plasticidadsei => 38,
+			:platenciasei => 40,
+			:seguridadsei => 41,
+			:enfermedadessei  => 42,
+			:zonaVida => 43,
+			:ecorregionMarinaN1 => 44,
+      :habitoPlantas => 45,
+			:arregloespacial => 46,
+      :agentespolinizacion => 48,
+      :arregloespacialflores => 49,
+      :arregloespacialindividuos => 50,
+      :arregloespacialpoblaciones => 51,
+      :vectorespolinizacion => 53
+	}
+
+
+
+
+end
+
+
+
+=begin
 
 	#:source => <name>'
 	belongs_to :t_climas,-> {where('cat_preguntas.idpregunta = ?', 4)}, :class_name => 'Fichas::Cat_Preguntas', foreign_key: :idopcion, primary_key: :idopcion
@@ -62,60 +121,6 @@ class Fichas::Caracteristicasespecie < Ficha
 	belongs_to :t_seguridadsei,-> {where('cat_preguntas.idpregunta = ?', 41)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 	belongs_to :t_enfermedadessei,-> {where('cat_preguntas.idpregunta = ?', 42)}, class_name: 'Fichas::Cat_Preguntas', :foreign_key => 'idopcion'
 
-	OPCIONES = {
-			:habitatAntropico => 1,
-			:vegetacionSecundaria => 2,
-			:tipovegetmundial => 3,
-			:clima => 4,
-			:climaexo => 5,
-			:suelo => 6,
-			:geoforma => 7,
-      :forrajeo => 8,
-      :alimentacion => 9,
-      :migracion => 10,
-      :tipo_migracion => 11,
-      :habito => 12,
-			:sistapareamiento => 13,
-			:sitioanidacion => 14,
-      :tipodispersion => 15,
-      :structdisp => 16,
-			:interacciones => 17,
-      :comnalsel => 18,
-      :proposito_com => 20,
-      :comintersel => 22,
-      :proposito_com_int => 24,
-      :esquemamanejo => 26,
-      :tipopesca => 28,
-      :regioncaptura => 29,
-      :dispersionsei => 39,
-			:naturalizacionsei => 36,
-			:mecanismos => 33,
-			:efectoimpactosei => 34,
-			:intensidadimpactosei => 35,
-			:especiesasociadassei => 37,
-			:plasticidadsei => 38,
-			:platenciasei => 40,
-			:seguridadsei => 41,
-			:enfermedadessei  => 42,
-			:zonaVida => 43,
-			:ecorregionMarinaN1 => 44,
-      :habitoPlantas => 45,
-			:arregloespacial => 46,
-      :agentespolinizacion => 48,
-      :arregloespacialflores => 49,
-      :arregloespacialindividuos => 50,
-      :arregloespacialpoblaciones => 51,
-      :vectorespolinizacion => 53
-	}
-
-
-
-
-end
-
-
-
-=begin
 
 TIPOS DE SELECT:
 has_many :artepesca,-> {where('caracteristicasespecie.idpregunta = ?', 30)}, class_name: 'Fichas::Cat_Preguntas', through: :caracteristicasEspecies

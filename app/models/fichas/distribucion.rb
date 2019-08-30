@@ -16,11 +16,11 @@ class Fichas::Distribucion < Ficha
 	has_many :municipio, class_name: 'Fichas::Municipio_F', :through => :relDistribucionesMunicipios
 
 
-	accepts_nested_attributes_for :pais, allow_destroy: true
-	accepts_nested_attributes_for :pais_inv, allow_destroy: true
-	accepts_nested_attributes_for :pais_inv2, allow_destroy: true
-	accepts_nested_attributes_for :estado, allow_destroy: true
-	accepts_nested_attributes_for :municipio, allow_destroy: true
+	accepts_nested_attributes_for :pais, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :pais_inv, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :pais_inv2, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :estado, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :municipio, allow_destroy: true, reject_if: :all_blank
 
 	DISTRIBUCINES = [
 			'Muy restringida'.to_sym,

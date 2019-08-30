@@ -1,9 +1,14 @@
 <div class='nested-fields'>
-  <%= f.input :estadoConser %>
+
+  <div class="apartadoFicha ficha-Prioritaria ficha-Silvestre ficha-CITES">
+    <%= f.input :estadoConser %>
+  </div>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.manejo_aprov_acciones_conserv') %></h3>
+
+  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :esquemamanejo, t('opciones_multiples.t_esquemamanejo')) %>
   <%
-    parametros = {:acceso => @taxon.infocons, :modelo => f_taxon, :association => :infocons, :titulo => "Información adicional", :el_div => "infocons", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infocons]}
+    parametros = {:acceso => @taxon.infocons, :modelo => f_taxon, :association => :infocons, :titulo => t('secciones.s_conservacion.descripcion_manejo'), :el_div => "infocons", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infocons]}
     agrega_info_adicional(parametros)
   %>
   <div id="dato_<%= parametros[:el_div] %>">
@@ -11,55 +16,37 @@
       <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
     <% end %>
   </div>
+  <%= select_multiple_nivel_3(f_taxon, :opciones_preguntas, :tipoaprovechamiento, t('opciones_multiples.t_tipoaprovechamiento')) %>
 
-  <%= f_taxon.association :t_esquemamanejo,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:esquemamanejo]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+  <div class="apartadoFicha ficha-Invasora">
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_conservacion.tipo_aprov_pesa_acua') %></h4>
+    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipopesca, t('opciones_multiples.t_tipopesca')) %>
+    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :regioncaptura, t('opciones_multiples.t_regioncaptura')) %>
+    <%= f.input :grupoEspecies,
+          :as => :grouped_select,
+          collection: Fichas::Cat_Gruposespecies.all.group_by(&:grupo),
+          :group_method => :last,
+          group_label_method: :first,
+          label_method: :subgrupo,
+          value_method: :id,
+          input_html: {
+              class: 'form-control selectpicker',
+              'data-live-search': 'true',
+              'title': t('general.seleccionar_opcion'),
+          }
+    %>
 
-  <%= f_taxon.association :t_tipopesca,
-                    label_method: :descn1,
-                    value_method: :idopcion,
-                    collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:tipopesca]),
-                    :as => :select,
-                    input_html: {
-                        class: 'form-control selectpicker',
-                        multiple: true,
-                        'data-live-search': 'true',
-                        'title': t('general.seleccionar_opciones'),
-                        'data-selected-text-format': 'count > 3'
-                    }
-  %>
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_conservacion.talla_captura') %></h4>
+    <%= f.input :tallacapturainicial, label: 'De:' %>
+    <%= f.input :tallacapturafinal, label: 'A:' %>
+    <%= f.input :tipoCaptura, :as => :select, collection: Fichas::Conservacion::TIPO_CAPTURA, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :artepesca, t('opciones_multiples.t_artepesca')) %>
+    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :acuacultura, t('opciones_multiples.t_acuacultura')) %>
+  </div>
+
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.marco_legal_nacional_e_internacional') %></h3>
   <%= f.input :marcolegal %>
   <%= f.input :tipoVeda, :as => :select, collection: Fichas::Conservacion::TIPO_VEDA, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
-
-  <div style="display: none;">
-    <%= f_taxon.association :t_regioncaptura,
-                      label_method: :descn1,
-                      value_method: :idopcion,
-                      collection: Fichas::Cat_Preguntas.where(idpregunta: Fichas::Caracteristicasespecie::OPCIONES[:regioncaptura]),
-                      :as => :select,
-                      input_html: {
-                          class: 'form-control selectpicker',
-                          multiple: true,
-                          'data-live-search': 'true',
-                          'title': t('general.seleccionar_opciones'),
-                          'data-selected-text-format': 'count > 3'
-                      }
-    %>
-    <%= f.input :descManejoAprov %>
-    <%= f.input :tipoAprovEsp, :as => :select, collection: Fichas::Conservacion::TIPO_APROVECHAMIENTO, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opciones')} %>
-  </div>
-
+  <%= f.input :infoaddveda %>
 </div>

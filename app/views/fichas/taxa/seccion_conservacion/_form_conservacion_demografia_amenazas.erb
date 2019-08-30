@@ -1,23 +1,26 @@
 <div class='nested-fields'>
 
-  <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.presiones') %></h3>
-  <%= f.association :amenazaDirecta,
-              :as => :grouped_select,
-              collection: Fichas::Amenazadirecta.all.group_by(&:presionesAmenazas),
-              :group_method => :last,
-              group_label_method: :first,
-              :label_method => :subpresionesAmenazas,
-              value_method: :amenazaId,
-              input_html: {
-                  class: 'form-control selectpicker',
-                  :multiple => true,
-                  'data-live-search': 'true',
-                  'title': t('general.seleccionar_opciones')
-              }
-  %>
-  <%= f.input :descPresionesAmenazas %>
+  <div class="apartadoFicha ficha-Prioritaria ficha-Silvestre ficha-CITES">
+    <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.presiones') %></h3>
+    <%= f.association :amenazaDirecta,
+                      :as => :grouped_select,
+                      collection: Fichas::Amenazadirecta.all.group_by(&:presionesAmenazas),
+                      :group_method => :last,
+                      group_label_method: :first,
+                      :label_method => :subpresionesAmenazas,
+                      value_method: :amenazaId,
+                      input_html: {
+                          class: 'form-control selectpicker',
+                          :multiple => true,
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones')
+                      }
+    %>
+    <%= f.input :descPresionesAmenazas %>
 
-  <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.tendencia_p') %></h3>
-  <%= f.input :tendenciaPoblacional, :as => :select, collection: Fichas::Demografiaamenazas::TENDENCIA_POBLACIONAL, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
-  <%= f.input :descTendenciaPoblacional %>
+    <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.tendencia_p') %></h3>
+    <%= f.input :tendenciaPoblacional, :as => :select, collection: Fichas::Demografiaamenazas::TENDENCIA_POBLACIONAL, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+    <%= f.input :descTendenciaPoblacional %>
+  </div>
+
 </div>
