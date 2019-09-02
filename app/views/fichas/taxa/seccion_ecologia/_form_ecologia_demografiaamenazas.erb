@@ -18,7 +18,7 @@
   <%= f.input :parametrosPoblacionales %>
   <h3 class="titulo_sub_subseccion"><%= t('secciones.s_ecologia.poblacion_minima') %></h3>
   <%= f.input :poblacionminviableinicial %>
-  <%= f.input :poblacionminviablefinal %>
+  <%= f.input :poblacionminviablefinal, input_html: { onblur: "checkValues(this)" } %>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.interacciones') %></h3>
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :interacciones, t('opciones_multiples.t_interacciones')) %>

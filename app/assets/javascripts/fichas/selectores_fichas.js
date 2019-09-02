@@ -66,9 +66,6 @@ $( document ).ready(function() {
                 event.preventDefault();
             }
         });
-
-
-    Validar();
 });
 
 $(window).load(function(){
@@ -177,4 +174,23 @@ function reloadTiny(classe) {
             selector: '.tiny_' + classe
         });
     }, 10)
+}
+
+
+function checkValues(e) {
+
+    var nombreFinal = e.name;
+    var nombreInicial = nombreFinal.replace("final", "inicial");
+
+    var vmax = Number(document.getElementsByName(nombreFinal)[0].value);
+    var vmin = Number(document.getElementsByName(nombreInicial)[0].value);
+
+    if (vmax != 0) {
+        if (vmax < vmin){
+            document.getElementsByName(nombreFinal)[0].value = '';
+            alert('El campo M\xe1ximo debe ser mayor que el campo M\xednimo');
+            document.getElementsByName(nombreFinal)[0].focus();
+            return false;
+        }
+    }
 }

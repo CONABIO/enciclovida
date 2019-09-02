@@ -7,16 +7,6 @@
   <fieldset class="apartados">
     <legend class="text-primary"> Ecorregiones </legend>
     <%= select_multiple_de_catalogos(f, :ecorregion, :descripcion, :ecorregionId) %>
-    <div class="apartadoFicha ficha-Prioritaria">
-      <% parametros = {:acceso => @taxon.habitats.ambi_info_ecorregiones, :modelo => f, :association => :ambi_info_ecorregiones, :titulo => "Información adicional", :el_div => "info_ecorregiones", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones]}
-          agrega_info_adicional(parametros)
-      %>
-      <div id="dato_<%= parametros[:el_div] %>">
-        <%= f.simple_fields_for parametros[:association] do |info| %>
-          <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
-        <% end %>
-      </div>
-    </div>
   </fieldset>
 
   <fieldset class="apartados">
@@ -78,8 +68,8 @@
     </div>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.int_altitudinal') %></h3>
-    <%= f.input :intervaloaltitudinalinicial, item_wrapper_class: 'radio-inline' %>
-    <%= f.input :intervaloaltitudinalfinal, item_wrapper_class: 'radio-inline' %>
+    <%= f.input :intervaloaltitudinalinicial %>
+    <%= f.input :intervaloaltitudinalfinal, input_html: { onblur: "checkValues(this)" } %>
     <%= f.input :infoAddintervaloaltitudinal %>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.clima') %></h3>
@@ -101,31 +91,31 @@
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.r_temperatura') %></h3>
     <%= f.input :temperaturainicial %>
-    <%= f.input :temperaturafinal %>
+    <%= f.input :temperaturafinal, input_html: { onblur: "checkValues(this)" } %>
     <%= f.input :infoaddtemperatura %>
 
     <div class="apartadoFicha ficha-Invasora">
       <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.rango_temp_exo') %></h3>
       <%= f.input :temperaturainicialexo%>
-      <%= f.input :temperaturafinalexo %>
+      <%= f.input :temperaturafinalexo, input_html: { onblur: "checkValues(this)" } %>
       <%= f.input :infoaddtemperaturaexo %>
     </div>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.r_precipitacion') %></h3>
     <%= f.input :precipitacioninicial %>
-    <%= f.input :precipitacionfinal %>
+    <%= f.input :precipitacionfinal, input_html: { onblur: "checkValues(this)" } %>
     <%= f.input :infoaddprecipitacion %>
 
     <div class="apartadoFicha ficha-Invasora">
       <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.rango_hum_exo') %></h3>
       <%= f.input :precipitacioninicialexo %>
-      <%= f.input :precipitacionfinalexo %>
+      <%= f.input :precipitacionfinalexo, input_html: { onblur: "checkValues(this)" } %>
       <%= f.input :infoaddprecipitacionexo %>
     </div>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.humedad') %></h3>
     <%= f.input :humedadinicial %>
-    <%= f.input :humedadfinal %>
+    <%= f.input :humedadfinal, input_html: { onblur: "checkValues(this)" } %>
     <%= f.input :infoaddhumedad %>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_suelo') %></h3>
@@ -181,30 +171,30 @@
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.caracteristicas_agua') %></h3>
     <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.salinidad') %></h4>
     <%= f.input :salinidadinicial %>
-    <%= f.input :salinidadfinal %>
+    <%= f.input :salinidadfinal, input_html: { onblur: "checkValues(this)" } %>
     <%= f.input :unidadsalinidad, collection: Fichas::Habitat::UNIDAD_SALINIDAD, :as => :select, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
     <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.oxigeno') %></h4>
     <%= f.input :oxigenoinicial %>
-    <%= f.input :oxigenofinal %>
+    <%= f.input :oxigenofinal, input_html: { onblur: "checkValues(this)" } %>
     <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.ph') %></h4>
     <%= f.input :phinicial %>
-    <%= f.input :phfinal %>
+    <%= f.input :phfinal, input_html: { onblur: "checkValues(this)" } %>
     <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.temperatura') %></h4>
     <%= f.input :temeperaturainicial %>
-    <%= f.input :temeperaturafinal %>
+    <%= f.input :temeperaturafinal, input_html: { onblur: "checkValues(this)" } %>
     <%= f.input :corrientes %>
     <%= f.input :infoaddcaracagua %>
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.int_altitudinal') %></h3>
     <%= f.input :intervaloaltitudinalacuainicial %>
-    <%= f.input :intervaloaltitudinalacuafinal %>
+    <%= f.input :intervaloaltitudinalacuafinal, input_html: { onblur: "checkValues(this)" } %>
     <%= f.input :infoAddintervaloaltitudinalacua %>
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.int_batimetrico') %></h3>
     <%= f.input :interbatimetricoinicial %>
-    <%= f.input :interbatimetricofinal %>
+    <%= f.input :interbatimetricofinal, input_html: { onblur: "checkValues(this)" } %>
     <%= f.input :infoaddinterbatimetrico %>
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.amp_mareas') %></h3>
     <%= f.input :amplitudmareasinicial %>
-    <%= f.input :amplitudmareasfinal %>
+    <%= f.input :amplitudmareasfinal, input_html: { onblur: "checkValues(this)" } %>
     <%= f.input :infoaddamplitudmareas %>
   </div>
 

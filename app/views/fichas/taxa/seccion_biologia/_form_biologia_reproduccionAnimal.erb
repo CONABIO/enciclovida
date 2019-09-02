@@ -33,7 +33,7 @@
 
   <h3 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.tiempo_eventos_rep') %></h3>
   <%= f.input :tiempoentrecriasinicial %>
-  <%= f.input :tiempoentrecriasfinal %>
+  <%= f.input :tiempoentrecriasfinal, input_html: { onblur: "checkValues(this)" } %>
 
   <%= f.input :tipoFecundacion,
               collection: Fichas::Reproduccionanimal::TIPO_FECUNDACION,

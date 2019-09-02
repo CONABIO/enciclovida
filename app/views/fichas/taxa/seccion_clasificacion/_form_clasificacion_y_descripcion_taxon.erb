@@ -18,14 +18,14 @@
         <legend> <%= t('secciones.s_clasificacion.macho') %> </legend>
         <h4 class="titulo_sub_subseccion"><%= t('secciones.s_clasificacion.largo') %></h4>
         <%= f.input :largoinicialmachos %>
-        <%= f.input :largofinalmachos %>
+        <%= f.input :largofinalmachos, input_html: { onblur: "checkValues(this)" } %>
         <h4 class="titulo_sub_subseccion"><%= t('secciones.s_clasificacion.edad') %></h4>
         <%= f.input :edadinicialmachos %>
-        <%= f.input :edadfinalmachos %>
+        <%= f.input :edadfinalmachos, input_html: { onblur: "checkValues(this)" } %>
         <%= f.input :tiempoedadmacho, :as => :select, :collection => Fichas::Taxon::MEDIDA_LONGEVIDAD, input_html: {class: 'selectpicker form-control', 'title': t('general.seleccionar_opcion')} %>
         <h4 class="titulo_sub_subseccion"><%= t('secciones.s_clasificacion.peso') %></h4>
         <%= f.input :pesoinicialmachos %>
-        <%= f.input :pesofinalmachos %>
+        <%= f.input :pesofinalmachos, input_html: { onblur: "checkValues(this)" } %>
       </fieldset>
     </div>
     <div class="col-sm-6">
@@ -33,14 +33,14 @@
         <legend> <%= t('secciones.s_clasificacion.hembra') %> </legend>
         <h4 class="titulo_sub_subseccion"><%= t('secciones.s_clasificacion.largo') %></h4>
         <%= f.input :largoinicialhembras %>
-        <%= f.input :largofinalhembras %>
+        <%= f.input :largofinalhembras, input_html: { onblur: "checkValues(this)" } %>
         <h4 class="titulo_sub_subseccion"><%= t('secciones.s_clasificacion.edad') %></h4>
         <%= f.input :edadinicialhembras %>
-        <%= f.input :edadfinalhembras %>
+        <%= f.input :edadfinalhembras, input_html: { onblur: "checkValues(this)" } %>
         <%= f.input :tiempoedadhembra, :as => :select, :collection => Fichas::Taxon::MEDIDA_LONGEVIDAD, input_html: {class: 'selectpicker form-control'}, 'title': t('general.seleccionar_opcion') %>
         <h4 class="titulo_sub_subseccion"><%= t('secciones.s_clasificacion.peso') %></h4>
         <%= f.input :pesoinicialhembras %>
-        <%= f.input :pesofinalhembras %>
+        <%= f.input :pesofinalhembras, input_html: { onblur: "checkValues(this)" } %>
       </fieldset>
     </div>
   </div>

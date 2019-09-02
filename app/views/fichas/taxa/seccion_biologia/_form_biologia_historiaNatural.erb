@@ -127,7 +127,7 @@
 
   <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.distancia_dispersion') %></h4>
   <%= f.input :distanciadispercioninicial %>
-  <%= f.input :distanciadispercionfinal %>
+  <%= f.input :distanciadispercionfinal, input_html: { onblur: "checkValues(this)" } %>
 
 </div>
 
