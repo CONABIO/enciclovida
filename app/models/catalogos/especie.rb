@@ -394,6 +394,65 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
   end
 
+  # REVISADO: regresa todos los nombres comunes de catalogos
+  def dame_nombres_comunes_catalogos
+    # Los nombres comunes de catalogos en hash con la lengua
+    ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
+    #ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
+
+    nombres_inicio = []
+    nombres_mitad = []
+    nombres_final = []
+
+    ncc.each do |nombre|
+      lengua = nombre.keys.first  # Ya que es un hash
+
+      if NombreComun::LENGUAS_PRIMERO.include?(lengua)
+        index = NombreComun::LENGUAS_PRIMERO.index(lengua)
+
+        # Crea el arreglo dentro del hash lengua para agrupar nombres de la misma lengua
+        if nombres_inicio[index].nil?
+          nombres_inicio[index] = {}
+          nombres_inicio[index][lengua] = []
+        end
+
+        nombres_inicio[index][lengua] << nombre[lengua]
+
+      elsif NombreComun::LENGUAS_ULTIMO.include?(lengua)
+        index = NombreComun::LENGUAS_ULTIMO.index(lengua)
+
+        # Crea el arreglo dentro del hash lengua para agrupar nombres de la misma lengua
+        if nombres_final[index].nil?
+          nombres_final[index] = {}
+          nombres_final[index][lengua] = []
+        end
+
+        nombres_final[index][lengua] << nombre[lengua]
+
+      else
+        encontro_lengua = false
+        nombres_mitad.each do |nombre_mitad|
+          lengua_mitad = nombre_mitad.keys.first
+
+          # Quiere decir que ya habia metido esa lengua
+          if lengua_mitad == lengua
+            nombre_mitad[lengua] << nombre[lengua]
+            encontro_lengua = true
+            break
+          end
+        end
+
+        next if encontro_lengua
+
+        # Si llego a este punto, entonces creamos el hash
+        nombres_mitad << {lengua => [nombre[lengua]]}
+      end
+    end
+
+    # Los uno para obtener sus respectivas posiciones
+    (nombres_inicio + nombres_mitad + nombres_final).compact
+  end
+
   # REVISADO: regresa todos los nombres comunes en diferentes proveedores en diferentes formatos
   def dame_nombres_comunes_todos
     # Los nombres comunes de catalogos en hash con la lengua
