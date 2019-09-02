@@ -72,8 +72,8 @@ $( document ).ready(function() {
 });
 
 $(window).load(function(){
-    $(".apartadoFicha").fadeOut();
-    showOrHideInfoFicha();
+    //$(".apartadoFicha").fadeOut();
+    //showOrHideInfoFicha();
 });
 
 

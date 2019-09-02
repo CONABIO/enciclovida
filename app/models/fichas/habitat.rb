@@ -19,7 +19,22 @@ class Fichas::Habitat < Ficha
 	has_many :vegetacion, class_name: 'Fichas::Vegetacion', through: :relHabitatsVegetaciones
 	has_many :vegetacion_acuatica, class_name: 'Fichas::Vegetacionacuatica', through: :relVegetacionesAcuaticasHabitats
 
-  # Acceso a las opciones de catálogo
+	# - - - - - -   Preguntas de observaciones en la tabla Observacionescarac ( INFORMACIÓN ADICIONAL EN SU MAYORÍA ) - - - - - - #
+	has_many :ambi_info_ecorregiones,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:info_ecorregiones])}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	has_many :ambi_especies_asociadas,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:ambi_especies_asociadas])}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	has_many :ambi_vegetacion_esp_mundo,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:ambi_vegetacion_esp_mundo])}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	has_many :ambi_info_clima_exotico,-> {where('observacionescarac.idpregunta = ?', Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico])}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	has_many :ambi_infotiposuelo,-> {where('observacionescarac.idpregunta = ?', 6 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	has_many :ambi_infogeoforma,-> {where('observacionescarac.idpregunta = ?', 7 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+
+	accepts_nested_attributes_for :ambi_info_ecorregiones, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :ambi_especies_asociadas, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :ambi_vegetacion_esp_mundo, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :ambi_info_clima_exotico, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :ambi_infotiposuelo, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :ambi_infogeoforma, allow_destroy: true, reject_if: :all_blank
+
+	# Acceso a las opciones de catálogo
 	accepts_nested_attributes_for :ecorregion, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :ecosistema, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :vegetacion, allow_destroy: true, reject_if: :all_blank

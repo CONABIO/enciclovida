@@ -5,6 +5,10 @@ class Fichas::Reproduccionanimal < Ficha
 
   has_one :historiaNatural, class_name: 'Fichas::Historianatural', :foreign_key => 'reproduccionAnimalId'
 
+  # De rep. animal
+  has_many :infosistaparea, through: :historiaNatural
+  has_many :infocrianza, through: :historiaNatural
+
   EVENTOS_REPROD = [
       'Iteróparo'.to_sym,
       'Semélparo'.to_sym
