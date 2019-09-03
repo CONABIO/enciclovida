@@ -114,12 +114,13 @@ module BusquedasHelper
     unless taxon.especie_o_inferior?
       cat = taxon.nombre_categoria_taxonomica
       html << "<text class='f-categoria-taxonomica-checklist'>#{cat}</text> #{nombre_cientifico}"
+      html << " #{taxon.nombre_autoridad}"
     else
       html << nombre_cientifico
+      html << " #{taxon.nombre_autoridad}"
+      html << nombresComunesChecklist(taxon)
     end
 
-    html << " #{taxon.nombre_autoridad}"
-    html << nombresComunesChecklist(taxon)
 
     html
   end
