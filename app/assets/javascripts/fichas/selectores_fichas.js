@@ -51,7 +51,6 @@ $( document ).ready(function() {
         })
 
         .on("cocoon:before-remove", function (event) {
-            console.log('before remove');
             var confirmation = confirm("Estás seguro?");
             if( confirmation === false ){
                 event.preventDefault();
@@ -62,6 +61,40 @@ $( document ).ready(function() {
 
         .on("cocoon:before-remove", function (event) {
             var confirmation = confirm("Estás seguro?");;
+            if( confirmation === false ){
+                event.preventDefault();
+            }
+        });
+
+    $('#opcion-reprodAnimal')
+        .on('cocoon:before-insert', function (event) {
+            // Antes de agregar información animal, verificr que no exista antes
+            var hay_rep = document.getElementsByClassName("reproduccionAnimal_add").length;
+            if (hay_rep > 0){
+                confirm("Ya puedes seguir completando el formulario!");
+                event.preventDefault();
+            }
+        })
+
+        .on("cocoon:before-remove", function (event) {
+            var confirmation = confirm("Estás seguro?");
+            if( confirmation === false ){
+                event.preventDefault();
+            }
+        });
+
+    $('#opcion-reprodVegetal')
+        .on('cocoon:before-insert', function (event) {
+            // Antes de agregar información animal, verificr que no exista antes
+            var hay_rep = document.getElementsByClassName("reproduccionVegetal_add").length;
+            if (hay_rep > 0){
+                confirm("Ya puedes seguir completando el formulario!");
+                event.preventDefault();
+            }
+        })
+
+        .on("cocoon:before-remove", function (event) {
+            var confirmation = confirm("Estás seguro?");
             if( confirmation === false ){
                 event.preventDefault();
             }

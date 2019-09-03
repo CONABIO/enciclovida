@@ -85,7 +85,7 @@
 
   <div id="opcion-reprodAnimal" style="display: none">
     <%=
-      link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie animal'.html_safe, f, :reproduccionAnimal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', render_options: {locals: { f_taxon: f_taxon}}, :force_non_association_create => true, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodAnimal', 'data-association-insertion-node' => '#opcion-reprodAnimal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodAnimal')
+      link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie animal'.html_safe, f, :reproduccionAnimal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', render_options: {locals: { f_taxon: f_taxon}}, :force_non_association_create => true, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodAnimal', 'data-association-insertion-node' => '#opcion-reprodAnimal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodAnimal', 'onclick' => 'reload("seccion_reprod_animal")')
     %>
     <%= f.simple_fields_for :reproduccionAnimal do |info| %>
       <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', locals: {f: info, f_taxon: f_taxon}  %>
@@ -94,7 +94,8 @@
 
   <div id="opcion-reprodVegetal" style="display: none">
     <%=
-      link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie vegetal'.html_safe, f, :reproduccionVegetal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', render_options: {locals: { f_taxon: f_taxon}}, :force_non_association_create => true, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodVegetal', 'data-association-insertion-node' => '#opcion-reprodVegetal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodVegetal' %>
+      link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie vegetal'.html_safe, f, :reproduccionVegetal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', render_options: {locals: { f_taxon: f_taxon}}, :force_non_association_create => true, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodVegetal', 'data-association-insertion-node' => '#opcion-reprodVegetal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodVegetal', 'onclick' => 'reload("seccion_reprod_vegetal")'
+    %>
     <%= f.simple_fields_for :reproduccionVegetal do |info| %>
       <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info, f_taxon: f_taxon}  %>
     <% end %>

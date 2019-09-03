@@ -37,7 +37,7 @@ module FichasHelper
 
 
   # Regresar un multiple select de nivel uno
-  def select_multiple_nivel_1(modelo, association, pregunta, label)
+  def select_multiple_nivel_1(modelo, association, pregunta, label, clase = '')
 
     num_pregunta = Fichas::Caracteristicasespecie::OPCIONES[pregunta]
 
@@ -48,7 +48,7 @@ module FichasHelper
         label: label,
         :as => :select,
         input_html: {
-        class: 'form-control selectpicker',
+        class: "form-control selectpicker #{clase}",
         multiple: true,
         'data-live-search': 'true',
         'title': t('general.seleccionar_opciones'),
