@@ -1,7 +1,7 @@
 <div class='nested-fields nueva_legislacion'>
   <%=  f.input :legislacionId, as: :hidden %>
   <%=  f.input :especieId, as: :hidden %>
-  <%= f.input :nombreLegislacion,  :as => :select, :collection => Fichas::Legislacion::TIPOS_LEGISLACIONES, input_html: {class: 'form-control tipo-legislacion selectpicker seccion_clasificacion', 'title': t('general.seleccionar_opcion')} %>
+  <%= f.input :nombreLegislacion,  :as => :select, :collection => Fichas::Legislacion::TIPOS_LEGISLACIONES, input_html: {class: 'form-control tipo-legislacion selectpicker seccion_clasificacion', 'onchange': 'cambiaLegislaciones(this);', 'title': t('general.seleccionar_opcion')} %>
   <%= f.input :estatusLegalProteccion, :as => :grouped_select,
           collection: [
               ["SEMARNAT", Fichas::Legislacion::L_SEMARNAT.map { |x| x.to_s }],
@@ -12,7 +12,7 @@
           input_html: {
               class: 'form-control selectpicker seccion_clasificacion',
               'data-live-search': 'true',
-              'title': t('general.seleccionar_opcion')
+              'title': t('general.seleccionar_opcion'),
           }
   %>
 
