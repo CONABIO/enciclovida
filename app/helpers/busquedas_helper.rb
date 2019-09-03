@@ -118,9 +118,11 @@ module BusquedasHelper
     else
       html << nombre_cientifico
       html << " #{taxon.nombre_autoridad}"
-      html << nombresComunesChecklist(taxon)
-    end
 
+      html << '<div>'
+      html << nombresComunesChecklist(taxon)
+      html << '</div>'
+    end
 
     html
   end
