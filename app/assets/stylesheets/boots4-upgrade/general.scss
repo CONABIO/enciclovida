@@ -32,7 +32,7 @@
   background-attachment: fixed !important;
   background-size: cover !important;
   background-position: bottom !important;
-  background-color: #839a4e;
+  background-color: rgba(131, 154, 78, .95);
   /*padding: 30px;*/
 }
 #brandBar .dropdown {
@@ -89,11 +89,11 @@
   /*margin: 8px auto;*/
   /*font-size: 3rem;*/
   /*font-family: "acumin-pro-extra-condensed";*/
-  -webkit-text-shadow: 2px 2px 2px #000;
-  -moz-text-shadow: 2px 2px 2px #000;
-  -ms-text-shadow: 2px 2px 2px #000;
-  -o-text-shadow: 2px 2px 2px #000;
-  text-shadow: 2px 2px 2px #000;
+  -webkit-text-shadow: 1px 1px 1px #003300;
+  -moz-text-shadow: 1px 1px 1px #003300;
+  -ms-text-shadow: 1px 1px 1px #003300;
+  -o-text-shadow: 1px 1px 1px #003300;
+  text-shadow: 1px 1px 1px #003300;
   color: #ececec;
 }
 /*
@@ -111,14 +111,14 @@ footer {
   /*padding: 25px 0;*/
   /*text-align: center;*/
 }
-footer.social {
+.social {
   background-color:#104C5B;
 }
-footer.legal {
+.legal {
   background-color:#3D3D3D;
 }
-footer.legal p {
-  /*font-size:12px;*/
+footer .list-group-item {
+  background: transparent!important;
 }
 
 /*Para que los títulos de los buscadores en el inicio y del brandbar, salgan orientados hacia el otro lado*/
