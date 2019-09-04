@@ -9,7 +9,7 @@
     <h5 class="text-primary">
       <strong>Filtros de búsqueda</strong>
       <br />
-      <small class="text-secondary"">Utiliza los siguientes filtros para clasificar las especies de acuerdo a sus características y tipo de consumo</small>
+      <small class="text-secondary">Utiliza los siguientes filtros para clasificar las especies de acuerdo a sus características y tipo de consumo</small>
     </h5>
 
 
@@ -28,7 +28,7 @@
 
     <div class="row my-3">
       <div class="col">
-        <%= button_tag "<i class='fa fa-search' aria-hidden='true'></i> Buscar".html_safe, data: {disable_with: 'Procesando...'}, :class => "botones-peces btn btn-outline-success btn-block", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
+        <%= button_tag "<i class='fa fa-search' aria-hidden='true'></i> Buscar".html_safe, data: {disable_with: 'Procesando...'}, :class => "botones-peces btn btn-success btn-block", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
       </div>
       <div class="col">
         <%= button_tag "<i class='fa fa-trash-o' aria-hidden='true'></i> Borrar filtros".html_safe, :type => 'button', :class => "botones-peces btn btn-outline-secondary btn-block", :title => 'Limpiar', :onClick => 'limpiaBusqueda();' %>

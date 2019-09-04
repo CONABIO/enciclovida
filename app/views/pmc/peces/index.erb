@@ -1,0 +1,155 @@
+<% content_for(:extrajs) do %>
+  <script>
+      $(function () {
+          $( "#accordion" ).accordion({
+              collapsible: true,
+              heightStyle: "content",
+              active: false
+          });
+
+          $( "#accordion2" ).accordion({
+              collapsible: true,
+              heightStyle: "content",
+              active: false
+          });
+
+          $( "#s1, #s2, #s3, #s4, #s5" ).dialog({
+              width: 600,
+              autoOpen: false,
+              show: {
+                  effect: "blind",
+                  duration: 1000
+              },
+              hide: {
+                  effect: "clip",
+                  duration: 350
+              }
+          });
+
+
+          $('.veda').qtip({
+              content: {text: $('#veda_tip')}
+          });
+          $('.arte_de_pesca').qtip({
+              content: {text: $('#arte_de_pesca_tip')}
+          });
+          $('.tipo_pesca').qtip({
+              content: {text: $('#tipo_pesca_tip')}
+          });
+          $('.carta_nacional').qtip({
+              content: {text: $('#carta_nacional_tip')}
+          });
+          $('.estado_conservacion').qtip({
+              content: {text: $('#estado_conservacion_tip')}
+          });
+          $('.recomendable').qtip({
+              content: {text: $('#recomendable_tip')}
+          });
+          $('.precomendable').qtip({
+              content: {text: $('#precomendable_tip')}
+          });
+          $('.nrecomendable').qtip({
+              content: {text: $('#nrecomendable_tip')}
+          });
+
+          $( "#s1, #s2, #s3, #s4, #s5" ).dialog({
+              width: 600,
+              autoOpen: false,
+              show: {
+                  effect: "blind",
+                  duration: 1000
+              },
+              hide: {
+                  effect: "clip",
+                  duration: 350
+              }
+          });
+
+          $( "#opens1" ).click(function() {
+              $( "#s1" ).dialog( "open" );
+          });
+
+          $( "#opens2" ).click(function() {
+              $( "#s2" ).dialog( "open" );
+          });
+
+          $( "#opens3" ).click(function() {
+              $( "#s3" ).dialog( "open" );
+          });
+
+          $( "#opens4" ).click(function() {
+              $( "#s4" ).dialog( "open" );
+          });
+
+          $( "#opens5" ).click(function() {
+              $( "#s5" ).dialog( "open" );
+          });
+
+          scrollTop({
+              color:"rgba(50, 61, 44, 0.7)",
+              top:400,
+              time:500,
+              position:"bottom",
+              speed: 300
+          });
+
+      });
+  </script>
+<% end %>
+<% content_for(:extracss) do %>
+  <style type="text/css">
+    /*acorde�n */
+    .ui-accordion .ui-accordion-header .ui-icon{background:none;}
+    #ficha1, #ficha2, #ficha3, #ficha4, #ficha5, #ficha6, #ficha7{
+      background: url("https://www.biodiversidad.gob.mx/usos/alimentacion/peces/imagenes/fondoPecesAcorddion.jpg") no-repeat scroll 0 0 transparent;
+      max-height: 47px;
+      /*background: linear-gradient(to right, #4b5862 0%,#273135 100%);*/
+    }
+    #ficha1:active, #ficha2:active, #ficha3:active, #ficha4:active, #ficha5:active, #ficha6:active, #ficha7:active {opacity: 0.8;filter: alpha(opacity=80);}
+    #ficha1 {background-position: 0 0;	border: 1px transparent #023651;}
+    #ficha1:hover {	background-position: 0 -48px;	border: 1px transparent #04658C;}
+    #ficha2 {	background-position: 0 -96px;	border: 1px transparent #023651;}
+    #ficha2:hover {	background-position: 0 -144px;	border: 1px transparent #04658C;}
+    #ficha3 {	background-position: 0 -192px;	border: 1px transparent #023651;}
+    #ficha3:hover {	background-position: 0 -240px;	border: 1px transparent #04658C;}
+    #ficha4 {	background-position: 0 -288px;	border: 1px transparent #023651;}
+    #ficha4:hover {	background-position: 0 -336px;	border: 1px transparent #04658C;}
+    #ficha5 {	background-position: 0 -384px;	border: 1px transparent #023651;}
+    #ficha5:hover {	background-position: 0 -432px;	border: 1px transparent #04658C;}
+    #ficha6 {	background-position: 0 -480px;	border: 1px transparent #023651;}
+    #ficha6:hover {	background-position: 0 -529px;	border: 1px transparent #04658C;}
+    #ficha7 {	background-position: 0 -580px;	border: 1px transparent #023651;}
+    #ficha7:hover {	background-position: 0 -629px;	border: 1px transparent #04658C;}
+
+
+    .bloque2 {width: 55%;}
+    .bloque5 {width: 90%;}
+
+      .titblue {
+	font-family: "acumin-pro-extra-condensed";
+	font-size: 21px !important;
+
+	color: #ffffff;
+	background: #225254;
+	/*background: url(../imagenes/aplicacion/deg.png) no-repeat;
+	background: -webkit-linear-gradient(left, rgba(57,102,118,.8), rgba(57,102,118,0));
+	background: -moz-linear-gradient(left, rgba(57,102,118,.8), rgba(57,102,118,0));
+	background: -o-linear-background(left, rgba(57,102,118,.8), rgba(57,102,118,0));
+	background: -ms-linear-background(left, rgba(57,102,118,.8), rgba(57,102,118,0));
+	background: linear-background(left, rgba(57,102,118,.8), rgba(57,102,118,0));*/
+	padding: 3px;
+	padding-right: 6px;
+	/*text-shadow: 2px 2px 4px #1B3138;*/
+}
+  </style>
+<% end %>
+
+<div class="col">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <%= @doc.html_safe %>
+      </div>
+    </div>
+  </div>
+</div>
