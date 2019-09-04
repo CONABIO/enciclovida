@@ -106,4 +106,43 @@ module BusquedasHelper
     end
   end
 
+  # Despliega el checklist
+  def generaChecklist(taxon)
+    html = ''
+    nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{taxon.nombre_cientifico}</text>"
+
+    unless taxon.especie_o_inferior?
+      cat = taxon.nombre_categoria_taxonomica
+      html << "<text class='f-categoria-taxonomica-checklist'>#{cat}</text> #{nombre_cientifico}"
+      html << " #{taxon.nombre_autoridad}"
+    else
+      html << nombre_cientifico
+      html << " #{taxon.nombre_autoridad}"
+
+      html << '<div>'
+      html << nombresComunesChecklist(taxon)
+      html << '</div>'
+    end
+
+    html
+  end
+
+  # Devuelve los nombres comunes agrupados por lengua, solo de catalogos
+  def nombresComunesChecklist(taxon)
+    nombres = taxon.dame_nombres_comunes_catalogos
+    return '' unless nombres.any?
+    html = '<br /><label>Nombre(s) común(es): </label>'
+
+    nombres.each do |hash_nombres|
+      lengua = hash_nombres.keys.first
+      html << "<span>#{hash_nombres[lengua].sort.join(', ')} <sub><i>#{lengua}</i></sub>;</span>"
+    end
+
+    html
+  end
+
+  def categoriasRiesgoChecklist(taxon)
+
+  end
+
 end

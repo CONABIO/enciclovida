@@ -96,9 +96,9 @@ class Especie < ActiveRecord::Base
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join }
   #Select para el Checklist
-  scope :select_checklist_con_filtros, -> { select(:id, :nombre_cientifico).select("CONCAT(#{attribute_alias(:ancestry_ascendente_directo)}, ',', #{attribute_alias(:nombre_cientifico)}) AS ancestry") }
-  scope :select_ancestry, -> { select(:id).select("#{attribute_alias(:ancestry_ascendente_directo)} AS ancestry") }
-  scope :checklist_con_filtros, -> { select_checklist_con_filtros.order('ancestry ASC') }
+  scope :select_checklist, -> { select(:id, :nombre_cientifico).select("CONCAT(#{attribute_alias(:ancestry_ascendente_obligatorio)}, ',', #{attribute_alias(:nombre_cientifico)}) AS ancestry") }
+  scope :select_ancestry, -> { select(:id).select("#{attribute_alias(:ancestry_ascendente_obligatorio)} AS ancestry") }
+  scope :datos_checklist, -> { select_checklist.order('ancestry ASC') }
   scope :datos_arbol_sin_filtros, -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo,
 ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id,
 categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, nombre_comun_principal,
@@ -306,14 +306,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   def tipo_distribucion(opc={})
     response = []
 
-    if opc[:tab_catalogos]
-      tipos_distribuciones.uniq.each do |distribucion|
-        response << distribucion.descripcion
-      end
-    else
-      tipos_distribuciones.distribuciones_vista_general.uniq.each do |distribucion|
-        response << distribucion.descripcion
-      end
+    tipos_distribuciones.uniq.each do |distribucion|
+      response << distribucion.descripcion
     end
 
     {'Tipo de distribución' => response}
@@ -398,6 +392,65 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
         self.x_fotos_totales+= fb[:fotos].count
       end
     end
+  end
+
+  # REVISADO: regresa todos los nombres comunes de catalogos
+  def dame_nombres_comunes_catalogos
+    # Los nombres comunes de catalogos en hash con la lengua
+    ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
+    #ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
+
+    nombres_inicio = []
+    nombres_mitad = []
+    nombres_final = []
+
+    ncc.each do |nombre|
+      lengua = nombre.keys.first  # Ya que es un hash
+
+      if NombreComun::LENGUAS_PRIMERO.include?(lengua)
+        index = NombreComun::LENGUAS_PRIMERO.index(lengua)
+
+        # Crea el arreglo dentro del hash lengua para agrupar nombres de la misma lengua
+        if nombres_inicio[index].nil?
+          nombres_inicio[index] = {}
+          nombres_inicio[index][lengua] = []
+        end
+
+        nombres_inicio[index][lengua] << nombre[lengua]
+
+      elsif NombreComun::LENGUAS_ULTIMO.include?(lengua)
+        index = NombreComun::LENGUAS_ULTIMO.index(lengua)
+
+        # Crea el arreglo dentro del hash lengua para agrupar nombres de la misma lengua
+        if nombres_final[index].nil?
+          nombres_final[index] = {}
+          nombres_final[index][lengua] = []
+        end
+
+        nombres_final[index][lengua] << nombre[lengua]
+
+      else
+        encontro_lengua = false
+        nombres_mitad.each do |nombre_mitad|
+          lengua_mitad = nombre_mitad.keys.first
+
+          # Quiere decir que ya habia metido esa lengua
+          if lengua_mitad == lengua
+            nombre_mitad[lengua] << nombre[lengua]
+            encontro_lengua = true
+            break
+          end
+        end
+
+        next if encontro_lengua
+
+        # Si llego a este punto, entonces creamos el hash
+        nombres_mitad << {lengua => [nombre[lengua]]}
+      end
+    end
+
+    # Los uno para obtener sus respectivas posiciones
+    (nombres_inicio + nombres_mitad + nombres_final).compact
   end
 
   # REVISADO: regresa todos los nombres comunes en diferentes proveedores en diferentes formatos
