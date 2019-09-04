@@ -4,7 +4,7 @@ module BusquedasHelper
   @@opciones = { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, 'data-none-results-text': 'Sin resultados para {0}', 'data-count-selected-text': '{0} seleccionados', title: '- - Selecciona - -', multiple: true }
 
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
-  def radioGruposIconicos
+  def radioGruposIconicos(resultados = false)
     def arma_span(taxon)
       "<label>#{radio_button_tag('id_gi', taxon.id, false, id: "id_gi_#{taxon.id}")}<span class='mx-1'><span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn-title'></span></span></label>"
     end
@@ -15,6 +15,7 @@ module BusquedasHelper
       radios << arma_span(taxon)
     end
     radios << '</div>'
+    radios << '<div class="w-100"></div>' if resultados
 
     radios << '<div class="col-md">'
     radios << '<h6><strong>Grupos de animales</strong></h6>'
@@ -22,6 +23,7 @@ module BusquedasHelper
       radios << arma_span(taxon)
     end
     radios << '</div>'
+    radios << '<div class="w-100"></div>' if resultados
 
     radios << '<div class="col-md">'
     radios << '<h6><strong>Grupos de plantas</strong></h6>'
@@ -29,6 +31,7 @@ module BusquedasHelper
       radios << arma_span(taxon)
     end
     radios << '</div>'
+    radios << '<div class="w-100"></div>' if resultados
 
     "<div class='row'>#{radios}</div>"
   end

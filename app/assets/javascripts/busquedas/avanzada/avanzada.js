@@ -172,13 +172,13 @@ $(document).ready(function()
                 $('#modal-descarga-lista').modal('toggle');
 
                 if (resp.estatus == 1)
-                    $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('hidden').slideDown(600);
+                    $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
                 else
-                    $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('hidden').slideDown(600);
+                    $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
 
             }).fail(function(){
                 $('#modal-descarga-lista').modal('toggle');
-                $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('hidden').slideDown(600);
+                $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
             });
 
         } else

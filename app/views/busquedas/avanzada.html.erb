@@ -30,8 +30,8 @@
   <% end %>
 <% end %>
 
-<%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
-  <div id="busqueda_avanzada" class="row">
+<div id="busqueda_avanzada" class="col">
+  <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-row', :id => :b_avanzada  do %>
     <div class="col-12 mb-4" id="panelFiltros">
       <div class="row align-items-center">
         <% if I18n.locale.to_s == 'es-cientifico' %>
@@ -47,5 +47,5 @@
     <div class="col">
       <button class="btn btn-outline-secondary btn-block"  data-disable-with="Limpiando..." id="limpiar" name="button" type="reset">Limpiar <%= fa_icon "trash-o" %></button>
     </div>
-  </div>
-<% end %>
+  <% end %>
+</div>

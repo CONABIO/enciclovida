@@ -37,38 +37,42 @@
   <%= @titulo='Resultados' %>
 <% end %>
 <%- content_for(:extracss) do -%>
-  <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
+  <%= stylesheet_link_tag "boots4-upgrade/busquedas/avanzada/avanzada", media: "all", "data-turbolinks-track" => true %>
 <%- end -%>
 
 <% if notice.present? %>
-  <div class="alert alert-warning" role="alert"><%= notice %></div>
+  <div class="alert alert-warning col-12" role="alert"><%= notice %></div>
 <% end %>
 
-<div class="row alert alert-success hidden" role="alert" id="notice-avanzada"></div>
+<div class="alert alert-success d-none col-12" role="alert" id="notice-avanzada"></div>
 
 <% if @fuzzy_match.present? %>
-  <div class="alert alert-success">
+  <div class="alert alert-success col-12">
     <strong><%= @fuzzy_match %></strong>
   </div>
 <% end %>
 
-<div id="resultados-container" class="<%= 'state-one' if params[:busqueda]=='avanzada' %>">
-  <div class="row">
+<div id="resultados-container" class="col-12 <%= 'state-one' if params[:busqueda]=='avanzada' %>">
+  <div class="row justify-content-between mb-3">
     <% if params[:busqueda]=='avanzada' %>
-      <button id="toggleFiltros" class="btn btn-sm btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button"><span class="glyphicon"></span></button>
+      <div class="col">
+        <button id="toggleFiltros" class="btn btn-outline-secondary float-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button"><i class="fa"></i></button>
+      </div>
     <% end %>
 
     <% if @totales > 0 %>
-      <div class="btn-group pull-right">
-        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <div class="btn-group col">
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i><%= icono_descarga %></i> Descargas <span class=""></span>
         </button>
 
         <ul class="dropdown-menu dropdown-menu-right" style="z-index: 1001;">
-          <li><%= link_to("Lista de especies", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-lista', 'onclick': "$('#modal-descarga-lista').modal('toggle');return false;") %></li>
+          <li>
+            <%= link_to("Lista de especies", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-lista', 'onclick': "$('#modal-descarga-lista').modal('toggle');return false;") %>
+          </li>
 
           <%# if params[:id].present? %>
-            <!--li><%#= link_to("Checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;") %></li-->
+          <!--li><%#= link_to("Checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;") %></li-->
           <%# end %>
         </ul>
 
@@ -77,33 +81,36 @@
 
   </div>
 
-  <hr />
+  <div class="row">
+    <%= render file: 'busquedas/avanzada' if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
 
-  <%= render file: 'busquedas/avanzada' if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
+    <div id="pestañas" class="col-9 panel">
+      <div class="row">
+        <ul class="nav nav-tabs" data-tabs="tabs">
+          <li class="nav-item active">
+            <a href="#resultados-0" data-toggle="tab" class="nav-link tab_por_categoria" url="<%= request.url %>" categoria_taxonomica_id="0">Todos (<%= @totales if @totales.present? %>)</a>
+          </li>
 
-  <div id="pestañas" class="panel">
-    <ul class="nav nav-tabs" data-tabs="tabs">
-      <li class="active">
-        <a href="#resultados-0" data-toggle="tab" class="tab_por_categoria" url="<%= request.url %>" categoria_taxonomica_id="0">Todos (<%= @totales if @totales.present? %>)</a>
-      </li>
+          <% @por_categoria.each do |cat| %>
+            <li class="nav-item">
+              <a href="#resultados-<%= cat[:categoria_taxonomica_id]%>" data-toggle="tab" class="nav-link tab_por_categoria" url="<%= cat[:url] %>" categoria_taxonomica_id="<%= cat[:categoria_taxonomica_id] %>">
+                <%= "#{cat[:nombre_categoria_taxonomica]} (#{cat[:cuantos]})" %>
+              </a>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+      <div class="tab-pane panel-body panel-resultados row pt-3" id="resultados-0">
+        <%= render :partial => 'busquedas/resultados' %>
+      </div>
 
       <% @por_categoria.each do |cat| %>
-        <li>
-          <a href="#resultados-<%= cat[:categoria_taxonomica_id]%>" data-toggle="tab" class="tab_por_categoria" url="<%= cat[:url] %>" categoria_taxonomica_id="<%= cat[:categoria_taxonomica_id] %>">
-            <%= "#{cat[:nombre_categoria_taxonomica]} (#{cat[:cuantos]})" %>
-          </a>
-        </li>
+        <div class="tab-pane panel-body panel-resultados" id="resultados-<%= cat[:categoria_taxonomica_id] %>"></div>
       <% end %>
-    </ul>
-
-    <div class="tab-pane panel-body panel-resultados" id="resultados-0">
-      <%= render :partial => 'busquedas/resultados' %>
     </div>
-
-    <% @por_categoria.each do |cat| %>
-      <div class="tab-pane panel-body panel-resultados" id="resultados-<%= cat[:categoria_taxonomica_id] %>"></div>
-    <% end %>
   </div>
+
 
 </div>
 
