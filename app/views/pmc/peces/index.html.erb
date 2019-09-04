@@ -6,23 +6,27 @@
 
 <%= form_tag pmc_pez_index_path, :method => :get, :class => 'form-row', :id => :b_peces  do %>
   <div id="busqueda_avanzada" class="col-12">
-    <h6 class="text-primary"><strong>Filtros de búsqueda</strong></h6>
-    <h6 class="text-secondary"><small>Utiliza los siguientes filtros para clasificar las especies de acuerdo a sus características y tipo de consumo</small></h6>
+    <h5 class="text-primary">
+      <strong>Filtros de búsqueda</strong>
+      <br />
+      <small class="text-secondary"">Utiliza los siguientes filtros para clasificar las especies de acuerdo a sus características y tipo de consumo</small>
+    </h5>
 
-    <div class="porNombreGrupo row mb-3">
-      <div class="col-12">
-        <strong>Por especie</strong>
+
+    <div class="porNombreGrupo row my-3">
+      <div class="col-12 my-3">
+        <h6><strong>Por especie</strong></h6>
         <%= hidden_field_tag :id, params.present? ? params[:id] : nil %>
         <%= text_field_tag :nombre, params.present? ? params[:nombre] : nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-lg' %>
       </div>
       <%= hidden_field_tag(:especie_id) %>
-      <div class="col-12">
-        <strong>Por grupo</strong>
+      <div class="col-12 my-3">
+        <h6><strong>Por grupo</strong></h6>
         <%= select_tag(:grupos, options_for_select(@filtros[:grupos].map{|k| [k.nombre_propiedad, k.id]}, params.present? ? params[:grupos] : nil), :prompt => '- - Grupo - -', :class => 'form-control input-lg' ) %>
       </div>
     </div>
 
-    <div class="row">
+    <div class="row my-3">
       <div class="col">
         <%= button_tag "<i class='fa fa-search' aria-hidden='true'></i> Buscar".html_safe, data: {disable_with: 'Procesando...'}, :class => "botones-peces btn btn-outline-success btn-block", :title => 'Buscar', :type => 'submit', :name => 'commit', :value => 'Buscar' %>
       </div>
@@ -31,28 +35,29 @@
       </div>
     </div>
 
-    <div class="porSemaforo row mb-3">
-      <div class="col text-center">
+    <div class="porSemaforo row my-3">
+      <div class="col">
         <h6>
           <strong>Semáforo | </strong>
-          <%= link_to "<b>Más info </b><i class='fa fa-question-circle'></i>".html_safe, 'https://www.biodiversidad.gob.mx/usos/alimentacion/peces/', class: 'btn btn-link' %>
+          <small><%= link_to "<b>Más info </b><i class='fa fa-question-circle'></i>".html_safe, 'https://www.biodiversidad.gob.mx/usos/alimentacion/peces/', class: 'text-link' %></small>
           <br />
           <small>Resume categorías de riesgo, vedas, tipos de captura, huella ecológica y estado de la población</small>
         </h6>
-        <%= checkboxSemaforo %>
+        <p class="text-center"><%= checkboxSemaforo %></p>
       </div>
     </div>
 
-    <div class="porGrupo row mb-3">
+    <div class="porGrupo row my-3">
       <div class="col">
         <h6><strong>Peces o mariscos</strong></h6>
-        <%= checkboxGruposIconicos %>
+        <p class="text-center"><%= checkboxGruposIconicos %></p>
       </div>
     </div>
 
-    <div class="porSustentable row mb-3">
-      <div class="col text-center">
-        <%= checkboxSustentable %>
+    <div class="porSustentable row my-3">
+      <div class="col">
+        <h6><strong>Pesquerías sustentables</strong></h6>
+        <p class="text-center"><%= checkboxSustentable %></p>
       </div>
     </div>
 
@@ -60,7 +65,7 @@
       <div class="col-12">
         <h6><strong>Región</strong></h6>
       </div>
-      <div class="checkbox col-12 mb-3">
+      <div class="checkbox col-12 my-3">
         <%= render :partial => 'svg_zonas_marinas' %>
         <%= checkboxCriteriosPeces({:zonas => @filtros[:zonas]}) %>
       </div>
@@ -68,26 +73,26 @@
 
 
     <div id="porCriterios" class="porCriterios checkbox row">
-      <div class="col-12 mb-3">
+      <div class="col-12 my-3">
         <%= checkboxCriteriosPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (México)')%>
       </div>
-      <div class="col-12 mb-3">
+      <div class="col-12 my-3">
         <%= checkboxCriteriosPeces({:iucn => @filtros[:iucn].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (Internacional)')%>
       </div>
 
-      <div class="col-12 mb-3">
+      <div class="col-12 my-3">
         <%= checkboxCriteriosPeces({:cnp => @filtros[:cnp]}, false, 'Estado de la población')%>
       </div>
 
-      <div class="col-12 mb-3">
+      <div class="col-12 my-3">
         <%= checkboxCriteriosPeces({:tipo_vedas => @filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de veda')%>
       </div>
 
-      <div class="col-12 mb-3">
+      <div class="col-12 my-3">
         <%= checkboxCriteriosPeces({:tipo_capturas => @filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de captura')%>
       </div>
 
-      <div class="col-12 mb-3">
+      <div class="col-12 my-3">
         <%= checkboxCriteriosPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Huella ecológica')%>
       </div>
     </div>

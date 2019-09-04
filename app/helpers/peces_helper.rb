@@ -56,7 +56,7 @@ module PecesHelper
   end
 
   def checkboxCriteriosPeces(cat, ico=false, titulo=false)
-    checkBoxes= titulo ? "<h4><strong>#{titulo}</strong></h5>" : ""
+    checkBoxes= titulo ? "<h6><strong>#{titulo}</strong></h6>" : ""
 
     cat.each do |k, valores|
       filtros = params[k] || []
