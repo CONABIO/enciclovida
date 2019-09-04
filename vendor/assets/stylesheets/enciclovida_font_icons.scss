@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?87797342');
-  src: font-url('enciclovida_font_icons.eot?87797342#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?87797342') format('woff2'),
-       font-url('enciclovida_font_icons.woff?87797342') format('woff'),
-       font-url('enciclovida_font_icons.ttf?87797342') format('truetype'),
-       font-url('enciclovida_font_icons.svg?87797342#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?65808669');
+  src: font-url('enciclovida_font_icons.eot?65808669#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?65808669') format('woff2'),
+       font-url('enciclovida_font_icons.woff?65808669') format('woff'),
+       font-url('enciclovida_font_icons.ttf?65808669') format('truetype'),
+       font-url('enciclovida_font_icons.svg?65808669#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?87797342#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?65808669#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -63,7 +63,7 @@
 .myxini-ev-icon:before { content: '\e805'; } /* '' */
 .animalia-ev-icon:before { content: '\e806'; } /* '' */
 .mammalia-ev-icon:before { content: '\e807'; } /* '' */
-.chondrichthyes-ev-icon:before { content: '\e808'; } /* '' */
+.crustacea-ev-icon:before { content: '\e808'; } /* '' */
 .cnidaria-ev-icon:before { content: '\e809'; } /* '' */
 .arachnida-ev-icon:before { content: '\e80a'; } /* '' */
 .myriapoda-ev-icon:before { content: '\e80b'; } /* '' */
@@ -72,7 +72,6 @@
 .porifera-ev-icon:before { content: '\e80e'; } /* '' */
 .echinodermata-ev-icon:before { content: '\e80f'; } /* '' */
 .mollusca-ev-icon:before { content: '\e810'; } /* '' */
-.crustacea-ev-icon:before { content: '\e811'; } /* '' */
 .plantae-ev-icon:before { content: '\e812'; } /* '' */
 .bryophyta-ev-icon:before { content: '\e813'; } /* '' */
 .polypodiidae-ev-icon:before { content: '\e814'; } /* '' */
@@ -132,7 +131,6 @@
 .peces-mariscos-comerciales-ev-icon:before { content: '\e84a'; } /* '' */
 .datos-ecologicos-ev-icon:before { content: '\e84b'; } /* '' */
 .flow-cascade-ev-icon:before { content: '\e84c'; } /* '' */
-.semaforo-moderado-ev-icon:before { content: '\e84d'; } /* '' */
 .conabio-ev-icon:before { content: '\e84e'; } /* '' */
 .ev1-ev-icon:before { content: '\e84f'; } /* '' */
 .vida-ev-icon:before { content: '\e850'; } /* '' */
@@ -171,5 +169,7 @@
 .bdi-ev-icon:before { content: '\e871'; } /* '' */
 .cobi-ev-icon:before { content: '\e872'; } /* '' */
 .importado-ev-icon:before { content: '\e873'; } /* '' */
+.semaforo-moderado-ev-icon:before { content: '\e874'; } /* '' */
+.chondrichthyes-ev-icon:before { content: '\e875'; } /* '' */
 .circle-ev-icon:before { content: '\f111'; } /* '' */
 .copyright-ev-icon:before { content: '\f1f9'; } /* '' */
