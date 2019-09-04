@@ -20,6 +20,7 @@
 <% end %>
 
 <% content_for(:delayedjs) do %>
+  <%= javascript_include_tag 'lib/scrolling', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'busquedas/avanzada/avanzada', 'data-turbolinks-track' => true %>
 <% end %>
 
@@ -41,10 +42,10 @@
       </div>
     </div>
     <div class="col">
-      <%= submit_tag :Buscar, :class => 'btn btn-success busquedas btn-block', data: { disable_with: 'Procesando...' } %>
+      <button class="btn btn-outline-success btn-block"  data-disable-with="Procesando..." id="buscar" name="commit" type="commit">Buscar <%= fa_icon "search" %></button>
     </div>
     <div class="col">
-      <button class="btn btn-outline-dark btn-block"  data-disable-with="Limpiando..." id="limpiar" name="button" type="reset">Limpiar búsqueda</button>
+      <button class="btn btn-outline-secondary btn-block"  data-disable-with="Limpiando..." id="limpiar" name="button" type="reset">Limpiar <%= fa_icon "trash-o" %></button>
     </div>
   </div>
 <% end %>

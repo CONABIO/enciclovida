@@ -6,8 +6,8 @@
 </script>
 
 <div class="col-12">
-  <h5 class="btn btn-link" id="por_nombre_fuente"><i class="glyphicon glyphicon-chevron-left"></i><strong>Ir a búsqueda por nombre </strong></h5>
-  <h5 class="btn btn-link" id="por_gi_fuente" style="display: none;"><strong>Ir a búsqueda por grupo icónico </strong><i class="glyphicon glyphicon-chevron-right"></i></h5>
+  <h6 class="btn btn-link" id="por_nombre_fuente"><i class="glyphicon glyphicon-chevron-left"></i><strong>Ir a búsqueda por nombre </strong></h6>
+  <h6 class="btn btn-link" id="por_gi_fuente" style="display: none;"><strong>Ir a búsqueda por grupo icónico </strong><i class="glyphicon glyphicon-chevron-right"></i></h6>
 
   <div class="form-group radio row" id="por_gi">
     <%= radioGruposIconicos.html_safe %>
@@ -21,7 +21,7 @@
 
   <div class="form-group row" id="panelCategoriaTaxonomicaPt" style="display: none;">
     <div class="col-12">
-      <h5 class="text-primary"><strong>Categoria taxonómica</strong></h5>
+      <h6>Categoria taxonómica</h6>
       <div class="row" id="datos_cat"></div>
     </div>
   </div>
@@ -32,38 +32,38 @@
 </div>
 
 <div class="col-md">
-  <h5 class="text-primary"><strong>Categorías de riesgo y comercio internacional</strong></h5>
+  <h6><strong>Categorías de riesgo y comercio internacional</strong></h6>
   <%= checkboxEstadoConservacion.html_safe %>
 </div>
 
 <div class="col-md">
-  <h5 class="text-primary"><strong>Tipo de distribución</strong></h5>
+  <h6><strong>Tipo de distribución</strong></h6>
   <%= checkboxTipoDistribucion.html_safe %>
 </div>
 
 <div class="col-md">
-  <h5 class="text-primary"><strong>Usos</strong></h5>
+  <h6><strong>Usos</strong></h6>
   <%= selectUsos.html_safe %>
 </div>
 
 <div class="w-100 mb-4"></div>
 
 <div class="col-md">
-  <h5 class="text-primary"><strong>Ambiente</strong></h5>
+  <h6><strong>Ambiente</strong></h6>
   <%= selectAmbiente.html_safe %>
 </div>
 
 <div class="col-md">
-  <h5 class="text-primary"><strong>Distribución (reportada en literatura)</strong></h5>
+  <h6><strong>Distribución (reportada en literatura)</strong></h6>
   <%= selectRegiones.html_safe %>
 </div>
 
 <div class="col-md">
-  <h5 class="text-primary"><strong>Especies prioritarias para la conservación</strong></h5>
+  <h6><strong>Especies prioritarias para la conservación</strong></h6>
   <%= checkboxPrioritaria.html_safe %>
 </div>
 
 <div class="col-md-2">
-  <h5 class="text-primary"><strong>Resultados por página:</strong></h5>
+  <h6><strong>Resultados por página:</strong></h6>
   <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
 </div>

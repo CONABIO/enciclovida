@@ -11,11 +11,13 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 // require jquery
-// require jquery_ujs
+
 // require lib/jquery-ui
 //= require boots4-upgrade/jquery-3.4.1.min
+//= require jquery_ujs
 //= require boots4-upgrade/jquery-ui.min
 //= require boots4-upgrade/bootstrap.bundle
+//3 require lib/scrolling
 //= require lib/jquery.soulmate
 //= require lib/jquery.bootpag.min
 //= require turbolinks
