@@ -27,6 +27,13 @@
 }
 
 /*Brandbar es la plequita negra al inicio de cada página*/
+#brandBar {
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background-position: bottom !important;
+  background-color: rgba(51, 51, 51, 0.75);
+}
 #contenedor-titulo-busquedas{
   background-color: rgba(131, 154, 78, .95);
 }

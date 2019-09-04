@@ -7,7 +7,9 @@ module PecesHelper
     @grupos.each do |taxon|  # Para tener los grupos ordenados
       checkBoxes << "<label>"
       checkBoxes << check_box_tag('grupos_iconicos[]', taxon.id, grupos.include?(taxon.id.to_s), id: "grupos_iconicos_#{taxon.id}")
+      checkBoxes << "<span class='mx-1'>"
       checkBoxes << "<span title = '#{taxon.nombre_comun_principal}' class = 'btn-title #{taxon.nombre_cientifico.parameterize}-ev-icon'>"
+      checkBoxes << "</span>"
       checkBoxes << "</span>"
       checkBoxes << "</label>"
     end
@@ -23,8 +25,10 @@ module PecesHelper
     s.each do |k,v|
       checkBoxes << "<label>"
       checkBoxes << check_box_tag('semaforo_recomendacion[]', k, seleccionados.include?(k.to_s), id: "semaforo_recomendacion_#{v[0].parameterize}")
+      checkBoxes << "<span class='mx-1'>"
       checkBoxes << "<span title = '#{v[0]}' class = 'btn-zona-#{k} btn-title'>"
       checkBoxes << "<i class = '#{v[1]}-ev-icon'></i>"
+      checkBoxes << "</span>"
       checkBoxes << "</span>"
       checkBoxes << "</label>"
     end
@@ -40,8 +44,10 @@ module PecesHelper
     s.each do |k,v|
       checkBoxes << "<label>"
       checkBoxes << check_box_tag('semaforo_recomendacion[]', k, seleccionados.include?(k.to_s), id: "semaforo_recomendacion_#{v[0].parameterize}")
+      checkBoxes << "<span class='mx-1'>"
       checkBoxes << "<span title = '#{v[0]}' class = 'btn-zona-#{k} btn-title'>"
       checkBoxes << "<i class = '#{v[1]}-ev-icon'></i>"
+      checkBoxes << "</span>"
       checkBoxes << "</span>"
       checkBoxes << "</label>"
     end
@@ -57,17 +63,23 @@ module PecesHelper
       valores.each do |edo, id|
         edo_p = edo.parameterize
         next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
-        checkBoxes << "<label class = '#{k}'>"
-        checkBoxes << check_box_tag("#{k}[]", id, filtros.include?(id.to_s), :id => "#{k}_#{edo_p}")
+        checkBoxes << "<div class='custom-control custom-switch'>"
+        checkBoxes << check_box_tag("#{k}[]", id, filtros.include?(id.to_s), :id => "#{k}_#{edo_p}", class: 'custom-control-input')
+        checkBoxes << "<label class = '#{k} custom-control-label' for='#{k}_#{edo_p}'>"
+        checkBoxes << "<span class='mx-1'>"
         checkBoxes << "<span title = '#{edo}' class = '#{'btn-title' if ico}'>"
         checkBoxes << "<b>#{edo}</b>" unless ico
         checkBoxes << "<i class='#{edo_p}-ev-icon'></i>" if ico
         checkBoxes << "</span>"
+        checkBoxes << "</span>"
         checkBoxes << "</label>"
+        checkBoxes << "</div>"
+
       end
     end
     checkBoxes.html_safe
   end
+
 
   def dibujaZonasPez(c, i)
     lista = ''

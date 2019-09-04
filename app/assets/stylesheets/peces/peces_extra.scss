@@ -40,9 +40,6 @@
   font-size: 2.25em;
   color: #fdfdfd;
 }
-.form-peces{
-  margin-bottom: 15px;
-}
 #soulmate{min-width: 500px; margin-top: 0!important;}
 .soulmate-type-suggestions li{
   padding: 1em 0;
@@ -53,39 +50,8 @@
   background-color: #ddd!important;
   fill: #ddd!important;
 }
-.actinopterygii-ev-icon{color: #44997d}
-.chondrichthyes-ev-icon{color: #284559}
-.echinodermata-ev-icon{color: #865a3c}
-.mollusca-ev-icon{color: #aa7961}
-.crustacea-ev-icon{color: #a0837c}
 
-.porSemaforo label:nth-of-type(4), .porSemaforo label:nth-of-type(5){
-  font-size: smaller;
-  margin-left: 1em;
-}
-.porGrupo input, .porSemaforo input, .porSustentable input, .porZonas label, #porCriterios .nom input, #porCriterios .iucn input{display: none;}
-.porSemaforo input + span, .porSustentable input + span, .porGrupo input + span, #porCriterios .nom input + span, #porCriterios .iucn input + span{
-  border: 2px solid transparent;
-  font-size: 2.75em;
-  background: none;
-  cursor: pointer;
-  border-radius: 25%;
-  -webkit-transition: border-radius .3s ease-in-out;
-  -moz-transition: border-radius .3s ease-in-out;
-  transition: border-radius .3s ease-in-out;
-}
-.porSemaforo input:checked + span, .porSustentable input:checked + span, .porGrupo input:checked + span, #porCriterios .nom input:checked + span , #porCriterios .iucn input:checked + span{
-  color: #555555;
-  border-radius: 50% !important;
-  border: 2px solid #991705;
-}
-.porSemaforo input:checked + span:hover, .porSustentable input:checked + span:hover, .porGrupo input:checked + span:hover, #porCriterios .nom input:checked + span:hover , #porCriterios .iucn input:checked + span:hover{
-  border: 2px solid #991705;
-}
-.porSemaforo input + span:hover, .porSustentable input + span:hover, .porGrupo input + span:hover, #porCriterios .nom input + span:hover, #porCriterios .iucn input + span:hover{
-  border: 2px solid rgba(153, 23, 5, 0.40);
-  border-radius: 25%;
-}
+
 #toggleFiltros{
   margin: 10px 0;
 }
@@ -122,58 +88,7 @@ div.result-img-container{
   transition: all .4s cubic-bezier(0.62, -0.93, 0.42, 1.85);
 }
 /************************** TERMINA INCRUSTACIÓN BUSQUEDAS.CSS ***********************************************/
-.resultados-peces{
-  text-align: center;
-}
-.resultados-peces .result-img-container{
-  margin: 4px;
-  overflow: visible;
-  vertical-align: middle;
-}
-.resultados-peces .result-img-container img, .resultados-peces .icono-resultado-pez{
-  max-height: 150px;
-  max-width: 225px;
-  transition: all .2s ease-in-out;
-  vertical-align: middle;
-}
-.resultados-peces i.icono-resultado-pez {
-  transition: all .2s ease-in-out;
-  vertical-align: baseline;
-  font-size: 8em;
-  background: none!important;
-  border: 0px!important;
-}
-.resultados-peces .result-img-container .btn-ficha{
-  border: none;
-  background-color: transparent;
-  display: block;
-  margin: 0 auto;
-}
-.resultados-peces div.result-img-container img:hover, .resultados-peces i.icono-resultado-pez:hover{
-  transform:scale(.95);
-  -ms-transform:scale(.95); /* IE 9 */
-  -moz-transform:scale(.95); /* Firefox */
-  -webkit-transform:scale(.95); /* Safari and Chrome */
-  -o-transform:scale(.95); /* Opera */
-  font-size: 7.75em;
-}
-.resultados-peces .btn-ficha:hover:after {
-  content: 'Click en la imagen para mayor información';
-  font-size: smaller;
-  font-weight: bold;
-  padding: 4px;
-  color: #333;
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  white-space: nowrap;
-  z-index: 9999;
-  border-radius: 4px;
-  -moz-box-shadow: 0px 0px 2px #030303;
-  -webkit-box-shadow: 0px 0px 2px #030303;
-  box-shadow: 0px 0px 2px #030303;
-  background-color: #fafafa;
-}
+
 
 .result-img-container .certificacion-ev-icon, .popover-content .certificacion-ev-icon{
   color: #b98303;
@@ -250,34 +165,34 @@ div.result-img-container{
   line-height: 35px;
 }
 .btn-zona-star{
-  background: #DAA621;
+  /*background: #DAA621;*/
   fill: #DAA621;
   color: #DAA621;
   text-shadow: -1px 0px 0px #fafafa!important;
 }
 .btn-zona-v{
   color: #9ab635;
-  background: #9ab635;
+  /*background: #9ab635;*/
   fill: #9ab635;
 }
 .btn-zona-a{
   color: #ffc42d;
-  background: #ffc42d;
+  /*background: #ffc42d;*/
   fill: #ffc42d;
 }
 .btn-zona-r{
   color: #db0510;
-  background: #db0510;
+  /*background: #db0510;*/
   fill: #db0510;
 }
 .btn-zona-n{
-  background: #ece4e4;
   color: #ece4e4;
+  /*background: #ece4e4;*/
   fill: #ece4e4;
 }
 .btn-zona-sn, .popover-content .btn-zona-sn, .filtrosUsados .btn-zona-sn{
-  background: #9a9a9a;
   color: #9a9a9a;
+/*  background: #9a9a9a;*/
   fill: #9a9a9a;
 }
 /************* SVG Zonas marítimas ****************************/

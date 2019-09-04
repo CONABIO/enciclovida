@@ -9,7 +9,7 @@
     <h6 class="text-primary"><strong>Filtros de búsqueda</strong></h6>
     <h6 class="text-secondary"><small>Utiliza los siguientes filtros para clasificar las especies de acuerdo a sus características y tipo de consumo</small></h6>
 
-    <div class="porNombreGrupo row form-peces">
+    <div class="porNombreGrupo row mb-3">
       <div class="col-12">
         <strong>Por especie</strong>
         <%= hidden_field_tag :id, params.present? ? params[:id] : nil %>
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div class="porSemaforo row form-peces">
+    <div class="porSemaforo row mb-3">
       <div class="col text-center">
         <h6>
           <strong>Semáforo | </strong>
@@ -43,14 +43,14 @@
       </div>
     </div>
 
-    <div class="porGrupo row form-peces">
+    <div class="porGrupo row mb-3">
       <div class="col">
         <h6><strong>Peces o mariscos</strong></h6>
         <%= checkboxGruposIconicos %>
       </div>
     </div>
 
-    <div class="porSustentable row form-peces">
+    <div class="porSustentable row mb-3">
       <div class="col text-center">
         <%= checkboxSustentable %>
       </div>
@@ -60,7 +60,7 @@
       <div class="col-12">
         <h6><strong>Región</strong></h6>
       </div>
-      <div class="checkbox col-12 form-peces">
+      <div class="checkbox col-12 mb-3">
         <%= render :partial => 'svg_zonas_marinas' %>
         <%= checkboxCriteriosPeces({:zonas => @filtros[:zonas]}) %>
       </div>
@@ -68,26 +68,26 @@
 
 
     <div id="porCriterios" class="porCriterios checkbox row">
-      <div class="col-12 form-peces">
+      <div class="col-12 mb-3">
         <%= checkboxCriteriosPeces({:nom => @filtros[:nom].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (México)')%>
       </div>
-      <div class="col-12 form-peces">
+      <div class="col-12 mb-3">
         <%= checkboxCriteriosPeces({:iucn => @filtros[:iucn].map{|k| [k.nombre_propiedad, k.id]}}, true, 'Especies en riesgo (Internacional)')%>
       </div>
 
-      <div class="col-12 form-peces">
+      <div class="col-12 mb-3">
         <%= checkboxCriteriosPeces({:cnp => @filtros[:cnp]}, false, 'Estado de la población')%>
       </div>
 
-      <div class="col-12 form-peces">
+      <div class="col-12 mb-3">
         <%= checkboxCriteriosPeces({:tipo_vedas => @filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de veda')%>
       </div>
 
-      <div class="col-12 form-peces">
+      <div class="col-12 mb-3">
         <%= checkboxCriteriosPeces({:tipo_capturas => @filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de captura')%>
       </div>
 
-      <div class="col-12 form-peces">
+      <div class="col-12 mb-3">
         <%= checkboxCriteriosPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Huella ecológica')%>
       </div>
     </div>

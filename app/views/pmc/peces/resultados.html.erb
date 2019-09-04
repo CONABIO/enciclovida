@@ -13,13 +13,13 @@
 
 <div id="pestañas" class="col-9 panel">
   <ul class="nav nav-tabs" data-tabs="tabs">
-    <li class="active">
-      <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos"><b><%= @peces.length %></b> Resultados</a>
+    <li class="nav-item active">
+      <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos" class="nav-link"><b><%= @peces.length %></b> Resultados</a>
     </li>
   </ul>
 
-  <div class="tab-pane panel-body resultados-peces" id="todos">
-    <div id="resultados" class="row">
+  <div class="tab-pane panel-body resultados-peces row" id="todos">
+    <div id="resultados" class="row no-gutters">
       <%= render :file => 'pmc/peces/resultados_iteracion' %>
     </div>
   </div>
