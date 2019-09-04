@@ -178,17 +178,3 @@ div.result-img-container{
 ul.dropdown-menu li a span{
     font-size: .6em;
 }
-/* Formato para el checklist del nombre cientifico y categoria taxonómica, no importa la vista */
-.f-nom-cientifico-checklist
-{
-    font-size: 1em;
-    font-style: italic;
-    font-weight: bold;
-    /*color: #828b87;
-    margin-top: 20px;*/
-}
-.f-categoria-taxonomica-checklist
-{
-    color: #828b87;
-    font-size: 1em;
-}
