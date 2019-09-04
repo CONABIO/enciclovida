@@ -206,6 +206,12 @@ module ApplicationHelper
     link_to(correo_en_fuente.html_safe,"", :onclick => "$(this).attr('href',co.join('').split('').reverse().join(''));", :target => "_blank")
   end
 
+  def correo_enciclovida_b4 claro=nil
+    correo_en_fuente = "<span class='enciclovida_correo-ev-icon text-success'></span><i class='fa fa-envelope text-success'></i></span>"
+    correo_en_fuente.gsub!("text-success","text-light") if claro
+    link_to(correo_en_fuente.html_safe,"", :onclick => "$(this).attr('href',co.join('').split('').reverse().join(''));", :target => "_blank")
+  end
+
   def imagotipo_naturalista_completo
     "<i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>".html_safe
   end

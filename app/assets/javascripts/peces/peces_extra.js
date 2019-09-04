@@ -64,7 +64,7 @@ $(document).ready(function(){
 
 var scroll_array = false;
 
-var scrollToAnchor = function(){
+/*var scrollToAnchor = function(){
     if(scroll_array){
         $('#porCriterios').css('display', 'none');
         $("html,body").animate({scrollTop: $('#busqueda_avanzada').offset().top},'slow');
@@ -75,4 +75,4 @@ var scrollToAnchor = function(){
         scroll_array = true;
     }
     $('#scroll_down_up span').toggleClass("glyphicon-menu-down glyphicon-menu-up");
-};
+};*/
