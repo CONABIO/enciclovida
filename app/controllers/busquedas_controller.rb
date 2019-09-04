@@ -9,7 +9,7 @@ class BusquedasController < ApplicationController
   end
 
   skip_before_action :set_locale, only: [:cat_tax_asociadas]
-  layout false, :only => [:cat_tax_asociadas]
+  #layout false, :only => [:cat_tax_asociadas]
   layout 'application_b4'
 
   # REVISADO: Los filtros de la busqueda avanzada
@@ -61,6 +61,7 @@ class BusquedasController < ApplicationController
   def cat_tax_asociadas
     especie = Especie.find(params[:id])
     @categorias = especie.cat_tax_asociadas
+    render layout: false
   end
 
   def tabs

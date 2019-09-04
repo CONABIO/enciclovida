@@ -9,23 +9,28 @@ module BusquedasHelper
       "<label>#{radio_button_tag('id_gi', taxon.id, false, id: "id_gi_#{taxon.id}")}<span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn btn-xs btn-basica btn-title'></span></label>"
     end
 
-    radios = '<h6><strong>Reinos</strong></h6>'
+    radios = '<div class="col-md">'
+    radios << '<h6><strong>Reinos</strong></h6>'
     @reinos.each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end
-    radios << '<hr />'
+    radios << '</div>'
 
+    radios << '<div class="col-md">'
     radios << '<h6><strong>Grupos de animales</strong></h6>'
     @animales.each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end
-    radios << '<hr />'
+    radios << '</div>'
+
+    radios << '<div class="col-md">'
     radios << '<h6><strong>Grupos de plantas</strong></h6>'
     @plantas.each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end
+    radios << '</div>'
 
-    "<div>#{radios}</div>"
+    "<div class='row'>#{radios}</div>"
   end
 
   # REVISADO: Filtros para categorías de riesgo y comercio internacional

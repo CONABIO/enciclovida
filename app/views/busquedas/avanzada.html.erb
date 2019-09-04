@@ -29,20 +29,22 @@
   <% end %>
 <% end %>
 
-<div id="busqueda_avanzada" class="<%='row' if params[:action] != 'resultados' %>">
-  <%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
-    <div class="" id="panelFiltrosPt">
-      <div class="text-left" id="panelFiltros">
+<%= form_tag busquedas_resultados_url, :method => :get, :class => 'form-horizontal', :id => :b_avanzada  do %>
+  <div id="busqueda_avanzada" class="row">
+    <div class="col-12 mb-4" id="panelFiltros">
+      <div class="row align-items-center">
         <% if I18n.locale.to_s == 'es-cientifico' %>
           <%= render :partial => 'busqueda_avanzada_vista_especialistas' %>
         <% else %>
           <%= render :partial => 'busqueda_avanzada_vista_general' %>
         <% end %>
-        <div class="col-xs-12 <%= 'col-sm-8 col-md-4 col-lg-3 col-xs-offset-0 col-sm-offset-2 col-md-offset-8 col-lg-offset-9' if(params[:action] !='resultados') %>">
-          <%= submit_tag :Buscar, :class => 'btn btn-success form-control busquedas', data: { disable_with: 'Procesando...' } %>
-          <button class="form-control btn btn-default"  data-disable-with="Limpiando..." id="limpiar" name="button" type="reset">Limpiar búsqueda</button>
-        </div>
       </div>
     </div>
-  <% end %>
-</div>
+    <div class="col">
+      <%= submit_tag :Buscar, :class => 'btn btn-success busquedas btn-block', data: { disable_with: 'Procesando...' } %>
+    </div>
+    <div class="col">
+      <button class="btn btn-outline-dark btn-block"  data-disable-with="Limpiando..." id="limpiar" name="button" type="reset">Limpiar búsqueda</button>
+    </div>
+  </div>
+<% end %>
