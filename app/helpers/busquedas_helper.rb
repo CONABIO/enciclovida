@@ -96,7 +96,7 @@ module BusquedasHelper
     html = ''
 
     if usuario_signed_in?
-      html << text_field_tag('correo-' + recurso, current_usuario.email, class: 'form-control hidden', placeholder: 'correo ...')
+      html << text_field_tag('correo-' + recurso, current_usuario.email, class: 'form-control d-none', placeholder: 'correo ...')
     else
       html << label_tag('correo-'+recurso, 'Correo electrónico ', class: 'control-label')
       html << text_field_tag('correo-'+recurso, nil, class: 'form-control', placeholder: 'correo ...')

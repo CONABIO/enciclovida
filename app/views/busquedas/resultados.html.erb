@@ -1,5 +1,6 @@
 <% content_for(:extrajs) do %>
   <%= javascript_include_tag 'lib/scrolling', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'busquedas/avanzada/basica', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
       // Hacemos un set para saber el por_apgina actual por categoria taxonomica
@@ -21,16 +22,18 @@
   </script>
 <% end %>
 
-<% content_for(:delayedjs) do %>
-  <script type="text/javascript">
-      $(document).ready(function(){
-          asignaFiltros(<%=raw @setParams.to_json %>);
+<% if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
+  <% content_for(:delayedjs) do %>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            asignaFiltros(<%=raw @setParams.to_json %>);
 
-          <% if params[:id].present? && params[:nivel].present? &&params[:cat].present? %>
-          cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
-          <% end %>
-      });
-  </script>
+            <% if params[:id].present? && params[:nivel].present? &&params[:cat].present? %>
+            cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
+            <% end %>
+        });
+    </script>
+  <% end %>
 <% end %>
 
 <% content_for(:title) do %>
@@ -55,9 +58,9 @@
 <div id="resultados-container" class="col-12 <%= 'state-one' if params[:busqueda]=='avanzada' %>">
   <div class="row justify-content-end mb-3">
     <%# if params[:busqueda]=='avanzada' %>
-      <!--div class="col">
-        <button id="toggleFiltros" class="btn btn-outline-secondary float-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button"><i class="fa"></i></button>
-      </div-->
+    <!--div class="col">
+      <button id="toggleFiltros" class="btn btn-outline-secondary float-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button"><i class="fa"></i></button>
+    </div-->
     <%# end %>
 
     <% if @totales > 0 %>
@@ -84,7 +87,7 @@
   <div class="row">
     <%= render file: 'busquedas/avanzada' if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
 
-    <div id="pestañas" class="col-xs-12 col-md-9 panel">
+    <div id="pestañas" class="<%= 'col-md-9' if params[:action]=='resultados' && params[:busqueda]=='avanzada' %> col-xs-12 panel">
       <div class="row">
         <ul class="nav nav-tabs" data-tabs="tabs">
           <li class="nav-item active">
@@ -106,15 +109,14 @@
       </div>
 
       <% @por_categoria.each do |cat| %>
-        <div class="tab-pane panel-body panel-resultados" id="resultados-<%= cat[:categoria_taxonomica_id] %>"></div>
+        <div class="tab-pane panel-body panel-resultados row" id="resultados-<%= cat[:categoria_taxonomica_id] %>"></div>
       <% end %>
     </div>
   </div>
 
-
 </div>
 
 <%= render partial: 'busquedas/form_descarga_lista' %>
-<%= render partial: 'busquedas/form_descarga_checklist' %>
+<%#= render partial: 'busquedas/form_descarga_checklist' %>
 
 
