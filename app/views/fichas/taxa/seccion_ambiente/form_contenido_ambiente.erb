@@ -11,10 +11,9 @@
     #select:        :floating_labels_select
 } do |f| %>
 
-  <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Distribucion'.html_safe,
-                              f,
+  <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Distribucion'.html_safe, f,
                               :habitats,
-                              partial: 'fichas/taxa/seccion_distribucion/form_distribucion_habitad',
+                              partial: 'fichas/taxa/seccion_ambiente/form_ambiente_habitat',
                               :class => 'btn btn-info btn-sm',
                               render_options: {
                                   locals: {
@@ -23,13 +22,12 @@
                               },
                               role: 'tab',
                               "data-toggle" => 'tab',
-                              "aria-controls" => 'distribucion',
-                              'data-association-insertion-node' => '#distribucion',
+                              "aria-controls" => 'ambiente',
+                              'data-association-insertion-node' => '#ambiente',
                               'data-association-insertion-method' => 'append',
-                              href: '#distribucion',
+                              href: '#ambiente',
                               style: 'display: none;'
       ) if @taxon.new_record? %>
-
 
   <div id='contenido_ambiente'>
     <hr />

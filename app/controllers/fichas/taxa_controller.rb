@@ -8,12 +8,34 @@ class Fichas::TaxaController < Fichas::FichasController
     # Verificar si existe el parámetro idCat
     params.has_key?(:idCat) ? set_taxon : @taxon = Fichas::Taxon.new
 
+    puts params
+
     # Saber qué tipo de sección cargar:
     case params[:seccion]
+      when 'distribucion'
+        render 'fichas/taxa/seccion_distribucion/form_contenido_distribucion', layout: false
       when 'ambiente'
         render 'fichas/taxa/seccion_ambiente/form_contenido_ambiente', layout: false
+      when 'biologia'
+        render 'fichas/taxa/seccion_biologia/form_contenido_biologia', layout: false
+      when 'ecologia'
+        render 'fichas/taxa/seccion_ecologia/form_contenido_ecologia', layout: false
+      when 'genetica'
+        render 'fichas/taxa/seccion_genetica/form_contenido_genetica', layout: false
+      when 'importancia'
+        render 'fichas/taxa/seccion_importancia/form_contenido_importancia', layout: false
+      when 'conservacion'
+        render 'fichas/taxa/seccion_conservacion/form_contenido_conservacion', layout: false
+      when 'prioritaria-conservacion'
+        render 'fichas/taxa/seccion_prioritaria/form_contenido_prioritaria', layout: false
+      when 'necesidad-informacion'
+        render 'fichas/taxa/seccion_necesidad_informacion/form_contenido_necesidad', layout: false
+      when 'metadatos'
+        render 'fichas/taxa/seccion_metadatos/form_contenido_metadatos', layout: false
+      when 'referencias'
+        render 'fichas/taxa/seccion_referencias/form_contenido_referencias', layout: false
       else
-        render 'fichas/taxa/seccion_ambiente/form_contenido_ambiente', layout: false
+        render 'fichas/taxa/seccion_referencias/form_contenido_referencias', layout: false
     end
   end
 

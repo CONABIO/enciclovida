@@ -1,0 +1,23 @@
+<%= simple_form_for @taxon, **@form_params, wrapper: :horizontal_form, wrapper_mappings: {
+    boolean:       :horizontal_boolean,
+    check_boxes:   :horizontal_collection,
+    file:          :horizontal_file,
+    radio_buttons: :horizontal_collection,
+    range:         :horizontal_range,
+    #time:          :custom_multi_select,
+    select:        :horizontal_collection
+    #date:          :horizontal_multi_select,
+    #datetime:      :horizontal_multi_select,
+    #select:        :floating_labels_select
+} do |f| %>
+
+  <div id='contenido_genetica'>
+    <hr />
+    <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.genetica')%></h3>
+    <% # OCUPA: historianatural %>
+    <%= f.simple_fields_for :historiaNatural do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_genetica/form_genetica_historiaNatural', locals: {f: info, f_taxon: f } %>
+    <% end %>
+  </div>
+
+<% end %>

@@ -101,60 +101,27 @@ $( document ).ready(function() {
         });
 
 
-    $('#boton-ambiente').on('click', function(event){
-        console.log(";J");
-        cargaSeccionEnDiv('ambiente', 'ambiente');
+    $('.boton-seccion').on('click', function(event){
+        var idBtn = this.id;
+        var seccionACargar = idBtn.replace("boton-", "");
+        console.log(seccionACargar);
+        cargaSeccionEnDiv(seccionACargar, event);
     });
-
-/*
-    $('#boton-distribucion').on('click', function(){
-        $('#ambiente').load('/fichas/taxa/seccion_ambiente #distribucion');
-    });
-    $('#boton-ambiente').on('click', function(){
-        $('#ambiente').load('/fichas/taxa/seccion_ambiente #ambiente');
-    });
-    $('#boton-biologia').on('click', function(){
-        $('#ambiente').load('/fichas/taxa/seccion_ambiente #biologia');
-    });
-    $('#boton-ecologia').on('click', function(){
-        $('#ambiente').load('/fichas/taxa/seccion_ambiente #ecologia');
-    });
-    $('#boton-genetica').on('click', function(){
-        $('#ambiente').load('/fichas/taxa/seccion_ambiente #genetica');
-    });
-    $('#boton-importancia').on('click', function(){
-        $('#ambiente').load('/fichas/taxa/seccion_ambiente #importancia');
-    });
-    $('#boton-conservacion').on('click', function(){
-        $('#ambiente').load('/fichas/taxa/seccion_ambiente #conservacion');
-    });
-    $('#pestania-IX').on('click', function(){
-        $('#ambiente').load('/fichas/taxa/seccion_ambiente #prioritaria-conservacion');
-    });
-    $('#boton-necesidad').on('click', function(){
-        $('#ambiente').load('/fichas/taxa/seccion_ambiente #necesidad');
-    });
-    $('#boton-metadatos').on('click', function(){
-        $('#ambiente').load('/fichas/taxa/seccion_ambiente #metadatos');
-    });
-    $('#boton-referencias').on('click', function(){
-        $('#ambiente').load('/fichas/taxa/seccion_ambiente #referencias');
-    });
-*/
 
 });
 
 
 // Función para cargar el contenido de una sección en un DIV
-function cargaSeccionEnDiv(divACargar, nombreSeccion) {
+function cargaSeccionEnDiv(nombreSeccion, event) {
 
     // Div a verificar
-    var el_div = $("#" + divACargar);
+    var el_div = $("#" + nombreSeccion);
 
     // Verificar si se cargó ya la página
     if( el_div.html() !== "")
         event.preventDefault(); // Detener la llamada si existe contenido
     else {
+        console.log(";s");
         // Si aún no se cargó el contenido de la sección, verificar la petición (El taxón será uno nuevo o una edición)
         var accion = window.location.pathname.replace("/fichas/taxa/", "");
         var seccionACargar = '/fichas/taxa/cargar_seccion/' +  nombreSeccion +'/';
@@ -165,14 +132,15 @@ function cargaSeccionEnDiv(divACargar, nombreSeccion) {
             if(accion.includes('edit')) {
                 seccionACargar += accion.replace("/edit", "");
                 el_div.load(seccionACargar +' #contenido_' + nombreSeccion);
+                console.log(seccionACargar +' #contenido_' + nombreSeccion);
             }
         }
     }
 }
 
 $(window).load(function(){
-    //$(".apartadoFicha").fadeOut();
-    //showOrHideInfoFicha();
+    $(".apartadoFicha").fadeOut();
+    showOrHideInfoFicha();
 });
 
 
@@ -188,9 +156,9 @@ function showOrHideInfoFicha() {
 
         // Mostar el título correspondiente para la pestaña IX:
         if(tipoFicha === 'Invasora') {
-            $('#pestania-IX').html('Especies invasoras');
+            $('#boton-prioritaria-conservacion').html('Especies invasoras');
         } else {
-            $('#pestania-IX').html('Especies prioritarias');
+            $('#boton-prioritaria-conservacion').html('Especies prioritarias');
         }
         // Construir la clase según el tipo de ficha
         var claseFicha = 'ficha-' + tipoFicha;

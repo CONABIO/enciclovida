@@ -22,37 +22,37 @@
         <%= link_to 'Clasificación y descripción', '#clasificacion-descripcion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'clasificacion-descripcion' %>
       </li>
       <li role="presentation">
-        <%= link_to 'Distribución', '#distribucion', :class => 'btn btn-sm', :id =>'boton-distribucion', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'distribucion' %>
+        <%= link_to 'Distribución', '#distribucion', :class => 'btn btn-sm boton-seccion', :id =>'boton-distribucion', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'distribucion' %>
       </li>
       <li role="presentation" >
-        <%= link_to 'Ambiente', '#ambiente', :class => 'btn btn-sm', :id =>'boton-ambiente', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente' %>
+        <%= link_to 'Ambiente', '#ambiente', :class => 'btn btn-sm boton-seccion', :id =>'boton-ambiente', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente' %>
       </li>
       <li role="presentation" >
-        <%= link_to 'Biología', '#biologia', :class => 'btn btn-sm', :id =>'boton-biologia', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'biologia' %>
+        <%= link_to 'Biología', '#biologia', :class => 'btn btn-sm boton-seccion', :id =>'boton-biologia', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'biologia' %>
       </li>
       <li role="presentation" >
-        <%= link_to 'Ecología', '#ecologia', :class => 'btn btn-sm', :id =>'boton-ecologia', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ecologia' %>
+        <%= link_to 'Ecología', '#ecologia', :class => 'btn btn-sm boton-seccion', :id =>'boton-ecologia', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ecologia' %>
       </li>
       <li role="presentation">
-        <%= link_to 'Genética', '#genetica', :class => 'btn btn-sm', :id =>'boton-genetica', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'genetica' %>
+        <%= link_to 'Genética', '#genetica', :class => 'btn btn-sm boton-seccion', :id =>'boton-genetica', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'genetica' %>
       </li>
       <li role="presentation" >
-        <%= link_to 'Importancia', '#importancia', :class => 'btn btn-sm', :id =>'boton-importancia', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'importancia' %>
+        <%= link_to 'Importancia', '#importancia', :class => 'btn btn-sm boton-seccion', :id =>'boton-importancia', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'importancia' %>
       </li>
       <li role="presentation" >
-        <%= link_to 'Conservación', '#conservacion', :class => 'btn btn-sm', :id =>'boton-conservacion', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'conservacion' %>
+        <%= link_to 'Conservación', '#conservacion', :class => 'btn btn-sm boton-seccion', :id =>'boton-conservacion', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'conservacion' %>
       </li>
       <li role="presentation" >
-        <%= link_to 'Especies prioritarias', '#prioritaria-conservacion', :id => 'pestania-IX', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especie_prioritaria' %>
+        <%= link_to 'Especies prioritarias', '#prioritaria-conservacion', :id => 'boton-prioritaria-conservacion', :class => 'btn btn-sm boton-seccion', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especie_prioritaria' %>
       </li>
       <li role="presentation" >
-        <%= link_to 'Necesidades de información', '#necesidad-informacion', :id =>'boton-necesidad', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'necesidad_informacion' %>
+        <%= link_to 'Necesidades de información', '#necesidad-informacion', :id =>'boton-necesidad-informacion', :class => 'btn btn-sm boton-seccion', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'necesidad_informacion' %>
       </li>
       <li role="presentation" >
-        <%= link_to 'Metadatos', '#metadatos', :class => 'btn btn-sm', :id =>'boton-metadatos', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'metadatos' %>
+        <%= link_to 'Metadatos', '#metadatos', :class => 'btn btn-sm boton-seccion', :id =>'boton-metadatos', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'metadatos' %>
       </li>
       <li role="presentation" >
-        <%= link_to 'Referencias', '#referencias', :class => 'btn btn-sm', :id =>'boton-referencias', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'referencias' %>
+        <%= link_to 'Referencias', '#referencias', :class => 'btn btn-sm boton-seccion', :id =>'boton-referencias', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'referencias' %>
       </li>
     </ul>
 
@@ -72,9 +72,16 @@
       </div>
 
       <div id='distribucion' role="tabpanel" class="tab-pane fade panel-body"></div>
-
       <div id='ambiente' role="tabpanel" class="tab-pane fade panel-body"></div>
-
+      <div id='biologia' role="tabpanel" class="tab-pane fade panel-body"></div>
+      <div id='ecologia' role="tabpanel" class="tab-pane fade panel-body"></div>
+      <div id='genetica' role="tabpanel" class="tab-pane fade panel-body"></div>
+      <div id='importancia' role="tabpanel" class="tab-pane fade panel-body"></div>
+      <div id='conservacion' role="tabpanel" class="tab-pane fade panel-body"></div>
+      <div id='prioritaria-conservacion' role="tabpanel" class="tab-pane fade panel-body"></div>
+      <div id='necesidad-informacion' role="tabpanel" class="tab-pane fade panel-body"></div>
+      <div id='metadatos' role="tabpanel" class="tab-pane fade panel-body"></div>
+      <div id='referencias' role="tabpanel" class="tab-pane fade panel-body"></div>
 
     </div>
   </div>
