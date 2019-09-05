@@ -38,3 +38,10 @@
 #por_gi input + span:hover > span, .porSemaforo input + span:hover > span, .porSustentable input + span:hover > span, .porGrupo input + span:hover > span, #porCriterios .nom input + span:hover > span, #porCriterios .iucn input + span:hover > span{
   border: 1px solid rgba(153, 23, 5, .4);
 }
+.bloque-color{
+  background-color: #ececec;
+}
+.bloque{
+  border: 1px solid #adadad;
+  border-radius: 25px;
+}

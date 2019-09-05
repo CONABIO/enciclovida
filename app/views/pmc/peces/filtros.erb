@@ -42,62 +42,65 @@
       </div>
     </div>
 
-    <div class="porSemaforo row my-3">
-      <div class="col">
-        <h6>
+    <div class="porSemaforo row my-5">
+      <div class="col bloque">
+        <h6 class="mt-n3 px-0 mb-n4 py-2 float-left bloque-color">
           <strong>Semáforo | </strong>
-          <small><%= link_to "<b>Más info </b><i class='fa fa-question-circle'></i>".html_safe, 'https://www.biodiversidad.gob.mx/usos/alimentacion/peces/', class: 'text-link' %></small>
-          <br />
+          <small><%= link_to "<b>Más info </b><i class='fa fa-question-circle'></i>".html_safe, 'https://www.biodiversidad.gob.mx/usos/alimentacion/peces/', class: 'text-link' %></small></h6>
+        <h6 class="mt-4">
           <small>Resume categorías de riesgo, vedas, tipos de captura, huella ecológica y estado de la población</small>
         </h6>
-        <p class="text-center"><%= checkboxSemaforo %></p>
+        <p class="mb-n4 bloque-color float-left mx-1"><%= checkboxSemaforo %></p>
       </div>
     </div>
 
-    <div class="porGrupo row my-3">
-      <div class="col">
-        <h6><strong>Peces o mariscos</strong></h6>
-        <p class="text-center"><%= checkboxGruposIconicos %></p>
+    <div class="porGrupo row my-5">
+      <div class="col bloque">
+        <h6 class="mt-n3 px-0 mb-n5 py-2 float-left bloque-color"><strong>Peces o mariscos</strong></h6>
+        <p class="mt-4 mb-n4 bloque-color float-left mx-1"><%= checkboxGruposIconicos %></p>
       </div>
     </div>
 
-    <div class="porSustentable row my-3">
-      <div class="col">
-        <h6><strong>Pesquerías sustentables</strong></h6>
-        <p class="text-center"><%= checkboxSustentable %></p>
+    <div class="porSustentable row my-5">
+      <div class="col bloque">
+        <h6 class="mt-n3 px-0 mb-n5 py-2 float-left bloque-color"><strong>Pesquerías sustentables</strong></h6>
+        <p class="mt-4 mb-n4 bloque-color float-left mx-1"><%= checkboxSustentable %></p>
       </div>
     </div>
 
-    <div class="porZonas row my-3">
-      <div class="col-12">
-        <h6><strong>Región</strong></h6>
-      </div>
-      <div class="checkbox col-12">
+    <div class="porZonas row my-5">
+      <div class="col-12 bloque">
+        <h6 class="checkbox mt-n3 px-0 mb-0 pt-2 pb-0 float-left bloque-color"><strong>Región</strong></h6>
+
         <%= render :partial => 'svg_zonas_marinas' %>
         <%= checkboxCriteriosPeces({:zonas => @filtros[:zonas]}) %>
       </div>
     </div>
 
-
     <div id="porCriterios" class="porCriterios checkbox row">
-      <div class="col-12 my-3">
-        <%= checkboxEstadoConservacion.html_safe %>
-      </div>
+      <div class="col-12 bloque">
+        <h6 class="mt-n3 px-2 mb-n5 py-2 float-left bloque-color"><strong>Filtros adicionales</strong></h6>
 
-      <div class="col-12 my-3">
-        <%= checkboxCriteriosPeces({:cnp => @filtros[:cnp]}, false, 'Estado de la población')%>
-      </div>
+        <div class="col-12 my-3 mt-4">
+          <h6><strong>Especies en riesgo</strong></h6>
+          <%= checkboxEstadoConservacion.html_safe %>
+        </div>
 
-      <div class="col-12 my-3">
-        <%= checkboxCriteriosPeces({:tipo_vedas => @filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de veda')%>
-      </div>
+        <div class="col-12 my-3">
+          <%= checkboxCriteriosPeces({:cnp => @filtros[:cnp]}, false, 'Estado de la población')%>
+        </div>
 
-      <div class="col-12 my-3">
-        <%= checkboxCriteriosPeces({:tipo_capturas => @filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de captura')%>
-      </div>
+        <div class="col-12 my-3">
+          <%= checkboxCriteriosPeces({:tipo_vedas => @filtros[:tipo_vedas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de veda')%>
+        </div>
 
-      <div class="col-12 my-3">
-        <%= checkboxCriteriosPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Huella ecológica')%>
+        <div class="col-12 my-3">
+          <%= checkboxCriteriosPeces({:tipo_capturas => @filtros[:tipo_capturas].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Tipo de captura')%>
+        </div>
+
+        <div class="col-12 my-3">
+          <%= checkboxCriteriosPeces({:procedencias => @filtros[:procedencias].map {|k| [k.nombre_propiedad, k.id]}}, false, 'Huella ecológica')%>
+        </div>
       </div>
     </div>
   </div>
