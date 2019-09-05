@@ -115,7 +115,6 @@ module PecesHelper
       filtros_usados << "<span title = '#{v[0]}' class = 'btn-title'><i class = 'btn-zona btn-zona-#{k} #{v[1]}-ev-icon'></i></span>" if seleccionados.include?(k.to_s)
     end
 
-    #[:zonas, :nom, :iucn, :tipo_vedas, :tipo_capturas, :procedencias, :cnp].each do |f|
     [:zonas, :tipo_vedas, :tipo_capturas, :procedencias, :cnp, :edo_cons].each do |f|
       filtros = params[f]
       next unless (filtros.present? && filtros.any?)
@@ -137,13 +136,6 @@ module PecesHelper
             filtros_usados.unshift("<span title='#{catalogo.descripcion}' class='btn-title'><i class = '#{catalogo.descripcion.estandariza}-ev-icon'></i></span>")
           end
         end
-        #@filtros[f].map{|k| [k.nombre_propiedad, k.id]}.each do |edo, id|
-        #  edo_p = edo.parameterize
-        #  next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
-        #  if filtros.include?(id.to_s)
-        #    filtros_usados << "<span title='#{edo}' class='btn-title'><i class = '#{edo_p}-ev-icon'></i></span>"
-        #  end
-        #end
       else
         @filtros[f].map{|k| [k.nombre_propiedad, k.id]}.each do |edo, id|
           edo_p = edo.parameterize
@@ -159,7 +151,6 @@ module PecesHelper
     @filtros[:grupos].each do |g|
       if g.id == grupo.to_i
         filtros_usados << "<span title='Grupo seleccionado' class='btn-title'><i class='label label-primary'>#{g.nombre_propiedad}</i></span>"
-        break
       end
     end
 
