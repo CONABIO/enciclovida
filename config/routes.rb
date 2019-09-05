@@ -47,7 +47,11 @@ Buscador::Application.routes.draw do
   end
 
   namespace :fichas do
-    resources :taxa
+    resources :taxa do
+      collection do
+        get 'cargar_seccion/:seccion(/:idCat)' =>  'taxa#get_x_seccion'
+      end
+    end
     resources :front do
       collection do
         # I. Clasificación y descripción de la especie

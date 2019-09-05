@@ -99,7 +99,76 @@ $( document ).ready(function() {
                 event.preventDefault();
             }
         });
+
+
+    $('#boton-ambiente').on('click', function(event){
+        console.log(";J");
+        cargaSeccionEnDiv('ambiente', 'ambiente');
+    });
+
+/*
+    $('#boton-distribucion').on('click', function(){
+        $('#ambiente').load('/fichas/taxa/seccion_ambiente #distribucion');
+    });
+    $('#boton-ambiente').on('click', function(){
+        $('#ambiente').load('/fichas/taxa/seccion_ambiente #ambiente');
+    });
+    $('#boton-biologia').on('click', function(){
+        $('#ambiente').load('/fichas/taxa/seccion_ambiente #biologia');
+    });
+    $('#boton-ecologia').on('click', function(){
+        $('#ambiente').load('/fichas/taxa/seccion_ambiente #ecologia');
+    });
+    $('#boton-genetica').on('click', function(){
+        $('#ambiente').load('/fichas/taxa/seccion_ambiente #genetica');
+    });
+    $('#boton-importancia').on('click', function(){
+        $('#ambiente').load('/fichas/taxa/seccion_ambiente #importancia');
+    });
+    $('#boton-conservacion').on('click', function(){
+        $('#ambiente').load('/fichas/taxa/seccion_ambiente #conservacion');
+    });
+    $('#pestania-IX').on('click', function(){
+        $('#ambiente').load('/fichas/taxa/seccion_ambiente #prioritaria-conservacion');
+    });
+    $('#boton-necesidad').on('click', function(){
+        $('#ambiente').load('/fichas/taxa/seccion_ambiente #necesidad');
+    });
+    $('#boton-metadatos').on('click', function(){
+        $('#ambiente').load('/fichas/taxa/seccion_ambiente #metadatos');
+    });
+    $('#boton-referencias').on('click', function(){
+        $('#ambiente').load('/fichas/taxa/seccion_ambiente #referencias');
+    });
+*/
+
 });
+
+
+// Función para cargar el contenido de una sección en un DIV
+function cargaSeccionEnDiv(divACargar, nombreSeccion) {
+
+    // Div a verificar
+    var el_div = $("#" + divACargar);
+
+    // Verificar si se cargó ya la página
+    if( el_div.html() !== "")
+        event.preventDefault(); // Detener la llamada si existe contenido
+    else {
+        // Si aún no se cargó el contenido de la sección, verificar la petición (El taxón será uno nuevo o una edición)
+        var accion = window.location.pathname.replace("/fichas/taxa/", "");
+        var seccionACargar = '/fichas/taxa/cargar_seccion/' +  nombreSeccion +'/';
+        // Si el taxón es nuevo:
+        if(accion.includes('new')) {
+            el_div.load(seccionACargar +' #contenido_' + nombreSeccion);
+        } else {
+            if(accion.includes('edit')) {
+                seccionACargar += accion.replace("/edit", "");
+                el_div.load(seccionACargar +' #contenido_' + nombreSeccion);
+            }
+        }
+    }
+}
 
 $(window).load(function(){
     //$(".apartadoFicha").fadeOut();
@@ -191,6 +260,13 @@ function showOrHideSegunTipoReproduccion() {
         }
     }
 
+}
+
+function reloadSection(section) {
+    setTimeout(function () {
+        console.log("SE recargó");
+        $('#' + section + ' .selectpicker').selectpicker('refresh');
+    }, 10);
 }
 
 // Recargan los imputs selectpicker y tinyMCE nuevos

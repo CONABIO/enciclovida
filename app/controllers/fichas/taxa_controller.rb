@@ -1,6 +1,22 @@
 class Fichas::TaxaController < Fichas::FichasController
   before_action :set_taxon, only: [:show, :edit, :update, :destroy]
 
+  def get_x_seccion
+
+    @form_params = { url: '/fichas/taxa', method: 'post' }
+
+    # Verificar si existe el parámetro idCat
+    params.has_key?(:idCat) ? set_taxon : @taxon = Fichas::Taxon.new
+
+    # Saber qué tipo de sección cargar:
+    case params[:seccion]
+      when 'ambiente'
+        render 'fichas/taxa/seccion_ambiente/form_contenido_ambiente', layout: false
+      else
+        render 'fichas/taxa/seccion_ambiente/form_contenido_ambiente', layout: false
+    end
+  end
+
   # GET /taxa
   # GET /taxa.json
   def index
