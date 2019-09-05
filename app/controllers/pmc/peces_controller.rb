@@ -58,7 +58,7 @@ class Pmc::PecesController < Pmc::PmcController
       @peces = @peces.where("criterios.id IN (#{params[:cnp].join(',')})") if params[:cnp].present?
 
       # Para tomar las categorias de riesgo de catalogos
-      @peces = @peces.left_joins(:especies_catalogos).where("#{EspecieCatalogo.table_name}.#{EspecieCatalogo.attribute_alias(:catalogo_id)} IN (?)", params[:edo_cons])
+      @peces = @peces.left_joins(:especies_catalogos).where("#{EspecieCatalogo.table_name}.#{EspecieCatalogo.attribute_alias(:catalogo_id)} IN (?)", params[:edo_cons]) if params[:edo_cons].present?
 
       # Filtro de grupo iconico
       if params[:grupos_iconicos].present? && params[:grupos_iconicos].any?
