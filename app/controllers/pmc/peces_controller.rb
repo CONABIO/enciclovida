@@ -37,6 +37,7 @@ class Pmc::PecesController < Pmc::PmcController
   def busqueda
     if params[:commit].present?
       @filtros =  Pmc::Criterio.dame_filtros
+      @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
       @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`#{CONFIG.bases.cat}`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
       @peces = Pmc::Pez.filtros_peces
 
@@ -54,9 +55,12 @@ class Pmc::PecesController < Pmc::PmcController
       @peces = @peces.where("criterios.id IN (#{params[:tipo_capturas].join(',')})") if params[:tipo_capturas].present?
       @peces = @peces.where("criterios.id IN (#{params[:tipo_vedas].join(',')})") if params[:tipo_vedas].present?
       @peces = @peces.where("criterios.id IN (#{params[:procedencias].join(',')})") if params[:procedencias].present?
-      @peces = @peces.where("criterios.id IN (#{params[:nom].join(',')})") if params[:nom].present?
-      @peces = @peces.where("criterios.id IN (#{params[:iucn].join(',')})") if params[:iucn].present?
       @peces = @peces.where("criterios.id IN (#{params[:cnp].join(',')})") if params[:cnp].present?
+
+      # Para tomar las categorias de riesgo de catalogos
+      @peces = @peces.left_joins(:especies_catalogos).where("#{EspecieCatalogo.table_name}.#{EspecieCatalogo.attribute_alias(:catalogo_id)} IN (?)", params[:edo_cons])
+      #@peces = @peces.where("criterios.id IN (#{params[:nom].join(',')})") if params[:nom].present?
+      #@peces = @peces.where("criterios.id IN (#{params[:iucn].join(',')})") if params[:iucn].present?
 
       # Filtro de grupo iconico
       if params[:grupos_iconicos].present? && params[:grupos_iconicos].any?

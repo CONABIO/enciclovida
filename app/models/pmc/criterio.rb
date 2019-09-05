@@ -87,8 +87,8 @@ class Pmc::Criterio < ActiveRecord::Base
           procedencias: self.procedencias,
           pesquerias: Pmc::Pez.filtros_peces.where(con_estrella: 1).distinct,
           cnp: self.cnp_select,
-          nom: self.nom,
-          iucn: self.iucn_solo_riesgo
+          #nom: self.nom,
+          #iucn: self.iucn_solo_riesgo
       }
     end
 
