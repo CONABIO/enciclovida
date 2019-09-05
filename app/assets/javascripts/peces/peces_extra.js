@@ -1,9 +1,10 @@
 var limpiaBusqueda = function(){
-    var controles = ".porGrupo input, .porSemaforo input, .porZonas input, .porNombreGrupo input, .porNombreGrupo select, .porCriterios input, .porCriterios select";
+    var controles = ".porGrupo input, .porSemaforo input, .porZonas input, .porNombreGrupo input, .porNombreGrupo select, .porCriterios input, .porCriterios select, .porSustentable input";
     var visuales = ".porGrupo span, .porSemaforo span, .porZonas span, .porZonas path, .porCriterios span";
     var inputsALimpiar = $(controles + ", " + visuales);
     inputsALimpiar.attr("disabled", false).removeClass("disabled zona-seleccionada").prop("checked", false);
     $("#id, #nombre, .porNombreGrupo input, .porNombreGrupo select").val('');
+    $('#edo_cons').selectpicker('val','');
 };
 
 var bloqueaBusqueda = function(){
@@ -11,6 +12,11 @@ var bloqueaBusqueda = function(){
     var visuales = ".porGrupo span, .porSemaforo span, .porZonas span, .porZonas path, .porCriterios span";
     var inputsABloquear = $(controles + ", " + visuales);
     inputsABloquear.attr("disabled", true).addClass("disabled").prop("checked", false);
+};
+
+var asignaFiltros = function(params)
+{
+    if (params.edo_cons != undefined) $('#edo_cons').selectpicker('val',params.edo_cons);
 };
 
 $(document).ready(function(){

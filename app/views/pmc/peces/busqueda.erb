@@ -1,3 +1,11 @@
+<%= content_for :delayedjs do %>
+  <script type="text/javascript">
+      $(document).ready(function(){
+          asignaFiltros(<%=raw params.to_json %>);
+      });
+  </script>
+<% end %>
+
 <div id="resultados-container" class="col-12 mb-3">
   <span class="float-right"><small>(especies en orden decreciente de recomendación)</small></span>
   <% fu = filtrosUsados.html_safe %>
