@@ -37,7 +37,7 @@ class Pmc::PecesController < Pmc::PmcController
   def busqueda
     if params[:commit].present?
       @filtros =  Pmc::Criterio.dame_filtros
-      @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
+      @nom_cites_iucn_todos = @filtros[:edo_cons]
       @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`#{CONFIG.bases.cat}`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
       @peces = Pmc::Pez.filtros_peces
 

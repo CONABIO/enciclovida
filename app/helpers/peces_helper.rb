@@ -116,9 +116,9 @@ module PecesHelper
     end
 
     #[:zonas, :nom, :iucn, :tipo_vedas, :tipo_capturas, :procedencias, :cnp].each do |f|
-    [:zonas, :tipo_vedas, :tipo_capturas, :procedencias, :cnp].each do |f|
+    [:zonas, :tipo_vedas, :tipo_capturas, :procedencias, :cnp, :edo_cons].each do |f|
       filtros = params[f]
-      next unless filtros.present?
+      next unless (filtros.present? && filtros.any?)
 
       case f
       when :zonas, :cnp
@@ -130,13 +130,20 @@ module PecesHelper
           end
         end
       when :edo_cons
-        @filtros[f].map{|k| [k.nombre_propiedad, k.id]}.each do |edo, id|
-          edo_p = edo.parameterize
-          next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
-          if filtros.include?(id.to_s)
-            filtros_usados << "<span title = '#{edo}' class = 'btn-title'><i class = '#{f} #{edo_p}-ev-icon'></i></span>"
+        filtros = filtros.map{ |f| f.to_i }
+        @filtros[f].each do |k,v|
+          v.each do |catalogo|
+            next unless filtros.include?(catalogo.id)
+            filtros_usados.unshift("<span title='#{catalogo.descripcion}' class='btn-title'><i class = '#{catalogo.descripcion.estandariza}-ev-icon'></i></span>")
           end
         end
+        #@filtros[f].map{|k| [k.nombre_propiedad, k.id]}.each do |edo, id|
+        #  edo_p = edo.parameterize
+        #  next if edo_p == 'sin-datos' || edo_p == 'no-aplica'
+        #  if filtros.include?(id.to_s)
+        #    filtros_usados << "<span title='#{edo}' class='btn-title'><i class = '#{edo_p}-ev-icon'></i></span>"
+        #  end
+        #end
       else
         @filtros[f].map{|k| [k.nombre_propiedad, k.id]}.each do |edo, id|
           edo_p = edo.parameterize
