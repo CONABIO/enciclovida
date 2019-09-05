@@ -1,11 +1,15 @@
-<%= button_tag '<span class="glyphicon glyphicon-remove"></span>'.html_safe, type: 'button', class: 'btn btn-xs btn-link pull-right', onclick: "$('[data-especie-id=#{@pez[:especie_id]}]').popover('hide');" %>
-<h4 class="text-center"><b>Recomendación</b><%= muestraCertificacion.html_safe %></h4>
-<table class="table table-responsive table-condensed table-bordered">
-  <tbody>
+<%= button_tag '<i class="fa fa-times-circle"></i>'.html_safe, type: 'button', class: 'btn btn-link btn-sm float-right', onclick: "$('[data-especie-id=#{@pez[:especie_id]}]').popover('hide');" %>
+<h6 class="text-center"><strong>Recomendación</strong><%= muestraCertificacion.html_safe %></h6>
+<table class="table table-striped table-responsive table-sm">
+  <thead class="thead-dark text-center">
   <tr>
+    <th>Pacífico</th>
+    <th>Golfo de México</th>
+  </tr>
+  </thead>
+  <tr class="bg-white">
     <td>
       <ul>
-        <li class="text-center"><b><small>Pacífico</small></b></li>
         <% @criterios["Estado poblacional en el Pacífico"].compact.each_with_index do  |c, i| %>
           <li><%= dibujaZonasPez(c, i).html_safe %></li>
         <% end %>
@@ -13,14 +17,12 @@
     </td>
     <td>
       <ul>
-        <li class="text-center"><b><small>Golfo de México</small></b></li>
         <% @criterios["Estado poblacional en el Golfo de México y caribe"].compact.each_with_index do  |c, i| %>
           <li><%= dibujaZonasPez(c, i+3).html_safe %></li>
         <% end %>
       </ul>
     </td>
   </tr>
-  </tbody>
 </table>
 
 <% @criterios["Características"].compact[0..1].each do |c|  %>
@@ -42,7 +44,7 @@
 
     <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
       <% warning = case c[:ancestry] when "321" then @pez[:veda_fechas] when "322" then 'Procura que el producto que consumas sea nacional' else '' end %>
-      <em class="btn-title"><%= c[:nombre] %> &middot; <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true" ></span></em>
+      <em class="btn-title"><%= c[:nombre] %> &middot; <i class="fa fa-exclamation text-primary" aria-hidden="true" ></i></em>
       <strong class='popover-veda'><%= warning %></strong>
     <% else %>
       <em><%= c[:nombre] %></em>
@@ -50,13 +52,13 @@
   </p>
 <% end %>
 
-<h4 class="pull-left">
-  <%= link_to '<span class="glyphicon glyphicon-comment" aria-hidden="true"></span> Realizar comentario <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>'.html_safe, new_especie_comentario_path(@pez, {categorias_contenido_id: 36}), class: 'btn btn-warning btn-sm', target: '_blank' %>
-</h4>
+<h5 class="float-left">
+  <%= link_to '¿Comentarios? <i class="fa fa-comments" aria-hidden="true"></i>'.html_safe, new_especie_comentario_path(@pez, {categorias_contenido_id: 36}), class: 'btn btn-outline-info btn-sm', target: '_blank' %>
+</h5>
 
 
 <% if tiene_permiso?('AdminPeces') %>
-  <h4 class="pull-right">
-    <b><small>Editar especie: </small></b><%= link_to '<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'.html_safe, pmc_pez_path(@pez), 'tooltip-title' => 'Ver y/o configurar especie marina', class: 'btn btn-default btn-sm btn-title' %>
-  </h4>
+  <h5 class="float-right">
+    <b><small>Editar especie: </small></b><%= link_to '<i class="fa fa-cog" aria-hidden="true"></i>'.html_safe, pmc_pez_path(@pez), 'tooltip-title' => 'Ver y/o configurar especie marina', class: 'btn btn-smbtn-outline-secondary btn-title' %>
+  </h5>
 <% end %>

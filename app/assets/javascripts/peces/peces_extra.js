@@ -1,14 +1,14 @@
 var limpiaBusqueda = function(){
-    var controles = ".porGrupo input, .porSemaforo input, .porZonas input, .porNombreGrupo input, .porNombreGrupo select, .porCriterios input, .porCriterios select";
-    var visuales = ".porGrupo span, .porSemaforo span, .porZonas span, .porZonas path, .porCriterios span";
+    var controles = ".porGrupo input, .porSemaforo input, .porSustentables input, .porZonas input, .porNombreGrupo input, .porNombreGrupo select, .porCriterios input, .porCriterios select";
+    var visuales = ".porGrupo span, .porSemaforo span, .porSustentables span, .porZonas span, .porZonas path, .porCriterios span";
     var inputsALimpiar = $(controles + ", " + visuales);
     inputsALimpiar.attr("disabled", false).removeClass("disabled zona-seleccionada").prop("checked", false);
     $("#id, #nombre, .porNombreGrupo input, .porNombreGrupo select").val('');
 };
 
 var bloqueaBusqueda = function(){
-    var controles = ".porGrupo input, .porSemaforo input, .porZonas input, .porNombreGrupo select, .porCriterios input, .porCriterios select";
-    var visuales = ".porGrupo span, .porSemaforo span, .porZonas span, .porZonas path, .porCriterios span";
+    var controles = ".porGrupo input, .porSemaforo input, .porSustentables input, .porZonas input, .porNombreGrupo select, .porCriterios input, .porCriterios select";
+    var visuales = ".porGrupo span, .porSemaforo span, .porSustentables span, .porZonas span, .porZonas path, .porCriterios span";
     var inputsABloquear = $(controles + ", " + visuales);
     inputsABloquear.attr("disabled", true).addClass("disabled").prop("checked", false);
 };
@@ -25,6 +25,7 @@ $(document).ready(function(){
         jQuery.get(pestaña).done(function(data){
             button.popover({
                 html:true,
+                sanitize:false,
                 container: 'body',
                 placement: function(){
                     if($(window).width() < 990){
