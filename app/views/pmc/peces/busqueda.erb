@@ -1,8 +1,9 @@
 <div id="resultados-container" class="col-12 mb-3">
+  <span class="float-right"><small>(especies en orden decreciente de recomendación)</small></span>
   <% fu = filtrosUsados.html_safe %>
   <% unless fu == '' %>
-    <h6><b><%= fa_icon 'filter' %> La presente consulta utilizó los siguientes filtros: </b></h6>
-    <h6 class="filtrosUsados my-0 mx-3"><%= fu %></h6>
+    <h6 class=""><b><%= fa_icon 'filter' %> La presente consulta utilizó los siguientes filtros: </b></h6>
+    <p class="filtrosUsados my-0 mx-3"><%= fu %></p>
   <% end %>
 </div>
 

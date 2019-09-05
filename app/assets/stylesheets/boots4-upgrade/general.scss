@@ -45,10 +45,6 @@
   top: -3px;
   z-index: 1001;
 }
-#menuEsqSupDer{/*Esto es para hacer redondito el icono de "Más..."*/
-  /*border-bottom-left-radius: 2px;*/
-  /*font-weight: bold;*/
-}
 .vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.25rem!important;}
 
 #brandBar .form-group{margin: 4px 0;}
@@ -77,43 +73,14 @@
   text-shadow: 1px 1px 1px #a0a0a0;
   color: #423434 !important;
 }
-/*
-.contenedor-titulo-busquedas{
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8));
-  background: #544a22;
-  background-repeat: no-repeat !important;
-  background-attachment: fixed !important;
-  background-size: cover !important;
-  background-position: bottom !important;
-}
-*/
 
 .titulo-busquedas{
-  /*width: 1032px;*/
-  /*margin: 8px auto;*/
-  /*font-size: 3rem;*/
-  /*font-family: "acumin-pro-extra-condensed";*/
   -webkit-text-shadow: 1px 1px 1px #003300;
   -moz-text-shadow: 1px 1px 1px #003300;
   -ms-text-shadow: 1px 1px 1px #003300;
   -o-text-shadow: 1px 1px 1px #003300;
   text-shadow: 1px 1px 1px #003300;
   color: #ececec;
-}
-/*
-.contenedor-titulo-busquedas .liner {
-  width: 50px;
-  height: 5px;
-  margin: 15px 0;
-  border: none;
-  background: #fafafa;
-  position: absolute;
-}
-
- */
-footer {
-  /*padding: 25px 0;*/
-  /*text-align: center;*/
 }
 .social {
   background-color:#104C5B;
@@ -234,14 +201,9 @@ ul.social-buttons li a:active {
   border-right: 1px solid #d3d3d3;
   border-top: 1px solid #d3d3d3;
   border-bottom: 1px solid transparent;
-  color: #777777;
 }
 .panel .nav-stacked > li.active > a, .panel .nav-tabs > li.active > a  {
-  color: #800000;
   background-color: #ffffff;
-}
-.panel .nav-stacked > li.active, .panel .nav-tabs > li.active{
-  /*filter: drop-shadow(5px -5px 4px #cecece)*/
 }
 #pestañas div.panel-body{
   background-color: #ffffff;
@@ -376,20 +338,36 @@ sub{
   font-weight: bold;
 }
 // El tamaño de las fuentes de los iconos en general
-.f-fuentes
-{
-  font-size: 1.8em;
+.f-fuentes{position: relative}
+.f-fuentes:before{
+  left: 0px;
+  position: relative;
+  top: 0px;
+  font-size: 1.5em;
+  margin: 0px!important;
+}
+.f-fuentes:after{
+  left: 25px;
+  position: absolute;
+  top: 4px;
+  font-size: 1.5em;
+  margin: 0px!important;
+}
+.f-fuentes span.text{
+  position: relative;
+  left: 40px;
+}
+.f-fuentes.opt{
+  padding-left: 1.5rem!important;
 }
 // Formato general para el nombre cientifico y comun, no importa la vista
-.f-nom-cientifico
-{
+.f-nom-cientifico{
   font-size: 1em;
   font-style: italic;
   color: #828b87;
   margin-top: 20px;
 }
-.f-nom-comun
-{
+.f-nom-comun{
   font-size: 1.2em;
   font-weight: bold;
 }
