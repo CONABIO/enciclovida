@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es"
-      xmlns:fb="http://www.facebook.com/2008/fbml"
-      xmlns:og="http://ogp.me/ns#">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es-MX" lang="es-MX">
 <head>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
   <meta name="keywords" content="Busqueda por peces, marinos, comerciales, crustaceos, tiburones, pulpos, almejas">
   <title><%= yield :title %></title>
   <%= favicon_link_tag '/favicon.ico' %>
 
+  <%= javascript_include_tag 'application_b4', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'peces/peces', 'data-turbolinks-track' => true %>
+
+
   <script type="text/javascript" data-turbolinks-track="true">
       IP = "<%= IP %>";
       PORT = "<%= PORT %>";
   </script>
 
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'peces/peces', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
@@ -34,10 +34,7 @@
 
 <header class="container-fluid">
   <%= render :partial => 'pmc/peces/brandBar' %>
-</header>
-
-<header class="container-fluid">
-  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: "<a href='/peces' class='text-info' data-turbolinks='false'>Peces y mariscos comerciales</a>"} %>
+  <%= render :partial => 'shared_b4/tituloBuscador', locals: {icon_class: 'peces-mariscos-comerciales', titulo: "Semáforo de consumo responsable"} %>
  </header>
 
 <section id="content" class="container-fluid">
@@ -46,12 +43,9 @@
   </div>
 </section>
 
-<footer class="social">
-  <%= render :partial => 'shared/footer_social' %>
-</footer>
-
-<footer class="legal">
-  <%= render :partial => 'shared/footer_legal' %>
+<footer class="container-fluid">
+  <%= render :partial => 'shared_b4/footer_social' %>
+  <%= render :partial => 'shared_b4/footer_legal' %>
 </footer>
 
 <% if Rails.env.production? %>

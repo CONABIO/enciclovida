@@ -5,15 +5,39 @@ class Pmc::PecesController < Pmc::PmcController
   end
 
   before_action :set_pez, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_usuario!, :except => [:show, :index, :dameNombre]
+  before_action :authenticate_usuario!, :except => [:show, :busqueda, :dameNombre, :index]
   before_action :only => [:new, :update, :edit, :create, :destroy] do
     tiene_permiso?('AdminPeces', true)  # Minimo administrador... de peces duh!
   end
 
-  # Busqueda por pez y marisco
   def index
+    #render layout: false
+    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/usos/alimentacion/peces/")).css('#introenciclovida2')
+    #@doc.css('#pagetitle').remove
+    #@doc.css('#sectionmenu').remove
+    #@doc.css('#pageima').remove
+    @doc.xpath('//comment()').remove
+
+    @doc.each do |el|
+      el.traverse do |n|
+        next if n.key?('id') && %w(accordion collapse1 collapse2 collapse3 collapse4).include?(n.attribute('id').value)
+        #n.remove_attribute('id')
+        #n.remove_class('contenidoGRALima')
+        #n.remove_class('project')
+        if n.matches?('img')
+          n.attribute('src').value = n.attribute('src').value.gsub('../../../', 'https://www.biodiversidad.gob.mx/')
+        end
+      end
+    end
+
+    @doc = @doc.to_html.encode("utf-8")
+  end
+
+  # Busqueda por pez y marisco
+  def busqueda
     if params[:commit].present?
       @filtros =  Pmc::Criterio.dame_filtros
+      @nom_cites_iucn_todos = @filtros[:edo_cons]
       @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`#{CONFIG.bases.cat}`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
       @peces = Pmc::Pez.filtros_peces
 
@@ -31,9 +55,10 @@ class Pmc::PecesController < Pmc::PmcController
       @peces = @peces.where("criterios.id IN (#{params[:tipo_capturas].join(',')})") if params[:tipo_capturas].present?
       @peces = @peces.where("criterios.id IN (#{params[:tipo_vedas].join(',')})") if params[:tipo_vedas].present?
       @peces = @peces.where("criterios.id IN (#{params[:procedencias].join(',')})") if params[:procedencias].present?
-      @peces = @peces.where("criterios.id IN (#{params[:nom].join(',')})") if params[:nom].present?
-      @peces = @peces.where("criterios.id IN (#{params[:iucn].join(',')})") if params[:iucn].present?
       @peces = @peces.where("criterios.id IN (#{params[:cnp].join(',')})") if params[:cnp].present?
+
+      # Para tomar las categorias de riesgo de catalogos
+      @peces = @peces.left_joins(:especies_catalogos).where("#{EspecieCatalogo.table_name}.#{EspecieCatalogo.attribute_alias(:catalogo_id)} IN (?)", params[:edo_cons]) if params[:edo_cons].present?
 
       # Filtro de grupo iconico
       if params[:grupos_iconicos].present? && params[:grupos_iconicos].any?
@@ -67,9 +92,8 @@ class Pmc::PecesController < Pmc::PmcController
         @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       end
 
-      render 'resultados'
     else
-      redirect_to '/pmc/peces?semaforo_recomendacion%5B%5D=star&commit=Buscar'
+      redirect_to '/pmc/peces/busqueda?semaforo_recomendacion%5B%5D=star&commit=Buscar'
     end
   end
 

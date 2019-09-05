@@ -1,5 +1,10 @@
+<% content_for(:extracss) do %>
+  <%= stylesheet_link_tag 'busquedas', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'busquedas/avanzada/checklist', 'data-turbolinks-track' => true %>
+<% end %>
+
 <% content_for(:title) do %>
-    <%= @titulo='Listado de verificación' %>
+  <%= @titulo='Checklist' %>
 <% end %>
 
 <p id="notice"><%= notice %></p>
@@ -17,12 +22,15 @@
 <p align="right">
   Descargar en <%= link_to('<i class="file-pdf-ev-icon"></i>'.html_safe, request.url.gsub('/resultados?','/resultados.pdf?'), target: :_blank, title: 'Verificación de listado') %>
 </p>
-<div style="width: 100%; float:left;">
-  <ul>
-    <% @taxones.each do |taxon| %>
-        <%= "<li style='margin-left: #{taxon.arbol.length*2}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, render: 'link')}</span></li>".html_safe %>
-    <% end %>
-  </ul>
+
+<div>
+
+  <% @taxones.each do |taxon| %>
+    <div class="checklist-nivel-<%= taxon.nivel1 %> %>">
+      <%= "<span id=\"datos_busqueda-#{taxon.id}\">#{generaChecklist(taxon)}</span><br />".html_safe %>
+    </div>
+  <% end %>
+
   <p class="enlaces_acciones">
     <%= '<em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
   </p>
