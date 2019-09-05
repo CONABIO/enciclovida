@@ -153,12 +153,6 @@ class Fichas::TaxaController < Fichas::FichasController
               { ecosistema_ids: [] },
               { vegetacion_ids: [] }, # PENDIENTE
               { vegetacion_acuatica_ids: [] }, # PENDIENTE
-              { ambi_info_ecorregiones_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { ambi_especies_asociadas_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { ambi_vegetacion_esp_mundo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { ambi_info_clima_exotico_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { ambi_infotiposuelo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { ambi_infogeoforma_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
               :tipoAmbiente,
               :tipoVegetacion,
               :estadoHabitat,
@@ -208,21 +202,19 @@ class Fichas::TaxaController < Fichas::FichasController
               :tipoVegetacionexo,
               :uso,
               :id,
-              :_destroy
+              :_destroy,
+              #{ ambi_info_ecorregiones_attributes: [:especieId, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { ambi_especies_asociadas_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy] },
+              { ambi_vegetacion_esp_mundo_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy] },
+              { ambi_info_clima_exotico_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy] },
+              { ambi_infotiposuelo_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy] },
+              { ambi_infogeoforma_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy] },
           ],
 
           # OK
           historiaNatural_attributes: [
               { culturaUso_ids: [] },
               { pais_importacion_ids: [] },
-              { infoaddforrajeo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infoaddhabito_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infodisp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infostruct_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infosistaparea_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infocrianza_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infoAP_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infoarresp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
               :tipoReproduccion,
               :estrategiaTrofica,
               :descripcionEstrofica,
@@ -254,6 +246,14 @@ class Fichas::TaxaController < Fichas::FichasController
               :id,
               :_destroy,
               { infoalimenta_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { infoaddforrajeo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { infoaddhabito_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { infodisp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { infostruct_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { infosistaparea_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { infocrianza_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { infoAP_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { infoarresp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
               {# OK
                 reproduccionVegetal_attributes: [
                     :descripcion,

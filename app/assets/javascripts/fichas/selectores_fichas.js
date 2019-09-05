@@ -209,7 +209,7 @@ function reloadTiny(classe) {
     }, 10)
 }
 
-
+// Para que los valores min y max sean correctos
 function checkValues(e) {
 
     var nombreFinal = e.name;
@@ -226,4 +226,34 @@ function checkValues(e) {
             return false;
         }
     }
+}
+
+// Para asegurar las clasificaciones correctas
+function cambiaLegislaciones(e) {
+
+    var idSelect = $(e).attr('id');
+    var selectedOption = $(e).val();
+    var idOptionsSelect = idSelect.replace("nombreLegislacion", "estatusLegalProteccion");
+
+    $('#' + idOptionsSelect).find('option').removeAttr("selected");
+
+    if ( selectedOption.includes("SEMARNAT")) {
+        $('#' + idOptionsSelect +  ' optgroup[label="SEMARNAT"]').prop('hidden', false);
+        $('#' + idOptionsSelect +  ' optgroup[label="UICN"]').prop('hidden', true);
+        $('#' + idOptionsSelect +  ' optgroup[label="CITES"]').prop('hidden', true);
+    }
+
+    if ( selectedOption.includes("UICN")) {
+        $('#' + idOptionsSelect +  ' optgroup[label="SEMARNAT"]').prop('hidden', true);
+        $('#' + idOptionsSelect +  ' optgroup[label="UICN"]').prop('hidden', false);
+        $('#' + idOptionsSelect +  ' optgroup[label="CITES"]').prop('hidden', true);
+    }
+
+    if ( selectedOption.includes("CITES")) {
+        $('#' + idOptionsSelect +  ' optgroup[label="SEMARNAT"]').prop('hidden', true);
+        $('#' + idOptionsSelect +  ' optgroup[label="UICN"]').prop('hidden', true);
+        $('#' + idOptionsSelect +  ' optgroup[label="CITES"]').prop('hidden', false);
+    }
+
+    reload('seccion_clasificacion');
 }
