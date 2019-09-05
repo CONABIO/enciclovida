@@ -338,20 +338,36 @@ sub{
   font-weight: bold;
 }
 // El tamaño de las fuentes de los iconos en general
-.f-fuentes
-{
-  font-size: 1.8em;
+.f-fuentes{position: relative}
+.f-fuentes:before{
+  left: 0px;
+  position: relative;
+  top: 0px;
+  font-size: 1.5em;
+  margin: 0px!important;
+}
+.f-fuentes:after{
+  left: 25px;
+  position: absolute;
+  top: 4px;
+  font-size: 1.5em;
+  margin: 0px!important;
+}
+.f-fuentes span.text{
+  position: relative;
+  left: 40px;
+}
+.f-fuentes.opt{
+  padding-left: 1.5rem!important;
 }
 // Formato general para el nombre cientifico y comun, no importa la vista
-.f-nom-cientifico
-{
+.f-nom-cientifico{
   font-size: 1em;
   font-style: italic;
   color: #828b87;
   margin-top: 20px;
 }
-.f-nom-comun
-{
+.f-nom-comun{
   font-size: 1.2em;
   font-weight: bold;
 }
