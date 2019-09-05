@@ -13,6 +13,7 @@ class Pmc::Pez < ActiveRecord::Base
   belongs_to :especie
   has_one :adicional, :through => :especie, :source => :adicional
   has_one :categoria_taxonomica, through: :especie, source: :categoria_taxonomica
+  has_many :especies_catalogos, through: :especie
 
   attr_accessor :x_nombre_comun_principal
 
