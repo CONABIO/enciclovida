@@ -65,30 +65,6 @@
 .filtrosUsados .label{padding-bottom: 1px;}
 .filtrosUsados i:before, .filtrosUsados i:after{font-size: 1.5rem;}
 
-/************************** INICIA INCRUSTACIÓN BUSQUEDAS.CSS ***********************************************/
-.resultados-peces, li.active > a {
-  /*font-size: 18px;*/
-}
-div.result-img-container{
-  /*display: inline-block;
-  overflow: hidden;
-  max-width: 100%;
-  margin: 5px 0px;
-  position: relative;*/
-}
-.nav:before, .nav:after {
-  /*content: " ";
-  display: inline-block;
-  padding-bottom: 32px;*/
-}
-#resultados-container #busqueda_avanzada, #resultados-container #pestañas{
-  /*float: left;
-  position: relative;
-  min-height: 1px;
-  transition: all .4s cubic-bezier(0.62, -0.93, 0.42, 1.85);*/
-}
-/************************** TERMINA INCRUSTACIÓN BUSQUEDAS.CSS ***********************************************/
-
 
 .result-img-container .certificacion-ev-icon, .popover-content .certificacion-ev-icon{
   color: #b98303;
