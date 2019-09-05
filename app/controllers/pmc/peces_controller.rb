@@ -30,7 +30,7 @@ class Pmc::PecesController < Pmc::PmcController
       end
     end
 
-    @doc = @doc.to_html.encode("utf-8")
+    @doc = @doc.to_html.force_encoding('UTF-8').gsub('Ã¡','á').gsub('Ã©','é').gsub('Ã','í').gsub('í³','ó').gsub('íº','ú').gsub('í','Á')
   end
 
   # Busqueda por pez y marisco
