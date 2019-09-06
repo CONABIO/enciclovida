@@ -8,8 +8,6 @@ class Fichas::TaxaController < Fichas::FichasController
     # Verificar si existe el parámetro idCat
     params.has_key?(:idCat) ? set_taxon : @taxon = Fichas::Taxon.new
 
-    puts params
-
     # Saber qué tipo de sección cargar:
     case params[:seccion]
       when 'distribucion'

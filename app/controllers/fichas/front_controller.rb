@@ -61,7 +61,7 @@ class Fichas::FrontController < Fichas::FichasController
     # Obtener el id de especie
     @habitat = @taxon.habitats
     @historiaNatural = @taxon.historiaNatural
-    @demografiaAmenazas = @taxon.demografiaAmenazas.first
+    @demografiaAmenazas = @taxon.demografiaAmenazas
     @infoReproduccion = @historiaNatural.get_info_reproduccion
 
     render json: {
@@ -76,7 +76,7 @@ class Fichas::FrontController < Fichas::FichasController
   # V. Ecología y demografía de la especie
   def ecologia_y_demografia_de_especie
     # Obtener el id de especie
-    @demograAmenazas = @taxon.demografiaAmenazas.first
+    @demograAmenazas = @taxon.demografiaAmenazas
     @interaccion = @demograAmenazas.interaccion
 
     render json: {
@@ -109,7 +109,7 @@ class Fichas::FrontController < Fichas::FichasController
   # VIII. Estado de conservación de la especie
   def estado_de_conservacion_de_especie
     @conservacion = @taxon.conservacion.first
-    @demografiaAmenazas = @taxon.demografiaAmenazas.first
+    @demografiaAmenazas = @taxon.demografiaAmenazas
     @amenazaDirecta = @demografiaAmenazas.amenazaDirecta.first
 
     render json: {
@@ -158,7 +158,7 @@ class Fichas::FrontController < Fichas::FichasController
     @habitatAntropico = "" # @habitat.habitatAntropico
 
     # IV. Biología de la especie
-    @demografiaAmenazas = @taxon.demografiaAmenazas.first || Fichas::Demografiaamenazas.new
+    @demografiaAmenazas = @taxon.demografiaAmenazas || Fichas::Demografiaamenazas.new
     # V. Ecología y demografía de la especie
     @interaccion = @demografiaAmenazas.interaccion
     @amenazaDirecta = @demografiaAmenazas.amenazaDirecta.first

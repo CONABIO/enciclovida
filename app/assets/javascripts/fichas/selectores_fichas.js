@@ -1,9 +1,103 @@
 $( document ).ready(function() {
 
-    // Inicializar el editor de texto TINYMCE
-    tinyMCE.init({
-        selector: 'textarea.form-control'
+    // LISTENERS PARA COOCON
+    $('#clasificacion-descripcion')
+        .on('cocoon:before-insert', function (event) {
+            // Antes de insertar una legislación, verificar el total (máximo 4)
+            var legislaciones = document.getElementsByClassName("nueva_legislacion").length;
+            if (legislaciones > 3){
+                confirm("No pueden haber más de 4 legislaciones");
+                event.preventDefault();
+            }
+        })
+
+        .on("cocoon:before-remove", function (event) {
+            var confirmation = confirm("Estás seguro?");
+            if( confirmation === false ){
+                event.preventDefault();
+            }
+        });
+    // - - - -
+
+    $('#importancia')
+
+        .on("cocoon:before-remove", function (event) {
+            var confirmation = confirm("Estás seguro?");;
+            if( confirmation === false ){
+                event.preventDefault();
+            }
+        });
+    // - - - -
+
+    $('#opcion-reprodAnimal')
+        .on('cocoon:before-insert', function (event) {
+            // Antes de agregar información animal, verificr que no exista antes
+            var hay_rep = document.getElementsByClassName("reproduccionAnimal_add").length;
+            if (hay_rep > 0){
+                confirm("Ya puedes seguir completando el formulario!");
+                event.preventDefault();
+            }
+        })
+
+        .on("cocoon:before-remove", function (event) {
+            var confirmation = confirm("Estás seguro?");
+            if( confirmation === false ){
+                event.preventDefault();
+            }
+        });
+
+    // - - - -
+    $('#opcion-reprodVegetal')
+        .on('cocoon:before-insert', function (event) {
+            // Antes de agregar información animal, verificr que no exista antes
+            var hay_rep = document.getElementsByClassName("reproduccionVegetal_add").length;
+            if (hay_rep > 0){
+                confirm("Ya puedes seguir completando el formulario!");
+                event.preventDefault();
+            }
+        })
+
+        .on("cocoon:before-remove", function (event) {
+            var confirmation = confirm("Estás seguro?");
+            if( confirmation === false ){
+                event.preventDefault();
+            }
+        });
+    // - - - -
+
+    // Botones para cargar contenido de la sección X
+    $('.boton-seccion').on('click', function(event){
+        var idBtn = this.id;
+        var seccionACargar = idBtn.replace("boton-", "");
+        cargaSeccionEnDiv(seccionACargar, event);
     });
+});
+
+
+$(window).load(function(){
+
+    /* - - - - Una vez cargado el documento: - - - -*/
+
+    // Ocultar las opciones cuando es 'NO'
+    ocultaContenidoSiNo();
+
+    // Inicializar el editor de texto TINYMCE
+    tinyMCE.init({selector: 'textarea.form-control'});
+
+    // mostrar correctamente el formulario de la sección Ambiente
+    showOrHideAmbienteDesarrolloEspecie();
+
+    //  mostrar correctamente el formulario de la sección Biologia
+    showOrHideSegunTipoReproduccion();
+
+    // Según el tipo de ficha, mostrar u ocultar el contenido que las diferencia
+    $(".apartadoFicha").fadeOut();
+    showOrHideInfoFicha();
+
+});
+
+// Ocultar las opciones cuando es 'NO'
+function ocultaContenidoSiNo() {
 
     // Mostrar u ocultar contenido SEGÚN opciones SI / NO cuando se cargue la  página
     casos = [
@@ -29,120 +123,7 @@ $( document ).ready(function() {
         if ($(selector).val() !== undefined)
             showOrHideByName($(selector).val(), elID);
     }
-    // - - - - - - - - - - - - - - - - - - -  --  - - - - - - - - -  - - -
-
-    // Para mostrar correctamente el formulario de la sección Ambiente
-    showOrHideAmbienteDesarrolloEspecie();
-
-    //  Para mostrar correctamente el formulario de la sección Biologia
-    showOrHideSegunTipoReproduccion();
-
-    // - - - - - - - - - - - - - - - - - - -  --  - - - - - - - - -  - - -
-
-    // LISTENERS PARA COOCON
-    $('#clasificacion-descripcion')
-        .on('cocoon:before-insert', function (event) {
-            // Antes de insertar una legislación, verificar el total (máximo 4)
-            var legislaciones = document.getElementsByClassName("nueva_legislacion").length;
-            if (legislaciones > 3){
-                confirm("No pueden haber más de 4 legislaciones");
-                event.preventDefault();
-            }
-        })
-
-        .on("cocoon:before-remove", function (event) {
-            var confirmation = confirm("Estás seguro?");
-            if( confirmation === false ){
-                event.preventDefault();
-            }
-        });
-
-    $('#importancia')
-
-        .on("cocoon:before-remove", function (event) {
-            var confirmation = confirm("Estás seguro?");;
-            if( confirmation === false ){
-                event.preventDefault();
-            }
-        });
-
-    $('#opcion-reprodAnimal')
-        .on('cocoon:before-insert', function (event) {
-            // Antes de agregar información animal, verificr que no exista antes
-            var hay_rep = document.getElementsByClassName("reproduccionAnimal_add").length;
-            if (hay_rep > 0){
-                confirm("Ya puedes seguir completando el formulario!");
-                event.preventDefault();
-            }
-        })
-
-        .on("cocoon:before-remove", function (event) {
-            var confirmation = confirm("Estás seguro?");
-            if( confirmation === false ){
-                event.preventDefault();
-            }
-        });
-
-    $('#opcion-reprodVegetal')
-        .on('cocoon:before-insert', function (event) {
-            // Antes de agregar información animal, verificr que no exista antes
-            var hay_rep = document.getElementsByClassName("reproduccionVegetal_add").length;
-            if (hay_rep > 0){
-                confirm("Ya puedes seguir completando el formulario!");
-                event.preventDefault();
-            }
-        })
-
-        .on("cocoon:before-remove", function (event) {
-            var confirmation = confirm("Estás seguro?");
-            if( confirmation === false ){
-                event.preventDefault();
-            }
-        });
-
-
-    $('.boton-seccion').on('click', function(event){
-        var idBtn = this.id;
-        var seccionACargar = idBtn.replace("boton-", "");
-        console.log(seccionACargar);
-        cargaSeccionEnDiv(seccionACargar, event);
-    });
-
-});
-
-
-// Función para cargar el contenido de una sección en un DIV
-function cargaSeccionEnDiv(nombreSeccion, event) {
-
-    // Div a verificar
-    var el_div = $("#" + nombreSeccion);
-
-    // Verificar si se cargó ya la página
-    if( el_div.html() !== "")
-        event.preventDefault(); // Detener la llamada si existe contenido
-    else {
-        console.log(";s");
-        // Si aún no se cargó el contenido de la sección, verificar la petición (El taxón será uno nuevo o una edición)
-        var accion = window.location.pathname.replace("/fichas/taxa/", "");
-        var seccionACargar = '/fichas/taxa/cargar_seccion/' +  nombreSeccion +'/';
-        // Si el taxón es nuevo:
-        if(accion.includes('new')) {
-            el_div.load(seccionACargar +' #contenido_' + nombreSeccion);
-        } else {
-            if(accion.includes('edit')) {
-                seccionACargar += accion.replace("/edit", "");
-                el_div.load(seccionACargar +' #contenido_' + nombreSeccion);
-                console.log(seccionACargar +' #contenido_' + nombreSeccion);
-            }
-        }
-    }
 }
-
-$(window).load(function(){
-    $(".apartadoFicha").fadeOut();
-    showOrHideInfoFicha();
-});
-
 
 /*
 * Ocultar el contenido relacionado a fichas específicas:
@@ -230,10 +211,29 @@ function showOrHideSegunTipoReproduccion() {
 
 }
 
+// Después de cargar una sección, cargar estilos de selectpicker y tinyMCE de toda la sección
 function reloadSection(section) {
+
+    // Ocultar las opciones cuando es 'NO'
+    ocultaContenidoSiNo();
+
+    if (section === 'biologia') {
+        //  mostrar correctamente el formulario de la sección Biologia
+        showOrHideSegunTipoReproduccion();
+    }
+
+    if (section === 'ambiente') {
+        // mostrar correctamente el formulario de la sección Ambiente
+        showOrHideAmbienteDesarrolloEspecie();
+    }
+
+    // Según el tipo de ficha, mostrar u ocultar el contenido que las diferencia
+    $(".apartadoFicha").fadeOut();
+    showOrHideInfoFicha();
+
     setTimeout(function () {
-        console.log("SE recargó");
         $('#' + section + ' .selectpicker').selectpicker('refresh');
+        tinyMCE.init({ selector: '#' + section + ' textarea.form-control' });
     }, 10);
 }
 
@@ -241,15 +241,7 @@ function reloadSection(section) {
 function reload(classe) {
     setTimeout(function () {
         $('.' + classe).selectpicker('refresh');
-        reloadTiny(classe);
-    }, 10)
-}
-
-function reloadTiny(classe) {
-    setTimeout(function () {
-        tinyMCE.init({
-            selector: '.tiny_' + classe
-        });
+        tinyMCE.init({ selector: '.tiny_' + classe });
     }, 10)
 }
 
@@ -301,3 +293,44 @@ function cambiaLegislaciones(e) {
 
     reload('seccion_clasificacion');
 }
+
+
+// Función para cargar el contenido de una sección en un DIV
+function cargaSeccionEnDiv(nombreSeccion, event) {
+
+    // Div a verificar
+    var el_div = $("#" + nombreSeccion);
+    var cargando = '<p class="text-center"><i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i><strong>Cargando... Por favor, espera<strong></p>'
+
+    // Verificar si se cargó ya la página
+    if( el_div.html() !== "")
+        event.preventDefault(); // Detener la llamada si existe contenido
+    else {
+        // El div se encuentra vacio, pegarle el 'animate-spin' de cargando:
+        el_div.html(cargando);
+        // Si aún no se cargó el contenido de la sección, verificar la petición (El taxón será uno nuevo o una edición)
+        var accion = window.location.pathname.replace("/fichas/taxa/", "");
+        var seccionACargar = '/fichas/taxa/cargar_seccion/' +  nombreSeccion +'/';
+        // Si el taxón es nuevo:
+        if(accion.includes('new')) {
+            el_div.load(seccionACargar +' #contenido_' + nombreSeccion, function () {
+                reloadSection(nombreSeccion);
+            });
+        } else {
+            if(accion.includes('edit')) {
+                seccionACargar += accion.replace("/edit", "");
+                el_div.load(seccionACargar +' #contenido_' + nombreSeccion, function () {
+                    reloadSection(nombreSeccion);
+                });
+            }
+        }
+    }
+
+}
+
+/*
+* <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
+      </p>
+* */
