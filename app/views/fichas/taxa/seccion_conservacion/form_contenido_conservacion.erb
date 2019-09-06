@@ -11,19 +11,19 @@
     #select:        :floating_labels_select
 } do |f| %>
 
-
-<div id='contenido_conservacion'>
-  <hr />
-  <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.estado_de_conservacion')%></h3>
+  <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> conservacion'.html_safe, f, :demografiaAmenazas, partial: 'fichas/taxa/seccion_conservacion/form_conservacion_demografia_amenazas', :class => 'btn btn-info btn-sm', render_options: { locals: { f_taxon: f} }, role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'conservacion', 'data-association-insertion-node' => '#conservacion', 'data-association-insertion-method' => 'append', href: '#conservacion', style: 'display: none;') if @taxon.new_record? %>
   <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> conservacion'.html_safe, f, :conservacion, partial: 'fichas/taxa/seccion_conservacion/form_conservacion_conservacion', :class => 'btn btn-info btn-sm', render_options: { locals: { f_taxon: f} }, role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'conservacion', 'data-association-insertion-node' => '#conservacion', 'data-association-insertion-method' => 'append', href: '#conservacion', style: 'display: none;') if @taxon.new_record? %>
 
-  <% # OCUPA: demografiaamenazas, conservacion, * * amenazadirecta %>
-  <%= f.simple_fields_for :demografiaAmenazas do |info| %>
-    <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_demografia_amenazas', locals: {f: info, f_taxon: f } %>
-  <% end %>
-  <%= f.simple_fields_for :conservacion do |info| %>
-    <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_conservacion', locals: {f: info, f_taxon: f } %>
-  <% end %>
-</div>
+  <div id='contenido_conservacion'>
+    <hr />
+    <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.estado_de_conservacion')%></h3>
+    <% # OCUPA: demografiaamenazas, conservacion, * * amenazadirecta %>
+    <%= f.simple_fields_for :demografiaAmenazas do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_demografia_amenazas', locals: {f: info, f_taxon: f } %>
+    <% end %>
+    <%= f.simple_fields_for :conservacion do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_conservacion/form_conservacion_conservacion', locals: {f: info, f_taxon: f } %>
+    <% end %>
+  </div>
 
 <% end %>

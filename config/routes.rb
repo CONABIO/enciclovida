@@ -49,7 +49,7 @@ Buscador::Application.routes.draw do
   namespace :fichas do
     resources :taxa do
       collection do
-        get 'cargar_seccion/:seccion(/:idCat)' =>  'taxa#get_x_seccion'
+        get 'cargar_seccion/:seccion(/:id)' =>  'taxa#get_x_seccion'
       end
     end
     resources :front do

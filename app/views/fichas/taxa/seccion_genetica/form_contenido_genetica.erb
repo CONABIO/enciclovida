@@ -11,6 +11,8 @@
     #select:        :floating_labels_select
 } do |f| %>
 
+  <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> historiaNatural'.html_safe, f, :historiaNatural, partial: 'fichas/taxa/seccion_genetica/form_genetica_historiaNatural', :class => 'btn btn-info btn-sm', render_options: { locals: { f_taxon: f} }, role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'genetica', 'data-association-insertion-node' => '#genetica', 'data-association-insertion-method' => 'append', href: '#genetica', style: 'display: none;') if @taxon.new_record? %>
+
   <div id='contenido_genetica'>
     <hr />
     <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.genetica')%></h3>

@@ -11,6 +11,8 @@
     #select:        :floating_labels_select
 } do |f| %>
 
+  <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> historiaNatural'.html_safe, f, :historiaNatural, partial: 'fichas/taxa/seccion_importancia/form_importancia_historiaNatural', :class => 'btn btn-info btn-sm', render_options: { locals: { f_taxon: f} }, role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'importancia', 'data-association-insertion-node' => '#importancia', 'data-association-insertion-method' => 'append', href: '#importancia', style: 'display: none;') if @taxon.new_record? %>
+
   <div id='contenido_importancia'>
     <hr />
     <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.importancia')%></h3>

@@ -91,8 +91,7 @@ $(window).load(function(){
     showOrHideSegunTipoReproduccion();
 
     // Según el tipo de ficha, mostrar u ocultar el contenido que las diferencia
-    $(".apartadoFicha").fadeOut();
-    showOrHideInfoFicha();
+    muestraSoloApartadoSegunFicha();
 
 });
 
@@ -137,9 +136,18 @@ function showOrHideInfoFicha() {
 
         // Mostar el título correspondiente para la pestaña IX:
         if(tipoFicha === 'Invasora') {
-            $('#boton-prioritaria-conservacion').html('Especies invasoras');
+            $('#boton-prioritaria-conservacion').fadeOut();
+            $('#prioritaria-conservacion').fadeOut();
+
+            $('#boton-invasividad').fadeIn();
+            $('#invasividad').fadeIn();
+
         } else {
-            $('#boton-prioritaria-conservacion').html('Especies prioritarias');
+            $('#boton-prioritaria-conservacion').fadeIn();
+            $('#prioritaria-conservacion').fadeIn();
+
+            $('#boton-invasividad').fadeOut();
+            $('#invasividad').fadeOut();
         }
         // Construir la clase según el tipo de ficha
         var claseFicha = 'ficha-' + tipoFicha;
@@ -227,14 +235,19 @@ function reloadSection(section) {
         showOrHideAmbienteDesarrolloEspecie();
     }
 
-    // Según el tipo de ficha, mostrar u ocultar el contenido que las diferencia
-    $(".apartadoFicha").fadeOut();
-    showOrHideInfoFicha();
+
+    muestraSoloApartadoSegunFicha();
 
     setTimeout(function () {
         $('#' + section + ' .selectpicker').selectpicker('refresh');
         tinyMCE.init({ selector: '#' + section + ' textarea.form-control' });
     }, 10);
+}
+
+// Según el tipo de ficha, mostrar u ocultar el contenido que las diferencia
+function muestraSoloApartadoSegunFicha() {
+    //$(".apartadoFicha").fadeOut();
+    //showOrHideInfoFicha();
 }
 
 // Recargan los imputs selectpicker y tinyMCE nuevos

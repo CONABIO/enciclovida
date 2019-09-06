@@ -6,7 +6,7 @@ class Fichas::TaxaController < Fichas::FichasController
     @form_params = { url: '/fichas/taxa', method: 'post' }
 
     # Verificar si existe el parámetro idCat
-    params.has_key?(:idCat) ? set_taxon : @taxon = Fichas::Taxon.new
+    params.has_key?(:id) ? set_taxon : @taxon = Fichas::Taxon.new
 
     # Saber qué tipo de sección cargar:
     case params[:seccion]
@@ -26,6 +26,8 @@ class Fichas::TaxaController < Fichas::FichasController
         render 'fichas/taxa/seccion_conservacion/form_contenido_conservacion', layout: false
       when 'prioritaria-conservacion'
         render 'fichas/taxa/seccion_prioritaria/form_contenido_prioritaria', layout: false
+      when 'invasividad'
+        render 'fichas/taxa/seccion_invasoras/form_contenido_invasividad', layout: false
       when 'necesidad-informacion'
         render 'fichas/taxa/seccion_necesidad_informacion/form_contenido_necesidad', layout: false
       when 'metadatos'
