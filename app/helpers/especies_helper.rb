@@ -212,6 +212,8 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
       I18n.locale = 'es-cientifico'
       distribuciones = taxon.tipo_distribucion.values.flatten.compact
       I18n.locale = locale_original
+    else
+      distribuciones = taxon.tipo_distribucion.values.flatten.compact
     end
 
     distribuciones.each do |distribucion|
