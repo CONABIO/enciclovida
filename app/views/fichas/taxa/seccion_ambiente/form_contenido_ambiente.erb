@@ -1,0 +1,25 @@
+<%= simple_form_for @taxon, **@form_params, wrapper: :horizontal_form, wrapper_mappings: {
+    boolean:       :horizontal_boolean,
+    check_boxes:   :horizontal_collection,
+    file:          :horizontal_file,
+    radio_buttons: :horizontal_collection,
+    range:         :horizontal_range,
+    #time:          :custom_multi_select,
+    select:        :horizontal_collection
+    #date:          :horizontal_multi_select,
+    #datetime:      :horizontal_multi_select,
+    #select:        :floating_labels_select
+} do |f| %>
+
+  <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Distribucion'.html_safe, f, :habitats, partial: 'fichas/taxa/seccion_ambiente/form_ambiente_habitat', :class => 'btn btn-info btn-sm', render_options: {locals: {f_taxon: f}}, role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'ambiente', 'data-association-insertion-node' => '#ambiente', 'data-association-insertion-method' => 'append', href: '#ambiente', style: 'display: none;') if @taxon.new_record? %>
+
+  <div id='contenido_ambiente'>
+    <hr />
+    <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.ambiente')%></h3>
+    <% # OCUPA: habitat  * * ecorregion, ecosistema, suelo, geoforma %>
+    <%= f.simple_fields_for :habitats do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_habitat', locals: { f: info, f_taxon: f } %>
+    <% end %>
+  </div>
+
+<% end %>

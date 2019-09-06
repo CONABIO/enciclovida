@@ -122,9 +122,10 @@ end
 
 
 
-$sql = "SELECT * FROM observacionescarac WHERE especieId"
 
 =begin
+$sql = "SELECT * FROM observacionescarac WHERE especieId"
+
 :infotiposuelo => 6,
 :infogeoforma => 7,
 :infoalimenta => 9,

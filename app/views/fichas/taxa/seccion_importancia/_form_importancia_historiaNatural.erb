@@ -24,7 +24,19 @@
   <h3 class="titulo_sub_subseccion"><%= t('secciones.s_importancia.comercio_int_nal') %></h3>
   <fieldset class="apartados">
     <legend class="text-primary"> Productos internacionales </legend>
-    <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar producto'.html_safe, f_taxon, :productocomercio_inter, partial: 'fichas/taxa/seccion_importancia/form_importancia_historiaNatural_productocomercio', render_options: {locals: { tipo_producto: 'internacional', pregunta_tipo_producto: 23, pregunta_tipo_unidad: 25}}, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'productocomercio_inter', 'data-association-insertion-node' => '#productocomercio_inter', 'data-association-insertion-method' => 'append', href: '#productocomercio_inter', 'onclick' => 'reload("productocomercio")' %>
+    <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar producto'.html_safe, f_taxon, :productocomercio_inter,
+                                partial: 'fichas/taxa/seccion_importancia/form_importancia_historiaNatural_productocomercio',
+                                render_options: {locals: { tipo_producto: 'internacional', pregunta_tipo_producto: 23, pregunta_tipo_unidad: 25}},
+                                :class => 'btn btn-info btn-sm',
+                                role: 'tab',
+                                "data-toggle" => 'tab',
+                                "aria-controls" => 'productocomercio_inter',
+                                'data-association-insertion-node' => '#productocomercio_inter',
+                                'data-association-insertion-method' => 'append',
+                                href: '#productocomercio_inter',
+                                'onclick' => 'reload("productocomercio")'
+    %>
+
     <div id="productocomercio_inter">
       <%= f_taxon.simple_fields_for :productocomercio_inter do |info| %>
         <%= render partial: 'fichas/taxa/seccion_importancia/form_importancia_historiaNatural_productocomercio', locals: {f: info, tipo_producto: 'internacional', pregunta_tipo_producto: 23, pregunta_tipo_unidad: 25} %>

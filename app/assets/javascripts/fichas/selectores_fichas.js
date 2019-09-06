@@ -1,9 +1,102 @@
 $( document ).ready(function() {
 
-    // Inicializar el editor de texto TINYMCE
-    tinyMCE.init({
-        selector: 'textarea.form-control'
+    // LISTENERS PARA COOCON
+    $('#clasificacion-descripcion')
+        .on('cocoon:before-insert', function (event) {
+            // Antes de insertar una legislación, verificar el total (máximo 4)
+            var legislaciones = document.getElementsByClassName("nueva_legislacion").length;
+            if (legislaciones > 3){
+                confirm("No pueden haber más de 4 legislaciones");
+                event.preventDefault();
+            }
+        })
+
+        .on("cocoon:before-remove", function (event) {
+            var confirmation = confirm("Estás seguro?");
+            if( confirmation === false ){
+                event.preventDefault();
+            }
+        });
+    // - - - -
+
+    $('#importancia')
+
+        .on("cocoon:before-remove", function (event) {
+            var confirmation = confirm("Estás seguro?");;
+            if( confirmation === false ){
+                event.preventDefault();
+            }
+        });
+    // - - - -
+
+    $('#opcion-reprodAnimal')
+        .on('cocoon:before-insert', function (event) {
+            // Antes de agregar información animal, verificr que no exista antes
+            var hay_rep = document.getElementsByClassName("reproduccionAnimal_add").length;
+            if (hay_rep > 0){
+                confirm("Ya puedes seguir completando el formulario!");
+                event.preventDefault();
+            }
+        })
+
+        .on("cocoon:before-remove", function (event) {
+            var confirmation = confirm("Estás seguro?");
+            if( confirmation === false ){
+                event.preventDefault();
+            }
+        });
+
+    // - - - -
+    $('#opcion-reprodVegetal')
+        .on('cocoon:before-insert', function (event) {
+            // Antes de agregar información animal, verificr que no exista antes
+            var hay_rep = document.getElementsByClassName("reproduccionVegetal_add").length;
+            if (hay_rep > 0){
+                confirm("Ya puedes seguir completando el formulario!");
+                event.preventDefault();
+            }
+        })
+
+        .on("cocoon:before-remove", function (event) {
+            var confirmation = confirm("Estás seguro?");
+            if( confirmation === false ){
+                event.preventDefault();
+            }
+        });
+    // - - - -
+
+    // Botones para cargar contenido de la sección X
+    $('.boton-seccion').on('click', function(event){
+        var idBtn = this.id;
+        var seccionACargar = idBtn.replace("boton-", "");
+        cargaSeccionEnDiv(seccionACargar, event);
     });
+});
+
+
+$(window).load(function(){
+
+    /* - - - - Una vez cargado el documento: - - - -*/
+
+    // Ocultar las opciones cuando es 'NO'
+    ocultaContenidoSiNo();
+
+    // Inicializar el editor de texto TINYMCE
+    tinyMCE.init({selector: 'textarea.form-control'});
+
+    // mostrar correctamente el formulario de la sección Ambiente
+    showOrHideAmbienteDesarrolloEspecie();
+
+    //  mostrar correctamente el formulario de la sección Biologia
+    showOrHideSegunTipoReproduccion();
+
+    // Según el tipo de ficha, mostrar u ocultar el contenido que las diferencia
+    muestraSoloApartadoSegunFicha();
+
+});
+
+// Ocultar las opciones cuando es 'NO'
+function ocultaContenidoSiNo() {
 
     // Mostrar u ocultar contenido SEGÚN opciones SI / NO cuando se cargue la  página
     casos = [
@@ -29,53 +122,7 @@ $( document ).ready(function() {
         if ($(selector).val() !== undefined)
             showOrHideByName($(selector).val(), elID);
     }
-    // - - - - - - - - - - - - - - - - - - -  --  - - - - - - - - -  - - -
-
-    // Para mostrar correctamente el formulario de la sección Ambiente
-    showOrHideAmbienteDesarrolloEspecie();
-
-    //  Para mostrar correctamente el formulario de la sección Biologia
-    showOrHideSegunTipoReproduccion();
-
-    // - - - - - - - - - - - - - - - - - - -  --  - - - - - - - - -  - - -
-
-    // LISTENERS PARA COOCON
-    $('#clasificacion-descripcion')
-        .on('cocoon:before-insert', function (event) {
-            // Antes de insertar una legislación, verificar el total (máximo 4)
-            var legislaciones = document.getElementsByClassName("nueva_legislacion").length;
-            if (legislaciones > 3){
-                confirm("No pueden haber más de 4 legislaciones");
-                event.preventDefault();
-            }
-        })
-
-        .on("cocoon:before-remove", function (event) {
-            console.log('before remove');
-            var confirmation = confirm("Estás seguro?");
-            if( confirmation === false ){
-                event.preventDefault();
-            }
-        });
-
-    $('#importancia')
-
-        .on("cocoon:before-remove", function (event) {
-            var confirmation = confirm("Estás seguro?");;
-            if( confirmation === false ){
-                event.preventDefault();
-            }
-        });
-
-
-    Validar();
-});
-
-$(window).load(function(){
-    $(".apartadoFicha").fadeOut();
-    showOrHideInfoFicha();
-});
-
+}
 
 /*
 * Ocultar el contenido relacionado a fichas específicas:
@@ -89,9 +136,18 @@ function showOrHideInfoFicha() {
 
         // Mostar el título correspondiente para la pestaña IX:
         if(tipoFicha === 'Invasora') {
-            $('#pestania-IX').html('Especies invasoras');
+            $('#boton-prioritaria-conservacion').fadeOut();
+            $('#prioritaria-conservacion').fadeOut();
+
+            $('#boton-invasividad').fadeIn();
+            $('#invasividad').fadeIn();
+
         } else {
-            $('#pestania-IX').html('Especies prioritarias');
+            $('#boton-prioritaria-conservacion').fadeIn();
+            $('#prioritaria-conservacion').fadeIn();
+
+            $('#boton-invasividad').fadeOut();
+            $('#invasividad').fadeOut();
         }
         // Construir la clase según el tipo de ficha
         var claseFicha = 'ficha-' + tipoFicha;
@@ -163,18 +219,131 @@ function showOrHideSegunTipoReproduccion() {
 
 }
 
+// Después de cargar una sección, cargar estilos de selectpicker y tinyMCE de toda la sección
+function reloadSection(section) {
+
+    // Ocultar las opciones cuando es 'NO'
+    ocultaContenidoSiNo();
+
+    if (section === 'biologia') {
+        //  mostrar correctamente el formulario de la sección Biologia
+        showOrHideSegunTipoReproduccion();
+    }
+
+    if (section === 'ambiente') {
+        // mostrar correctamente el formulario de la sección Ambiente
+        showOrHideAmbienteDesarrolloEspecie();
+    }
+
+
+    muestraSoloApartadoSegunFicha();
+
+    setTimeout(function () {
+        $('#' + section + ' .selectpicker').selectpicker('refresh');
+        tinyMCE.init({ selector: '#' + section + ' textarea.form-control' });
+    }, 10);
+}
+
+// Según el tipo de ficha, mostrar u ocultar el contenido que las diferencia
+function muestraSoloApartadoSegunFicha() {
+    //$(".apartadoFicha").fadeOut();
+    //showOrHideInfoFicha();
+}
+
 // Recargan los imputs selectpicker y tinyMCE nuevos
 function reload(classe) {
     setTimeout(function () {
         $('.' + classe).selectpicker('refresh');
-        reloadTiny(classe);
+        tinyMCE.init({ selector: '.tiny_' + classe });
     }, 10)
 }
 
-function reloadTiny(classe) {
-    setTimeout(function () {
-        tinyMCE.init({
-            selector: '.tiny_' + classe
-        });
-    }, 10)
+// Para que los valores min y max sean correctos
+function checkValues(e) {
+
+    var nombreFinal = e.name;
+    var nombreInicial = nombreFinal.replace("final", "inicial");
+
+    var vmax = Number(document.getElementsByName(nombreFinal)[0].value);
+    var vmin = Number(document.getElementsByName(nombreInicial)[0].value);
+
+    if (vmax != 0) {
+        if (vmax < vmin){
+            document.getElementsByName(nombreFinal)[0].value = '';
+            alert('El campo M\xe1ximo debe ser mayor que el campo M\xednimo');
+            document.getElementsByName(nombreFinal)[0].focus();
+            return false;
+        }
+    }
 }
+
+// Para asegurar las clasificaciones correctas
+function cambiaLegislaciones(e) {
+
+    var idSelect = $(e).attr('id');
+    var selectedOption = $(e).val();
+    var idOptionsSelect = idSelect.replace("nombreLegislacion", "estatusLegalProteccion");
+
+    $('#' + idOptionsSelect).find('option').removeAttr("selected");
+
+    if ( selectedOption.includes("SEMARNAT")) {
+        $('#' + idOptionsSelect +  ' optgroup[label="SEMARNAT"]').prop('hidden', false);
+        $('#' + idOptionsSelect +  ' optgroup[label="UICN"]').prop('hidden', true);
+        $('#' + idOptionsSelect +  ' optgroup[label="CITES"]').prop('hidden', true);
+    }
+
+    if ( selectedOption.includes("UICN")) {
+        $('#' + idOptionsSelect +  ' optgroup[label="SEMARNAT"]').prop('hidden', true);
+        $('#' + idOptionsSelect +  ' optgroup[label="UICN"]').prop('hidden', false);
+        $('#' + idOptionsSelect +  ' optgroup[label="CITES"]').prop('hidden', true);
+    }
+
+    if ( selectedOption.includes("CITES")) {
+        $('#' + idOptionsSelect +  ' optgroup[label="SEMARNAT"]').prop('hidden', true);
+        $('#' + idOptionsSelect +  ' optgroup[label="UICN"]').prop('hidden', true);
+        $('#' + idOptionsSelect +  ' optgroup[label="CITES"]').prop('hidden', false);
+    }
+
+    reload('seccion_clasificacion');
+}
+
+
+// Función para cargar el contenido de una sección en un DIV
+function cargaSeccionEnDiv(nombreSeccion, event) {
+
+    // Div a verificar
+    var el_div = $("#" + nombreSeccion);
+    var cargando = '<p class="text-center"><i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i><strong>Cargando... Por favor, espera<strong></p>'
+
+    // Verificar si se cargó ya la página
+    if( el_div.html() !== "")
+        event.preventDefault(); // Detener la llamada si existe contenido
+    else {
+        // El div se encuentra vacio, pegarle el 'animate-spin' de cargando:
+        el_div.html(cargando);
+        // Si aún no se cargó el contenido de la sección, verificar la petición (El taxón será uno nuevo o una edición)
+        var accion = window.location.pathname.replace("/fichas/taxa/", "");
+        var seccionACargar = '/fichas/taxa/cargar_seccion/' +  nombreSeccion +'/';
+        // Si el taxón es nuevo:
+        if(accion.includes('new')) {
+            el_div.load(seccionACargar +' #contenido_' + nombreSeccion, function () {
+                reloadSection(nombreSeccion);
+            });
+        } else {
+            if(accion.includes('edit')) {
+                seccionACargar += accion.replace("/edit", "");
+                el_div.load(seccionACargar +' #contenido_' + nombreSeccion, function () {
+                    reloadSection(nombreSeccion);
+                });
+            }
+        }
+    }
+
+}
+
+/*
+* <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4>Cargando... Por favor, espera</h4>
+      </p>
+* */

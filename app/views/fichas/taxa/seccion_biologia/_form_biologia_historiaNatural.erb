@@ -5,11 +5,11 @@
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.alimentacion') %></h3>
   <%= select_multiple_nivel_3(f_taxon, :opciones_preguntas, :alimentacion, t('opciones_multiples.t_alimentacion')) %>
   <%
-    parametros = {:acceso => @taxon.infoalimenta, :modelo => f_taxon, :association => :infoalimenta, :titulo => "Información adicional", :el_div => "infoalimenta", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoalimenta]}
+    parametros = {:acceso => @taxon.historiaNatural.infoalimenta, :modelo => f, :association => :infoalimenta, :titulo => "Información adicional", :el_div => "infoalimenta", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoalimenta]}
     agrega_info_adicional(parametros)
   %>
   <div id="dato_<%= parametros[:el_div] %>">
-    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+    <%= f.simple_fields_for parametros[:association] do |info| %>
       <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
     <% end %>
   </div>
@@ -29,11 +29,11 @@
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.forrajeo') %></h3>
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :forrajeo, t('opciones_multiples.t_forrajeo')) %>
   <%
-    parametros = {:acceso => @taxon.infoaddforrajeo, :modelo => f_taxon, :association => :infoaddforrajeo, :titulo => "Información adicional", :el_div => "infoaddforrajeo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoaddforrajeo]}
+    parametros = {:acceso => @taxon.historiaNatural.infoaddforrajeo, :modelo => f, :association => :infoaddforrajeo, :titulo => "Información adicional", :el_div => "infoaddforrajeo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoaddforrajeo]}
     agrega_info_adicional(parametros)
   %>
   <div id="dato_<%= parametros[:el_div] %>">
-    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+    <%= f.simple_fields_for parametros[:association] do |info| %>
       <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
     <% end %>
   </div>
@@ -45,11 +45,11 @@
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipo_migracion, t('opciones_multiples.t_tipo_migracion')) %>
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habito, t('opciones_multiples.t_habito')) %>
   <%
-    parametros = {:acceso => @taxon.infoaddhabito, :modelo => f_taxon, :association => :infoaddhabito, :titulo => "Información adicional", :el_div => "infoaddforrajeo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoaddhabito]}
+    parametros = {:acceso => @taxon.historiaNatural.infoaddhabito, :modelo => f, :association => :infoaddhabito, :titulo => "Información adicional", :el_div => "infoaddforrajeo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoaddhabito]}
     agrega_info_adicional(parametros)
   %>
   <div id="dato_<%= parametros[:el_div] %>">
-    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+    <%= f.simple_fields_for parametros[:association] do |info| %>
       <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
     <% end %>
   </div>
@@ -84,8 +84,8 @@
   <hr class="espacio_ficha">
 
   <div id="opcion-reprodAnimal" style="display: none">
-    <%#=
-      link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie'.html_safe, f, :reproduccionAnimal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', render_options: {locals: { f_taxon: f_taxon}}, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodAnimal', 'data-association-insertion-node' => '#opcion-reprodAnimal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodAnimal')
+    <%=
+      link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie animal'.html_safe, f, :reproduccionAnimal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', render_options: {locals: { f_taxon: f_taxon}}, :force_non_association_create => true, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodAnimal', 'data-association-insertion-node' => '#opcion-reprodAnimal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodAnimal', 'onclick' => 'reload("seccion_reprod_animal")')
     %>
     <%= f.simple_fields_for :reproduccionAnimal do |info| %>
       <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', locals: {f: info, f_taxon: f_taxon}  %>
@@ -93,8 +93,9 @@
   </div>
 
   <div id="opcion-reprodVegetal" style="display: none">
-    <%#=
-      link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie'.html_safe, f, :reproduccionVegetal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', render_options: {locals: { f_taxon: f_taxon}}, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodVegetal', 'data-association-insertion-node' => '#opcion-reprodVegetal', 'data-association-insertion-method' => 'append', href: '#clasificacion-descripcion' %>
+    <%=
+      link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie vegetal'.html_safe, f, :reproduccionVegetal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', render_options: {locals: { f_taxon: f_taxon}}, :force_non_association_create => true, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodVegetal', 'data-association-insertion-node' => '#opcion-reprodVegetal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodVegetal', 'onclick' => 'reload("seccion_reprod_vegetal")'
+    %>
     <%= f.simple_fields_for :reproduccionVegetal do |info| %>
       <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info, f_taxon: f_taxon}  %>
     <% end %>
@@ -105,29 +106,29 @@
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.dispersion') %></h3>
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipodispersion, t('opciones_multiples.t_tipodispersion')) %>
   <%
-    parametros = {:acceso => @taxon.infodisp, :modelo => f_taxon, :association => :infodisp, :titulo => "Información adicional", :el_div => "infodisp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infodisp]}
+    parametros = {:acceso => @taxon.historiaNatural.infodisp, :modelo => f, :association => :infodisp, :titulo => "Información adicional", :el_div => "infodisp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infodisp]}
     agrega_info_adicional(parametros)
   %>
   <div id="dato_<%= parametros[:el_div] %>">
-    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+    <%= f.simple_fields_for parametros[:association] do |info| %>
       <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
     <% end %>
   </div>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :structdisp, t('opciones_multiples.t_structdisp')) %>
   <%
-    parametros = {:acceso => @taxon.infostruct, :modelo => f_taxon, :association => :infostruct, :titulo => "Información adicional", :el_div => "infostruct", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infostruct]}
+    parametros = {:acceso => @taxon.historiaNatural.infostruct, :modelo => f, :association => :infostruct, :titulo => "Información adicional", :el_div => "infostruct", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infostruct]}
     agrega_info_adicional(parametros)
   %>
   <div id="dato_<%= parametros[:el_div] %>">
-    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+    <%= f.simple_fields_for parametros[:association] do |info| %>
       <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
     <% end %>
   </div>
 
   <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.distancia_dispersion') %></h4>
   <%= f.input :distanciadispercioninicial %>
-  <%= f.input :distanciadispercionfinal %>
+  <%= f.input :distanciadispercionfinal, input_html: { onblur: "checkValues(this)" } %>
 
 </div>
 

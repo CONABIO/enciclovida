@@ -19,7 +19,7 @@ class Fichas::Habitat < Ficha
 	has_many :vegetacion, class_name: 'Fichas::Vegetacion', through: :relHabitatsVegetaciones
 	has_many :vegetacion_acuatica, class_name: 'Fichas::Vegetacionacuatica', through: :relVegetacionesAcuaticasHabitats
 
-  # Acceso a las opciones de catálogo
+	# Acceso a las opciones de catálogo
 	accepts_nested_attributes_for :ecorregion, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :ecosistema, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :vegetacion, allow_destroy: true, reject_if: :all_blank

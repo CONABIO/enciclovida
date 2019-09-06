@@ -18,16 +18,16 @@
   <%= f.input :parametrosPoblacionales %>
   <h3 class="titulo_sub_subseccion"><%= t('secciones.s_ecologia.poblacion_minima') %></h3>
   <%= f.input :poblacionminviableinicial %>
-  <%= f.input :poblacionminviablefinal %>
+  <%= f.input :poblacionminviablefinal, input_html: { onblur: "checkValues(this)" } %>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.interacciones') %></h3>
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :interacciones, t('opciones_multiples.t_interacciones')) %>
   <%
-    parametros = {:acceso => @taxon.infointer, :modelo => f_taxon, :association => :infointer, :titulo => "Información adicional", :el_div => "infointer", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infointer]}
+    parametros = {:acceso => @taxon.demografiaAmenazas.infointer, :modelo => f, :association => :infointer, :titulo => "Información adicional", :el_div => "infointer", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infointer]}
     agrega_info_adicional(parametros)
   %>
   <div id="dato_<%= parametros[:el_div] %>">
-    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+    <%= f.simple_fields_for parametros[:association] do |info| %>
       <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
     <% end %>
   </div>

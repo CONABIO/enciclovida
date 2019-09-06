@@ -14,8 +14,29 @@ class Fichas::Historianatural < Ficha
   has_many :pais_importacion, class_name: 'Fichas::Pais', through: :relHistoriasNaturalesPais
 	has_many :culturaUsos, class_name: 'Fichas::Culturausos', through: :relHistoriasNaturalesUsos
 
+	# - - - - - -   Preguntas de observaciones en la tabla Observacionescarac ( INFORMACIÓN ADICIONAL EN SU MAYORÍA ) - - - - - - #
+	# De biología
 	has_many :infoalimenta,-> {where('observacionescarac.idpregunta = ?', 9 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	has_many :infoaddforrajeo,-> {where('observacionescarac.idpregunta = ?', 8 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	has_many :infoaddhabito,-> {where('observacionescarac.idpregunta = ?', 12 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	has_many :infodisp,-> {where('observacionescarac.idpregunta = ?', 15 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	has_many :infostruct,-> {where('observacionescarac.idpregunta = ?', 16 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	# De rep. animal
+	has_many :infosistaparea,-> {where('observacionescarac.idpregunta = ?', 13 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	has_many :infocrianza,-> {where('observacionescarac.idpregunta = ?', 14 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	# De rep. vegetal
+	has_many :infoarresp,-> {where('observacionescarac.idpregunta = ?', 46 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+	has_many :infoAP,-> {where('observacionescarac.idpregunta = ?', 48 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
+
+	accepts_nested_attributes_for :infoAP, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :infoarresp, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :infoalimenta, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :infoaddforrajeo, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :infoaddhabito, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :infosistaparea, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :infocrianza, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :infodisp, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :infostruct, allow_destroy: true, reject_if: :all_blank
 	
 	# Acceso a las opciones de catálogo
 	accepts_nested_attributes_for :culturaUsos, allow_destroy: true, reject_if: :all_blank
