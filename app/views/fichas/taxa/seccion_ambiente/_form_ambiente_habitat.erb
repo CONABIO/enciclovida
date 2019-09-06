@@ -44,11 +44,11 @@
     </div>
 
     <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
-      <%= parametros = {:acceso => @taxon.habitats.ambi_especies_asociadas, :modelo => f,:association => :ambi_especies_asociadas,:agregar => "Agregar especies asociadas",:titulo => "d) Mencionar las especies asociadas",:el_div => "especies_asociadas",:pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_especies_asociadas]}
+      <% parametros = {:acceso => @taxon.ambi_especies_asociadas, :modelo => f_taxon, :association => :ambi_especies_asociadas,:agregar => "Agregar especies asociadas",:titulo => "d) Mencionar las especies asociadas",:el_div => "especies_asociadas",:pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_especies_asociadas]}
           agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
-        <%= f.simple_fields_for parametros[:association] do |info| %>
+        <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
           <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
         <% end %>
       </div>
@@ -57,11 +57,11 @@
     <div class="apartadoFicha ficha-Invasora">
       <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.vegetacion_mundial') %></h3>
       <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipovegetmundial, t('opciones_multiples.t_tipovegetmundial')) %>
-      <%= parametros = { :acceso => @taxon.habitats.ambi_vegetacion_esp_mundo, :modelo => f, :association => :ambi_vegetacion_esp_mundo, :titulo => "Información adicional", :el_div => "ambi_vegetacion_esp_mundo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_vegetacion_esp_mundo]}
+      <%= parametros = { :acceso => @taxon.ambi_vegetacion_esp_mundo, :modelo => f_taxon, :association => :ambi_vegetacion_esp_mundo, :titulo => "Información adicional", :el_div => "ambi_vegetacion_esp_mundo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_vegetacion_esp_mundo]}
           agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
-        <%= f.simple_fields_for parametros[:association] do |info| %>
+        <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
           <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
         <% end %>
       </div>
@@ -79,11 +79,11 @@
     <div class="apartadoFicha ficha-Invasora">
       <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.clima_exo') %></h3>
       <%= select_multiple_nivel_2(f_taxon, :opciones_preguntas, :climaexo, t('opciones_multiples.t_climaexo')) %>
-      <%= parametros = {:acceso => @taxon.habitats.ambi_info_clima_exotico, :modelo => f, :association => :ambi_info_clima_exotico, :titulo => "Información adicional", :el_div => "ambi_info_clima_exotico", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico]}
+      <%= parametros = {:acceso => @taxon.ambi_info_clima_exotico, :modelo => f_taxon, :association => :ambi_info_clima_exotico, :titulo => "Información adicional", :el_div => "ambi_info_clima_exotico", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico]}
           agrega_info_adicional(parametros)
       %>
       <div id="dato_<%= parametros[:el_div] %>">
-        <%= f.simple_fields_for parametros[:association] do |info| %>
+        <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
           <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
         <% end %>
       </div>
@@ -120,11 +120,11 @@
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_suelo') %></h3>
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :suelo, t('opciones_multiples.t_suelo')) %>
-    <% parametros = {:acceso => @taxon.habitats.ambi_infotiposuelo, :modelo => f, :association => :ambi_infotiposuelo, :titulo => "Información adicional", :el_div => "infotiposuelo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infotiposuelo]}
+    <% parametros = {:acceso => @taxon.ambi_infotiposuelo, :modelo => f_taxon, :association => :ambi_infotiposuelo, :titulo => "Información adicional", :el_div => "infotiposuelo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infotiposuelo]}
        agrega_info_adicional(parametros)
     %>
     <div id="dato_<%= parametros[:el_div] %>">
-      <%= f.simple_fields_for parametros[:association] do |info| %>
+      <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
         <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
       <% end %>
     </div>
@@ -132,11 +132,11 @@
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.geoforma') %></h3>
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :geoforma, t('opciones_multiples.t_geoforma')) %>
     <%
-      parametros = {:acceso => @taxon.habitats.ambi_infogeoforma, :modelo => f, :association => :ambi_infogeoforma, :titulo => "Información adicional", :el_div => "ambi_infogeoforma", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_infogeoforma]}
+      parametros = {:acceso => @taxon.ambi_infogeoforma, :modelo => f_taxon, :association => :ambi_infogeoforma, :titulo => "Información adicional", :el_div => "ambi_infogeoforma", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_infogeoforma]}
       agrega_info_adicional(parametros)
     %>
     <div id="dato_<%= parametros[:el_div] %>">
-      <%= f.simple_fields_for parametros[:association] do |info| %>
+      <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
         <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
       <% end %>
     </div>

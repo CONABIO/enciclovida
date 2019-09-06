@@ -8,6 +8,10 @@ class Fichas::TaxaController < Fichas::FichasController
     # Verificar si existe el parámetro idCat
     params.has_key?(:id) ? set_taxon : @taxon = Fichas::Taxon.new
 
+    puts @taxon.habitats.inspect
+
+    puts @taxon.ambi_especies_asociadas.inspect
+
     # Saber qué tipo de sección cargar:
     case params[:seccion]
       when 'distribucion'
@@ -240,13 +244,7 @@ class Fichas::TaxaController < Fichas::FichasController
               :tipoVegetacionexo,
               :uso,
               :id,
-              :_destroy,
-              #{ ambi_info_ecorregiones_attributes: [:especieId, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { ambi_especies_asociadas_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy] },
-              { ambi_vegetacion_esp_mundo_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy] },
-              { ambi_info_clima_exotico_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy] },
-              { ambi_infotiposuelo_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy] },
-              { ambi_infogeoforma_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy] },
+              :_destroy
           ],
 
           # OK
@@ -499,7 +497,13 @@ class Fichas::TaxaController < Fichas::FichasController
               :referencia,
               :id,
               :_destroy
-          ]
+          ],
+
+          ambi_especies_asociadas_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_vegetacion_esp_mundo_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_info_clima_exotico_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_infotiposuelo_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_infogeoforma_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy]
       )
 
       itera_preguntas_observaciones(p)
