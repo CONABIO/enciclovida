@@ -8,10 +8,6 @@ class Fichas::TaxaController < Fichas::FichasController
     # Verificar si existe el parámetro idCat
     params.has_key?(:id) ? set_taxon : @taxon = Fichas::Taxon.new
 
-    puts @taxon.habitats.inspect
-
-    puts @taxon.ambi_especies_asociadas.inspect
-
     # Saber qué tipo de sección cargar:
     case params[:seccion]
       when 'distribucion'
@@ -86,7 +82,7 @@ class Fichas::TaxaController < Fichas::FichasController
   # PATCH/PUT /taxa/1.json
   def update
     respond_to do |format|
-      puts taxon_params.inspect
+      # puts taxon_params.inspect
       if @taxon.update(taxon_params)
         format.html { redirect_to fichas_front_path(@taxon.IdCAT), notice: 'Taxon was successfully updated.' }
         format.json { render :show, status: :ok, location: @taxon }
@@ -214,6 +210,7 @@ class Fichas::TaxaController < Fichas::FichasController
               :precipitacioninicial,
               :precipitacionfinal,
               :infoaddprecipitacion,
+              :VegetacionSecundaria,
               :precipitacioninicialexo,
               :precipitacionfinalexo,
               :infoaddprecipitacionexo,
@@ -244,7 +241,13 @@ class Fichas::TaxaController < Fichas::FichasController
               :tipoVegetacionexo,
               :uso,
               :id,
-              :_destroy
+              :_destroy,
+              { ambi_especies_asociadas_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { ambi_vegetacion_esp_mundo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { ambi_info_clima_exotico_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { ambi_info_clima_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { ambi_infotiposuelo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
+              { ambi_infogeoforma_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] }
           ],
 
           # OK
@@ -497,13 +500,7 @@ class Fichas::TaxaController < Fichas::FichasController
               :referencia,
               :id,
               :_destroy
-          ],
-
-          ambi_especies_asociadas_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy],
-          ambi_vegetacion_esp_mundo_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy],
-          ambi_info_clima_exotico_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy],
-          ambi_infotiposuelo_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy],
-          ambi_infogeoforma_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy]
+          ]
       )
 
       itera_preguntas_observaciones(p)
@@ -525,6 +522,7 @@ class Fichas::TaxaController < Fichas::FichasController
       ambi_especies_asociadas_attributes
       ambi_vegetacion_esp_mundo_attributes
       ambi_info_clima_exotico_attributes
+      ambi_info_clima_attributes
       ambi_infotiposuelo_attributes
       infoaddforrajeo_attributes
       infoaddhabito_attributes

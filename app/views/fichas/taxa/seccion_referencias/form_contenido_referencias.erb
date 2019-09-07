@@ -14,7 +14,7 @@
   <div id='contenido_referencias'>
     <hr />
     <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.referencias')%></h3>
-    <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> referenciasBibliograficas'.html_safe, f, :referenciasBibliograficas, partial: 'fichas/taxa/seccion_referencias/form_referencias', :class => 'btn btn-info btn-sm', render_options: { locals: { f_taxon: f} }, role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'referencias', 'data-association-insertion-node' => '#referencias', 'data-association-insertion-method' => 'append', href: '#referencias', style: 'display: none;') if @taxon.new_record? %>
+    <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> referenciasBibliograficas'.html_safe, f, :referenciasBibliograficas, partial: 'fichas/taxa/seccion_referencias/form_referencias', :class => 'btn btn-info btn-sm', render_options: { locals: { f_taxon: f} }, role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'referencias', 'data-association-insertion-node' => '#referencias', 'data-association-insertion-method' => 'append', href: '#referencias', style: 'display: none;') if @taxon.new_record? || @taxon.referenciasBibliograficas.blank? %>
 
     <% # OCUPA: taxon  %>
     <%= f.simple_fields_for :referenciasBibliograficas do |info| %>
