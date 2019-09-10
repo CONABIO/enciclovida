@@ -145,12 +145,6 @@ class Fichas::TaxaController < Fichas::FichasController
           ],
 
           distribuciones_attributes: [
-              { pai_ids: [] }, # PENDIENTE
-              { estado_ids: [] },
-              { municipio_ids: [] },
-              { pais_inv_ids: [] },
-              { pais_inv2_ids: [] },
-
               :infoadicionalmexedo,
               :infoAdicionalMun,
               :historicaPotencial,
@@ -162,7 +156,12 @@ class Fichas::TaxaController < Fichas::FichasController
               :infoAdicionalTipo,
               :uso,
               :id,
-              :_destroy
+              :_destroy,
+              { pai_ids: [] }, # PENDIENTE
+              { estado_ids: [] },
+              { municipio_ids: [] },
+              { pais_inv_ids: [] },  # PENDIENTE
+              { pais_inv2_ids: [] }  # PENDIENTE
           ],
 
           # ERROR

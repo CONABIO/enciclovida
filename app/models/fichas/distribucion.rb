@@ -6,7 +6,7 @@ class Fichas::Distribucion < Ficha
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
 	has_many :relDistribucionesPaises, class_name: 'Fichas::Reldistribucionpais', :foreign_key => "distribucionId"
-	has_many :relDistribucionesEstados, class_name: 'Fichas::Reldistribucionestado', :foreign_key => "distribucionId"
+	has_many :relDistribucionesEstados, class_name: 'Fichas::Reldistribucionestado', :foreign_key => "distribucionId", primary_key: :distribucionId
 	has_many :relDistribucionesMunicipios, class_name: 'Fichas::Reldistribucionmunicipio', :foreign_key => "distribucionId"
 
 	has_many :pais, class_name: 'Fichas::Pais', :through => :relDistribucionesPaises
