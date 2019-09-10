@@ -8,7 +8,7 @@ class Fichas::Taxon < Ficha
 
 	has_one :habitats, class_name: 'Fichas::Habitat', :foreign_key => 'especieId', inverse_of: :taxon
 	has_many :endemicas, :class_name => 'Fichas::Endemica', :foreign_key => 'especieId', inverse_of: :taxon
-	has_many :distribuciones, :class_name => 'Fichas::Distribucion', :foreign_key => 'especieId', inverse_of: :taxon
+	has_one :distribuciones, :class_name => 'Fichas::Distribucion', :foreign_key => 'especieId', inverse_of: :taxon
 	has_one :historiaNatural, class_name: 'Fichas::Historianatural', :foreign_key => 'especieId', inverse_of: :taxon
 	has_one :demografiaAmenazas, :class_name=> 'Fichas::Demografiaamenazas', :foreign_key => 'especieId', inverse_of: :taxon
 	has_many :productocomercio_nal,-> {where('nacionalinternacional = "nacional"')}, class_name: 'Fichas::Productocomercio', :foreign_key => 'especieId', inverse_of: :taxon

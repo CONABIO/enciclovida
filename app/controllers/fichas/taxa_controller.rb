@@ -519,7 +519,6 @@ class Fichas::TaxaController < Fichas::FichasController
       productocomercio_nal_attributes
       productocomercio_inter_attributes
       endemicas_attributes
-      distribuciones_attributes
       distribucion_historica_attributes
 
       ambi_info_ecorregiones_attributes

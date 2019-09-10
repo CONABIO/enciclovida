@@ -20,7 +20,7 @@ class Fichas::FrontController < Fichas::FichasController
 
   # Distribución de la especie
   def distribucione_de_la_especie # especieId
-    @distribucion = @taxon.distribuciones.first
+    @distribucion = @taxon.distribuciones
     @endemica = @taxon.endemicas.first
     @habitat = @taxon.habitats
 
@@ -144,7 +144,7 @@ class Fichas::FrontController < Fichas::FichasController
     @sinonimo = @taxon.sinonimos.first
 
     # II. Distribución de la especie
-    @distribucion = @taxon.distribuciones.first || Fichas::Distribucion.new
+    @distribucion = @taxon.distribuciones || Fichas::Distribucion.new
     @endemica = @taxon.endemicas.first || Fichas::Endemica.new
 
     @habitat = @taxon.habitats || Fichas::Habitat.new

@@ -1,7 +1,7 @@
 class Fichas::Distribucion < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.distribucion"
-	self.primary_keys = :distribucionId, :especieId
+	self.primary_key = :distribucionId#, :especieId
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
