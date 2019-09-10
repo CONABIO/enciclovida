@@ -8,11 +8,11 @@
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :esquemamanejo, t('opciones_multiples.t_esquemamanejo')) %>
   <%
-    parametros = {:acceso => @taxon.conservacion[0].infocons, :modelo => f, :association => :infocons, :titulo => t('secciones.s_conservacion.descripcion_manejo'), :el_div => "infocons", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infocons]}
+    parametros = {:acceso => @taxon.infocons, :modelo => f_taxon, :association => :infocons, :titulo => t('secciones.s_conservacion.descripcion_manejo'), :el_div => "infocons", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infocons]}
     agrega_info_adicional(parametros)
   %>
   <div id="dato_<%= parametros[:el_div] %>">
-    <%= f.simple_fields_for parametros[:association] do |info| %>
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
       <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
     <% end %>
   </div>

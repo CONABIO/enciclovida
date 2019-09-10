@@ -10,11 +10,11 @@
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :sistapareamiento, t('opciones_multiples.t_sistapareamiento'), 'seccion_reprod_animal') %>
   <%
-    parametros = {:acceso => @taxon.historiaNatural.infosistaparea, :modelo => f, :association => :infosistaparea, :titulo => "Información adicional", :el_div => "infosistaparea", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infosistaparea]}
+    parametros = {:acceso => @taxon.infosistaparea, :modelo => f_taxon, :association => :infosistaparea, :titulo => "Información adicional", :el_div => "infosistaparea", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infosistaparea]}
     agrega_info_adicional(parametros)
   %>
   <div id="dato_<%= parametros[:el_div] %>">
-    <%= f.simple_fields_for parametros[:association] do |info| %>
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
       <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
     <% end %>
   </div>
@@ -51,11 +51,11 @@
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :sitioanidacion, t('opciones_multiples.t_sitioanidacion'), 'seccion_reprod_animal') %>
   <%
-    parametros = {:acceso => @taxon.historiaNatural.infocrianza, :modelo => f, :association => :infocrianza, :titulo => "Información adicional", :el_div => "infocrianza", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infocrianza]}
+    parametros = {:acceso => @taxon.infocrianza, :modelo => f_taxon, :association => :infocrianza, :titulo => "Información adicional", :el_div => "infocrianza", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infocrianza]}
     agrega_info_adicional(parametros)
   %>
   <div id="dato_<%= parametros[:el_div] %>">
-    <%= f.simple_fields_for parametros[:association] do |info| %>
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
       <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
     <% end %>
   </div>

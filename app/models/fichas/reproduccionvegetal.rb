@@ -6,9 +6,6 @@ class Fichas::Reproduccionvegetal < Ficha
 	has_one :cat_caracfruto, :class_name => 'Fichas::Cat_Caracfruto', :foreign_key => 'IdFruto'
 	has_one :historiaNatural, class_name: 'Fichas::Historianatural', :foreign_key => 'reproduccionVegetalId'
 
-	# De rep. vegetal
-	has_many :infoarresp, through: :historiaNatural
-	has_many :infoAP, through: :historiaNatural
 
 	AISLAMIENTO_ORGANOS_REPROD = [
 		'Dicogamia'.to_sym,
