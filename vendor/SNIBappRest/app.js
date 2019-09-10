@@ -272,7 +272,7 @@ server.register([
                 query: {
                     nombre: Joi.string().description('Nombre común o científico'),
                     id: Joi.number().integer().description('El identificador de la especie'),
-                    cat: Joi.string().default('7100').valid(['1100','2100','3100','4100','5100','6100','7100']).description('Solo taxones con la categoria taxonómica ...'),
+                    cat: Joi.string().default('7100').valid(['1100','2100','3100','4100','5100','6100','7100','1000','2000','3000','4000','5000','6000','7000']).description('Solo taxones con la categoria taxonómica ...'),
                     nivel: Joi.string().default('=').valid(['=','>=','>','<=','<']).description('Operador relacionado al campo cat'),
                     edo_cons: Joi.array().description('La categoría de riesgo,<br />NOM: 17,15,14,16<br />IUCN: 29,28,27,26,25<br />CITES: 22,23,24'),
                     dist: Joi.array().description('El tipo de distribución: 3,7,10,6'),
