@@ -25,7 +25,7 @@ class Fichas::Taxon < Ficha
 	has_one :nombreComun, class_name: 'Fichas::Nombrecomun', :foreign_key => 'especieId', inverse_of: :taxon
 
 	# - - - - - -   Características sobre cierta especie ( OPCIONES MULTIPLES ) - - - - - - #
-	# A partir de aquí se obtienen las carácterísticas:
+	# Aquí se obtienen las carácterísticas:
 	has_many :caracteristicas, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => :especieId, inverse_of: :taxon
 	has_many :opciones_preguntas, through: :caracteristicas
 
@@ -58,43 +58,6 @@ class Fichas::Taxon < Ficha
 	# - - - - - -   Preguntas de observaciones en la tabla Observacionescarac ( De Conservación ) - - - - - - #
 	has_many :infocons,-> {where('observacionescarac.idpregunta = ?', 26 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 
-	# Acceso desde cocoon
-	accepts_nested_attributes_for :ambi_info_ecorregiones, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :ambi_especies_asociadas, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :ambi_vegetacion_esp_mundo, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :ambi_info_clima, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :ambi_info_clima_exotico, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :ambi_infotiposuelo, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :ambi_infogeoforma, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-
-	accepts_nested_attributes_for :infoAP, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :infoarresp, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :infoalimenta, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :infoaddforrajeo, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :infoaddhabito, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :infosistaparea, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :infocrianza, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :infodisp, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :infostruct, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-
-	accepts_nested_attributes_for :infointer, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-
-	accepts_nested_attributes_for :infocons, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-
-	accepts_nested_attributes_for :habitats, allow_destroy: true, reject_if: :all_blank
-	accepts_nested_attributes_for :distribuciones, allow_destroy: true, reject_if: :all_blank
-	accepts_nested_attributes_for :endemicas, allow_destroy: true, reject_if: :all_blank
-	accepts_nested_attributes_for :historiaNatural, allow_destroy: true, reject_if: :all_blank
-	accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true, reject_if: :all_blank
-	accepts_nested_attributes_for :productocomercio_nal, reject_if: :all_blank, allow_destroy: true
-	accepts_nested_attributes_for :productocomercio_inter, reject_if: :all_blank, allow_destroy: true
-	accepts_nested_attributes_for :legislaciones, reject_if: :all_blank, allow_destroy: true
-	accepts_nested_attributes_for :referenciasBibliograficas, allow_destroy: true, reject_if: :all_blank
-	accepts_nested_attributes_for :conservacion, allow_destroy: true, reject_if: :all_blank
-	accepts_nested_attributes_for :invasividad, allow_destroy: true, reject_if: :all_blank
-	accepts_nested_attributes_for :metadatos, allow_destroy: true, reject_if: :all_blank
-	accepts_nested_attributes_for :distribucion_historica, allow_destroy: true
-	accepts_nested_attributes_for :caracteristicas, allow_destroy: true, reject_if: :all_blank
 
 	# - - - - - -   Preguntas de observaciones en la tabla Observacionescarac ( INFORMACIÓN ADICIONAL EN SU MAYORÍA ) - - - - - - #
 	#Preguntas para invasoras
@@ -151,7 +114,44 @@ class Fichas::Taxon < Ficha
 	has_many :otroar,-> {where('observacionescarac.idpregunta = ?', 102)}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, primary_key: :especieId, inverse_of: :taxon
 
 
-	# Acceso desde Cocoon
+	# Acceso desde cocoon
+	accepts_nested_attributes_for :habitats, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :distribuciones, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :endemicas, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :historiaNatural, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :productocomercio_nal, allow_destroy: true, reject_if: proc { |attributes| ( attributes[:tipoproducto].blank? && attributes[:unidadcomerciada].blank? ) }
+	accepts_nested_attributes_for :productocomercio_inter, allow_destroy: true, reject_if: proc { |attributes| ( attributes[:tipoproducto].blank? && attributes[:unidadcomerciada].blank? ) }
+	accepts_nested_attributes_for :legislaciones, reject_if: :all_blank, allow_destroy: true
+	accepts_nested_attributes_for :referenciasBibliograficas, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :conservacion, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :invasividad, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :metadatos, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :distribucion_historica, allow_destroy: true
+	accepts_nested_attributes_for :caracteristicas, allow_destroy: true, reject_if: :all_blank
+
+	accepts_nested_attributes_for :ambi_info_ecorregiones, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :ambi_especies_asociadas, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :ambi_vegetacion_esp_mundo, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :ambi_info_clima, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :ambi_info_clima_exotico, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :ambi_infotiposuelo, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :ambi_infogeoforma, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+
+	accepts_nested_attributes_for :infoAP, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :infoarresp, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :infoalimenta, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :infoaddforrajeo, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :infoaddhabito, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :infosistaparea, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :infocrianza, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :infodisp, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :infostruct, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+
+	accepts_nested_attributes_for :infointer, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+
+	accepts_nested_attributes_for :infocons, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+
 	# INVASORAS
 	accepts_nested_attributes_for :edopoblacion, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
 	accepts_nested_attributes_for :persistenciapob, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }

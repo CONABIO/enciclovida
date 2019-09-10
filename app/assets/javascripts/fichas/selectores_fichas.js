@@ -246,8 +246,8 @@ function reloadSection(section) {
 
 // Según el tipo de ficha, mostrar u ocultar el contenido que las diferencia
 function muestraSoloApartadoSegunFicha() {
-    //$(".apartadoFicha").fadeOut();
-    //showOrHideInfoFicha();
+    $(".apartadoFicha").fadeOut();
+    showOrHideInfoFicha();
 }
 
 // Recargan los imputs selectpicker y tinyMCE nuevos
@@ -313,7 +313,7 @@ function cargaSeccionEnDiv(nombreSeccion, event) {
 
     // Div a verificar
     var el_div = $("#" + nombreSeccion);
-    var cargando = '<p class="text-center"><i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i><strong>Cargando... Por favor, espera<strong></p>'
+    var cargando = '<p class="text-center"><i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i><strong>Cargando sección... Por favor, espera<strong></p>'
 
     // Verificar si se cargó ya la página
     if( el_div.html() !== "")
