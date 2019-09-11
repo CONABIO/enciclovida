@@ -41,7 +41,7 @@ class Fichas::Taxon < Ficha
 	# - - - - - -   Preguntas de observaciones en la tabla Observacionescarac ( DE HISTORIA NATURAL ) - - - - - - #
 	# De biología
 	has_many :infoaddforrajeo,-> {where('observacionescarac.idpregunta = ?', 8 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
-	has_many :infoalimenta,-> {where('observacionescarac.idpregunta = ?', 9)}, class_name: 'Fichas::Observacionescarac',  foreign_key: :especieId, inverse_of: :taxon
+	has_many :infoalimentacion,-> {where('observacionescarac.idpregunta = ?', 9)}, class_name: 'Fichas::Observacionescarac',  foreign_key: :especieId, inverse_of: :taxon
 	has_many :infoaddhabito,-> {where('observacionescarac.idpregunta = ?', 12 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :infodisp,-> {where('observacionescarac.idpregunta = ?', 15 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
 	has_many :infostruct,-> {where('observacionescarac.idpregunta = ?', 16 )}, class_name: 'Fichas::Observacionescarac', foreign_key: :especieId, inverse_of: :taxon
@@ -140,7 +140,7 @@ class Fichas::Taxon < Ficha
 
 	accepts_nested_attributes_for :infoAP, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
 	accepts_nested_attributes_for :infoarresp, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
-	accepts_nested_attributes_for :infoalimenta, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
+	accepts_nested_attributes_for :infoalimentacion, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
 	accepts_nested_attributes_for :infoaddforrajeo, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
 	accepts_nested_attributes_for :infoaddhabito, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }
 	accepts_nested_attributes_for :infosistaparea, allow_destroy: true, reject_if: proc { |attributes| attributes[:infoadicional].blank? }

@@ -12,7 +12,7 @@ class Fichas::Observacionescarac < Ficha
       :ambi_info_clima_exotico => 5,
 			:infotiposuelo => 6,
 			:ambi_infogeoforma => 7,
-			:infoalimenta => 9,
+			:infoalimentacion => 9,
 			:infoaddforrajeo => 8,
 			:infoaddhabito => 12,
 			:infosistaparea => 13,

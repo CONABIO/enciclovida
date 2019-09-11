@@ -266,6 +266,7 @@ class Fichas::TaxaController < Fichas::FichasController
               :mexbol,
               :ImportanciaBiologica,
               :funcionEcologica,
+              :descripcionAlimentacion,
               :importanciaEconomica,
               :comercioIlicitoNal,
               :comercioIlicitoInter,
@@ -440,7 +441,7 @@ class Fichas::TaxaController < Fichas::FichasController
           ambi_infotiposuelo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           ambi_infogeoforma_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           # Historia Natural
-          infoalimenta_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infoalimentacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           infoaddforrajeo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           infoaddhabito_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
           infodisp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
