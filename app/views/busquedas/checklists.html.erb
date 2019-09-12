@@ -11,11 +11,9 @@
 <p>
 <div id="dvLoading"><i></i></div>
 </p>
+
 <div style="width: 100%; float:left;">
-  <div class="titulo-busqueda">
-
-  </div>
-
+  <div class="titulo-busqueda"></div>
   <div id="widget_listas" style="display: none"></div>
 </div>
 
@@ -26,6 +24,7 @@
 <div>
 
   <% @taxones.each do |taxon| %>
+    <% next unless taxon.estatus == 2 %>
     <div class="checklist-nivel-<%= taxon.nivel1 %> %>">
       <%= "<span id=\"datos_busqueda-#{taxon.id}\">#{generaChecklist(taxon)}</span><br />".html_safe %>
     </div>

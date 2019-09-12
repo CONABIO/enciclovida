@@ -127,7 +127,18 @@ module BusquedasHelper
       html << nombre_cientifico
       html << " #{taxon.nombre_autoridad}"
 
+
       html << '<div>'
+
+      sinonimos_basonimo = sinonimosBasonimoChecklist(taxon)
+      if sinonimos_basonimo[:basonimo].any?
+        html << "<br /><label class='etiqueta-checklist'>Basónimo: </label>#{sinonimos_basonimo[:basonimo].join('; ')}"
+      end
+
+      if sinonimos_basonimo[:sinonimos].any?
+        html << "<br /><label class='etiqueta-checklist'>Sinónimo(s): </label>#{sinonimos_basonimo[:sinonimos].join('; ')}"
+      end
+
       html << nombresComunesChecklist(taxon)
       html << '</div>'
     end
@@ -139,7 +150,7 @@ module BusquedasHelper
   def nombresComunesChecklist(taxon)
     nombres = taxon.dame_nombres_comunes_catalogos
     return '' unless nombres.any?
-    html = '<br /><label>Nombre(s) común(es): </label>'
+    html = "<br /><label class='etiqueta-checklist'>Nombre(s) común(es): </label>"
 
     nombres.each do |hash_nombres|
       lengua = hash_nombres.keys.first
@@ -147,6 +158,30 @@ module BusquedasHelper
     end
 
     html
+  end
+
+  # Devuelve una lista de sinónimos y basónimos
+  def sinonimosBasonimoChecklist(taxon)
+    sinonimosbasonimo = {sinonimos: [], basonimo: []}
+
+    taxon.especies_estatus.each do |estatus|
+      next unless [1,2].include?(estatus.estatus_id)
+      next unless taxon_estatus = estatus.especie
+
+      nombre_cientifico = "<text class='f-sinonimo-basonimo-checklist'>#{taxon_estatus.nombre_cientifico}</text> #{taxon_estatus.nombre_autoridad}"
+
+      case estatus.estatus_id
+      when 1
+        sinonimosbasonimo[:sinonimos] << nombre_cientifico
+      when 2
+        sinonimosbasonimo[:basonimo] << nombre_cientifico
+      else
+        next
+      end
+
+    end
+
+    sinonimosbasonimo
   end
 
   def categoriasRiesgoChecklist(taxon)
