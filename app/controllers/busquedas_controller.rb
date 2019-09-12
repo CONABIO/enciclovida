@@ -183,6 +183,7 @@ class BusquedasController < ApplicationController
         format.html { render plain: '' }
         format.json { render json: {taxa: []} }
       elsif params[:checklist].present? && params[:checklist].to_i == 1  # Imprime el checklist de la taxa dada
+        @sinonimos_basonimos = busqueda.sinonimos_basonimos
         format.html { render 'busquedas/checklists' }
         format.pdf do  #Para imprimir el listado en PDF
           ruta = Rails.root.join('public', 'pdfs').to_s

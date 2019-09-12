@@ -124,7 +124,7 @@ module BusquedasHelper
       html << "<text class='f-categoria-taxonomica-checklist'>#{cat}</text> #{nombre_cientifico}"
       html << " #{taxon.nombre_autoridad}"
     else
-      html << nombre_cientifico
+      html << nombre_cientifico + '' + taxon.id.to_s
       html << " #{taxon.nombre_autoridad}"
 
       html << '<div>'
@@ -147,6 +147,23 @@ module BusquedasHelper
     end
 
     html
+  end
+
+  # Devuelve una lista de sinónimos y basónimos
+  def sinonimosBasonimosChecklist
+    sinonimosbasonimos = {sinonimos: [], basonimos: []}
+
+    taxon.especies_estatus.each do |estatus|
+      next unless [1,2].include?(estatus.estatus_id)
+
+      case estatus.estatus_id
+      when 1
+        sinonimosbasonimos[:sinonimos] << ""
+      when 2
+      else
+
+      end
+    end
   end
 
   def categoriasRiesgoChecklist(taxon)
