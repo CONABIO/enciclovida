@@ -19,6 +19,8 @@
     <hr class="espacio_ficha">
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :comnalsel, t('opciones_multiples.t_comnalsel')) %>
     <%= select_multiple_nivel_1_1(f_taxon, :opciones_preguntas, :proposito_com, t('opciones_multiples.t_proposito_com')) %>
+    <div id="destino_de_comnalsel"></div>
+    <div id="destino_de_proposito_com"></div>
   </fieldset>
 
   <h3 class="titulo_sub_subseccion"><%= t('secciones.s_importancia.comercio_int_nal') %></h3>
@@ -45,6 +47,8 @@
     <hr class="espacio_ficha">
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :comintersel, t('opciones_multiples.t_comintersel')) %>
     <%= select_multiple_nivel_1_1(f_taxon, :opciones_preguntas, :proposito_com_int, t('opciones_multiples.t_proposito_com_int')) %>
+    <div id="destino_de_comintersel"></div>
+    <div id="destino_de_proposito_com_int"></div>
     <%= f.association :pais_importacion,
                       label_method: :nombrepais,
                       value_method: :paisId,

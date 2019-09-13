@@ -5,6 +5,7 @@
 
   <div class="apartadoFicha ficha-Invasora">
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacial, t('opciones_multiples.t_arregloespacial'), 'seccion_reprod_vegetal') %>
+    <div id="destino_de_arregloespacial"></div>
   </div>
 
   <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
@@ -13,6 +14,9 @@
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacialflores, t('opciones_multiples.t_arregloespacialflores'), 'seccion_reprod_vegetal') %>
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacialindividuos, t('opciones_multiples.t_arregloespacialindividuos'), 'seccion_reprod_vegetal') %>
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacialpoblaciones, t('opciones_multiples.t_arregloespacialpoblaciones'), 'seccion_reprod_vegetal') %>
+    <div id="destino_de_arregloespacialflores"></div>
+    <div id="destino_de_arregloespacialindividuos"></div>
+    <div id="destino_de_arregloespacialpoblaciones"></div>
     <%
       parametros = {:acceso => @taxon.infoarresp, :modelo => f_taxon, :association => :infoarresp, :titulo => "Información adicional", :el_div => "infoarresp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoarresp]}
       agrega_info_adicional(parametros)
@@ -60,6 +64,8 @@
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :vectorespolinizacion, t('opciones_multiples.t_vectorespolinizacion'), 'seccion_reprod_vegetal') %>
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :agentespolinizacion, t('opciones_multiples.t_agentespolinizacion'), 'seccion_reprod_vegetal') %>
+  <div id="destino_de_vectorespolinizacion"></div>
+  <div id="destino_de_agentespolinizacion"></div>
   <%
     parametros = {:acceso => @taxon.infoAP, :modelo => f_taxon, :association => :infoAP, :titulo => "Información adicional", :el_div => "infoAP", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoAP]}
     agrega_info_adicional(parametros)

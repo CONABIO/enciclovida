@@ -729,24 +729,27 @@ es:
         asiciado:
           rol: Capturista
           tipoAsociacion: Tipo de asociación
-
-
-      responsable:
-        nombre: Nombre del responsable
-        apellido: Apellido del responsable
-      puesto:
-        nombrePuesto: Nombre del puesto
-      organizacion:
-        nombre: Nombre de la organización
-
-      pais:
-        nombrepais: Nombre del país
-      ciudad:
-        nombreCiudad: Nombre de la ciudad
-      contacto:
-        puntoEntrega: Punto de entrega
-        areaAdmin: Area admin
-        codigoPostal: Código Postal
-        telefono: Teléfono
-        correoElectronico: Correo Electrónico
-        paginaWeb: Página Web
+          responsable:
+            responsableId: Nombre del responsable
+            nombre: Nombre del responsable
+            apellido: Apellido del responsable
+          puesto:
+            nombrePuesto: Nombre del puesto
+          organizacion:
+            nombre: Nombre de la organización
+            organizacionId: Nombre de la organización
+          contacto:
+            puntoEntrega: Punto de entrega
+            areaAdmin: Area admin
+            codigoPostal: Código Postal
+            telefono: Teléfono
+            correoElectronico: Correo Electrónico
+            paginaWeb: Página Web
+        pais:
+          nombrepais: Nombre del país
+        ciudad:
+          nombreCiudad: Nombre de la ciudad
+        pais:
+          nombrepais: Nombre del país
+        ciudad:
+          nombreCiudad: Nombre de la ciudad

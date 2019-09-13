@@ -420,10 +420,42 @@ class Fichas::TaxaController < Fichas::FichasController
               :amphISK,
               :TIISK,
               :PierHear,
-              :MERI
+              :MERI,
+              :id,
+              :_destroy
           ],
 
-          metadatos_attributes: [],
+          metadatos_attributes: [
+              :uriIcono,
+              :nombre,
+              :uri,
+              :titulo,
+              :fechaPublicacion,
+              :id,
+              :_destroy,
+              {
+                  asociado_attributes: [
+                      :responsableId,
+                      :organizacionId,
+                      :rol,
+                      :tipoAsociacion,
+                      :id,
+                      :_destroy,
+                      {
+                          contacto_attributes: [
+                              :puntoEntrega,
+                              :areaAdmin,
+                              :codigoPostal,
+                              :telefono,
+                              :correoElectronico,
+                              :paginaWeb,
+                              :id,
+                              :_destroy
+                          ]
+                      }
+                  ]
+              }
+          ],
 
           # OK
           referenciasBibliograficas_attributes: [
@@ -521,6 +553,7 @@ class Fichas::TaxaController < Fichas::FichasController
       productocomercio_inter_attributes
       endemicas_attributes
       distribucion_historica_attributes
+      metadatos_attributes
 
       ambi_info_ecorregiones_attributes
       ambi_especies_asociadas_attributes

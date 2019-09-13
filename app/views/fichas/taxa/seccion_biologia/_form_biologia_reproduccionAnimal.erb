@@ -9,6 +9,7 @@
   <%= f.input :ornamentacion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :sistapareamiento, t('opciones_multiples.t_sistapareamiento'), 'seccion_reprod_animal') %>
+  <div id="destino_de_sistapareamiento"></div>
   <%
     parametros = {:acceso => @taxon.infosistaparea, :modelo => f_taxon, :association => :infosistaparea, :titulo => "Información adicional", :el_div => "infosistaparea", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infosistaparea]}
     agrega_info_adicional(parametros)
@@ -50,6 +51,7 @@
   <%= f.input :frecuenciaApareamineto, input_html: { class: 'tiny_seccion_reprod_animal'} %>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :sitioanidacion, t('opciones_multiples.t_sitioanidacion'), 'seccion_reprod_animal') %>
+  <div id="destino_de_sitioanidacion"></div>
   <%
     parametros = {:acceso => @taxon.infocrianza, :modelo => f_taxon, :association => :infocrianza, :titulo => "Información adicional", :el_div => "infocrianza", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infocrianza]}
     agrega_info_adicional(parametros)

@@ -229,8 +229,6 @@ function reloadSection(section) {
     if (section === 'biologia') {
         //  mostrar correctamente el formulario de la sección Biologia
         showOrHideSegunTipoReproduccion();
-        $('#carga_multiselect_habitoPlantas').appendTo('#multiselect_habitoPlantas');
-        $('#carga_multiselect_habitoPlantas').removeAttr("style");
     }
 
     if (section === 'ambiente') {
@@ -247,10 +245,122 @@ function reloadSection(section) {
     }, 10);
 }
 
+// Función que moverá los selects de taxón a su respectiva sección
+function cargaSelectsMultiples(seccion) {
+    //$('#carga_multiselect_habitoPlantas').appendTo('#multiselect_habitoPlantas');
+    //$('#carga_multiselect_habitoPlantas').removeAttr("style");
+
+    /*
+    var secciones =
+        sistapareamiento
+    sitioanidacion
+
+    arregloespacial
+    arregloespacialflores
+    arregloespacialindividuos
+    arregloespacialpoblaciones
+    vectorespolinizacion
+    agentespolinizacion
+
+    interacciones
+    habitoPlantas
+    alimentacion
+    forrajeo
+    migracion
+    tipo_migracion
+    habito
+    tipodispersion
+    structdisp
+    esquemamanejo
+    tipoaprovechamiento
+    tipopesca
+    regioncaptura
+    artepesca
+    acuacultura
+    comnalsel
+    habitatAntropico
+    proposito_com
+    vegetacionSecundaria
+    comintersel
+    tipovegetmundial
+    proposito_com_int
+    clima
+    climaexo
+    suelo
+    geoforma
+    ecorregionMarinaN1
+    zonaVida
+    naturalizacionsei
+    mecanismos
+    efectoimpactosei
+    intensidadimpactosei
+    especiesasociadassei
+    plasticidadsei
+    platenciasei
+    seguridadsei
+    enfermedadessei
+
+<div id="destino_de_sistapareamiento"></div>
+<div id="destino_de_sitioanidacion"></div>
+
+<div id="destino_de_arregloespacial"></div>
+<div id="destino_de_arregloespacialflores"></div>
+<div id="destino_de_arregloespacialindividuos"></div>
+<div id="destino_de_arregloespacialpoblaciones"></div>
+<div id="destino_de_vectorespolinizacion"></div>
+<div id="destino_de_agentespolinizacion"></div>
+
+<div id="destino_de_interacciones"></div>
+
+<div id="destino_de_habitoPlantas"></div>
+<div id="destino_de_alimentacion"></div>
+<div id="destino_de_forrajeo"></div>
+<div id="destino_de_migracion"></div>
+<div id="destino_de_tipo_migracion"></div>
+<div id="destino_de_habito"></div>
+<div id="destino_de_tipodispersion"></div>
+<div id="destino_de_structdisp"></div>
+
+<div id="destino_de_esquemamanejo"></div>
+<div id="destino_de_tipoaprovechamiento"></div>
+<div id="destino_de_tipopesca"></div>
+<div id="destino_de_regioncaptura"></div>
+<div id="destino_de_artepesca"></div>
+<div id="destino_de_acuacultura"></div>
+
+<div id="destino_de_comnalsel"></div>
+<div id="destino_de_proposito_com"></div>
+<div id="destino_de_comintersel"></div>
+<div id="destino_de_proposito_com_int"></div>
+
+
+<div id="destino_de_habitatAntropico"></div>
+<div id="destino_de_vegetacionSecundaria"></div>
+<div id="destino_de_tipovegetmundial"></div>
+<div id="destino_de_clima"></div>
+<div id="destino_de_climaexo"></div>
+<div id="destino_de_suelo"></div>
+<div id="destino_de_geoforma"></div>
+<div id="destino_de_ecorregionMarinaN1"></div>
+<div id="destino_de_zonaVida"></div>
+
+<div id="destino_de_naturalizacionsei"></div>
+<div id="destino_de_mecanismos"></div>
+<div id="destino_de_efectoimpactosei"></div>
+<div id="destino_de_intensidadimpactosei"></div>
+<div id="destino_de_especiesasociadassei"></div>
+<div id="destino_de_plasticidadsei"></div>
+<div id="destino_de_platenciasei"></div>
+<div id="destino_de_seguridadsei"></div>
+<div id="destino_de_enfermedadessei"></div>
+
+    */
+}
+
 // Según el tipo de ficha, mostrar u ocultar el contenido que las diferencia
 function muestraSoloApartadoSegunFicha() {
-    $(".apartadoFicha").fadeOut();
-    showOrHideInfoFicha();
+   // $(".apartadoFicha").fadeOut();
+   // showOrHideInfoFicha();
 }
 
 // Recargan los imputs selectpicker y tinyMCE nuevos

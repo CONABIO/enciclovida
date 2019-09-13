@@ -7,6 +7,7 @@
   <h3 class="titulo_subseccion"><%= t('secciones.s_conservacion.manejo_aprov_acciones_conserv') %></h3>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :esquemamanejo, t('opciones_multiples.t_esquemamanejo')) %>
+  <div id="destino_de_esquemamanejo"></div>
   <%
     parametros = {:acceso => @taxon.infocons, :modelo => f_taxon, :association => :infocons, :titulo => t('secciones.s_conservacion.descripcion_manejo'), :el_div => "infocons", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infocons]}
     agrega_info_adicional(parametros)
@@ -17,11 +18,13 @@
     <% end %>
   </div>
   <%= select_multiple_nivel_3(f_taxon, :opciones_preguntas, :tipoaprovechamiento, t('opciones_multiples.t_tipoaprovechamiento')) %>
-
+  <div id="destino_de_tipoaprovechamiento"></div>
   <div class="apartadoFicha ficha-Invasora">
     <h4 class="titulo_sub_subseccion"><%= t('secciones.s_conservacion.tipo_aprov_pesa_acua') %></h4>
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipopesca, t('opciones_multiples.t_tipopesca')) %>
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :regioncaptura, t('opciones_multiples.t_regioncaptura')) %>
+    <div id="destino_de_tipopesca"></div>
+    <div id="destino_de_regioncaptura"></div>
     <%= f.input :grupoEspecies,
           :as => :grouped_select,
           collection: Fichas::Cat_Gruposespecies.all.group_by(&:grupo),
@@ -42,6 +45,8 @@
     <%= f.input :tipoCaptura, :as => :select, collection: Fichas::Conservacion::TIPO_CAPTURA, include_blank: true, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :artepesca, t('opciones_multiples.t_artepesca')) %>
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :acuacultura, t('opciones_multiples.t_acuacultura')) %>
+    <div id="destino_de_artepesca"></div>
+    <div id="destino_de_acuacultura"></div>
   </div>
 
 

@@ -88,6 +88,7 @@
   </div>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :naturalizacionsei, t('opciones_multiples.t_naturalizacionsei')) %>
+  <div id="destino_de_naturalizacionsei"></div>
 
   <%
     parametros = {:acceso => @taxon.naturalizacion, :modelo => f_taxon, :association => :naturalizacion, :titulo => "Información adicional", :el_div => "naturalizacion", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:naturalizacion]}
@@ -184,6 +185,7 @@
   </div>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :mecanismos, t('opciones_multiples.t_mecanismos')) %>
+  <div id="destino_de_mecanismos"></div>
 
   <%
     parametros = {:acceso => @taxon.mecanismoimpacto, :modelo => f_taxon, :association => :mecanismoimpacto, :titulo => "Información adicional", :el_div => "mecanismoimpacto", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:mecanismoimpacto]}
@@ -196,6 +198,7 @@
   </div>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :efectoimpactosei, t('opciones_multiples.t_efectoimpactosei')) %>
+  <div id="destino_de_efectoimpactosei"></div>
 
   <%
     parametros = {:acceso => @taxon.efectoimpacto, :modelo => f_taxon, :association => :efectoimpacto, :titulo => "Información adicional", :el_div => "efectoimpacto", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:efectoimpacto]}
@@ -208,6 +211,7 @@
   </div>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :intensidadimpactosei, t('opciones_multiples.t_intensidadimpactosei')) %>
+  <div id="destino_de_intensidadimpactosei"></div>
 
   <%
     parametros = {:acceso => @taxon.intensidadimpacto, :modelo => f_taxon, :association => :intensidadimpacto, :titulo => "Información adicional", :el_div => "intensidadimpacto", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:intensidadimpacto]}
@@ -346,6 +350,7 @@
   <h3 class="titulo_subseccion"><%= t('secciones.s_invasividad.invasividad') %></h3>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :especiesasociadassei, t('opciones_multiples.t_especiesasociadassei')) %>
+  <div id="destino_de_especiesasociadassei"></div>
 
   <%
     parametros = {:acceso => @taxon.especiesasociadas, :modelo => f_taxon, :association => :especiesasociadas, :titulo => "Información adicional", :el_div => "especiesasociadas", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:especiesasociadas]}
@@ -358,6 +363,7 @@
   </div>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :plasticidadsei, t('opciones_multiples.t_plasticidadsei')) %>
+  <div id="destino_de_plasticidadsei"></div>
 
   <%
     parametros = {:acceso => @taxon.plasticidad, :modelo => f_taxon, :association => :plasticidad, :titulo => "Información adicional", :el_div => "plasticidad", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:plasticidad]}
@@ -400,6 +406,7 @@
   </div>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :platenciasei, t('opciones_multiples.t_platenciasei')) %>
+  <div id="destino_de_platenciasei"></div>
 
   <%
     parametros = {:acceso => @taxon.platencia, :modelo => f_taxon, :association => :platencia, :titulo => "Información adicional", :el_div => "platencia", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:platencia]}
@@ -412,6 +419,7 @@
   </div>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :seguridadsei, t('opciones_multiples.t_seguridadsei')) %>
+  <div id="destino_de_seguridadsei"></div>
 
   <%
     parametros = {:acceso => @taxon.seguridad, :modelo => f_taxon, :association => :seguridad, :titulo => "Información adicional", :el_div => "seguridad", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:seguridad]}
@@ -434,6 +442,7 @@
   </div>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :enfermedadessei, t('opciones_multiples.t_enfermedadessei')) %>
+  <div id="destino_de_enfermedadessei"></div>
 
   <%
     parametros = {:acceso => @taxon.enfermedadesei, :modelo => f_taxon, :association => :enfermedadesei, :titulo => "Información adicional", :el_div => "enfermedadesei", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:enfermedadesei]}

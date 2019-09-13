@@ -1,12 +1,11 @@
 <div class='nested-fields'>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habitoPlantas, t('opciones_multiples.t_habitoPlantas')) %>
-
-  <div id="multiselect_habitoPlantas"></div>
-
+  <div id="destino_de_habitoPlantas"></div>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.alimentacion') %></h3>
   <%= select_multiple_nivel_3(f_taxon, :opciones_preguntas, :alimentacion, t('opciones_multiples.t_alimentacion')) %>
+  <div id="destino_de_alimentacion"></div>
   <%
     parametros = {:acceso => @taxon.infoalimentacion, :modelo => f_taxon, :association => :infoalimentacion, :titulo => "Información adicional", :el_div => "infoalimentacion", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoalimentacion]}
     #agrega_info_adicional(parametros)
@@ -32,6 +31,7 @@
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.forrajeo') %></h3>
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :forrajeo, t('opciones_multiples.t_forrajeo')) %>
+  <div id="destino_de_forrajeo"></div>
   <%
     parametros = {:acceso => @taxon.infoaddforrajeo, :modelo => f_taxon, :association => :infoaddforrajeo, :titulo => "Información adicional", :el_div => "infoaddforrajeo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoaddforrajeo]}
     agrega_info_adicional(parametros)
@@ -48,6 +48,9 @@
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :migracion, t('opciones_multiples.t_migracion')) %>
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipo_migracion, t('opciones_multiples.t_tipo_migracion')) %>
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habito, t('opciones_multiples.t_habito')) %>
+  <div id="destino_de_migracion"></div>
+  <div id="destino_de_tipo_migracion"></div>
+  <div id="destino_de_habito"></div>
   <%
     parametros = {:acceso => @taxon.infoaddhabito, :modelo => f_taxon, :association => :infoaddhabito, :titulo => "Información adicional", :el_div => "infoaddhabito", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoaddhabito]}
     agrega_info_adicional(parametros)
@@ -109,6 +112,7 @@
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.dispersion') %></h3>
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipodispersion, t('opciones_multiples.t_tipodispersion')) %>
+  <div id="destino_de_tipodispersion"></div>
   <%
     parametros = {:acceso => @taxon.infodisp, :modelo => f_taxon, :association => :infodisp, :titulo => "Información adicional", :el_div => "infodisp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infodisp]}
     agrega_info_adicional(parametros)
@@ -120,6 +124,7 @@
   </div>
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :structdisp, t('opciones_multiples.t_structdisp')) %>
+  <div id="destino_de_structdisp"></div>
   <%
     parametros = {:acceso => @taxon.infostruct, :modelo => f_taxon, :association => :infostruct, :titulo => "Información adicional", :el_div => "infostruct", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infostruct]}
     agrega_info_adicional(parametros)
