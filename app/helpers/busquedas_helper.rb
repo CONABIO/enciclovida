@@ -145,14 +145,14 @@ module BusquedasHelper
   def nombresComunesChecklist(taxon)
     nombres = taxon.dame_nombres_comunes_catalogos
     return '' unless nombres.any?
-    html = "<br /><label class='etiqueta-checklist'>Nombre(s) común(es): </label>"
+    html = "<label class='etiqueta-checklist'>Nombre(s) común(es): </label>"
 
     nombres.each do |hash_nombres|
       lengua = hash_nombres.keys.first
       html << "<span>#{hash_nombres[lengua].sort.join(', ')} <sub><i>#{lengua}</i></sub>; </span>"
     end
 
-    @@html << html
+    @@html << "<p class='m-0'>#{html}</p>"
   end
 
   # Devuelve una lista de sinónimos y basónimos
@@ -176,11 +176,11 @@ module BusquedasHelper
     end
 
     if sinonimos_basonimo[:basonimo].any?
-      @@html << "<br /><label class='etiqueta-checklist'>Basónimo: </label>#{sinonimos_basonimo[:basonimo].join('; ')}"
+      @@html << "<p class='m-0'><label class='etiqueta-checklist'>Basónimo: </label>#{sinonimos_basonimo[:basonimo].join('; ')}</p>"
     end
 
     if sinonimos_basonimo[:sinonimos].any?
-      @@html << "<br /><label class='etiqueta-checklist'>Sinónimo(s): </label>#{sinonimos_basonimo[:sinonimos].join('; ')}"
+      @@html << "<p class='m-0'><label class='etiqueta-checklist'>Sinónimo(s): </label>#{sinonimos_basonimo[:sinonimos].join('; ')}</p>"
     end
   end
 
@@ -216,7 +216,7 @@ module BusquedasHelper
     end
 
     if res[:catalogos].any?
-      @@html << "<br /><label class='etiqueta-checklist'>Catálogos: </label>#{res[:catalogos].join(',')}"
+      @@html << "<p class='etiqueta-checklist m-0'>#{res[:catalogos].join(',')}</p>"
     end
 
     cats = []
@@ -225,7 +225,7 @@ module BusquedasHelper
       cats << "#{k}: #{v.join(',')}"
     end
 
-    cats.any? ? "<p class='f-categorias-riesgo-checklist text-right'>#{cats.join('; ')}</p>" : nil
+    cats.any? ? "<p class='f-categorias-riesgo-checklist text-right m-0'>#{cats.join('; ')}</p>" : nil
   end
 
   def categoriasRiesgoChecklist(taxon)
