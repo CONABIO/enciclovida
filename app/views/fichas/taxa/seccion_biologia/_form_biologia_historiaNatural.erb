@@ -2,6 +2,9 @@
 
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habitoPlantas, t('opciones_multiples.t_habitoPlantas')) %>
 
+  <div id="multiselect_habitoPlantas"></div>
+
+
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.alimentacion') %></h3>
   <%= select_multiple_nivel_3(f_taxon, :opciones_preguntas, :alimentacion, t('opciones_multiples.t_alimentacion')) %>
   <%

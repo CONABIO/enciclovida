@@ -141,10 +141,11 @@ function showOrHideInfoFicha() {
 
             $('#boton-invasividad').fadeIn();
             $('#invasividad').fadeIn();
-
+            $("#invasividad").removeAttr("style");
         } else {
             $('#boton-prioritaria-conservacion').fadeIn();
             $('#prioritaria-conservacion').fadeIn();
+            $("#prioritaria-conservacion").removeAttr("style");
 
             $('#boton-invasividad').fadeOut();
             $('#invasividad').fadeOut();
@@ -228,6 +229,8 @@ function reloadSection(section) {
     if (section === 'biologia') {
         //  mostrar correctamente el formulario de la sección Biologia
         showOrHideSegunTipoReproduccion();
+        $('#carga_multiselect_habitoPlantas').appendTo('#multiselect_habitoPlantas');
+        $('#carga_multiselect_habitoPlantas').removeAttr("style");
     }
 
     if (section === 'ambiente') {
@@ -340,10 +343,3 @@ function cargaSeccionEnDiv(nombreSeccion, event) {
     }
 
 }
-
-/*
-* <p class="text-center">
-        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-      <h4>Cargando... Por favor, espera</h4>
-      </p>
-* */

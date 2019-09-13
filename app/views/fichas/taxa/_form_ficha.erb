@@ -60,6 +60,12 @@
     </ul>
 
     <div class="tab-content">
+
+      <div id="carga_multiselect_habitoPlantas" style="display:none;">
+        :)
+        <%= select_multiple_nivel_1(f, :opciones_preguntas, :habitoPlantas, t('opciones_multiples.t_habitoPlantas')) %>
+      </div>
+
       <div id="clasificacion-descripcion" role="tabpanel" class="tab-pane fade in panel-body active">
         <hr />
         <h3 class="text-center titulo-seccion text-primary"><%=t('general.titulos_secciones.clasificacion_y_descripcion')%></h3>
