@@ -485,6 +485,12 @@ es:
         infoAddintervaloaltitudinal: Información adicional
         tipoClimaId: Clima  Tipo de clima
         climaAdicional: Información adicional
+        temperaturainicialexo: 'De:'
+        temperaturafinalexo: 'A:'
+        infoaddtemperaturaexo: Información adicional
+        precipitacioninicialexo: 'De:'
+        precipitacionfinalexo: 'A:'
+        infoaddprecipitacionexo: Información adicional
         temperaturainicial: 'De:'
         temperaturafinal: 'A:'
         infoaddtemperatura: Información adicional

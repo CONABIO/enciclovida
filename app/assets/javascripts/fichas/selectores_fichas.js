@@ -141,10 +141,11 @@ function showOrHideInfoFicha() {
 
             $('#boton-invasividad').fadeIn();
             $('#invasividad').fadeIn();
-
+            $("#invasividad").removeAttr("style");
         } else {
             $('#boton-prioritaria-conservacion').fadeIn();
             $('#prioritaria-conservacion').fadeIn();
+            $("#prioritaria-conservacion").removeAttr("style");
 
             $('#boton-invasividad').fadeOut();
             $('#invasividad').fadeOut();
@@ -228,6 +229,8 @@ function reloadSection(section) {
     if (section === 'biologia') {
         //  mostrar correctamente el formulario de la sección Biologia
         showOrHideSegunTipoReproduccion();
+        $('#carga_multiselect_habitoPlantas').appendTo('#multiselect_habitoPlantas');
+        $('#carga_multiselect_habitoPlantas').removeAttr("style");
     }
 
     if (section === 'ambiente') {
@@ -246,8 +249,8 @@ function reloadSection(section) {
 
 // Según el tipo de ficha, mostrar u ocultar el contenido que las diferencia
 function muestraSoloApartadoSegunFicha() {
-    //$(".apartadoFicha").fadeOut();
-    //showOrHideInfoFicha();
+    $(".apartadoFicha").fadeOut();
+    showOrHideInfoFicha();
 }
 
 // Recargan los imputs selectpicker y tinyMCE nuevos
@@ -313,7 +316,7 @@ function cargaSeccionEnDiv(nombreSeccion, event) {
 
     // Div a verificar
     var el_div = $("#" + nombreSeccion);
-    var cargando = '<p class="text-center"><i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i><strong>Cargando... Por favor, espera<strong></p>'
+    var cargando = '<p class="text-center"><i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i><strong>Cargando sección... Por favor, espera<strong></p>'
 
     // Verificar si se cargó ya la página
     if( el_div.html() !== "")
@@ -340,10 +343,3 @@ function cargaSeccionEnDiv(nombreSeccion, event) {
     }
 
 }
-
-/*
-* <p class="text-center">
-        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-      <h4>Cargando... Por favor, espera</h4>
-      </p>
-* */

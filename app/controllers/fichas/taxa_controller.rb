@@ -8,10 +8,6 @@ class Fichas::TaxaController < Fichas::FichasController
     # Verificar si existe el parámetro idCat
     params.has_key?(:id) ? set_taxon : @taxon = Fichas::Taxon.new
 
-    puts @taxon.habitats.inspect
-
-    puts @taxon.ambi_especies_asociadas.inspect
-
     # Saber qué tipo de sección cargar:
     case params[:seccion]
       when 'distribucion'
@@ -86,7 +82,7 @@ class Fichas::TaxaController < Fichas::FichasController
   # PATCH/PUT /taxa/1.json
   def update
     respond_to do |format|
-      puts taxon_params.inspect
+      # puts taxon_params.inspect
       if @taxon.update(taxon_params)
         format.html { redirect_to fichas_front_path(@taxon.IdCAT), notice: 'Taxon was successfully updated.' }
         format.json { render :show, status: :ok, location: @taxon }
@@ -149,12 +145,6 @@ class Fichas::TaxaController < Fichas::FichasController
           ],
 
           distribuciones_attributes: [
-              { pai_ids: [] }, # PENDIENTE
-              { estado_ids: [] },
-              { municipio_ids: [] },
-              { pais_inv_ids: [] },
-              { pais_inv2_ids: [] },
-
               :infoadicionalmexedo,
               :infoAdicionalMun,
               :historicaPotencial,
@@ -166,7 +156,12 @@ class Fichas::TaxaController < Fichas::FichasController
               :infoAdicionalTipo,
               :uso,
               :id,
-              :_destroy
+              :_destroy,
+              { pai_ids: [] }, # PENDIENTE
+              { estado_ids: [] },
+              { municipio_ids: [] },
+              { pais_inv_ids: [] },  # PENDIENTE
+              { pais_inv2_ids: [] }  # PENDIENTE
           ],
 
           # ERROR
@@ -214,6 +209,7 @@ class Fichas::TaxaController < Fichas::FichasController
               :precipitacioninicial,
               :precipitacionfinal,
               :infoaddprecipitacion,
+              :VegetacionSecundaria,
               :precipitacioninicialexo,
               :precipitacionfinalexo,
               :infoaddprecipitacionexo,
@@ -270,6 +266,7 @@ class Fichas::TaxaController < Fichas::FichasController
               :mexbol,
               :ImportanciaBiologica,
               :funcionEcologica,
+              :descripcionAlimentacion,
               :importanciaEconomica,
               :comercioIlicitoNal,
               :comercioIlicitoInter,
@@ -281,15 +278,6 @@ class Fichas::TaxaController < Fichas::FichasController
               :reproduccionVegetalId,
               :id,
               :_destroy,
-              { infoalimenta_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infoaddforrajeo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infoaddhabito_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infodisp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infostruct_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infosistaparea_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infocrianza_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infoAP_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { infoarresp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
               {# OK
                 reproduccionVegetal_attributes: [
                     :descripcion,
@@ -387,7 +375,6 @@ class Fichas::TaxaController < Fichas::FichasController
           # OK
           demografiaAmenazas_attributes: [
               { amenazaDirectum_ids: [] },
-              { infointer_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
               :organizacionSocial,
               :infoaddorgsocial,
               :tamanioPoblacional,
@@ -406,7 +393,6 @@ class Fichas::TaxaController < Fichas::FichasController
           ],
           # OK
           conservacion_attributes: [
-              #{ infocons_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
               :estadoConser,
               :descManejoAprov,
               :tipoAprovEsp,
@@ -422,58 +408,6 @@ class Fichas::TaxaController < Fichas::FichasController
           ],
 
           invasividad_attributes: [
-              # Información sobre las especies invasoras (SECCION EXTRA)
-              { edopoblacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { persistenciapob_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { abundanciapob_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { historiaintro_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { otrossitios_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { adahabitat_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { adaclima_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { congeneres_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { frecintro_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { impactosei_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { impactobio_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { impactoeco_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { impactoinfra_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { impactosocial_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { impactootros_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { prevencion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { manejocontrol_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { erradicacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { cuarentena_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { susceptibilidad_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { controlbiol_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { regulacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { benecologicos_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { beneconomicos_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { bensociales_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { conclimatica_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { conecologica_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { plasconductual_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { plasrepro_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { hibridacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { crecimientosei_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { spequivalentes_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { cca_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { fisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { fiisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { mfisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { miisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { aisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { tiisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { pier_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { meri_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { otroar_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { naturalizacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { mecanismoimpacto_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { efectoimpacto_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { intensidadimpacto_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { especiesasociadas_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { plasticidad_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { platencia_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { seguridad_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
-              { enfermedadesei_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy] },
               :estadoPoblaciones,
               :persistenciaPob,
               :abundanciaPob,
@@ -499,11 +433,79 @@ class Fichas::TaxaController < Fichas::FichasController
               :_destroy
           ],
 
-          ambi_especies_asociadas_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy],
-          ambi_vegetacion_esp_mundo_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy],
-          ambi_info_clima_exotico_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy],
-          ambi_infotiposuelo_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy],
-          ambi_infogeoforma_attributes: [:especieId, :idpregunta, :infoadicional, :_destroy]
+          # HABITAT
+          ambi_especies_asociadas_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_vegetacion_esp_mundo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_info_clima_exotico_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_info_clima_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_infotiposuelo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          ambi_infogeoforma_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          # Historia Natural
+          infoalimentacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infoaddforrajeo_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infoaddhabito_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infodisp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infostruct_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infosistaparea_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infocrianza_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infoAP_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          infoarresp_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          # Demografiaamenazas
+          infointer_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          # Conservacion
+          infocons_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          # Información sobre las especies invasoras (SECCION EXTRA)
+          edopoblacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          persistenciapob_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          abundanciapob_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          historiaintro_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          otrossitios_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          adahabitat_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          adaclima_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          congeneres_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          frecintro_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          impactosei_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          impactobio_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          impactoeco_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          impactoinfra_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          impactosocial_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          impactootros_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          prevencion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          manejocontrol_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          erradicacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          cuarentena_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          susceptibilidad_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          controlbiol_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          regulacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          benecologicos_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          beneconomicos_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          bensociales_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          conclimatica_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          conecologica_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          plasconductual_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          plasrepro_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          hibridacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          crecimientosei_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          spequivalentes_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          cca_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          fisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          fiisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          mfisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          miisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          aisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          tiisk_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          pier_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          meri_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          otroar_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          naturalizacion_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          mecanismoimpacto_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          efectoimpacto_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          intensidadimpacto_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          especiesasociadas_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          plasticidad_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          platencia_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          seguridad_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy],
+          enfermedadesei_attributes: [:id, :especieId, :idpregunta, :infoadicional, :_destroy]
       )
 
       itera_preguntas_observaciones(p)
@@ -518,13 +520,13 @@ class Fichas::TaxaController < Fichas::FichasController
       productocomercio_nal_attributes
       productocomercio_inter_attributes
       endemicas_attributes
-      distribuciones_attributes
       distribucion_historica_attributes
 
       ambi_info_ecorregiones_attributes
       ambi_especies_asociadas_attributes
       ambi_vegetacion_esp_mundo_attributes
       ambi_info_clima_exotico_attributes
+      ambi_info_clima_attributes
       ambi_infotiposuelo_attributes
       infoaddforrajeo_attributes
       infoaddhabito_attributes
@@ -536,6 +538,7 @@ class Fichas::TaxaController < Fichas::FichasController
       infoarresp_attributes
       infointer_attributes
       ambi_infogeoforma_attributes
+
       edopoblacion_attributes
       persistenciapob_attributes
       abundanciapob_attributes

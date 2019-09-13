@@ -14,7 +14,7 @@
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacialindividuos, t('opciones_multiples.t_arregloespacialindividuos'), 'seccion_reprod_vegetal') %>
     <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacialpoblaciones, t('opciones_multiples.t_arregloespacialpoblaciones'), 'seccion_reprod_vegetal') %>
     <%
-      parametros = {:acceso => @taxon.historiaNatural.infoarresp, :modelo => f, :association => :infoarresp, :titulo => "Información adicional", :el_div => "infoarresp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoarresp]}
+      parametros = {:acceso => @taxon.infoarresp, :modelo => f_taxon, :association => :infoarresp, :titulo => "Información adicional", :el_div => "infoarresp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoarresp]}
       agrega_info_adicional(parametros)
     %>
     <div id="dato_<%= parametros[:el_div] %>">
@@ -61,7 +61,7 @@
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :vectorespolinizacion, t('opciones_multiples.t_vectorespolinizacion'), 'seccion_reprod_vegetal') %>
   <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :agentespolinizacion, t('opciones_multiples.t_agentespolinizacion'), 'seccion_reprod_vegetal') %>
   <%
-    parametros = {:acceso => @taxon.historiaNatural.infoAP, :modelo => f, :association => :infoAP, :titulo => "Información adicional", :el_div => "infoAP", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoAP]}
+    parametros = {:acceso => @taxon.infoAP, :modelo => f_taxon, :association => :infoAP, :titulo => "Información adicional", :el_div => "infoAP", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoAP]}
     agrega_info_adicional(parametros)
   %>
   <div id="dato_<%= parametros[:el_div] %>">

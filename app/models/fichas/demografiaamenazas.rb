@@ -9,12 +9,6 @@ class Fichas::Demografiaamenazas < Ficha
 	has_many :relDemografiasAmenazas, class_name: 'Fichas::Reldemografiaamenazas', :foreign_key => 'demografiaAmenazasId'
   has_many :amenazaDirecta, class_name: 'Fichas::Amenazadirecta', through: :relDemografiasAmenazas
 
-	# - - - - - -   Preguntas de observaciones en la tabla Observacionescarac ( INFORMACIÓN ADICIONAL EN SU MAYORÍA ) - - - - - - #
-	has_many :infointer,-> {where('observacionescarac.idpregunta = ?', 17 )}, class_name: 'Fichas::Observacionescarac', primary_key: :especieId, foreign_key: :especieId, inverse_of: :taxon
-
-	# Acceso desde Cocoon
-	accepts_nested_attributes_for :infointer, allow_destroy: true, reject_if: :all_blank
-
 	accepts_nested_attributes_for :interaccion, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :amenazaDirecta, allow_destroy: true, reject_if: :all_blank
 
