@@ -1,5 +1,7 @@
 class WikipediaService < MetaService
+
   attr_accessor :base_url
+
   def initialize(options = {})
     super(options)
     locale = options[:locale] || I18n.locale || 'en'
@@ -15,22 +17,21 @@ class WikipediaService < MetaService
   end
 
   def summary(title)
-    summary = query_results = parsed = nil
-    parsed = parse(:page => title, :redirects => true).at('text').try(:inner_text)
-    return unless parsed
-    hxml = Nokogiri::HTML(HTMLEntities.new.decode(parsed))
-    hxml.search('table').remove
-    hxml.search('div').remove
-    summary = (hxml.at('p') || hxml).inner_html.to_s
-    summary = sanitizer.sanitize(summary, :tags => %w(p i em b strong))
-    summary.gsub! /\[.*?\]/, ''
-    summary
-  rescue Timeout::Error => e
-    Rails.logger.info "[INFO] Wikipedia API call failed while setting taxon summary: #{e.message}"
-    return
+    begin
+      response = parse(:page => title, :redirects => true)
+
+      hxml = Nokogiri::HTML(HTMLEntities.new.decode(response.at( "text" ).try( :inner_text )))
+      hxml.search('table').remove
+      hxml.search("//comment()").remove
+      summary = ( hxml.search("//p").detect{|node| !node.inner_html.strip.blank?} || hxml ).inner_html.to_s.strip
+      summary = summary.sanitize(tags: %w(p i em b strong))
+      summary.gsub! /\[.*?\]/, ''
+      summary
+
+    rescue Timeout::Error => e
+      Rails.logger.info "[INFO] Wikipedia API call failed while setting taxon summary: #{e.message}"
+      return
+    end
   end
 
-  def sanitizer
-    @sanitizer ||= HTML::WhiteListSanitizer.new
-  end
 end

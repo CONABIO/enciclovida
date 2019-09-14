@@ -366,3 +366,21 @@ sub{
   font-size: .8em;
   font-weight: bold;
 }
+// El tamaño de las fuentes de los iconos en general
+.f-fuentes
+{
+  font-size: 1.8em;
+}
+// Formato general para el nombre cientifico y comun, no importa la vista
+.f-nom-cientifico
+{
+  font-size: 1em;
+  font-style: italic;
+  color: #828b87;
+  margin-top: 20px;
+}
+.f-nom-comun
+{
+  font-size: 1.2em;
+  font-weight: bold;
+}

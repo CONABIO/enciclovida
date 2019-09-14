@@ -1,4 +1,7 @@
 class BusquedaAvanzada < Busqueda
+
+  attr_accessor :sinonimos_basonimos
+
   # REVISADO: Regresa la busqueda avanzada
   def resultados_avanzada
     paginado_y_offset
@@ -6,6 +9,9 @@ class BusquedaAvanzada < Busqueda
     solo_publicos
     estado_conservacion
     tipo_distribucion
+    uso
+    ambiente
+    region
     solo_categoria
 
     return unless por_id_o_nombre
@@ -33,7 +39,6 @@ class BusquedaAvanzada < Busqueda
   # REVISADO: Regresa en formato de cheklist o para consulta en busqueda avanzada
   def resultados
     if params[:checklist] == '1'
-      self.taxones = taxones.datos_arbol_con_filtros
       checklist
     else
       self.taxones = taxones.select_basico.order(:nombre_cientifico)
@@ -48,6 +53,20 @@ class BusquedaAvanzada < Busqueda
         end
       end
     end  # End checklist
+  end
+
+
+  private
+
+  def checklist
+    ids_checklist = taxones.select_ancestry.map{ |t| t.ancestry.split(',') }.flatten.uniq!
+    self.taxones = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional).includes(:nombres_comunes, :tipos_distribuciones, :catalogos, :bibliografias, :regiones, especies_estatus: :especie).datos_checklist.where(id: ids_checklist)
+
+    self.sinonimos_basonimos = {}
+    taxones.each do |taxon|
+      next if taxon.estatus == 2  # Quiere decir que es valido
+      self.sinonimos_basonimos[taxon.id] = taxon
+    end
   end
 
 end

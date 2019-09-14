@@ -1,0 +1,35 @@
+<%= content_for :delayedjs do %>
+  <script type="text/javascript">
+      $(document).ready(function(){
+          asignaFiltros(<%=raw params.to_json %>);
+      });
+  </script>
+<% end %>
+
+<div id="resultados-container" class="col-12 mb-3">
+  <span class="float-right"><small>(especies en orden decreciente de recomendación)</small></span>
+  <% fu = filtrosUsados.html_safe %>
+  <% unless fu == '' %>
+    <h6 class=""><b><%= fa_icon 'filter' %> La presente consulta utilizó los siguientes filtros: </b></h6>
+    <p class="filtrosUsados my-0 mx-3"><%= fu %></p>
+  <% end %>
+</div>
+
+<div class="col">
+  <%= render :file => 'pmc/peces/filtros' %>
+</div>
+
+<div id="pestañas" class="col-9 panel">
+  <ul class="nav nav-tabs" data-tabs="tabs">
+    <li class="nav-item active">
+      <a href="#todos" data-toggle="tab" id="nivel_" id_div="todos" class="nav-link"><b><%= @peces.length %></b> Resultados</a>
+    </li>
+  </ul>
+
+  <div class="tab-pane panel-body resultados-peces" id="todos">
+    <div id="resultados" class="row no-gutters">
+      <%= render :file => 'pmc/peces/resultados_iteracion' %>
+    </div>
+  </div>
+</div>
+

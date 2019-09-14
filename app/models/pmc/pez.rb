@@ -12,11 +12,17 @@ class Pmc::Pez < ActiveRecord::Base
 
   belongs_to :especie
   has_one :adicional, :through => :especie, :source => :adicional
+  has_one :categoria_taxonomica, through: :especie, source: :categoria_taxonomica
+  has_many :especies_catalogos, through: :especie
 
-  scope :select_joins_peces, -> { select([:nombre_comun_principal, :valor_total, :valor_zonas, :imagen, :con_estrella]).
-      select("peces.especie_id, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico, #{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} AS ancestry_ascendente_directo") }
+  attr_accessor :x_nombre_comun_principal
 
-  scope :filtros_peces, -> { select_joins_peces.distinct.left_joins(:criterios, :peces_propiedades, :adicional).
+  scope :select_peces, -> { select([:nombre_comun_principal, :valor_total, :valor_zonas, :imagen, :con_estrella]).
+      select("peces.especie_id").select_especie.select_categoria_taxonomica }
+  scope :select_especie, -> { select("#{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} AS nombre_cientifico, #{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} AS ancestry_ascendente_directo, #{Especie.table_name}.#{Especie.attribute_alias(:nombre_autoridad)} AS nombre_autoridad, #{Especie.table_name}.#{Especie.attribute_alias(:id)} AS id, #{Especie.table_name}.#{Especie.attribute_alias(:estatus)} AS estatus") }
+  scope :select_categoria_taxonomica, -> { select("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica") }
+
+  scope :filtros_peces, -> { select_peces.distinct.left_joins(:criterios, :peces_propiedades, :adicional, :categoria_taxonomica).
       order(con_estrella: :desc, valor_total: :asc, tipo_imagen: :asc).order("#{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)} ASC") }
 
   scope :nombres_peces, -> { select([:especie_id, :nombre_cientifico, :nombres_comunes])}
@@ -33,6 +39,11 @@ class Pmc::Pez < ActiveRecord::Base
   accepts_nested_attributes_for :peces_propiedades, reject_if: :all_blank, allow_destroy: true
 
   GRUPOS_PECES_MARISCOS = %w(Actinopterygii Chondrichthyes Crustacea Mollusca Echinodermata)
+
+  # Sobre escribiendo este metodo para las rutas mas legibles
+  def to_param
+    [especie_id, try(:nombre_cientifico).try(:parameterize) || especie.nombre_cientifico.parameterize].join("-")
+  end
 
   # REVISADO: Corre los metodos necesarios para actualizar el pez
   def actualiza_pez

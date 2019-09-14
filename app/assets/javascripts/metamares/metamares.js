@@ -12,7 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require lib/jquery-ui
+//= require jquery-ui
 //= require lib/jquery.soulmate
 //= require lib/jquery.bootpag.min
 //= require turbolinks

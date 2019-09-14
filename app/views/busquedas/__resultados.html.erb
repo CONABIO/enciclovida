@@ -2,17 +2,26 @@
 
   <% @taxones.each do |taxon| %>
     <% if taxon.foto_principal.present? %>
-      <div class="result-img-container">
-        <%= link_to image_tag(taxon.foto_principal), especie_path(taxon) %>
-        <div class="result-nombre-container">
-          <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
+      <div class="col-3 my-3 px-1">
+        <div class="row no-gutters">
+          <div class="result-img-container col-12">
+            <%= link_to image_tag(taxon.foto_principal, class: 'img-fluid'), especie_path(taxon) %>
+          </div>
+          <div class="result-nombre-container col-12 px-1">
+            <%= tituloNombreCientifico(taxon, render: 'link').html_safe %>
+          </div>
         </div>
       </div>
+
     <% else %>
-      <div class="result-img-container">
-        <%= link_to "<i class='ev1-ev-icon'></i>".html_safe, especie_path(taxon) %>
-        <div class="result-nombre-container">
-          <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
+      <div class="col-3 my-3 px-1">
+        <div class="row justify-content-center no-gutters">
+          <div class="result-img-container col-6">
+            <%= link_to "<i class='ev1-ev-icon'></i>".html_safe, especie_path(taxon) %>
+          </div>
+          <div class="result-nombre-container col-12 px-1">
+            <%= tituloNombreCientifico(taxon, render: 'link').html_safe %>
+          </div>
         </div>
       </div>
     <% end %>
@@ -23,7 +32,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 resultados-cientificos">
       <span class='datos_busqueda-<%= taxon.id %>'>
         <div class="result-nombre-container">
-          <%= tituloNombreCientifico(taxon, :link => true).html_safe %>
+          <%= tituloNombreCientifico(taxon, render: 'link').html_safe %>
         </div>
       </span>
     </div>

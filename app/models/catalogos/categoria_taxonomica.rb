@@ -26,7 +26,7 @@ class CategoriaTaxonomica < ActiveRecord::Base
   # Reinos
   CATEGORIAS_REINOS = %w(animalia plantae protoctista fungi prokaryotae)
   # Categorias para geodatos
-  CATEGORIAS_GEODATOS = CATEGORIAS_INFRAESPECIES + %w(familia subfamilia tribu subtribu género subgénero sección subsección serie subserie especie)
+  CATEGORIAS_GEODATOS = CATEGORIAS_INFRAESPECIES + %w(especie)
 
   # Abreviaciones de las categorias taxonomicas
   ABREVIACIONES = {

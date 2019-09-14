@@ -35,7 +35,7 @@ class EnviaCorreo < Devise::Mailer
   def descargar_taxa(ruta, correo, original_url=nil)
     @ruta = ruta
     @correos = correo
-    @original_url = original_url
+    @original_url = original_url.gsub('solo_categoria=','')
     mail(:to => enviar_a?(correo), :subject => 'EncicloVida: Descargar taxa')
   end
 

@@ -73,5 +73,10 @@ class String
     end
   end
 
+  # Quita el html de la cadena
+  def sanitize(options={})
+    ActionController::Base.helpers.sanitize(self, options)
+  end
+
 end
 

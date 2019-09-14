@@ -1,4 +1,4 @@
-<%= tituloNombreCientifico(@pez.especie, link: true).html_safe %>
+<%= tituloNombreCientifico(@pez.especie, render: 'header').html_safe %>
 
 <h3>
   <% if tiene_permiso?('AdminPeces') %>

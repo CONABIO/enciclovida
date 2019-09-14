@@ -36,6 +36,7 @@ Buscador::Application.routes.draw do
     resources :peces, :as => :pez do
       collection do
         get :dameNombre
+        get :busqueda
       end
     end
 
@@ -198,6 +199,7 @@ Buscador::Application.routes.draw do
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
       get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
+      get ':id/wikipedia-summary' => 'especies#wikipedia_summary'
     end
   end
 
