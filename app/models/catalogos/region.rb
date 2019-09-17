@@ -10,9 +10,10 @@ class Region < ActiveRecord::Base
   alias_attribute :clave_region, :ClaveRegion
   alias_attribute :id_region_asc, :IdRegionAsc
 
-  belongs_to :tipo_region
+  belongs_to :tipo_region, foreign_key: attribute_alias(:tipo_region_id)
 
   scope :validas, -> { where.not(nombre_region: 'ND') }
+  scope :filtros, -> { select(:id, :nombre_region).select("descripcion").validas.where.not(clave_region: '').left_joins(:tipo_region).where("#{TipoRegion.table_name}.#{TipoRegion.attribute_alias(:descripcion)} IN ('#{TipoRegion::FILTRO.join("','")}')").order(:tipo_region_id, :nombre_region) }
 
   # TODO: Quitar este parche cuando las bibliografias de espeice_region esten relacionadas como se deben ...
   scope :select_observaciones, -> { select("*, #{EspecieRegion.table_name}.#{EspecieRegion.attribute_alias(:observaciones)} AS observaciones") }
@@ -25,6 +26,18 @@ class Region < ActiveRecord::Base
     end
 
     resp
+  end
+
+  # Regresa un hash de los filtros con las regiones
+  def self.dame_regiones_filtro
+    regiones = {}
+
+    filtros.each do |f|
+      regiones[f.descripcion] = [] unless regiones[f.descripcion].present?
+      regiones[f.descripcion] << f
+    end
+
+    regiones
   end
 
   def asocia_regiones(resp = {})

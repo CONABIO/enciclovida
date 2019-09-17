@@ -206,7 +206,15 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
       "<li>#{distribucion}</li>"
     end
 
-    distribuciones = taxon.tipo_distribucion(tab_catalogos: true).values.flatten.compact
+    # Hago el cambio de locale a es-cientifico y regreso al original, ya que la pestaña de ficha técnica siempre la toma de catálogos
+    unless I18n.locale.to_s == 'es-cientifico'
+      locale_original = I18n.locale.to_s
+      I18n.locale = 'es-cientifico'
+      distribuciones = taxon.tipo_distribucion.values.flatten.compact
+      I18n.locale = locale_original
+    else
+      distribuciones = taxon.tipo_distribucion.values.flatten.compact
+    end
 
     distribuciones.each do |distribucion|
       html << creaLista(distribucion)

@@ -18,6 +18,10 @@ module ApplicationHelper
 
     nombre_cientifico = "<text class='f-nom-cientifico'>#{taxon.nombre_cientifico}</text>"
 
+    if params[:adicional_nom_cient].present?
+      nombre_cientifico += "&nbsp;&nbsp;#{params[:adicional_nom_cient]}"
+    end
+
     if params[:solo_especies] || !taxon.especie_o_inferior?
       cat = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
       cat_taxonomica = "<text class='f-nom-cientifico'>#{cat}</text> "
@@ -47,7 +51,7 @@ module ApplicationHelper
       when 'title'
         "#{nombre_comun} (#{nombre_cientifico})".sanitize.html_safe
       when 'link'
-        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon), link_params}</i></b>".html_safe
+        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
       when 'header'
         "<h3>#{nombre_comun}#{'<br />' if nombre_comun.present?}#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico}</h3>".html_safe
       when 'inline'
@@ -203,6 +207,12 @@ module ApplicationHelper
   def correo_enciclovida claro=nil
     correo_en_fuente = "<span class='enciclovida_correo-ev-icon text-link'></span><span class='glyphicon glyphicon-envelope text-link'></span>"
     correo_en_fuente.gsub!("text-link","text-info") if claro
+    link_to(correo_en_fuente.html_safe,"", :onclick => "$(this).attr('href',co.join('').split('').reverse().join(''));", :target => "_blank")
+  end
+
+  def correo_enciclovida_b4 claro=nil
+    correo_en_fuente = "<span class='enciclovida_correo-ev-icon text-success'></span><i class='fa fa-envelope text-success'></i></span>"
+    correo_en_fuente.gsub!("text-success","text-light") if claro
     link_to(correo_en_fuente.html_safe,"", :onclick => "$(this).attr('href',co.join('').split('').reverse().join(''));", :target => "_blank")
   end
 

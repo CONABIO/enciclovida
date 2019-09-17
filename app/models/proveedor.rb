@@ -258,7 +258,7 @@ class Proveedor < ActiveRecord::Base
     # Para el paginado
     paginas = totales/CONFIG.inaturalist_por_pagina.to_i
     residuo = totales%200
-    paginas+= 1 if residuo < 200 || paginas == 0
+    paginas+= 1 if residuo > 0 || paginas == 0
 
     # Si son mas de 50 paginas, entonces el elastic search truena del lado de inaturalist, ver como resolver despues (pasa mas en familia)
     #return {estatus: 'error', msg: 'Son mas de 50 paginas, truena el elastic search'} if paginas > 50
