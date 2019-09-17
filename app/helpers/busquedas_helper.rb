@@ -129,10 +129,10 @@ module BusquedasHelper
       @@html << nombre_cientifico
       @@html << " #{taxon.nombre_autoridad}"
 
-
       @@html << '<div>'
       sinonimosBasonimoChecklist(taxon)
       cats_riesgo = catalogoEspecieChecklist(taxon)
+      distribucionChecklist(taxon)
       nombresComunesChecklist(taxon)
       @@html << cats_riesgo if cats_riesgo
       @@html << '</div>'
@@ -228,8 +228,9 @@ module BusquedasHelper
     cats.any? ? "<p class='f-categorias-riesgo-checklist text-right m-0'>#{cats.join('; ')}</p>" : nil
   end
 
-  def categoriasRiesgoChecklist(taxon)
-
+  def distribucionChecklist(taxon)
+    regiones = taxon.regiones.map{ |r| t("estados_siglas.#{r.nombre_region.estandariza}") if r.tipo_region_id == 2 }.flatten.compact.sort
+    @@html << "<p class='m-0'><label class='etiqueta-checklist'>Distribución en México: </label>#{regiones.join(', ')}</p>" if regiones.any?
   end
 
 end
