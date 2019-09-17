@@ -130,10 +130,11 @@ module BusquedasHelper
       @@html << " #{taxon.nombre_autoridad}"
 
       @@html << '<div>'
-      sinonimosBasonimoChecklist(taxon)
+      huesped_hospedero = sinonimosBasonimoChecklist(taxon)
       cats_riesgo = catalogoEspecieChecklist(taxon)
       distribucionChecklist(taxon)
       nombresComunesChecklist(taxon)
+      @@html << huesped_hospedero if huesped_hospedero.present?
       @@html << cats_riesgo if cats_riesgo
       @@html << '</div>'
     end
@@ -149,7 +150,7 @@ module BusquedasHelper
 
     nombres.each do |hash_nombres|
       lengua = hash_nombres.keys.first
-      html << "<span>#{hash_nombres[lengua].sort.join(', ')} <sub><i>#{lengua}</i></sub>; </span>"
+      html << "<span>#{hash_nombres[lengua].uniq.sort.join(', ')} <sub><i>#{lengua}</i></sub>; </span>"
     end
 
     @@html << "<p class='m-0'>#{html}</p>"
@@ -157,10 +158,10 @@ module BusquedasHelper
 
   # Devuelve una lista de sinónimos y basónimos
   def sinonimosBasonimoChecklist(taxon)
-    sinonimos_basonimo = {sinonimos: [], basonimo: []}
+    sinonimos_basonimo = {sinonimos: [], basonimo: [], huesped_hospedero: []}
 
     taxon.especies_estatus.each do |estatus|
-      next unless [1,2].include?(estatus.estatus_id)
+      next unless [1,2,7].include?(estatus.estatus_id)
       next unless taxon_estatus = estatus.especie
 
       nombre_cientifico = "<text class='f-sinonimo-basonimo-checklist'>#{taxon_estatus.nombre_cientifico}</text> #{taxon_estatus.nombre_autoridad}"
@@ -170,8 +171,16 @@ module BusquedasHelper
         sinonimos_basonimo[:sinonimos] << nombre_cientifico
       when 2
         sinonimos_basonimo[:basonimo] << nombre_cientifico
-      else
-        next
+      when 7
+        nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{taxon_estatus.nombre_cientifico}</text>"
+        regiones = distribucionChecklist(taxon_estatus, false)
+
+        if regiones.any?
+          sinonimos_basonimo[:huesped_hospedero] << "#{nombre_cientifico} <sub>(#{regiones.join(', ')})</sub>"
+        else
+          sinonimos_basonimo[:huesped_hospedero] << nombre_cientifico
+        end
+
       end
     end
 
@@ -182,6 +191,12 @@ module BusquedasHelper
     if sinonimos_basonimo[:sinonimos].any?
       @@html << "<p class='m-0'><label class='etiqueta-checklist'>Sinónimo(s): </label>#{sinonimos_basonimo[:sinonimos].join('; ')}</p>"
     end
+
+    if sinonimos_basonimo[:huesped_hospedero].any?
+      huesped_hospedero =  "<p class='mt-4'><label class='etiqueta-checklist'>Interacciones biológicas</label></p><p><label class='etiqueta-checklist'>Parásito(s): </label>#{sinonimos_basonimo[:huesped_hospedero].join('; ')}</p>"
+    end
+
+    huesped_hospedero if sinonimos_basonimo[:huesped_hospedero].any?
   end
 
   # Regresa el tipo de distribucion
@@ -228,8 +243,9 @@ module BusquedasHelper
     cats.any? ? "<p class='f-categorias-riesgo-checklist text-right m-0'>#{cats.join('; ')}</p>" : nil
   end
 
-  def distribucionChecklist(taxon)
+  def distribucionChecklist(taxon, seccion=true)
     regiones = taxon.regiones.map{ |r| t("estados_siglas.#{r.nombre_region.estandariza}") if r.tipo_region_id == 2 }.flatten.compact.sort
+    return regiones unless seccion
     @@html << "<p class='m-0'><label class='etiqueta-checklist'>Distribución en México: </label>#{regiones.join(', ')}</p>" if regiones.any?
   end
 

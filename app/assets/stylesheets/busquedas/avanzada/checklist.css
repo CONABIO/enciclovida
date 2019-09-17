@@ -26,6 +26,11 @@
     color: #828b87;
     font-size: 1em;
 }
+#content sub
+{
+    font-weight: normal;
+    background-color: unset;
+}
 .checklist-nivel-1
 {
     margin-left: 2em;

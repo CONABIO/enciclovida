@@ -60,7 +60,7 @@ class BusquedaAvanzada < Busqueda
 
   def checklist
     ids_checklist = taxones.where(estatus: 2).select_ancestry.map{ |t| t.ancestry.split(',') }.flatten.uniq!
-    self.taxones = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional).includes(:nombres_comunes, :tipos_distribuciones, :catalogos, :bibliografias, :regiones, especies_estatus: :especie).datos_checklist.where(id: ids_checklist)
+    self.taxones = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional).includes(:nombres_comunes, :tipos_distribuciones, :catalogos, :bibliografias, :regiones, especies_estatus: [especie: [:regiones]]).datos_checklist.where(id: ids_checklist)
   end
 
 end
