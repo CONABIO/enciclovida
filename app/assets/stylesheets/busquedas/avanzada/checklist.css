@@ -12,6 +12,15 @@
     font-size: 1em;
     font-style: italic;
 }
+.f-categorias-riesgo-checklist
+{
+    font-size: 1em;
+    font-weight: bold;
+    color: #800000;
+}
+.f-categoria-taxonomica-checklist{
+    border: 1px solid black;
+}
 .f-categoria-taxonomica-checklist
 {
     color: #828b87;

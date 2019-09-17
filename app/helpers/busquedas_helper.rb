@@ -3,6 +3,8 @@ module BusquedasHelper
   # Opciones default para el bootstrap-select plugin
   @@opciones = { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, 'data-none-results-text': 'Sin resultados para {0}', 'data-count-selected-text': '{0} seleccionados', title: '- - Selecciona - -', multiple: true, 'data-sanitize': false }
 
+  @@html = ''
+
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos(resultados = false)
     def arma_span(taxon)
@@ -116,53 +118,46 @@ module BusquedasHelper
 
   # Despliega el checklist
   def generaChecklist(taxon)
-    html = ''
+    @@html = ''
     nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{taxon.nombre_cientifico}</text>"
 
     unless taxon.especie_o_inferior?
       cat = taxon.nombre_categoria_taxonomica
-      html << "<text class='f-categoria-taxonomica-checklist'>#{cat}</text> #{nombre_cientifico}"
-      html << " #{taxon.nombre_autoridad}"
+      @@html << "<text class='f-categoria-taxonomica-checklist'>#{cat}</text> #{nombre_cientifico}"
+      @@html << " #{taxon.nombre_autoridad}"
     else
-      html << nombre_cientifico
-      html << " #{taxon.nombre_autoridad}"
+      @@html << nombre_cientifico
+      @@html << " #{taxon.nombre_autoridad}"
 
 
-      html << '<div>'
-
-      sinonimos_basonimo = sinonimosBasonimoChecklist(taxon)
-      if sinonimos_basonimo[:basonimo].any?
-        html << "<br /><label class='etiqueta-checklist'>Basónimo: </label>#{sinonimos_basonimo[:basonimo].join('; ')}"
-      end
-
-      if sinonimos_basonimo[:sinonimos].any?
-        html << "<br /><label class='etiqueta-checklist'>Sinónimo(s): </label>#{sinonimos_basonimo[:sinonimos].join('; ')}"
-      end
-
-      html << nombresComunesChecklist(taxon)
-      html << '</div>'
+      @@html << '<div>'
+      sinonimosBasonimoChecklist(taxon)
+      cats_riesgo = catalogoEspecieChecklist(taxon)
+      nombresComunesChecklist(taxon)
+      @@html << cats_riesgo if cats_riesgo
+      @@html << '</div>'
     end
 
-    html
+    @@html
   end
 
   # Devuelve los nombres comunes agrupados por lengua, solo de catalogos
   def nombresComunesChecklist(taxon)
     nombres = taxon.dame_nombres_comunes_catalogos
     return '' unless nombres.any?
-    html = "<br /><label class='etiqueta-checklist'>Nombre(s) común(es): </label>"
+    html = "<label class='etiqueta-checklist'>Nombre(s) común(es): </label>"
 
     nombres.each do |hash_nombres|
       lengua = hash_nombres.keys.first
-      html << "<span>#{hash_nombres[lengua].sort.join(', ')} <sub><i>#{lengua}</i></sub>;</span>"
+      html << "<span>#{hash_nombres[lengua].sort.join(', ')} <sub><i>#{lengua}</i></sub>; </span>"
     end
 
-    html
+    @@html << "<p class='m-0'>#{html}</p>"
   end
 
   # Devuelve una lista de sinónimos y basónimos
   def sinonimosBasonimoChecklist(taxon)
-    sinonimosbasonimo = {sinonimos: [], basonimo: []}
+    sinonimos_basonimo = {sinonimos: [], basonimo: []}
 
     taxon.especies_estatus.each do |estatus|
       next unless [1,2].include?(estatus.estatus_id)
@@ -172,16 +167,65 @@ module BusquedasHelper
 
       case estatus.estatus_id
       when 1
-        sinonimosbasonimo[:sinonimos] << nombre_cientifico
+        sinonimos_basonimo[:sinonimos] << nombre_cientifico
       when 2
-        sinonimosbasonimo[:basonimo] << nombre_cientifico
+        sinonimos_basonimo[:basonimo] << nombre_cientifico
       else
         next
       end
-
     end
 
-    sinonimosbasonimo
+    if sinonimos_basonimo[:basonimo].any?
+      @@html << "<p class='m-0'><label class='etiqueta-checklist'>Basónimo: </label>#{sinonimos_basonimo[:basonimo].join('; ')}</p>"
+    end
+
+    if sinonimos_basonimo[:sinonimos].any?
+      @@html << "<p class='m-0'><label class='etiqueta-checklist'>Sinónimo(s): </label>#{sinonimos_basonimo[:sinonimos].join('; ')}</p>"
+    end
+  end
+
+  # Regresa el tipo de distribucion
+  def tipoDistribucionChecklist(taxon)
+    taxon.tipos_distribuciones.map(&:descripcion).uniq
+  end
+
+  # Regresa todas las relaciones del catalogo de especies, incluye especies en riesgo
+  def catalogoEspecieChecklist(taxon)
+    res = { catalogos: [], riesgo: { 'NOM-059-SEMARNAT 2010' => [], 'IUCN' => [], 'CITES' => [] } }
+
+    tipo_dist = tipoDistribucionChecklist(taxon)
+    res[:catalogos] = tipo_dist if tipo_dist.any?
+
+    taxon.catalogos.each do |catalogo|
+      case catalogo.nivel1
+      when 4
+        next unless [1,2,3].include?(catalogo.nivel2)  # Solo las categorias de riesgo y comercio
+
+        case catalogo.nivel2
+        when 1
+          res[:riesgo]['NOM-059-SEMARNAT 2010'] << catalogo.descripcion
+        when 2
+          res[:riesgo]['IUCN'] << catalogo.descripcion
+        when 3
+          res[:riesgo]['CITES'] << catalogo.descripcion
+        end
+
+      else
+        res[:catalogos] << catalogo.descripcion
+      end
+    end
+
+    if res[:catalogos].any?
+      @@html << "<p class='etiqueta-checklist m-0'>#{res[:catalogos].join(',')}</p>"
+    end
+
+    cats = []
+    res[:riesgo].each do |k,v|
+      next unless v.present?
+      cats << "#{k}: #{v.join(',')}"
+    end
+
+    cats.any? ? "<p class='f-categorias-riesgo-checklist text-right m-0'>#{cats.join('; ')}</p>" : nil
   end
 
   def categoriasRiesgoChecklist(taxon)
