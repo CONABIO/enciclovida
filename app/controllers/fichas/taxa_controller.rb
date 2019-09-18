@@ -157,11 +157,11 @@ class Fichas::TaxaController < Fichas::FichasController
               :uso,
               :id,
               :_destroy,
-              { pai_ids: [] }, # PENDIENTE
+              { pai_ids: [] },
+              { pais_inv_ids: [] },
+              { pais_inv2_ids: [] },
               { estado_ids: [] },
-              { municipio_ids: [] },
-              { pais_inv_ids: [] },  # PENDIENTE
-              { pais_inv2_ids: [] }  # PENDIENTE
+              { municipio_ids: [] }
           ],
 
           # ERROR
@@ -188,8 +188,8 @@ class Fichas::TaxaController < Fichas::FichasController
           habitats_attributes: [
               { ecorregion_ids: [] },
               { ecosistema_ids: [] },
-              { vegetacion_ids: [] }, # PENDIENTE
-              { vegetacion_acuatica_ids: [] }, # PENDIENTE
+              { vegetacion_ids: [] },
+              { vegetacion_acuatica_ids: [] },
               :tipoAmbiente,
               :tipoVegetacion,
               :estadoHabitat,
