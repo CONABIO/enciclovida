@@ -1,10 +1,10 @@
 <div class='nested-fields'>
 
-  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habitoPlantas, t('opciones_multiples.t_habitoPlantas')) %>
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habitoPlantas, t('opciones_multiples.t_habitoPlantas')) %>
   <div id="destino_de_habitoPlantas"></div>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.alimentacion') %></h3>
-  <%= select_multiple_nivel_3(f_taxon, :opciones_preguntas, :alimentacion, t('opciones_multiples.t_alimentacion')) %>
+  <%#= select_multiple_nivel_3(f_taxon, :opciones_preguntas, :alimentacion, t('opciones_multiples.t_alimentacion')) %>
   <div id="destino_de_alimentacion"></div>
   <%
     parametros = {:acceso => @taxon.infoalimentacion, :modelo => f_taxon, :association => :infoalimentacion, :titulo => "Información adicional", :el_div => "infoalimentacion", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoalimentacion]}
@@ -30,7 +30,7 @@
   <%= f.input :descripcionEstrofica %>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.forrajeo') %></h3>
-  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :forrajeo, t('opciones_multiples.t_forrajeo')) %>
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :forrajeo, t('opciones_multiples.t_forrajeo')) %>
   <div id="destino_de_forrajeo"></div>
   <%
     parametros = {:acceso => @taxon.infoaddforrajeo, :modelo => f_taxon, :association => :infoaddforrajeo, :titulo => "Información adicional", :el_div => "infoaddforrajeo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoaddforrajeo]}
@@ -45,9 +45,9 @@
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.conducta') %></h3>
   <%= f.input :conducta %>
-  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :migracion, t('opciones_multiples.t_migracion')) %>
-  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipo_migracion, t('opciones_multiples.t_tipo_migracion')) %>
-  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habito, t('opciones_multiples.t_habito')) %>
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :migracion, t('opciones_multiples.t_migracion')) %>
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipo_migracion, t('opciones_multiples.t_tipo_migracion')) %>
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habito, t('opciones_multiples.t_habito')) %>
   <div id="destino_de_migracion"></div>
   <div id="destino_de_tipo_migracion"></div>
   <div id="destino_de_habito"></div>
@@ -92,7 +92,7 @@
 
   <div id="opcion-reprodAnimal" style="display: none">
     <%=
-      link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie animal'.html_safe, f, :reproduccionAnimal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', render_options: {locals: { f_taxon: f_taxon}}, :force_non_association_create => true, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodAnimal', 'data-association-insertion-node' => '#opcion-reprodAnimal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodAnimal', 'onclick' => 'reload("seccion_reprod_animal")')
+      link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie animal'.html_safe, f, :reproduccionAnimal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', render_options: {locals: { f_taxon: f_taxon}}, :force_non_association_create => true, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodAnimal', 'data-association-insertion-node' => '#opcion-reprodAnimal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodAnimal', 'onclick' => 'reloadSection("reproduccionAnimal_add")')
     %>
     <%= f.simple_fields_for :reproduccionAnimal do |info| %>
       <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionAnimal', locals: {f: info, f_taxon: f_taxon}  %>
@@ -101,7 +101,7 @@
 
   <div id="opcion-reprodVegetal" style="display: none">
     <%=
-      link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie vegetal'.html_safe, f, :reproduccionVegetal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', render_options: {locals: { f_taxon: f_taxon}}, :force_non_association_create => true, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodVegetal', 'data-association-insertion-node' => '#opcion-reprodVegetal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodVegetal', 'onclick' => 'reload("seccion_reprod_vegetal")'
+      link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Agregar información sobre la especie vegetal'.html_safe, f, :reproduccionVegetal, partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', render_options: {locals: { f_taxon: f_taxon}}, :force_non_association_create => true, :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'opcion-reprodVegetal', 'data-association-insertion-node' => '#opcion-reprodVegetal', 'data-association-insertion-method' => 'append', href: '#opcion-reprodVegetal', 'onclick' => 'reloadSection("reproduccionVegetal_add")'
     %>
     <%= f.simple_fields_for :reproduccionVegetal do |info| %>
       <%= render partial: 'fichas/taxa/seccion_biologia/form_biologia_reproduccionVegetal', locals: {f: info, f_taxon: f_taxon}  %>
@@ -111,7 +111,7 @@
   <hr class="espacio_ficha">
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.dispersion') %></h3>
-  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipodispersion, t('opciones_multiples.t_tipodispersion')) %>
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipodispersion, t('opciones_multiples.t_tipodispersion')) %>
   <div id="destino_de_tipodispersion"></div>
   <%
     parametros = {:acceso => @taxon.infodisp, :modelo => f_taxon, :association => :infodisp, :titulo => "Información adicional", :el_div => "infodisp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infodisp]}
@@ -123,7 +123,7 @@
     <% end %>
   </div>
 
-  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :structdisp, t('opciones_multiples.t_structdisp')) %>
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :structdisp, t('opciones_multiples.t_structdisp')) %>
   <div id="destino_de_structdisp"></div>
   <%
     parametros = {:acceso => @taxon.infostruct, :modelo => f_taxon, :association => :infostruct, :titulo => "Información adicional", :el_div => "infostruct", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infostruct]}

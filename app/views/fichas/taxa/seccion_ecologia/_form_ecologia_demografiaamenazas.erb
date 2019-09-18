@@ -21,7 +21,7 @@
   <%= f.input :poblacionminviablefinal, input_html: { onblur: "checkValues(this)" } %>
 
   <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.interacciones') %></h3>
-  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :interacciones, t('opciones_multiples.t_interacciones')) %>
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :interacciones, t('opciones_multiples.t_interacciones')) %>
   <div id="destino_de_interacciones"></div>
   <%
     parametros = {:acceso => @taxon.infointer, :modelo => f_taxon, :association => :infointer, :titulo => "Información adicional", :el_div => "infointer", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infointer]}

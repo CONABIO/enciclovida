@@ -726,8 +726,10 @@ es:
         uri: Uri
         titulo: Título
         fechaPublicacion: Fecha de publicación
-        asiciado:
-          rol: Capturista
+        asociado:
+          responsableId: Nombre del responsable
+          organizacionId: Nombre de la organización
+          rol: Rol
           tipoAsociacion: Tipo de asociación
           responsable:
             responsableId: Nombre del responsable
