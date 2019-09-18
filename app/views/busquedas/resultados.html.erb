@@ -28,7 +28,7 @@
         $(document).ready(function(){
             asignaFiltros(<%=raw @setParams.to_json %>);
 
-            <% if params[:id].present? && params[:nivel].present? &&params[:cat].present? %>
+            <% if params[:id].present? && params[:nivel].present? && params[:cat].present? %>
             cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
             <% end %>
         });
@@ -70,7 +70,7 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <%= link_to("Lista de especies", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-lista', 'onclick': "$('#modal-descarga-lista').modal('toggle');return false;", class: 'dropdown-item') %>
-          <%= link_to("Checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item') %>
+          <%= link_to("Checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
         </div>
       </div>
     <% end %>
