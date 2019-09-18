@@ -20,40 +20,30 @@ $( document ).ready(function() {
     // - - - -
 
     $('#importancia')
-
         .on("cocoon:before-remove", function (event) {
-            var confirmation = confirm("Estás seguro?");;
+            var confirmation = confirm("¿Estás seguro?");;
             if( confirmation === false ){
                 event.preventDefault();
             }
         });
     // - - - -
 
-    $('#opcion-reprodAnimal')
+    $('#biologia')
         .on('cocoon:before-insert', function (event) {
-            // Antes de agregar información animal, verificr que no exista antes
-            var hay_rep = document.getElementsByClassName("reproduccionAnimal_add").length;
-            if (hay_rep > 0){
-                confirm("Ya puedes seguir completando el formulario!");
-                event.preventDefault();
-            }
-        })
 
-        .on("cocoon:before-remove", function (event) {
-            var confirmation = confirm("Estás seguro?");
-            if( confirmation === false ){
-                event.preventDefault();
-            }
-        });
-
-    // - - - -
-    $('#opcion-reprodVegetal')
-        .on('cocoon:before-insert', function (event) {
-            // Antes de agregar información animal, verificr que no exista antes
-            var hay_rep = document.getElementsByClassName("reproduccionVegetal_add").length;
-            if (hay_rep > 0){
-                confirm("Ya puedes seguir completando el formulario!");
-                event.preventDefault();
+            if(event.target.id.includes('reprodAnimal')) {
+                // Antes de agregar información animal, verificr que no exista antes
+                var hay_rep = document.getElementsByClassName("reproduccionAnimal_add").length;
+                if (hay_rep > 0){
+                    confirm("Ya puedes seguir completando el formulario!");
+                    event.preventDefault();
+                }
+            } else {
+                var hay_rep = document.getElementsByClassName("reproduccionVegetal_add").length;
+                if (hay_rep > 0){
+                    confirm("Ya puedes seguir completando el formulario!");
+                    event.preventDefault();
+                }
             }
         })
 
@@ -220,31 +210,51 @@ function showOrHideSegunTipoReproduccion() {
 
 }
 
-// Después de cargar una sección, cargar estilos de selectpicker y tinyMCE de toda la sección
-function reloadSection(section) {
+// Función que moverá los selects de taxón a su respectiva sección
+function cargaSelectsMultiples(seccion) {
 
-    // Ocultar las opciones cuando es 'NO'
-    ocultaContenidoSiNo();
+    // Todos los selects que contiene cada sección
+    var seccionesSelects = new Object();
+    seccionesSelects['ecologia'] = ['interacciones'];
+    seccionesSelects['biologia'] = ['habitoPlantas', 'alimentacion', 'forrajeo', 'migracion', 'tipo_migracion', 'habito', 'tipodispersion', 'structdisp'];
+    seccionesSelects['biologiaAnimal'] = ['sistapareamiento', 'sitioanidacion'];
+    seccionesSelects['biologiaVegetal'] = ['arregloespacial', 'arregloespacialflores', 'arregloespacialindividuos', 'arregloespacialpoblaciones', 'vectorespolinizacion', 'agentespolinizacion'];
+    seccionesSelects['conservacion'] = ['esquemamanejo', 'tipoaprovechamiento', 'tipopesca', 'regioncaptura', 'artepesca', 'acuacultura'];
+    seccionesSelects['importancia'] = ['comnalsel', 'proposito_com', 'comintersel', 'proposito_com_int'];
+    seccionesSelects['ambiente'] = ['habitatAntropico', 'vegetacionSecundaria', 'tipovegetmundial', 'clima', 'climaexo', 'suelo', 'geoforma', 'ecorregionMarinaN1', 'zonaVida'];
+    seccionesSelects['invasividad'] = ['naturalizacionsei', 'mecanismos', 'efectoimpactosei', 'intensidadimpactosei', 'especiesasociadassei', 'plasticidadsei', 'platenciasei', 'seguridadsei', 'enfermedadessei'];
 
-    if (section === 'biologia') {
-        //  mostrar correctamente el formulario de la sección Biologia
-        showOrHideSegunTipoReproduccion();
-        $('#carga_multiselect_habitoPlantas').appendTo('#multiselect_habitoPlantas');
-        $('#carga_multiselect_habitoPlantas').removeAttr("style");
+    if(seccionesSelects[seccion] !== undefined) {
+        for (var i in seccionesSelects[seccion]) {
+            if (seccionesSelects[seccion].hasOwnProperty(i)) {
+                var currentSelect = seccionesSelects[seccion][i];
+                $('#select_de_' + currentSelect).appendTo('#destino_de_' + currentSelect);
+                if(seccion === 'biologia') { iteraReproduccionAnimalVegetal(seccionesSelects); }
+            }
+        }
     }
+}
 
-    if (section === 'ambiente') {
-        // mostrar correctamente el formulario de la sección Ambiente
-        showOrHideAmbienteDesarrolloEspecie();
+function iteraReproduccionAnimalVegetal(seccionesSelects) {
+
+    // Si existe la reproducción avegetal:
+    if ( $(".reproduccionVegetal_add").length ) {
+        for (var j in seccionesSelects['biologiaVegetal']) {
+            if (seccionesSelects['biologiaVegetal'].hasOwnProperty(j)) {
+                var cSelect = seccionesSelects['biologiaVegetal'][j];
+                $('#select_de_' + cSelect).appendTo('#destino_de_' + cSelect);
+            }
+        }
     }
-
-
-    muestraSoloApartadoSegunFicha();
-
-    setTimeout(function () {
-        $('#' + section + ' .selectpicker').selectpicker('refresh');
-        tinyMCE.init({ selector: '#' + section + ' textarea.form-control' });
-    }, 10);
+    // Si existe la reproducción avegetal:
+    if ( $(".reproduccionAnimal_add").length ) {
+        for (var j in seccionesSelects['biologiaAnimal']) {
+            if (seccionesSelects['biologiaAnimal'].hasOwnProperty(j)) {
+                var cSelect = seccionesSelects['biologiaAnimal'][j];
+                $('#select_de_' + cSelect).appendTo('#destino_de_' + cSelect);
+            }
+        }
+    }
 }
 
 // Según el tipo de ficha, mostrar u ocultar el contenido que las diferencia
@@ -253,13 +263,6 @@ function muestraSoloApartadoSegunFicha() {
     showOrHideInfoFicha();
 }
 
-// Recargan los imputs selectpicker y tinyMCE nuevos
-function reload(classe) {
-    setTimeout(function () {
-        $('.' + classe).selectpicker('refresh');
-        tinyMCE.init({ selector: '.tiny_' + classe });
-    }, 10)
-}
 
 // Para que los valores min y max sean correctos
 function checkValues(e) {
@@ -330,16 +333,52 @@ function cargaSeccionEnDiv(nombreSeccion, event) {
         // Si el taxón es nuevo:
         if(accion.includes('new')) {
             el_div.load(seccionACargar +' #contenido_' + nombreSeccion, function () {
-                reloadSection(nombreSeccion);
+                loadSection(nombreSeccion);
+                cargaSelectsMultiples(nombreSeccion);
             });
         } else {
             if(accion.includes('edit')) {
                 seccionACargar += accion.replace("/edit", "");
                 el_div.load(seccionACargar +' #contenido_' + nombreSeccion, function () {
-                    reloadSection(nombreSeccion);
+                    loadSection(nombreSeccion);
+                    cargaSelectsMultiples(nombreSeccion);
                 });
             }
         }
     }
 
+}
+
+// Recargan los imputs selectpicker y tinyMCE nuevos
+function reload(classe) {
+    setTimeout(function () {
+        $('.' + classe).selectpicker('refresh');
+        tinyMCE.init({ selector: '.tiny_' + classe });
+    }, 10)
+}
+
+// Después de cargar una sección, cargar estilos de selectpicker y tinyMCE de toda la sección
+function reloadSection(section) {
+    setTimeout(function () {
+        $('#' + section + ' .selectpicker').selectpicker('refresh');
+        tinyMCE.init({ selector: '#' + section + ' textarea.form-control' });
+    }, 10);
+}
+
+// Después de cargar una sección, cargar estilos de selectpicker y tinyMCE de toda la sección
+function loadSection(section) {
+
+    // Ocultar las opciones cuando es 'NO'
+    ocultaContenidoSiNo();
+    muestraSoloApartadoSegunFicha();
+
+    //  mostrar correctamente el formulario de la sección Biologia
+    if (section === 'biologia')
+        showOrHideSegunTipoReproduccion();
+
+    // mostrar correctamente el formulario de la sección Ambiente
+    if (section === 'ambiente')
+        showOrHideAmbienteDesarrolloEspecie();
+
+    reloadSection(section);
 }

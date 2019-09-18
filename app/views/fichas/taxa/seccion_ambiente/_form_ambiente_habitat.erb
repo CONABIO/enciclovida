@@ -34,13 +34,15 @@
     %>
     <%= f.input :tipoVegetacion %>
 
-    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habitatAntropico, t('opciones_multiples.t_habitatAntropico')) %>
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habitatAntropico, t('opciones_multiples.t_habitatAntropico')) %>
+    <div id="destino_de_habitatAntropico"></div>
 
     <%= f.input :habitatAgropecuario, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
     <%= f.input :zonaUrbana, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
     <%= f.input :VegetacionSecundaria, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "vegetacion-secundaria")'} %>
     <div id="vegetacion-secundaria">
-      <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :vegetacionSecundaria, t('opciones_multiples.t_tipoVegetacionSecundaria')) %>
+      <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :vegetacionSecundaria, t('opciones_multiples.t_tipoVegetacionSecundaria')) %>
+      <div id="destino_de_vegetacionSecundaria"></div>
     </div>
 
     <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
@@ -56,7 +58,8 @@
 
     <div class="apartadoFicha ficha-Invasora">
       <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.vegetacion_mundial') %></h3>
-      <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipovegetmundial, t('opciones_multiples.t_tipovegetmundial')) %>
+      <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipovegetmundial, t('opciones_multiples.t_tipovegetmundial')) %>
+      <div id="destino_de_tipovegetmundial"></div>
       <%= parametros = { :acceso => @taxon.ambi_vegetacion_esp_mundo, :modelo => f_taxon, :association => :ambi_vegetacion_esp_mundo, :titulo => "Información adicional", :el_div => "ambi_vegetacion_esp_mundo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_vegetacion_esp_mundo]}
           agrega_info_adicional(parametros)
       %>
@@ -73,7 +76,8 @@
     <%= f.input :infoAddintervaloaltitudinal %>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.clima') %></h3>
-    <%= select_multiple_nivel_2(f_taxon, :opciones_preguntas, :clima, t('opciones_multiples.t_climas')) %>
+    <%#= select_multiple_nivel_2(f_taxon, :opciones_preguntas, :clima, t('opciones_multiples.t_climas')) %>
+    <div id="destino_de_clima"></div>
     <%= parametros = {:acceso => @taxon.ambi_info_clima, :modelo => f_taxon, :association => :ambi_info_clima, :titulo => "Información adicional", :el_div => "ambi_info_clima", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima]}
         agrega_info_adicional(parametros)
     %>
@@ -85,7 +89,8 @@
 
     <div class="apartadoFicha ficha-Invasora">
       <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.clima_exo') %></h3>
-      <%= select_multiple_nivel_2(f_taxon, :opciones_preguntas, :climaexo, t('opciones_multiples.t_climaexo')) %>
+      <%#= select_multiple_nivel_2(f_taxon, :opciones_preguntas, :climaexo, t('opciones_multiples.t_climaexo')) %>
+      <div id="destino_de_climaexo"></div>
       <%= parametros = {:acceso => @taxon.ambi_info_clima_exotico, :modelo => f_taxon, :association => :ambi_info_clima_exotico, :titulo => "Información adicional", :el_div => "ambi_info_clima_exotico", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico]}
           agrega_info_adicional(parametros)
       %>
@@ -126,7 +131,8 @@
     <%= f.input :infoaddhumedad %>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_suelo') %></h3>
-    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :suelo, t('opciones_multiples.t_suelo')) %>
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :suelo, t('opciones_multiples.t_suelo')) %>
+    <div id="destino_de_suelo"></div>
     <% parametros = {:acceso => @taxon.ambi_infotiposuelo, :modelo => f_taxon, :association => :ambi_infotiposuelo, :titulo => "Información adicional", :el_div => "infotiposuelo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infotiposuelo]}
        agrega_info_adicional(parametros)
     %>
@@ -137,7 +143,8 @@
     </div>
 
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.geoforma') %></h3>
-    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :geoforma, t('opciones_multiples.t_geoforma')) %>
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :geoforma, t('opciones_multiples.t_geoforma')) %>
+    <div id="destino_de_geoforma"></div>
     <%
       parametros = {:acceso => @taxon.ambi_infogeoforma, :modelo => f_taxon, :association => :ambi_infogeoforma, :titulo => "Información adicional", :el_div => "ambi_infogeoforma", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_infogeoforma]}
       agrega_info_adicional(parametros)
@@ -153,10 +160,12 @@
   <%# Aquí inicia la parte marina %>
   <div id="ambiente-solo-marino">
     <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_habitat') %></h3>
-    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :ecorregionMarinaN1, t('opciones_multiples.t_ecorregionMarinaN1')) %>
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :ecorregionMarinaN1, t('opciones_multiples.t_ecorregionMarinaN1')) %>
+    <div id="destino_de_ecorregionMarinaN1"></div>
     <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.ecosistemas') %></h4>
 
-    <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :zonaVida, t('opciones_multiples.t_zonaVida')) %>
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :zonaVida, t('opciones_multiples.t_zonaVida')) %>
+    <div id="destino_de_zonaVida"></div>
     <%= f.input :biotipos %>
 
     <%= f.association :vegetacion_acuatica,

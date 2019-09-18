@@ -11,13 +11,17 @@ class Fichas::Habitat < Ficha
 
 	has_many :relEcorregionesHabitats, class_name: 'Fichas::Relecorregionhabitat', :foreign_key => 'habitatId'
 	has_many :relEcosistemasHabitats, class_name: 'Fichas::Relecosistemahabitat', :foreign_key => 'habitatId'
-	has_many :relHabitatsVegetaciones , class_name: 'Fichas::Relhabitatvegetacion', :foreign_key => 'habitatId'
+	has_many :relHabitatsVegetaciones , class_name: 'Fichas::Relhabitatvegetacion', :foreign_key => 'habitatId', before_add: :agregaVegetacionNativo
 	has_many :relVegetacionesAcuaticasHabitats , class_name: 'Fichas::Relvegetacionacuaticahabitat', :foreign_key => 'habitatId'
 
 	has_many :ecorregion, class_name: 'Fichas::Ficha_Ecorregion', through: :relEcorregionesHabitats
   has_many :ecosistema, class_name: 'Fichas::Ecosistema', through: :relEcosistemasHabitats
 	has_many :vegetacion, class_name: 'Fichas::Vegetacion', through: :relHabitatsVegetaciones
 	has_many :vegetacion_acuatica, class_name: 'Fichas::Vegetacionacuatica', through: :relVegetacionesAcuaticasHabitats
+
+	def agregaVegetacionNativo(vegetacion)
+		vegetacion.observaciones = "nativa"
+	end
 
 	# Acceso a las opciones de catálogo
 	accepts_nested_attributes_for :ecorregion, allow_destroy: true, reject_if: :all_blank

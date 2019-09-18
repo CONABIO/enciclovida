@@ -1,8 +1,10 @@
 class TipoRegion < ActiveRecord::Base
 
-  self.table_name = "#{CONFIG.bases.cat}.tipos_regiones"
-  self.primary_key = 'id'
-  has_many :regiones
+  self.table_name = "#{CONFIG.bases.cat}.TipoRegion"
+  self.primary_key = 'IdTipoRegion'
+
+  alias_attribute :id, :IdTipoRegion
+  alias_attribute :descripcion, :Descripcion
 
   TIPOS_REGIONES = ['ESTADO', 'REGIONES HIDROLÓGICAS PRIORITARIAS', 'REGIONES MARINAS PRIORITARIAS',
                     'REGIONES TERRESTRES PRIORITARIAS', 'ECORREGIONES MARINAS', 'REGIONES MORFOLÓGICAS', 'REGIONES COSTERAS']
@@ -12,10 +14,6 @@ class TipoRegion < ActiveRecord::Base
                       '400' => 'Regiones terrestres prioritarias', '500' => 'Ecorregiones marinas',
                       '510' => 'Regiones morfológicas', '511' => 'Regiones costeras'}
 
-  def self.iniciales
-    limites = Bases.limites(1000000)  #por default toma la primera
-    id_inferior = limites[:limite_inferior]
-    id_superior = limites[:limite_superior]
-    where(:descripcion => TIPOS_REGIONES, :id => id_inferior..id_superior)
-  end
+  FILTRO = ['ESTADO', 'ECORREGIONES MARINAS']
+
 end

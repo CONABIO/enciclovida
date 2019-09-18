@@ -3,7 +3,9 @@
   <%= f.input :responsableId,
               :as => :select,
               collection: Fichas::Responsable.all,
-              label_method: :nombre,
+              label_method:  ->(obj){
+                "#{obj.nombre} #{obj.apellido}"
+              },
               value_method: :responsableId,
               input_html: {
                   class: 'form-control selectpicker',

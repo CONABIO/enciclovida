@@ -157,11 +157,11 @@ class Fichas::TaxaController < Fichas::FichasController
               :uso,
               :id,
               :_destroy,
-              { pai_ids: [] }, # PENDIENTE
+              { pai_ids: [] },
+              { pais_inv_ids: [] },
+              { pais_inv2_ids: [] },
               { estado_ids: [] },
-              { municipio_ids: [] },
-              { pais_inv_ids: [] },  # PENDIENTE
-              { pais_inv2_ids: [] }  # PENDIENTE
+              { municipio_ids: [] }
           ],
 
           # ERROR
@@ -188,8 +188,8 @@ class Fichas::TaxaController < Fichas::FichasController
           habitats_attributes: [
               { ecorregion_ids: [] },
               { ecosistema_ids: [] },
-              { vegetacion_ids: [] }, # PENDIENTE
-              { vegetacion_acuatica_ids: [] }, # PENDIENTE
+              { vegetacion_ids: [] },
+              { vegetacion_acuatica_ids: [] },
               :tipoAmbiente,
               :tipoVegetacion,
               :estadoHabitat,
@@ -420,10 +420,42 @@ class Fichas::TaxaController < Fichas::FichasController
               :amphISK,
               :TIISK,
               :PierHear,
-              :MERI
+              :MERI,
+              :id,
+              :_destroy
           ],
 
-          metadatos_attributes: [],
+          metadatos_attributes: [
+              :uriIcono,
+              :nombre,
+              :uri,
+              :titulo,
+              :fechaPublicacion,
+              :id,
+              :_destroy,
+              {
+                  asociado_attributes: [
+                      :responsableId,
+                      :organizacionId,
+                      :rol,
+                      :tipoAsociacion,
+                      :id,
+                      :_destroy,
+                      {
+                          contacto_attributes: [
+                              :puntoEntrega,
+                              :areaAdmin,
+                              :codigoPostal,
+                              :telefono,
+                              :correoElectronico,
+                              :paginaWeb,
+                              :id,
+                              :_destroy
+                          ]
+                      }
+                  ]
+              }
+          ],
 
           # OK
           referenciasBibliograficas_attributes: [
@@ -521,6 +553,7 @@ class Fichas::TaxaController < Fichas::FichasController
       productocomercio_inter_attributes
       endemicas_attributes
       distribucion_historica_attributes
+      metadatos_attributes
 
       ambi_info_ecorregiones_attributes
       ambi_especies_asociadas_attributes

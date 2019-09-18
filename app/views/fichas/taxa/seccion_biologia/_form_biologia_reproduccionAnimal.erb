@@ -1,14 +1,15 @@
-<div class='nested-fields reproduccionAnimal_add'>
+<div class='nested-fields reproduccionAnimal_add' id="reproduccionAnimal_add">
   <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.reprod_animal') %></h3>
-  <%= f.input :descripcion, input_html: { class: 'tiny_seccion_reprod_animal'} %>
+  <%= f.input :descripcion %>
   <%= f.input :dimorfismoSexual, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "dimorfismoSexualAnimal")'} %>
   <div id="dimorfismoSexualAnimal">
-    <%= f.input :additionalInfoDimorfiasmo, input_html: { class: 'tiny_seccion_reprod_animal'} %>
+    <%= f.input :additionalInfoDimorfiasmo %>
   </div>
   <%= f.input :coloracion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
   <%= f.input :ornamentacion, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
 
-  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :sistapareamiento, t('opciones_multiples.t_sistapareamiento'), 'seccion_reprod_animal') %>
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :sistapareamiento, t('opciones_multiples.t_sistapareamiento'), 'seccion_reprod_animal') %>
+  <div id="destino_de_sistapareamiento"></div>
   <%
     parametros = {:acceso => @taxon.infosistaparea, :modelo => f_taxon, :association => :infosistaparea, :titulo => "Información adicional", :el_div => "infosistaparea", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infosistaparea]}
     agrega_info_adicional(parametros)
@@ -23,12 +24,12 @@
               collection: Fichas::Reproduccionanimal::EVENTOS_REPROD,
               :as => :select,
               input_html: {
-                  class: 'form-control selectpicker seccion_reprod_animal',
+                  class: 'form-control selectpicker',
                   'data-live-search': 'true',
                   'title': t('general.seleccionar_opcion')
               }
   %>
-  <%= f.input :descripcionNoEventos, input_html: { class: 'tiny_seccion_reprod_animal'} %>
+  <%= f.input :descripcionNoEventos %>
 
   <h3 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.tiempo_eventos_rep') %></h3>
   <%= f.input :tiempoentrecriasinicial %>
@@ -38,18 +39,19 @@
               collection: Fichas::Reproduccionanimal::TIPO_FECUNDACION,
               :as => :select,
               input_html: {
-                  class: 'form-control selectpicker seccion_reprod_animal',
+                  class: 'form-control selectpicker',
                   'data-live-search': 'true',
                   'title': t('general.seleccionar_opcion')
               }
   %>
-  <%= f.input :descripcionTipoFec, input_html: { class: 'tiny_seccion_reprod_animal'} %>
+  <%= f.input :descripcionTipoFec %>
 
   <%= f.input :edadPrimeraRepro %>
   <%= f.input :duracionVidaRepro %>
-  <%= f.input :frecuenciaApareamineto, input_html: { class: 'tiny_seccion_reprod_animal'} %>
+  <%= f.input :frecuenciaApareamineto %>
 
-  <%= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :sitioanidacion, t('opciones_multiples.t_sitioanidacion'), 'seccion_reprod_animal') %>
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :sitioanidacion, t('opciones_multiples.t_sitioanidacion'), 'seccion_reprod_animal') %>
+  <div id="destino_de_sitioanidacion"></div>
   <%
     parametros = {:acceso => @taxon.infocrianza, :modelo => f_taxon, :association => :infocrianza, :titulo => "Información adicional", :el_div => "infocrianza", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infocrianza]}
     agrega_info_adicional(parametros)
@@ -60,7 +62,7 @@
     <% end %>
   </div>
 
-  <%= f.input :noHuevosCrias, input_html: { class: 'tiny_seccion_reprod_animal'} %>
+  <%= f.input :noHuevosCrias %>
 
   <%= f.input :cuidadoParental, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "cuidadoParentalAnimal")'} %>
   <div id="cuidadoParentalAnimal">
@@ -68,15 +70,15 @@
                 collection: Fichas::Reproduccionanimal::CUIDADO_PARENTAL,
                 :as => :select,
                 input_html: {
-                    class: 'form-control selectpicker seccion_reprod_animal',
+                    class: 'form-control selectpicker',
                     'data-live-search': 'true',
                     'title': t('general.seleccionar_opcion')
                 }
     %>
-    <%= f.input :desCuidadoParental, input_html: { class: 'tiny_seccion_reprod_animal'} %>
+    <%= f.input :desCuidadoParental %>
   </div>
 
-  <%= f.input :tiempoCuidadoParental, input_html: { class: 'tiny_seccion_reprod_animal'} %>
+  <%= f.input :tiempoCuidadoParental %>
 
   <%= link_to_remove_association 'Borrar información', f, :class => 'btn btn-danger btn-sm' %><hr>
 </div>
