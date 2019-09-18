@@ -64,21 +64,14 @@
     <%# end %>
 
     <% if @totales > 0 %>
-      <div class="btn-group col-1">
-        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i><%= icono_descarga %></i> Descargas <span class=""></span>
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Descargas
         </button>
-
-        <ul class="dropdown-menu dropdown-menu-right" style="z-index: 1001;">
-          <li>
-            <%= link_to("Lista de especies", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-lista', 'onclick': "$('#modal-descarga-lista').modal('toggle');return false;") %>
-          </li>
-
-          <%# if params[:id].present? %>
-          <!--li><%#= link_to("Checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;") %></li-->
-          <%# end %>
-        </ul>
-
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <%= link_to("Lista de especies", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-lista', 'onclick': "$('#modal-descarga-lista').modal('toggle');return false;", class: 'dropdown-item') %>
+          <%= link_to("Checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item') %>
+        </div>
       </div>
     <% end %>
 
@@ -117,6 +110,6 @@
 </div>
 
 <%= render partial: 'busquedas/form_descarga_lista' %>
-<%#= render partial: 'busquedas/form_descarga_checklist' %>
+<%= render partial: 'busquedas/form_descarga_checklist' %>
 
 
