@@ -109,7 +109,7 @@
 
 </div>
 
-<%= render partial: 'busquedas/form_descarga_lista' %>
-<%= render partial: 'busquedas/form_descarga_checklist' %>
+<%= render partial: 'busquedas/form_descarga_lista' if @totales > 0 %>
+<%= render partial: 'busquedas/form_descarga_checklist' if @totales > 0 %>
 
 
