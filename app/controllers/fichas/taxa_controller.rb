@@ -145,6 +145,8 @@ class Fichas::TaxaController < Fichas::FichasController
           ],
 
           distribuciones_attributes: [
+              :distribucionId,
+              :especieId,
               :infoadicionalmexedo,
               :infoAdicionalMun,
               :historicaPotencial,
@@ -190,6 +192,8 @@ class Fichas::TaxaController < Fichas::FichasController
               { ecosistema_ids: [] },
               { vegetacion_ids: [] },
               { vegetacion_acuatica_ids: [] },
+              :habitatId,
+              :especieId,
               :tipoAmbiente,
               :tipoVegetacion,
               :estadoHabitat,
@@ -437,6 +441,7 @@ class Fichas::TaxaController < Fichas::FichasController
                   asociado_attributes: [
                       :responsableId,
                       :organizacionId,
+                      :puestoId,
                       :rol,
                       :tipoAsociacion,
                       :id,

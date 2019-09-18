@@ -8,7 +8,7 @@ class Fichas::Asociado < Ficha
 	belongs_to :organizacion, :class_name => 'Fichas::Organizacion', :foreign_key => 'organizacionId'
 
 	has_many :relAsociadosContactos, class_name: 'Fichas::Relasociadocontacto', :foreign_key => 'contactoId'
-	has_many :relMetadatosAsociados , class_name: 'Fichas::Relmetadatosasociado', :foreign_key => 'metadatosId'
+	has_many :relMetadatosAsociados , class_name: 'Fichas::Relmetadatosasociado', :foreign_key => :asociadoId
 
 	has_many :contacto, class_name: 'Fichas::Contacto', through: :relAsociadosContactos
 

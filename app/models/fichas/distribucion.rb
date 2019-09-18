@@ -5,11 +5,11 @@ class Fichas::Distribucion < Ficha
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
-	has_many :relDistribucionesPaises,->{where('reldistribucionpais.tipopais = ?', 0)}, class_name: 'Fichas::Reldistribucionpais', :foreign_key => "distribucionId", before_add: :agregaPais
-	has_many :relDistribucionesPaises_inv,->{where('reldistribucionpais.tipopais = ?', 1)}, class_name: 'Fichas::Reldistribucionpais', :foreign_key => "distribucionId", before_add: :agregaPaisInv
-	has_many :relDistribucionesPaises_inv2,->{where('reldistribucionpais.tipopais = ?', 2)}, class_name: 'Fichas::Reldistribucionpais', :foreign_key => "distribucionId", before_add: :agregaPaisInv2
-	has_many :relDistribucionesEstados, class_name: 'Fichas::Reldistribucionestado', :foreign_key => "distribucionId", primary_key: :distribucionId
-	has_many :relDistribucionesMunicipios, class_name: 'Fichas::Reldistribucionmunicipio', :foreign_key => "distribucionId"
+	has_many :relDistribucionesPaises,->{where('reldistribucionpais.tipopais = ?', 0)}, class_name: 'Fichas::Reldistribucionpais', :foreign_key => "distribucionId", before_add: :agregaPais, inverse_of: :distribucion
+	has_many :relDistribucionesPaises_inv,->{where('reldistribucionpais.tipopais = ?', 1)}, class_name: 'Fichas::Reldistribucionpais', :foreign_key => "distribucionId", before_add: :agregaPaisInv, inverse_of: :distribucion
+	has_many :relDistribucionesPaises_inv2,->{where('reldistribucionpais.tipopais = ?', 2)}, class_name: 'Fichas::Reldistribucionpais', :foreign_key => "distribucionId", before_add: :agregaPaisInv2, inverse_of: :distribucion
+	has_many :relDistribucionesEstados, class_name: 'Fichas::Reldistribucionestado', :foreign_key => "distribucionId", inverse_of: :distribucion
+	has_many :relDistribucionesMunicipios, class_name: 'Fichas::Reldistribucionmunicipio', :foreign_key => "distribucionId", inverse_of: :distribucion
 
 	has_many :pais, class_name: 'Fichas::Pais', :through => :relDistribucionesPaises
 	has_many :pais_inv, class_name: 'Fichas::Pais', :through => :relDistribucionesPaises_inv
