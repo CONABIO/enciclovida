@@ -150,7 +150,7 @@ module BusquedasHelper
 
     nombres.each do |hash_nombres|
       lengua = hash_nombres.keys.first
-      html << "<span>#{hash_nombres[lengua].uniq.sort.join(', ')} <sub><i>#{lengua}</i></sub>; </span>"
+      html << "<span>#{hash_nombres[lengua].uniq.sort.join(', ')} <sub>(#{lengua})</sub>; </span>"
     end
 
     @@html << "<p class='m-0'>#{html}</p>"
@@ -158,7 +158,7 @@ module BusquedasHelper
 
   # Devuelve una lista de sinónimos y basónimos
   def sinonimosBasonimoChecklist(taxon)
-    sinonimos_basonimo = {sinonimos: [], basonimo: [], huesped_hospedero: []}
+    sinonimos_basonimo = {sinonimos: [], basonimo: [], hospedero: [], parasito: []}
 
     taxon.especies_estatus.each do |estatus|
       next unless [1,2,7].include?(estatus.estatus_id)
@@ -176,12 +176,19 @@ module BusquedasHelper
         regiones = distribucionChecklist(taxon_estatus, false)
 
         if regiones.any?
-          sinonimos_basonimo[:huesped_hospedero] << "#{nombre_cientifico} <sub>(#{regiones.join(', ')})</sub>"
+          if taxon.ancestry_ascendente_directo.include?(',213407,')  # Chordata equivale a parásito
+            sinonimos_basonimo[:parasito] << "#{nombre_cientifico} <sub>(#{regiones.join(', ')})</sub>"
+          elsif taxon.ancestry_ascendente_directo.include?(',132386,') || taxon.ancestry_ascendente_directo.include?(',132387,')  # Acantocephala o Platyhelminthes equivale a hospedero
+            sinonimos_basonimo[:hospedero] << "#{nombre_cientifico} <sub>(#{regiones.join(', ')})</sub>"
+          end
         else
-          sinonimos_basonimo[:huesped_hospedero] << nombre_cientifico
-        end
-
-      end
+          if taxon.ancestry_ascendente_directo.include?(',213407,')  # Chrodata equivale a parásito
+            sinonimos_basonimo[:parasito] << nombre_cientifico
+          elsif taxon.ancestry_ascendente_directo.include?(',132386,') || taxon.ancestry_ascendente_directo.include?(',132387,')  # Acantocephala o Platyhelminthes equivale a hospedero
+            sinonimos_basonimo[:hospedero] << nombre_cientifico
+          end
+        end  # End if regiones.any?
+      end  # End when 7
     end
 
     if sinonimos_basonimo[:basonimo].any?
@@ -192,11 +199,13 @@ module BusquedasHelper
       @@html << "<p class='m-0'><label class='etiqueta-checklist'>Sinónimo(s): </label>#{sinonimos_basonimo[:sinonimos].join('; ')}</p>"
     end
 
-    if sinonimos_basonimo[:huesped_hospedero].any?
-      huesped_hospedero =  "<p class='mt-4'><label class='etiqueta-checklist'>Interacciones biológicas</label></p><p><label class='etiqueta-checklist'>Parásito(s): </label>#{sinonimos_basonimo[:huesped_hospedero].join('; ')}</p>"
-    end
+    huesped_hospedero = if sinonimos_basonimo[:parasito].any?
+                          "<p class='mt-4'><label class='etiqueta-checklist'>Interacciones biológicas</label></p><p><label class='etiqueta-checklist'>Parásito(s): </label>#{sinonimos_basonimo[:parasito].join('; ')}</p>"
+                        elsif sinonimos_basonimo[:hospedero].any?
+                          "<p class='mt-4'><label class='etiqueta-checklist'>Interacciones biológicas</label></p><p><label class='etiqueta-checklist'>Hopedero(s): </label>#{sinonimos_basonimo[:hospedero].join('; ')}</p>"
+                        end
 
-    huesped_hospedero if sinonimos_basonimo[:huesped_hospedero].any?
+    huesped_hospedero if huesped_hospedero.present?
   end
 
   # Regresa el tipo de distribucion
