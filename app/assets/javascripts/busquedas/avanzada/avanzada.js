@@ -69,34 +69,6 @@ var asignaFiltros = function(SET_PARAMS)
     }
 };
 
-// Para validar una ultima vez cuando paso la validacion del boton
-$('#modal-descarga-checklist').on('click', '#boton-descarga-checklist', function(){
-    var correo = $('#correo-checklist').val();
-    var url = $('#modal-menu-checklist').attr('url');
-
-    if(correoValido(correo))
-    {
-        $.ajax({
-            url: url + "&correo=" + correo,
-            type: 'GET',
-            dataType: "json"
-        }).done(function(resp) {
-            $('#modal-descarga-lista').modal('toggle');
-
-            if (resp.estatus == 1)
-                $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
-            else
-                $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
-
-        }).fail(function(){
-            $('#modal-descarga-lista').modal('toggle');
-            $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
-        });
-
-    } else
-        return false;
-});
-
 $(document).ready(function()
 {
     $('#busqueda_avanzada').on('change', ".radio input", function()
@@ -138,6 +110,20 @@ $(document).ready(function()
     });
 
      */
+
+    // Para validar una ultima vez cuando paso la validacion del boton y quiere descragar el checklist
+    $('#modal-descarga-checklist').on('click', '#boton-descarga-checklist', function(){
+        var correo = $('#correo-checklist').val();
+        var url = $('#modal-menu-checklist').attr('url');
+
+        if(correoValido(correo))
+        {
+            $('#modal-descarga-checklist').modal('toggle');
+            $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
+            window.open(url,'_blank');
+        } else
+            return false;
+    });
 
     // Para la validacion del correo en la descarga del checklist
     dameValidacionCorreo('checklist', '#notice-avanzada');
