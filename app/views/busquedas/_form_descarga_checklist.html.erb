@@ -13,49 +13,43 @@
 
         <div class="form-group has-feedback">
 
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="col-12 mb-3">
             <%= campoCorreo('checklist').html_safe %>
           </div>
 
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="col-12 mb-3">
             <%= label_tag 'ambiente', 'Ambiente', class: 'control-label' %>
             <%= selectAmbiente.html_safe %>
           </div>
 
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="col-12 mb-3">
             <%= label_tag 'dist', 'Tipo de distribución', class: 'control-label' %>
             <%= checkboxTipoDistribucion.html_safe %>
           </div>
 
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="col-12 mb-3">
             <%= label_tag 'edo_cons', 'Categorías de riesgo y comercio internacional', class: 'control-label' %>
             <%= checkboxEstadoConservacion.html_safe %>
           </div>
 
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="col-12 mb-3">
             <%= label_tag 'reg', 'Distribución (reportada en literatura)', class: 'control-label' %>
             <%= selectRegiones.html_safe %>
           </div>
 
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 checkbox">
+          <div class="col-12 mb-3">
             <%= checkboxSoloValidos.html_safe %>
           </div>
 
-          <br />
-
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 checkbox">
+          <div class="col-12">
             <%= "<label for='nom_com'><span title='Nombres comunes'>Nombres comunes</span></label> #{check_box_tag('nom_com[]', 1, false, class:'form-control')}".html_safe %>
           </div>
 
-          <br />
-
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 checkbox">
+          <div class="col-12">
             <%= "<label for='biblio'><span title='Bibliografias'>Bibliografias</span></label> #{check_box_tag('biblio[]', 1, false, class:'form-control')}".html_safe %>
           </div>
 
-          <br />
-
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 checkbox">
+          <div class="col-12">
             <%= "<label for='forma'><span title='Formas de crecimiento'>Formas de crecimiento</span></label> #{check_box_tag('forma[]', 1, false, class:'form-control')}".html_safe %>
           </div>
 
