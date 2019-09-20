@@ -135,7 +135,7 @@ module BusquedasHelper
       distribucionChecklist(taxon)
       nombresComunesChecklist(taxon)
       @@html << huesped_hospedero if huesped_hospedero.present?
-      @@html << cats_riesgo if cats_riesgo
+      @@html << cats_riesgo if cats_riesgo.present?
       @@html << '</div>'
     end
 
@@ -144,6 +144,8 @@ module BusquedasHelper
 
   # Devuelve los nombres comunes agrupados por lengua, solo de catalogos
   def nombresComunesChecklist(taxon)
+    return unless params[:f_check].include?('nom_com')
+
     nombres = taxon.dame_nombres_comunes_catalogos
     return '' unless nombres.any?
     html = "<label class='etiqueta-checklist'>Nombre(s) común(es): </label>"
@@ -160,8 +162,21 @@ module BusquedasHelper
   def sinonimosBasonimoChecklist(taxon)
     sinonimos_basonimo = {sinonimos: [], basonimo: [], hospedero: [], parasito: []}
 
+    estatus_permitidos = []
+    if !params[:f_check].include?('val')
+      estatus_permitidos << 1
+      estatus_permitidos << 2
+    end
+
+    if params[:f_check].include?('interac')
+      estatus_permitidos << 7
+    end
+
+    # Retorna en caso de solo ser validos
+    return unless estatus_permitidos.any?
+
     taxon.especies_estatus.each do |estatus|
-      next unless [1,2,7].include?(estatus.estatus_id)
+      next unless estatus_permitidos.include?(estatus.estatus_id)
       next unless taxon_estatus = estatus.especie
 
       nombre_cientifico = "<text class='f-sinonimo-basonimo-checklist'>#{taxon_estatus.nombre_cientifico}</text> #{taxon_estatus.nombre_autoridad}"
@@ -175,7 +190,7 @@ module BusquedasHelper
         nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{taxon_estatus.nombre_cientifico}</text>"
         regiones = distribucionChecklist(taxon_estatus, false)
 
-        if regiones.any?
+        if regiones.present? && regiones.any?
           if taxon.ancestry_ascendente_directo.include?(',213407,')  # Chordata equivale a parásito
             sinonimos_basonimo[:parasito] << "#{nombre_cientifico} <sub>(#{regiones.join(', ')})</sub>"
           elsif taxon.ancestry_ascendente_directo.include?(',132386,') || taxon.ancestry_ascendente_directo.include?(',132387,')  # Acantocephala o Platyhelminthes equivale a hospedero
@@ -210,32 +225,43 @@ module BusquedasHelper
 
   # Regresa el tipo de distribucion
   def tipoDistribucionChecklist(taxon)
-    taxon.tipos_distribuciones.map(&:descripcion).uniq
+    if params[:f_check].include?('tipo_dist')
+      taxon.tipos_distribuciones.map(&:descripcion).uniq
+    end
   end
 
   # Regresa todas las relaciones del catalogo de especies, incluye especies en riesgo
   def catalogoEspecieChecklist(taxon)
+    catalogos_permitidos = []
     res = { catalogos: [], riesgo: { 'NOM-059-SEMARNAT 2010' => [], 'IUCN' => [], 'CITES' => [] } }
 
     tipo_dist = tipoDistribucionChecklist(taxon)
-    res[:catalogos] = tipo_dist if tipo_dist.any?
+    res[:catalogos] = tipo_dist if tipo_dist
 
-    taxon.catalogos.each do |catalogo|
-      case catalogo.nivel1
-      when 4
-        next unless [1,2,3].include?(catalogo.nivel2)  # Solo las categorias de riesgo y comercio
+    catalogos_permitidos << 4 if params[:f_check].include?('cat_riesgo')
+    catalogos_permitidos << 2 if params[:f_check].include?('amb')
+    catalogos_permitidos << 16 if params[:f_check].include?('residencia')
+    catalogos_permitidos << 18 if params[:f_check].include?('formas')
 
-        case catalogo.nivel2
-        when 1
-          res[:riesgo]['NOM-059-SEMARNAT 2010'] << catalogo.descripcion
-        when 2
-          res[:riesgo]['IUCN'] << catalogo.descripcion
-        when 3
-          res[:riesgo]['CITES'] << catalogo.descripcion
+    if catalogos_permitidos.any?
+      taxon.catalogos.each do |catalogo|
+        next unless catalogos_permitidos.include?(catalogo.nivel1)
+
+        case catalogo.nivel1
+        when 4
+          next unless [1,2,3].include?(catalogo.nivel2)  # Solo las categorias de riesgo y comercio
+
+          case catalogo.nivel2
+          when 1
+            res[:riesgo]['NOM-059-SEMARNAT 2010'] << catalogo.descripcion
+          when 2
+            res[:riesgo]['IUCN'] << catalogo.descripcion
+          when 3
+            res[:riesgo]['CITES'] << catalogo.descripcion
+          end
+        else
+          res[:catalogos] << catalogo.descripcion
         end
-
-      else
-        res[:catalogos] << catalogo.descripcion
       end
     end
 
@@ -253,6 +279,8 @@ module BusquedasHelper
   end
 
   def distribucionChecklist(taxon, seccion=true)
+    return unless params[:f_check].include?('dist') || params[:f_check].include?('interac')
+
     regiones = taxon.regiones.map{ |r| t("estados_siglas.#{r.nombre_region.estandariza}") if r.tipo_region_id == 2 }.flatten.compact.sort
     return regiones unless seccion
     @@html << "<p class='m-0'><label class='etiqueta-checklist'>Distribución en México: </label>#{regiones.join(', ')}</p>" if regiones.any?
@@ -260,7 +288,7 @@ module BusquedasHelper
 
   # Los checkbox para que el usuario decida que descargar
   def campoDescargaChecklist
-    campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', dist: 'Distribución (reportada en literatura)', amb: 'Ambiente', val: 'Solo válidos/aceptados', nom_com: 'Nombres comúnes', biblio: 'Bibliografías', formas: 'Formas de crecimiento (plantas)' }
+    campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', dist: 'Distribución (reportada en literatura)', amb: 'Ambiente', val: 'Solo válidos/aceptados', nom_com: 'Nombres comúnes', biblio: 'Bibliografías', residencia: 'Categoría de residencia (aves)', formas: 'Formas de crecimiento (plantas)', interac: 'Interacciones biológicas' }
     checkBoxes = '<h6>Selecciona los campos a desplegar en el checklist</h6>'
 
     campos.each do |valor, label|
