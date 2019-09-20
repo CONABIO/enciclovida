@@ -116,6 +116,14 @@ $(document).ready(function()
         var correo = $('#correo-checklist').val();
         var url = $('#modal-menu-checklist').attr('url');
 
+        var campos = [];
+        $.each($('#form-checklist').serializeArray(), function (index, json) {
+            if (json.name == 'f_check[]')
+                campos.push(json.name + '=' + json.value);
+        });
+
+        if (campos.length > 0) url = url + '&' + campos.join('&');
+
         if(correoValido(correo))
         {
             $('#modal-descarga-checklist').modal('toggle');

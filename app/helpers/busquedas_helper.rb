@@ -258,4 +258,19 @@ module BusquedasHelper
     @@html << "<p class='m-0'><label class='etiqueta-checklist'>Distribución en México: </label>#{regiones.join(', ')}</p>" if regiones.any?
   end
 
+  # Los checkbox para que el usuario decida que descargar
+  def campoDescargaChecklist
+    campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', dist: 'Distribución (reportada en literatura)', amb: 'Ambiente', val: 'Solo válidos/aceptados', nom_com: 'Nombres comúnes', biblio: 'Bibliografías', formas: 'Formas de crecimiento (plantas)' }
+    checkBoxes = '<h6>Selecciona los campos a desplegar en el checklist</h6>'
+
+    campos.each do |valor, label|
+      checkBoxes << "<div class='custom-control custom-switch'>"
+      checkBoxes << check_box_tag('f_check[]', valor, false, class: 'custom-control-input', id: "f_check_#{valor}")
+      checkBoxes << "<label class = 'custom-control-label' for='f_check_#{valor}'>#{label}</label>"
+      checkBoxes << "</div>"
+    end
+
+    checkBoxes.html_safe
+  end
+
 end
