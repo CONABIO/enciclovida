@@ -62,6 +62,8 @@ class BusquedaAvanzada < Busqueda
     ids_checklist = taxones.where(estatus: 2).select_ancestry.map{ |t| t.ancestry.split(',') }.flatten.uniq!
     self.taxones = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional).datos_checklist.where(id: ids_checklist)
 
+    return unless params[:f_check].present? && params[:f_check].any?
+
     params[:f_check].each do |campo|
       case campo
       when 'tipo_dist'

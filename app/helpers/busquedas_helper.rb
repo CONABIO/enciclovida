@@ -144,6 +144,7 @@ module BusquedasHelper
 
   # Devuelve los nombres comunes agrupados por lengua, solo de catalogos
   def nombresComunesChecklist(taxon)
+    return unless params[:f_check].present?
     return unless params[:f_check].include?('nom_com')
 
     nombres = taxon.dame_nombres_comunes_catalogos
@@ -163,12 +164,12 @@ module BusquedasHelper
     sinonimos_basonimo = {sinonimos: [], basonimo: [], hospedero: [], parasito: []}
 
     estatus_permitidos = []
-    if !params[:f_check].include?('val')
+    if params[:f_check].present? && !params[:f_check].include?('val')
       estatus_permitidos << 1
       estatus_permitidos << 2
     end
 
-    if params[:f_check].include?('interac')
+    if params[:f_check].present? && params[:f_check].include?('interac')
       estatus_permitidos << 7
     end
 
@@ -225,7 +226,7 @@ module BusquedasHelper
 
   # Regresa el tipo de distribucion
   def tipoDistribucionChecklist(taxon)
-    if params[:f_check].include?('tipo_dist')
+    if params[:f_check].present? && params[:f_check].include?('tipo_dist')
       taxon.tipos_distribuciones.map(&:descripcion).uniq
     end
   end
@@ -238,10 +239,10 @@ module BusquedasHelper
     tipo_dist = tipoDistribucionChecklist(taxon)
     res[:catalogos] = tipo_dist if tipo_dist
 
-    catalogos_permitidos << 4 if params[:f_check].include?('cat_riesgo')
-    catalogos_permitidos << 2 if params[:f_check].include?('amb')
-    catalogos_permitidos << 16 if params[:f_check].include?('residencia')
-    catalogos_permitidos << 18 if params[:f_check].include?('formas')
+    catalogos_permitidos << 4 if params[:f_check].present? && params[:f_check].include?('cat_riesgo')
+    catalogos_permitidos << 2 if params[:f_check].present? && params[:f_check].include?('amb')
+    catalogos_permitidos << 16 if params[:f_check].present? && params[:f_check].include?('residencia')
+    catalogos_permitidos << 18 if params[:f_check].present? && params[:f_check].include?('formas')
 
     if catalogos_permitidos.any?
       taxon.catalogos.each do |catalogo|
@@ -279,6 +280,7 @@ module BusquedasHelper
   end
 
   def distribucionChecklist(taxon, seccion=true)
+    return unless params[:f_check].present?
     return unless params[:f_check].include?('dist') || params[:f_check].include?('interac')
 
     regiones = taxon.regiones.map{ |r| t("estados_siglas.#{r.nombre_region.estandariza}") if r.tipo_region_id == 2 }.flatten.compact.sort
