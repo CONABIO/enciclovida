@@ -4,11 +4,13 @@ var por_nombre = function()
     $("#datos_cat").html("");
     $("#panelCategoriaTaxonomicaPt").hide();
 
-    $("[id^='id_']").each(function(){
-        $(this).prop('checked', false);
-    });
+    if (I18n.locale == 'es'){
+        $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
 
-    $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
+        $("[id^='id_']").each(function(){
+            $(this).prop('checked', false);
+        });
+    }
 };
 
 var por_gi = function()
@@ -46,14 +48,15 @@ var asignaFiltros = function(SET_PARAMS)
     {
         $('#id_gi_' + SET_PARAMS.id).prop('checked', true);
         $('#id').val(SET_PARAMS.id);
-
-    } else if (SET_PARAMS.nombre != undefined) {
+    } else if (SET_PARAMS.id != undefined && SET_PARAMS.nombre != undefined) {  // escogio un nombre
+        $('#id').val(SET_PARAMS.id);
+        $('#nombre').val(SET_PARAMS.nombre);
+    } else if (SET_PARAMS.nombre != undefined){  // Solo escribio pero no escogio nombre
         por_nombre();
         $('#nombre').val(SET_PARAMS.nombre);
     }
 
     if (SET_PARAMS.por_pagina != undefined) $('#por_pagina').val(SET_PARAMS.por_pagina);
-
     if (SET_PARAMS.edo_cons != undefined) $('#edo_cons').val(SET_PARAMS.edo_cons);
     if (SET_PARAMS.dist != undefined) $('#dist').val(SET_PARAMS.dist);
     if (SET_PARAMS.uso != undefined) $('#uso').val(SET_PARAMS.uso);

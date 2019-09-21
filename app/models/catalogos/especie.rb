@@ -565,6 +565,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     if I18n.locale.to_s != 'es-cientifico'
       cats.where(nivel3: 0, nivel4: 0)
     end
+
+    cats
   end
 
   # Metodo para retraer el nombre comun principal ya sea que venga de un join con adicionales o lo construye

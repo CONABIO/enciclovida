@@ -29,9 +29,9 @@
 
 <% else %>
   <% @taxones.each do |taxon| %>
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 resultados-cientificos">
+    <div class="col-12 ml-5">
       <span class='datos_busqueda-<%= taxon.id %>'>
-        <div class="result-nombre-container">
+        <div>
           <%= tituloNombreCientifico(taxon, render: 'link').html_safe %>
         </div>
       </span>
