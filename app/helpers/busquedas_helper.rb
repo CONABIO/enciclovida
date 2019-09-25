@@ -4,6 +4,7 @@ module BusquedasHelper
   @@opciones = { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, 'data-none-results-text': 'Sin resultados para {0}', 'data-count-selected-text': '{0} seleccionados', title: '- - Selecciona - -', multiple: true, 'data-sanitize': false }
 
   @@html = ''
+  @@bibliografias = []
 
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos(resultados = false)
@@ -128,6 +129,7 @@ module BusquedasHelper
     else
       @@html << nombre_cientifico
       @@html << " #{taxon.nombre_autoridad}"
+      bibliografiaNombreChecklist(taxon)
 
       @@html << '<div>'
       huesped_hospedero = sinonimosBasonimoChecklist(taxon)
@@ -286,6 +288,39 @@ module BusquedasHelper
     regiones = taxon.regiones.map{ |r| t("estados_siglas.#{r.nombre_region.estandariza}") if r.tipo_region_id == 2 }.flatten.compact.sort
     return regiones unless seccion
     @@html << "<p class='m-0'><label class='etiqueta-checklist'>Distribución en México: </label>#{regiones.join(', ')}</p>" if regiones.any?
+  end
+
+  # Va imprimiendo los numeros de las bibliografias de los nombres cientificos
+  def bibliografiaNombreChecklist(taxon)
+    return unless params[:f_check].present?
+    return unless params[:f_check].include?('biblio')
+    referencias = []
+
+    taxon.bibliografias.each do |bibliografia|
+      if indice = @@bibliografias.index(bibliografia.cita_completa)
+        referencias << (indice+1)
+      else
+        @@bibliografias << bibliografia.cita_completa
+        referencias << @@bibliografias.length
+      end
+    end
+
+    @@html << " <sup><strong>[#{referencias.sort.join(',')}]</strong></sup>" if referencias.any?
+  end
+
+  # Imprime las bibliografias al final
+  def bibliografiasChecklist
+    return unless params[:f_check].present?
+    return unless params[:f_check].include?('biblio')
+    return unless @@bibliografias.any?
+
+    html = "<h6 class='etiqueta-checklist'>Bibliografias</h6>"
+
+    @@bibliografias.each_with_index do |bibliografia, indice|
+      html << "<p>#{bibliografia} <sup><strong>[#{indice+1}]</strong></sup></p>"
+    end
+
+    html.html_safe
   end
 
   # Los checkbox para que el usuario decida que descargar
