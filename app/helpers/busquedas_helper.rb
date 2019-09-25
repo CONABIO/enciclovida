@@ -151,11 +151,11 @@ module BusquedasHelper
 
     nombres = taxon.dame_nombres_comunes_catalogos
     return '' unless nombres.any?
-    html = "<label class='etiqueta-checklist'>Nombre(s) común(es): </label>"
+    html = "<label class='etiqueta-checklist'>Nombre(s) común(es):</label>"
 
     nombres.each do |hash_nombres|
       lengua = hash_nombres.keys.first
-      html << "<span>#{hash_nombres[lengua].uniq.sort.join(', ')} <sub>(#{lengua})</sub>; </span>"
+      html << " <span>#{hash_nombres[lengua].uniq.sort.join(', ')} <sub>(#{lengua})</sub>; </span>"
     end
 
     @@html << "<p class='m-0'>#{html}</p>"
@@ -210,17 +210,17 @@ module BusquedasHelper
     end
 
     if sinonimos_basonimo[:basonimo].any?
-      @@html << "<p class='m-0'><label class='etiqueta-checklist'>Basónimo: </label>#{sinonimos_basonimo[:basonimo].join('; ')}</p>"
+      @@html << "<p class='m-0'><label class='etiqueta-checklist'>Basónimo:</label> #{sinonimos_basonimo[:basonimo].join('; ')}</p>"
     end
 
     if sinonimos_basonimo[:sinonimos].any?
-      @@html << "<p class='m-0'><label class='etiqueta-checklist'>Sinónimo(s): </label>#{sinonimos_basonimo[:sinonimos].join('; ')}</p>"
+      @@html << "<p class='m-0'><label class='etiqueta-checklist'>Sinónimo(s):</label> #{sinonimos_basonimo[:sinonimos].join('; ')}</p>"
     end
 
     huesped_hospedero = if sinonimos_basonimo[:parasito].any?
-                          "<p class='mt-4'><label class='etiqueta-checklist'>Interacciones biológicas</label></p><p><label class='etiqueta-checklist'>Parásito(s): </label>#{sinonimos_basonimo[:parasito].join('; ')}</p>"
+                          "<p class='mt-4'><label class='etiqueta-checklist'>Interacciones biológicas</label></p><p><label class='etiqueta-checklist'>Parásito(s):</label> #{sinonimos_basonimo[:parasito].join('; ')}</p>"
                         elsif sinonimos_basonimo[:hospedero].any?
-                          "<p class='mt-4'><label class='etiqueta-checklist'>Interacciones biológicas</label></p><p><label class='etiqueta-checklist'>Hopedero(s): </label>#{sinonimos_basonimo[:hospedero].join('; ')}</p>"
+                          "<p class='mt-4'><label class='etiqueta-checklist'>Interacciones biológicas</label></p><p><label class='etiqueta-checklist'>Hopedero(s):</label> #{sinonimos_basonimo[:hospedero].join('; ')}</p>"
                         end
 
     huesped_hospedero if huesped_hospedero.present?
@@ -269,7 +269,7 @@ module BusquedasHelper
     end
 
     if res[:catalogos].any?
-      @@html << "<p class='etiqueta-checklist m-0'>#{res[:catalogos].join(',')}</p>"
+      @@html << "<p class='etiqueta-checklist m-0'>#{res[:catalogos].join(', ')}</p>"
     end
 
     cats = []
@@ -287,7 +287,7 @@ module BusquedasHelper
 
     regiones = taxon.regiones.map{ |r| t("estados_siglas.#{r.nombre_region.estandariza}") if r.tipo_region_id == 2 }.flatten.compact.sort
     return regiones unless seccion
-    @@html << "<p class='m-0'><label class='etiqueta-checklist'>Distribución en México: </label>#{regiones.join(', ')}</p>" if regiones.any?
+    @@html << "<p class='m-0'><label class='etiqueta-checklist'>Distribución en México:</label> #{regiones.join(', ')}</p>" if regiones.any?
   end
 
   # Va imprimiendo los numeros de las bibliografias de los nombres cientificos
