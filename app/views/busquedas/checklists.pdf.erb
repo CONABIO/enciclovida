@@ -3,45 +3,31 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
 <head>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
-  <title>Listado de verificación</title>
+  <title>Listado/checklist</title>
 
-  <%= wicked_pdf_stylesheet_link_tag 'webservices' %>
-  <%= wicked_pdf_javascript_include_tag 'jquery-1.11.1.min.js' %>
-  <%= wicked_pdf_javascript_include_tag 'jquery-ui-1.10.4.custom.min.js' %>
+  <%#= wicked_pdf_javascript_include_tag 'jquery-1.11.1.min.js' %>
+  <%#= wicked_pdf_javascript_include_tag 'jquery-ui-1.10.4.custom.min.js' %>
 
-  <script>
-      $(document).ready(function() {
-          I18n.defaultLocale = "<%= 'es-cientifico' %>";
-          I18n.locale = "<%= 'es-cientifico' %>";
-          I18n.fallbacks = true;
-      });
-  </script>
-
+  <%#= wicked_pdf_stylesheet_link_tag 'boots4-upgrade/boots4/bootstrap.scss' %>
+  <%= wicked_pdf_stylesheet_link_tag 'boots4-upgrade/bootstrap-variable-overrides.scss' %>
+  <%= wicked_pdf_stylesheet_link_tag 'busquedas.scss' %>
+  <%= wicked_pdf_stylesheet_link_tag 'busquedas/avanzada/checklist.css' %>
 </head>
 
 <body>
 
-<p id="notice"><%= notice %></p>
-<p>
 <div id="dvLoading"><i></i></div>
 </p>
-<div style="width: 100%; float:left;">
-  <div class="titulo-busqueda">
 
-  </div>
+<div class="col-12">
+  <% @taxones.each do |taxon| %>
+    <% next unless taxon.estatus == 2 %>
+    <div class="checklist-nivel-<%= taxon.nivel1 %> %>">
+      <%= "<span id=\"datos_busqueda-#{taxon.id}\">#{generaChecklist(taxon)}</span><br />".html_safe %>
+    </div>
+  <% end %>
 
-  <div id="widget_listas" style="display: none"></div>
-</div>
-
-<div style="width: 100%; float:left;">
-  <ul>
-    <% @taxones.each do |taxon| %>
-        <%= "<li style='margin-left: #{taxon.arbol.length*2}px;'><span id=\"datos_busqueda-#{taxon.id}\">#{tituloNombreCientifico(taxon, render: 'link')}</span></li>".html_safe %>
-    <% end %>
-  </ul>
-  <p class="enlaces_acciones">
-    <%= '<em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
-  </p>
+  <%= bibliografiasChecklist %>
 </div>
 
 </body>

@@ -7,22 +7,13 @@
   <%= @titulo='Checklist' %>
 <% end %>
 
-<p id="notice"><%= notice %></p>
-<p>
 <div id="dvLoading"><i></i></div>
-</p>
 
-<div style="width: 100%; float:left;">
-  <div class="titulo-busqueda"></div>
-  <div id="widget_listas" style="display: none"></div>
-</div>
+<!--div class="col-12 d-flex justify-content-end">
+  Descargar en <%#= link_to('<i class="file-pdf-ev-icon"></i>'.html_safe, request.url.gsub('/resultados?','/resultados.pdf?'), target: :_blank, title: 'Lista/checklist') %>
+</div-->
 
-<!--p align="right">
-  Descargar en <%#= link_to('<i class="file-pdf-ev-icon"></i>'.html_safe, request.url.gsub('/resultados?','/resultados.pdf?'), target: :_blank, title: 'Verificación de listado') %>
-</p-->
-
-<div>
-
+<div class="col-12">
   <% @taxones.each do |taxon| %>
     <% next unless taxon.estatus == 2 %>
     <div class="checklist-nivel-<%= taxon.nivel1 %> %>">
@@ -31,8 +22,4 @@
   <% end %>
 
   <%= bibliografiasChecklist %>
-
-  <p class="enlaces_acciones">
-    <%= '<em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>'.html_safe if @taxones.length == 0 %>
-  </p>
 </div>
