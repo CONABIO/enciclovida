@@ -120,7 +120,7 @@ module BusquedasHelper
   # Despliega el checklist
   def generaChecklist(taxon)
     @@html = ''
-    nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{taxon.nombre_cientifico}</text>"
+    nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{link_to(taxon.nombre_cientifico, especie_path(taxon), target: :_blank)}</text>"
 
     unless taxon.especie_o_inferior?
       cat = taxon.nombre_categoria_taxonomica
@@ -314,7 +314,7 @@ module BusquedasHelper
     return unless params[:f_check].include?('biblio')
     return unless @@bibliografias.any?
 
-    html = "<h6 class='etiqueta-checklist'>Bibliografias</h6>"
+    html = "<h5 class='etiqueta-checklist'>Bibliografias</h5>"
 
     @@bibliografias.each_with_index do |bibliografia, indice|
       html << "<p>#{bibliografia} <sup><strong>[#{indice+1}]</strong></sup></p>"
