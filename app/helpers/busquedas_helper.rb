@@ -305,7 +305,7 @@ module BusquedasHelper
       end
     end
 
-    @@html << " <sup><strong>[#{referencias.sort.join(',')}]</strong></sup>" if referencias.any?
+    @@html << " <sup><strong>[#{referencias.sort.map{ |r| link_to(r,"#biblio-checklist-#{r}", target: :_self) }.join(',')}]</strong></sup>" if referencias.any?
   end
 
   # Imprime las bibliografias al final
@@ -317,7 +317,7 @@ module BusquedasHelper
     html = "<h5 class='etiqueta-checklist'>Bibliografias</h5>"
 
     @@bibliografias.each_with_index do |bibliografia, indice|
-      html << "<p>#{bibliografia} <sup><strong>[#{indice+1}]</strong></sup></p>"
+      html << "<p id='biblio-checklist-#{indice+1}'>#{bibliografia} <sup><strong>[#{indice+1}]</strong></sup></p>"
     end
 
     html.html_safe
