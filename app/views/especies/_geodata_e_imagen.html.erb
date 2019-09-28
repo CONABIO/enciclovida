@@ -32,7 +32,7 @@
             <li><%= link_to("#{icono_globo} KML".html_safe, @datos[:geodatos][:snib_kml], :target => :_blank) if @datos[:geodatos][:snib_kml].present? %></li>
             <li><%= link_to("#{icono_globo} KMZ".html_safe, @datos[:geodatos][:snib_kmz], :target => :_blank) if @datos[:geodatos][:snib_kmz].present? %></li>
             <li><%= link_to("#{icono_globo} JSON".html_safe, @datos[:geodatos][:snib_json], :target => :_blank) if @datos[:geodatos][:snib_json].present? %></li>
-            <li><%= link_to('Diccionario de datos', 'http://www.snib.mx/d/CONABIO-SNIB-DiccionarioDatosEjemplaresGeoportal-201712.pdf', :target => :_blank) %></li>
+            <li><%= link_to('Diccionario de datos', 'http://www.snib.mx/ejemplares/docs/CONABIO-SNIB-DiccionarioDatosEjemplaresGeoportal-201906.pdf', :target => :_blank) %></li>
         <% end %>
 
         <% if @datos[:geodatos][:cuales].include?('geoserver') %>
