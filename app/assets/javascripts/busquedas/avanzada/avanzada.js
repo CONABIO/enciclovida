@@ -51,6 +51,7 @@ var asignaFiltros = function(SET_PARAMS)
     } else if (SET_PARAMS.id != undefined && SET_PARAMS.nombre != undefined) {  // escogio un nombre
         $('#id').val(SET_PARAMS.id);
         $('#nombre').val(SET_PARAMS.nombre);
+        if (I18n.locale == 'es') $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
     } else if (SET_PARAMS.nombre != undefined){  // Solo escribio pero no escogio nombre
         por_nombre();
         $('#nombre').val(SET_PARAMS.nombre);
