@@ -63,7 +63,7 @@
   <%= checkboxPrioritaria.html_safe %>
 </div>
 
-<div class="col-md-<%= (params[:action] == 'resultados') ? '12' : '2' %>">
+<div class="col-md">
   <h6><strong>Resultados por página:</strong></h6>
   <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
 </div>

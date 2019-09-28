@@ -301,6 +301,44 @@ es:
     veracruz-de-ignacio-de-la-llave: Veracruz
     yucatan: Yucatán
     zacatecas: Zacatecas
+  estados_siglas:
+    aguascalientes: Ags.
+    baja-california: BC
+    baja-california-sur: BCS
+    campeche: Camp.
+    chiapas: Chis.
+    chihuahua: Chih.
+    coahuila: Coah.
+    coahuila-de-zaragoza: Coah.
+    colima: Col.
+    distrito-federal: CDMX
+    durango: Dgo.
+    guanajuato: Gto.
+    guerrero: Gro.
+    hidalgo: Hgo.
+    jalisco: Jal.
+    mexico: Mex.
+    estado-de-mexico: Mex.
+    michoacan: Mich.
+    michoacan-de-ocampo: Mich.
+    morelos: Mor.
+    nayarit: Nay.
+    nuevo-leon: NL
+    oaxaca: Oax.
+    puebla: Pue.
+    queretaro: Qro.
+    queretaro-de-arteaga: Qro.
+    quintana-roo: Q. Roo
+    san-luis-potosi: SLP
+    sinaloa: Sin.
+    sonora: Son.
+    tabasco: Tab.
+    tamaulipas: Tamp.
+    tlaxcala: Tlax.
+    veracruz: Ver.
+    veracruz-de-ignacio-de-la-llave: Ver.
+    yucatan: Yuc.
+    zacatecas: Zac.
   helpers:
     label:
       usuario:

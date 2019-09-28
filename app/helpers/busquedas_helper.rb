@@ -4,6 +4,7 @@ module BusquedasHelper
   @@opciones = { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, 'data-none-results-text': 'Sin resultados para {0}', 'data-count-selected-text': '{0} seleccionados', title: '- - Selecciona - -', multiple: true, 'data-sanitize': false }
 
   @@html = ''
+  @@bibliografias = []
 
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos(resultados = false)
@@ -108,8 +109,8 @@ module BusquedasHelper
   end
 
   # El boton de las descargas
-  def botonDescarga(recurso)
-    if usuario_signed_in?
+  def botonDescarga(recurso, checklist = false)
+    if usuario_signed_in? || checklist
       "<button type='button' class='btn btn-success' id='boton-descarga-#{recurso}'>Enviar</button>"
     else
       "<button type='button' class='btn btn-success' id='boton-descarga-#{recurso}' disabled='disabled'>Enviar</button>"
@@ -119,7 +120,7 @@ module BusquedasHelper
   # Despliega el checklist
   def generaChecklist(taxon)
     @@html = ''
-    nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{taxon.nombre_cientifico}</text>"
+    nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{link_to(taxon.nombre_cientifico, especie_path(taxon), target: :_blank)}</text>"
 
     unless taxon.especie_o_inferior?
       cat = taxon.nombre_categoria_taxonomica
@@ -128,13 +129,15 @@ module BusquedasHelper
     else
       @@html << nombre_cientifico
       @@html << " #{taxon.nombre_autoridad}"
-
+      bibliografiaNombreChecklist(taxon)
 
       @@html << '<div>'
-      sinonimosBasonimoChecklist(taxon)
+      huesped_hospedero = sinonimosBasonimoChecklist(taxon)
       cats_riesgo = catalogoEspecieChecklist(taxon)
+      distribucionChecklist(taxon)
       nombresComunesChecklist(taxon)
-      @@html << cats_riesgo if cats_riesgo
+      @@html << huesped_hospedero if huesped_hospedero.present?
+      @@html << cats_riesgo if cats_riesgo.present?
       @@html << '</div>'
     end
 
@@ -143,13 +146,16 @@ module BusquedasHelper
 
   # Devuelve los nombres comunes agrupados por lengua, solo de catalogos
   def nombresComunesChecklist(taxon)
+    return unless params[:f_check].present?
+    return unless params[:f_check].include?('nom_com')
+
     nombres = taxon.dame_nombres_comunes_catalogos
     return '' unless nombres.any?
-    html = "<label class='etiqueta-checklist'>Nombre(s) común(es): </label>"
+    html = "<label class='etiqueta-checklist'>Nombre(s) común(es):</label>"
 
     nombres.each do |hash_nombres|
       lengua = hash_nombres.keys.first
-      html << "<span>#{hash_nombres[lengua].sort.join(', ')} <sub><i>#{lengua}</i></sub>; </span>"
+      html << " <span>#{hash_nombres[lengua].uniq.sort.join(', ')} <sub>(#{lengua})</sub>; </span>"
     end
 
     @@html << "<p class='m-0'>#{html}</p>"
@@ -157,10 +163,23 @@ module BusquedasHelper
 
   # Devuelve una lista de sinónimos y basónimos
   def sinonimosBasonimoChecklist(taxon)
-    sinonimos_basonimo = {sinonimos: [], basonimo: []}
+    sinonimos_basonimo = {sinonimos: [], basonimo: [], hospedero: [], parasito: []}
+
+    estatus_permitidos = []
+    if params[:f_check].present? && !params[:f_check].include?('val')
+      estatus_permitidos << 1
+      estatus_permitidos << 2
+    end
+
+    if params[:f_check].present? && params[:f_check].include?('interac')
+      estatus_permitidos << 7
+    end
+
+    # Retorna en caso de solo ser validos
+    return unless estatus_permitidos.any?
 
     taxon.especies_estatus.each do |estatus|
-      next unless [1,2].include?(estatus.estatus_id)
+      next unless estatus_permitidos.include?(estatus.estatus_id)
       next unless taxon_estatus = estatus.especie
 
       nombre_cientifico = "<text class='f-sinonimo-basonimo-checklist'>#{taxon_estatus.nombre_cientifico}</text> #{taxon_estatus.nombre_autoridad}"
@@ -170,53 +189,87 @@ module BusquedasHelper
         sinonimos_basonimo[:sinonimos] << nombre_cientifico
       when 2
         sinonimos_basonimo[:basonimo] << nombre_cientifico
-      else
-        next
-      end
+      when 7
+        nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{taxon_estatus.nombre_cientifico}</text>"
+        regiones = distribucionChecklist(taxon_estatus, false)
+
+        if regiones.present? && regiones.any?
+          if taxon.ancestry_ascendente_directo.include?(',213407,')  # Chordata equivale a parásito
+            sinonimos_basonimo[:parasito] << "#{nombre_cientifico} <sub>(#{regiones.join(', ')})</sub>"
+          elsif taxon.ancestry_ascendente_directo.include?(',132386,') || taxon.ancestry_ascendente_directo.include?(',132387,')  # Acantocephala o Platyhelminthes equivale a hospedero
+            sinonimos_basonimo[:hospedero] << "#{nombre_cientifico} <sub>(#{regiones.join(', ')})</sub>"
+          end
+        else
+          if taxon.ancestry_ascendente_directo.include?(',213407,')  # Chrodata equivale a parásito
+            sinonimos_basonimo[:parasito] << nombre_cientifico
+          elsif taxon.ancestry_ascendente_directo.include?(',132386,') || taxon.ancestry_ascendente_directo.include?(',132387,')  # Acantocephala o Platyhelminthes equivale a hospedero
+            sinonimos_basonimo[:hospedero] << nombre_cientifico
+          end
+        end  # End if regiones.any?
+      end  # End when 7
     end
 
     if sinonimos_basonimo[:basonimo].any?
-      @@html << "<p class='m-0'><label class='etiqueta-checklist'>Basónimo: </label>#{sinonimos_basonimo[:basonimo].join('; ')}</p>"
+      @@html << "<p class='m-0'><label class='etiqueta-checklist'>Basónimo:</label> #{sinonimos_basonimo[:basonimo].join('; ')}</p>"
     end
 
     if sinonimos_basonimo[:sinonimos].any?
-      @@html << "<p class='m-0'><label class='etiqueta-checklist'>Sinónimo(s): </label>#{sinonimos_basonimo[:sinonimos].join('; ')}</p>"
+      @@html << "<p class='m-0'><label class='etiqueta-checklist'>Sinónimo(s):</label> #{sinonimos_basonimo[:sinonimos].join('; ')}</p>"
     end
+
+    huesped_hospedero = if sinonimos_basonimo[:parasito].any?
+                          "<p class='mt-4'><label class='etiqueta-checklist'>Interacciones biológicas</label></p><p><label class='etiqueta-checklist'>Parásito(s):</label> #{sinonimos_basonimo[:parasito].join('; ')}</p>"
+                        elsif sinonimos_basonimo[:hospedero].any?
+                          "<p class='mt-4'><label class='etiqueta-checklist'>Interacciones biológicas</label></p><p><label class='etiqueta-checklist'>Hopedero(s):</label> #{sinonimos_basonimo[:hospedero].join('; ')}</p>"
+                        end
+
+    huesped_hospedero if huesped_hospedero.present?
   end
 
   # Regresa el tipo de distribucion
   def tipoDistribucionChecklist(taxon)
-    taxon.tipos_distribuciones.map(&:descripcion).uniq
+    if params[:f_check].present? && params[:f_check].include?('tipo_dist')
+      taxon.tipos_distribuciones.map(&:descripcion).uniq
+    end
   end
 
   # Regresa todas las relaciones del catalogo de especies, incluye especies en riesgo
   def catalogoEspecieChecklist(taxon)
+    catalogos_permitidos = []
     res = { catalogos: [], riesgo: { 'NOM-059-SEMARNAT 2010' => [], 'IUCN' => [], 'CITES' => [] } }
 
     tipo_dist = tipoDistribucionChecklist(taxon)
-    res[:catalogos] = tipo_dist if tipo_dist.any?
+    res[:catalogos] = tipo_dist if tipo_dist
 
-    taxon.catalogos.each do |catalogo|
-      case catalogo.nivel1
-      when 4
-        next unless [1,2,3].include?(catalogo.nivel2)  # Solo las categorias de riesgo y comercio
+    catalogos_permitidos << 4 if params[:f_check].present? && params[:f_check].include?('cat_riesgo')
+    catalogos_permitidos << 2 if params[:f_check].present? && params[:f_check].include?('amb')
+    catalogos_permitidos << 16 if params[:f_check].present? && params[:f_check].include?('residencia')
+    catalogos_permitidos << 18 if params[:f_check].present? && params[:f_check].include?('formas')
 
-        case catalogo.nivel2
-        when 1
-          res[:riesgo]['NOM-059-SEMARNAT 2010'] << catalogo.descripcion
-        when 2
-          res[:riesgo]['IUCN'] << catalogo.descripcion
-        when 3
-          res[:riesgo]['CITES'] << catalogo.descripcion
+    if catalogos_permitidos.any?
+      taxon.catalogos.each do |catalogo|
+        next unless catalogos_permitidos.include?(catalogo.nivel1)
+
+        case catalogo.nivel1
+        when 4
+          next unless [1,2,3].include?(catalogo.nivel2)  # Solo las categorias de riesgo y comercio
+
+          case catalogo.nivel2
+          when 1
+            res[:riesgo]['NOM-059-SEMARNAT 2010'] << catalogo.descripcion
+          when 2
+            res[:riesgo]['IUCN'] << catalogo.descripcion
+          when 3
+            res[:riesgo]['CITES'] << catalogo.descripcion
+          end
+        else
+          res[:catalogos] << catalogo.descripcion
         end
-
-      else
-        res[:catalogos] << catalogo.descripcion
       end
     end
 
     if res[:catalogos].any?
-      @@html << "<p class='etiqueta-checklist m-0'>#{res[:catalogos].join(',')}</p>"
+      @@html << "<p class='etiqueta-checklist m-0'>#{res[:catalogos].join(', ')}</p>"
     end
 
     cats = []
@@ -228,8 +281,61 @@ module BusquedasHelper
     cats.any? ? "<p class='f-categorias-riesgo-checklist text-right m-0'>#{cats.join('; ')}</p>" : nil
   end
 
-  def categoriasRiesgoChecklist(taxon)
+  def distribucionChecklist(taxon, seccion=true)
+    return unless params[:f_check].present?
+    return unless params[:f_check].include?('dist') || params[:f_check].include?('interac')
 
+    regiones = taxon.regiones.map{ |r| t("estados_siglas.#{r.nombre_region.estandariza}") if r.tipo_region_id == 2 }.flatten.compact.sort
+    return regiones unless seccion
+    @@html << "<p class='m-0'><label class='etiqueta-checklist'>Distribución en México:</label> #{regiones.join(', ')}</p>" if regiones.any?
+  end
+
+  # Va imprimiendo los numeros de las bibliografias de los nombres cientificos
+  def bibliografiaNombreChecklist(taxon)
+    return unless params[:f_check].present?
+    return unless params[:f_check].include?('biblio')
+    referencias = []
+
+    taxon.bibliografias.each do |bibliografia|
+      if indice = @@bibliografias.index(bibliografia.cita_completa)
+        referencias << (indice+1)
+      else
+        @@bibliografias << bibliografia.cita_completa
+        referencias << @@bibliografias.length
+      end
+    end
+
+    @@html << " <sup><strong>[#{referencias.sort.map{ |r| link_to(r,"#biblio-checklist-#{r}", target: :_self) }.join(',')}]</strong></sup>" if referencias.any?
+  end
+
+  # Imprime las bibliografias al final
+  def bibliografiasChecklist
+    return unless params[:f_check].present?
+    return unless params[:f_check].include?('biblio')
+    return unless @@bibliografias.any?
+
+    html = "<h5 class='etiqueta-checklist'>Bibliografias</h5>"
+
+    @@bibliografias.each_with_index do |bibliografia, indice|
+      html << "<p id='biblio-checklist-#{indice+1}'>#{bibliografia} <sup><strong>[#{indice+1}]</strong></sup></p>"
+    end
+
+    html.html_safe
+  end
+
+  # Los checkbox para que el usuario decida que descargar
+  def campoDescargaChecklist
+    campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', dist: 'Distribución (reportada en literatura)', amb: 'Ambiente', val: 'Solo válidos/aceptados', nom_com: 'Nombres comúnes', biblio: 'Bibliografías', residencia: 'Categoría de residencia (aves)', formas: 'Formas de crecimiento (plantas)', interac: 'Interacciones biológicas' }
+    checkBoxes = '<h6>Selecciona los campos a desplegar en el checklist</h6>'
+
+    campos.each do |valor, label|
+      checkBoxes << "<div class='custom-control custom-switch'>"
+      checkBoxes << check_box_tag('f_check[]', valor, false, class: 'custom-control-input', id: "f_check_#{valor}")
+      checkBoxes << "<label class = 'custom-control-label' for='f_check_#{valor}'>#{label}</label>"
+      checkBoxes << "</div>"
+    end
+
+    checkBoxes.html_safe
   end
 
 end

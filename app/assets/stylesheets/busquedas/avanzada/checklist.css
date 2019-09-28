@@ -18,13 +18,18 @@
     font-weight: bold;
     color: #800000;
 }
-.f-categoria-taxonomica-checklist{
+/*.f-categoria-taxonomica-checklist{
     border: 1px solid black;
-}
+}*/
 .f-categoria-taxonomica-checklist
 {
     color: #828b87;
     font-size: 1em;
+}
+#content sub
+{
+    font-weight: normal;
+    background-color: unset;
 }
 .checklist-nivel-1
 {
