@@ -116,7 +116,6 @@ $(document).ready(function()
 
     // Para validar una ultima vez cuando paso la validacion del boton y quiere descragar el checklist
     $('#modal-descarga-checklist').on('click', '#boton-descarga-checklist', function(){
-        var correo = $('#correo-checklist').val();
         var url = $('#modal-menu-checklist').attr('url');
 
         var campos = [];
@@ -127,13 +126,9 @@ $(document).ready(function()
 
         if (campos.length > 0) url = url + '&' + campos.join('&');
 
-        if(correoValido(correo))
-        {
-            $('#modal-descarga-checklist').modal('toggle');
-            $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
-            window.open(url,'_blank');
-        } else
-            return false;
+        $('#modal-descarga-checklist').modal('toggle');
+        $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
+        window.open(url,'_blank');
     });
 
     // Para la validacion del correo en la descarga del checklist

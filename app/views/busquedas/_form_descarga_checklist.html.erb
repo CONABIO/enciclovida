@@ -8,15 +8,11 @@
       </div>
       <div class="modal-body">
         <p>
-          <i>Selecciona los datos a exportar para el checklist y se te enviará un correo cuando este listo.</i>
+          <i>Selecciona los datos a exportar para el checklist, toma en cuenta que entre más sean podría tardarse más en generarlo </i>
         </p>
 
         <div class="form-group has-feedback">
           <%= form_with(url: '', method: 'get', id: 'form-checklist') do %>
-            <div class="col-12 mb-3">
-              <%= campoCorreo('checklist').html_safe %>
-            </div>
-
             <div class="col-12 mb-3">
               <%= campoDescargaChecklist %>
             </div>
@@ -26,7 +22,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <%= botonDescarga('checklist').html_safe %>
+        <%= botonDescarga('checklist', true).html_safe %>
       </div>
     </div>
   </div>

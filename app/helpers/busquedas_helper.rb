@@ -109,8 +109,8 @@ module BusquedasHelper
   end
 
   # El boton de las descargas
-  def botonDescarga(recurso)
-    if usuario_signed_in?
+  def botonDescarga(recurso, checklist = false)
+    if usuario_signed_in? || checklist
       "<button type='button' class='btn btn-success' id='boton-descarga-#{recurso}'>Enviar</button>"
     else
       "<button type='button' class='btn btn-success' id='boton-descarga-#{recurso}' disabled='disabled'>Enviar</button>"
