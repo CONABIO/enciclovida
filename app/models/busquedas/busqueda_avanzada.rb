@@ -59,14 +59,32 @@ class BusquedaAvanzada < Busqueda
   private
 
   def checklist
-    ids_checklist = taxones.select_ancestry.map{ |t| t.ancestry.split(',') }.flatten.uniq!
-    self.taxones = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional).includes(:nombres_comunes, :tipos_distribuciones, :catalogos, :bibliografias, :regiones, especies_estatus: :especie).datos_checklist.where(id: ids_checklist)
+    ids_checklist = taxones.where(estatus: 2).select_ancestry.map{ |t| t.ancestry.split(',') }.flatten.uniq!
+    self.taxones = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional).datos_checklist.where(id: ids_checklist)
 
-    self.sinonimos_basonimos = {}
-    taxones.each do |taxon|
-      next if taxon.estatus == 2  # Quiere decir que es valido
-      self.sinonimos_basonimos[taxon.id] = taxon
+    return unless params[:f_check].present? && params[:f_check].any?
+
+    params[:f_check].each do |campo|
+      case campo
+      when 'tipo_dist'
+        self.taxones = taxones.includes(:tipos_distribuciones)
+      when 'cat_riesgo', 'amb', 'formas', 'residencia'
+        self.taxones = taxones.includes(:catalogos)
+      when 'dist'
+        self.taxones = taxones.includes(:regiones)
+      when 'nom_com'
+        self.taxones = taxones.includes(:nombres_comunes)
+      when 'biblio'
+        self.taxones = taxones.includes(:bibliografias)
+      when 'interac'
+        self.taxones = taxones.includes(:regiones, especies_estatus: [especie: [:regiones]])
+      end
     end
+
+    if !params[:f_check].include?('val') && !params[:f_check].include?('interac')
+      self.taxones = taxones.includes(especies_estatus: [:especie])
+    end
+
   end
 
 end

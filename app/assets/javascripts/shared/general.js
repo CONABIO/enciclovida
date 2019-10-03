@@ -43,9 +43,9 @@ var cambiaLocale = function(locale){
                 locale: locale
             }
         }).done(function(resp){
-            if (resp.estatus) location.reload(true);
-            return false;
-        });
+        if (resp.estatus) location.reload(true);
+        return false;
+    });
     return false;
 };
 
@@ -97,20 +97,9 @@ var dameValidacionCorreo = function(recurso, notice)
         $(notice).empty().addClass('hidden');
 
         if( !correoValido($(this).val()) )
-        {
-            $(this).parent().addClass("has-error");
-            $(this).parent().removeClass("has-success");
-
-            $(this).siblings("span:first").addClass("glyphicon-remove");
-            $(this).siblings("span:first").removeClass("glyphicon-ok");
             $('#boton-descarga-' + recurso).attr('disabled', 'disabled');
-        } else {
-            $(this).parent().removeClass("has-error");
-            $(this).parent().addClass("has-success");
-            $(this).siblings("span:first").addClass("glyphicon-ok");
-            $(this).siblings("span:first").removeClass("glyphicon-remove");
-            $('#boton-descarga-' + recurso).removeAttr('disabled')
-        }
+        else
+            $('#boton-descarga-' + recurso).removeAttr('disabled');
     });
 };
 
