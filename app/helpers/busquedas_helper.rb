@@ -120,7 +120,7 @@ module BusquedasHelper
   # Despliega el checklist
   def generaChecklist(taxon)
     @@html = ''
-    nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{link_to(taxon.nombre_cientifico, especie_path(taxon), target: :_blank)}</text>"
+    nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{link_to(taxon.nombre_cientifico, especie_url(taxon), target: :_blank)}</text>"
 
     unless taxon.especie_o_inferior?
       cat = taxon.nombre_categoria_taxonomica

@@ -55,6 +55,7 @@ gem 'uglifier'
 gem 'wash_out'
 gem 'whenever', :require => false
 gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
 gem 'zip-zip' # Needed by axlsx
 
 group :doc do

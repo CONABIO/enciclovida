@@ -185,18 +185,30 @@ class BusquedasController < ApplicationController
       elsif params[:checklist].present? && params[:checklist].to_i == 1  # Imprime el checklist de la taxa dada
         format.html { render 'busquedas/checklists' }
         format.pdf do  #Para imprimir el listado en PDF
-          ruta = Rails.root.join('public', 'pdfs').to_s
-          fecha = Time.now.strftime("%Y%m%d%H%M%S")
-          pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
-          FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
+          #ruta = Rails.root.join('public', 'pdfs').to_s
+          #fecha = Time.now.strftime("%Y%m%d%H%M%S")
+          #pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
+          #FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
 
-          render :pdf => 'listado_de_especies',
-                 :save_to_file => pdf,
-                 #:save_only => true,
-                 :template => 'busquedas/checklists.pdf.erb',
-                 :encoding => 'UTF-8',
-                 :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
-                 :orientation => 'Landscape'
+          render pdf: 'listado_de_especies',
+                 template: 'busquedas/checklists.pdf.erb',
+                 encoding: 'UTF-8',
+                 wkhtmltopdf: CONFIG.wkhtmltopdf_path,
+                 #disposition: 'attachment',
+                 header: {
+                     #html: {
+                         #template: 'busquedas/algo.html.erb'
+                     #},
+                     right: '[page] de [topage]',
+                     center: 'Catálogo de autoridades taxonómicas de flora y fauna con distribución en México',
+                     line: true,
+                     spacing: 5,
+                     content: '<i>Soy una italica</i>'
+                 },
+                 margin: {
+                     top: 23,
+                     bottom: 10
+                 }
         end
         format.xlsx do  # Falta implementar el excel de salida
           @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
