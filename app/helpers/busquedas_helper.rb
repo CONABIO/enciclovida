@@ -4,7 +4,7 @@ module BusquedasHelper
   @@opciones = { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, 'data-none-results-text': 'Sin resultados para {0}', 'data-count-selected-text': '{0} seleccionados', title: '- - Selecciona - -', multiple: true, 'data-sanitize': false }
 
   @@html = ''
-  @@bibliografias = []
+  #@@bibliografias = []
 
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos(resultados = false)
@@ -297,11 +297,11 @@ module BusquedasHelper
     referencias = []
 
     taxon.bibliografias.each do |bibliografia|
-      if indice = @@bibliografias.index(bibliografia.cita_completa)
+      if indice = @bibliografias.index(bibliografia.cita_completa)
         referencias << (indice+1)
       else
-        @@bibliografias << bibliografia.cita_completa
-        referencias << @@bibliografias.length
+        @bibliografias << bibliografia.cita_completa
+        referencias << @bibliografias.length
       end
     end
 
@@ -312,11 +312,11 @@ module BusquedasHelper
   def bibliografiasChecklist
     return unless params[:f_check].present?
     return unless params[:f_check].include?('biblio')
-    return unless @@bibliografias.any?
+    return unless @bibliografias.any?
 
     html = "<h5 class='etiqueta-checklist'>Bibliografias</h5>"
 
-    @@bibliografias.each_with_index do |bibliografia, indice|
+    @bibliografias.each_with_index do |bibliografia, indice|
       html << "<p id='biblio-checklist-#{indice+1}'>#{bibliografia} <sup><strong>[#{indice+1}]</strong></sup></p>"
     end
 
