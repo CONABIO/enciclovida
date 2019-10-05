@@ -12,14 +12,7 @@ module BusquedasHelper
       "<label>#{radio_button_tag('id_gi', taxon.id, false, id: "id_gi_#{taxon.id}")}<span class='mx-1'><span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn-title'></span></span></label>"
     end
 
-    radios = '<div class="col-md">'
-    radios << '<h6><strong>Reinos</strong></h6>'
-    @reinos.each do |taxon|  # Para tener los grupos ordenados
-      radios << arma_span(taxon)
-    end
-    radios << '</div>'
-    radios << '<div class="w-100"></div>' if resultados
-
+    radios = ''
     radios << '<div class="col-md">'
     radios << '<h6><strong>Grupos de animales</strong></h6>'
     @animales.each do |taxon|  # Para tener los grupos ordenados
