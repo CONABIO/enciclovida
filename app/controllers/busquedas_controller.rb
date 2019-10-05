@@ -184,6 +184,7 @@ class BusquedasController < ApplicationController
         format.json { render json: {taxa: []} }
       elsif params[:checklist].present? && params[:checklist].to_i == 1  # Imprime el checklist de la taxa dada
         @bibliografias = []
+        @categorias = {}
 
         format.html { render 'busquedas/checklists' }
         format.pdf do  #Para imprimir el listado en PDF

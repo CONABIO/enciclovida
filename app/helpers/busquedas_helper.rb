@@ -119,6 +119,17 @@ module BusquedasHelper
 
   # Despliega el checklist
   def generaChecklist(taxon)
+    # Para asignar el conteo de categorias
+    nivel = "#{taxon.nivel1}#{taxon.nivel2}#{taxon.nivel3}#{taxon.nivel4}"
+
+    if @categorias[nivel].blank?
+      @categorias[nivel] = {}
+      @categorias[nivel][:categoria] = taxon.nombre_categoria_taxonomica
+      @categorias[nivel][:conteo] = 0
+    end
+
+    @categorias[nivel][:conteo] += 1
+
     @@html = ''
     nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{link_to(taxon.nombre_cientifico, especie_url(taxon), target: :_blank)}</text>"
 
