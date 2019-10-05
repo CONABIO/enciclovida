@@ -85,6 +85,8 @@ class BusquedaAvanzada < Busqueda
       self.taxones = taxones.includes(especies_estatus: [:especie])
     end
 
+
+
   end
 
 end

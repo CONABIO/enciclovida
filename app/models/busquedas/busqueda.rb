@@ -146,13 +146,13 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
     return if !(pagina == 1 && params[:solo_categoria].blank? && formato != 'xlsx')
 
     por_categoria = taxones.
-        select(:categoria_taxonomica_id, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.table_name}.#{Especie.attribute_alias(:id)}) AS cuantos").
+        select(:categoria_taxonomica_id, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.table_name}.#{Especie.attribute_alias(:id)}) AS cuantos, #{CategoriaTaxonomica.attribute_alias(:nivel2)} AS nivel2").
         group(:categoria_taxonomica_id, CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)).
         order(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica))
 
     self.por_categoria = por_categoria.map{|cat| {nombre_categoria_taxonomica: cat.nombre_categoria_taxonomica,
                                                   cuantos: cat.cuantos, url: "#{original_url}&solo_categoria=#{cat.categoria_taxonomica_id}",
-                                                  categoria_taxonomica_id: cat.categoria_taxonomica_id}}
+                                                  categoria_taxonomica_id: cat.categoria_taxonomica_id, nivel2: cat.nivel2}}
   end
 
   # REVISADO: Solo la categoria que escogi, en caso de haber escogido una pestaña en especifico
