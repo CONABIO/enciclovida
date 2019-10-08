@@ -186,7 +186,7 @@ class BusquedasController < ApplicationController
         @bibliografias = []
         @categorias_checklist = busqueda.categorias_checklist
 
-        format.html { render 'busquedas/checklists' }
+        format.html { render 'busquedas/checklist/checklists' }
         format.pdf do  #Para imprimir el listado en PDF
           #ruta = Rails.root.join('public', 'pdfs').to_s
           #fecha = Time.now.strftime("%Y%m%d%H%M%S")
@@ -194,23 +194,29 @@ class BusquedasController < ApplicationController
           #FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
 
           render pdf: 'listado_de_especies',
-                 template: 'busquedas/checklists.pdf.erb',
+                 template: 'busquedas/checklist/checklists.pdf.erb',
                  encoding: 'UTF-8',
                  wkhtmltopdf: CONFIG.wkhtmltopdf_path,
                  #disposition: 'attachment',
                  header: {
                      #html: {
-                         #template: 'busquedas/algo.html.erb'
+                     #template: 'busquedas/algo.html.erb'
                      #},
                      right: '[page] de [topage]',
                      center: 'Catálogo de autoridades taxonómicas de flora y fauna con distribución en México',
                      line: true,
                      spacing: 5,
-                     content: '<i>Soy una italica</i>'
+                 },
+                 footer: {
+                     html: {
+                         template: 'busquedas/checklist/footer.html.erb'
+                     },
+                     line: true,
+                     spacing: 3
                  },
                  margin: {
                      top: 23,
-                     bottom: 10
+                     bottom: 20
                  }
         end
         format.xlsx do  # Falta implementar el excel de salida
