@@ -197,7 +197,7 @@ class BusquedasController < ApplicationController
                  template: 'busquedas/checklist/checklists.pdf.erb',
                  encoding: 'UTF-8',
                  wkhtmltopdf: CONFIG.wkhtmltopdf_path,
-                 #disposition: 'attachment',
+                 disposition: 'attachment',
                  header: {
                      #html: {
                      #template: 'busquedas/algo.html.erb'
