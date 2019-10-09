@@ -26,10 +26,10 @@
     color: #828b87;
     font-size: 1em;
 }
-#content sub
+#contenido-checklist sub
 {
     font-weight: normal;
-    background-color: unset;
+    background-color: transparent;
 }
 .checklist-nivel-1
 {

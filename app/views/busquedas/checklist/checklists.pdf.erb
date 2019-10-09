@@ -23,7 +23,8 @@
 </head>
 
 <body>
-<%= render partial: 'busquedas/checklist/checklist_datos.html.erb' %>
+<% request_url = request.url %>
+<%= render partial: 'busquedas/checklist/checklist_datos.html.erb', locals: { request_url: request_url.gsub('&checklist=1','').gsub('/resultados.pdf?','/resultados?') } %>
 </body>
 
 </html>

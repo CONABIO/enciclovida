@@ -145,13 +145,15 @@ module BusquedasHelper
 
     nombres = taxon.dame_nombres_comunes_catalogos
     return '' unless nombres.any?
-    html = "<label class='etiqueta-checklist'>Nombre(s) común(es):</label>"
+    html = "<label class='etiqueta-checklist'>Nombre(s) común(es):</label> "
 
+    nombres_completos = []
     nombres.each do |hash_nombres|
       lengua = hash_nombres.keys.first
-      html << " <span>#{hash_nombres[lengua].uniq.sort.join(', ')} <sub>(#{lengua})</sub>; </span>"
+      nombres_completos << "<span>#{hash_nombres[lengua].uniq.sort.join(', ')} <sub>(#{lengua})</sub></span>"
     end
 
+    html << nombres_completos.join('; ') + '.' if nombres_completos.any?
     @@html << "<p class='m-0'>#{html}</p>"
   end
 
