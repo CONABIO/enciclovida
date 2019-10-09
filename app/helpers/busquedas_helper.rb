@@ -112,16 +112,6 @@ module BusquedasHelper
 
   # Despliega el checklist
   def generaChecklist(taxon)
-    # Para asignar el conteo de categorias
-    nivel = "#{taxon.nivel1}#{taxon.nivel2}#{taxon.nivel3}#{taxon.nivel4}"
-
-    if @categorias[nivel].blank?
-      @categorias[nivel] = {}
-      @categorias[nivel][:categoria] = taxon.nombre_categoria_taxonomica
-      @categorias[nivel][:conteo] = 0
-    end
-
-    @categorias[nivel][:conteo] += 1
 
     @@html = ''
     nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{link_to(taxon.nombre_cientifico, especie_url(taxon), target: :_blank)}</text>"
@@ -155,13 +145,15 @@ module BusquedasHelper
 
     nombres = taxon.dame_nombres_comunes_catalogos
     return '' unless nombres.any?
-    html = "<label class='etiqueta-checklist'>Nombre(s) común(es):</label>"
+    html = "<label class='etiqueta-checklist'>Nombre(s) común(es):</label> "
 
+    nombres_completos = []
     nombres.each do |hash_nombres|
       lengua = hash_nombres.keys.first
-      html << " <span>#{hash_nombres[lengua].uniq.sort.join(', ')} <sub>(#{lengua})</sub>; </span>"
+      nombres_completos << "<span>#{hash_nombres[lengua].uniq.sort.join(', ')} <sub>(#{lengua})</sub></span>"
     end
 
+    html << nombres_completos.join('; ') + '.' if nombres_completos.any?
     @@html << "<p class='m-0'>#{html}</p>"
   end
 

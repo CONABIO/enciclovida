@@ -1,0 +1,17 @@
+<% content_for(:extracss) do %>
+  <%= stylesheet_link_tag 'busquedas', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'busquedas/avanzada/checklist', 'data-turbolinks-track' => true %>
+<% end %>
+
+<% content_for(:title) do %>
+  <%= @titulo='Checklist' %>
+<% end %>
+
+<div id="dvLoading"><i></i></div>
+
+<% request_url = request.url %>
+<div class="col-12 d-flex justify-content-end">
+  <%= link_to('Descarga en PDF', request.url.gsub('/resultados?','/resultados.pdf?'), target: :_blank, title: 'Lista/checklist', class: 'btn btn-secondary active', role: 'button', 'aria-pressed': true) %>
+</div>
+
+<%= render partial: 'busquedas/checklist/checklist_datos', locals: { request_url: request_url.gsub('&checklist=1','') } %>
