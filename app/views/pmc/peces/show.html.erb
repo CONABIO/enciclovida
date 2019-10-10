@@ -1,4 +1,4 @@
-<div class="col-8 mb-4">
+<div class="col-6 mb-8">
   <%= tituloNombreCientifico(@pez.especie, render: 'header').html_safe %>
 </div>
 
@@ -17,93 +17,98 @@
   </div>
 <% end %>
 
+<% if @pez.imagen =~ URI::regexp %>
+  <div class="img_pez col-12 text-center mb-5">
+    <%= image_tag(@pez.imagen, class: "img-responsive img-thumbnail img-rounded") %>
+  </div>
+<% end %>
+
 <div class="container">
-<div class="row" id="panel-body">
+  <div class="row" id="panel-body">
 
-  <div class="col-6 caracteristicas_pez">
-    <h3 class="text-center text-primary">Criterios </h3>
-    <% @criterios["Características"].compact.each do |c|  %>
-      <div class="w-100">
-        <b>
-          <%= c[:tipo_propiedad] %>
-          <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
-            <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
-          <% end %>
-        </b><br />
-        <small><i><%= c[:nombre] %></i></small>
+    <div class="col-6 caracteristicas_pez">
+      <h3 class="text-center mb-4">Criterios<br \>
+        <small>(Los criterios se suman sin importar la zona)</small>
+      </h3>
+
+      <% @criterios["Características"].compact.each do |c|  %>
+        <div class="w-100 mb-4">
+          <b>
+            <%= c[:tipo_propiedad] %>
+            <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
+              <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+            <% end %>
+          </b><br />
+          <i><%= c[:nombre] %></i> = <%= c[:valor] %>
+        </div>
+      <% end %>
+
+      <div class="w-100 mt-3">
+        <h4 class="text-center">
+          <b>Suma de criterios: </b>
+          <span class="badge"><%= @criterios["suma_caracteristicas"] %></span>
+        </h4>
+
+        <% if @pez.veda_fechas.present? %>
+          <h3 class="text-center mt-4">Descripción de la veda </h3> <%= @pez.veda_fechas %>
+        <% end %>
       </div>
-
-      <div class="w-100">
-        <span class="badge"><%= c[:valor] %></span>
-      </div>
-    <% end %>
-
-    <div class="w-100">
-      <h4 class="text-center">
-        <b>Suma de criterios globales: </b>
-        <span class="badge btn-zona-<%= valorAColor @criterios["suma_caracteristicas"] %>"><%= @criterios["suma_caracteristicas"] %></span>
-      </h4>
-
-      <h3 class="text-center text-primary">Descripción de la veda </h3> <%= @pez.veda_fechas %>
     </div>
-  </div>
 
-  <div class="col-6 edo_pob_pez">
-    <h3 class="text-center text-primary">Estado de la población de la especie:<br \>
-      <small>(Valoración del edo. de la población por zona + Suma de criterios globales = Valoración por zona)</small>
-    </h3>
+    <div class="col-6 edo_pob_pez">
+      <h3 class="text-center">Estado de la población:<br \>
+        <small>(Estado de la población por zona + Suma de criterios = Recomendación por zona)</small>
+      </h3>
 
-    <% @criterios["Estado poblacional en el Pacífico"].each do |c|  %>
-
-        <h4 class="btn-zona-show btn-zona-<%= valorAColor c[:valor] + @criterios["suma_caracteristicas"] %>">
-          <%= c[:tipo_propiedad] %>
+      <% @criterios["Estado poblacional en el Pacífico"].each do |c|  %>
+        <div class="mb-4">
+          <b><%= c[:tipo_propiedad] %></b>
           <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
             <span class="fa fa-exclamation text-primary" aria-hidden="true"></span>
           <% end %>
 
           <br />
-          <small><i><%= c[:nombre] %></i></small>
-        </h4>
+          <i><%= c[:nombre] %></i>
+          <br />
 
-        <h5>
-          <span class="badge"><%= c[:valor] %></span>
+
+          <span><%= c[:valor] %></span>
           <b>+</b>
-          <span class="badge btn-zona-<%= valorAColor @criterios["suma_caracteristicas"] %>"><%= @criterios["suma_caracteristicas"] %></span>
+          <span><%= @criterios["suma_caracteristicas"] %></span>
           <b>=</b>
-          <span class="badge btn-zona-<%= valorAColor c[:valor] + @criterios["suma_caracteristicas"] %>"><%= c[:valor] + @criterios["suma_caracteristicas"]%></span>
-        </h5>
+          <span class="btn-zona-<%= valorAColor c[:valor] + @criterios["suma_caracteristicas"] %>"><%= c[:valor] + @criterios["suma_caracteristicas"]%></span>
 
-    <% end %>
+        </div>
+      <% end %>
 
-    <% @criterios["Estado poblacional en el Golfo de México y caribe"].each do |c|  %>
-
-        <h4 class="btn-zona-show btn-zona-<%= valorAColor c[:valor] + @criterios["suma_caracteristicas"] %>">
-          <%= c[:tipo_propiedad] %>
+      <% @criterios["Estado poblacional en el Golfo de México y caribe"].each do |c|  %>
+        <div class="mb-4">
+          <b><%= c[:tipo_propiedad] %></b>
           <% if Pmc::Criterio::CON_ADVERTENCIA.include?(c[:nombre]) %>
             <span class="fa fa-exclamation text-primary" aria-hidden="true"></span>
           <% end %>
+
           <br />
-          <small><i><%= c[:nombre] %></i></small>
-        </h4>
+          <i><%= c[:nombre] %></i>
+          <br />
 
-        <h5>
-          <span class="badge"><%= c[:valor] %></span>
+          <span><%= c[:valor] %></span>
           <b>+</b>
-          <span class="badge btn-zona-<%= valorAColor @criterios["suma_caracteristicas"] %>"><%= @criterios["suma_caracteristicas"] %></span>
+          <span><%= @criterios["suma_caracteristicas"] %></span>
           <b>=</b>
-          <span class="badge btn-zona-<%= valorAColor c[:valor] + @criterios["suma_caracteristicas"] %>"><%= c[:valor] + @criterios["suma_caracteristicas"]%></span>
-        </h5>
-    <% end %>
+          <span class="btn-zona-<%= valorAColor c[:valor] + @criterios["suma_caracteristicas"] %>"><%= c[:valor] + @criterios["suma_caracteristicas"]%></span>
+
+        </div>
+      <% end %>
+    </div>
+
+
+    <div class="col">
+      <hr />
+      <h4 class="text-center">
+        <span class="label btn-zona-v">Menor a 5 es recomendable</span> - <span class="label btn-zona-a">De 5 a 19 consume con cautela</span> - <span class="label btn-zona-r">Más de 20 evita</span>
+      </h4>
+    </div>
+
   </div>
-
-
-  <div class="col">
-    <hr />
-    <h5 class="text-center"><i>El color de la recomendación es de acuerdo a la suma de los criterios descritos arriba, y varian depediendo la zona</i></h5>
-    <h4 class="text-center">
-      <span class="label btn-zona-v">Menor a 5 es recomendable</span> - <span class="label btn-zona-a">De 5 a 19 consume con cautela</span> - <span class="label btn-zona-r">Más de 20 evita</span>
-    </h4>
-  </div>
-
-</div>
 </div>
