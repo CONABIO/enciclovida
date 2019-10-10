@@ -200,11 +200,3 @@ path[id^=path_zonas_]:hover{fill: rgba(160, 204, 234, .59);}
 #extranjero{fill: #f0f0f0;}
 
 text[id^=titulo_zonas_], g[id^=titulo_zonas_]{fill: #002B3E; font-size: .55em; font-weight: bolder; font-style: oblique;}
-
-.caracteristicas_pez, .edo_pob_pez, .img_pez{
-  -webkit-box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-.edo_pob_pez h4{
-  min-height: 80px;
-}
