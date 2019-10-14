@@ -310,7 +310,7 @@ module BusquedasHelper
     return unless params[:f_check].include?('biblio')
     return unless @bibliografias.any?
 
-    html = "<h5 class='etiqueta-checklist'>Bibliografias</h5>"
+    html = "<h5 class='etiqueta-checklist'>Bibliografía</h5>"
 
     @bibliografias.each_with_index do |bibliografia, indice|
       html << "<p id='biblio-checklist-#{indice+1}'>#{bibliografia} <sup><strong>[#{indice+1}]</strong></sup></p>"
@@ -321,7 +321,7 @@ module BusquedasHelper
 
   # Los checkbox para que el usuario decida que descargar
   def campoDescargaChecklist
-    campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', dist: 'Distribución (reportada en literatura)', amb: 'Ambiente', val: 'Solo válidos/aceptados', nom_com: 'Nombres comúnes', biblio: 'Bibliografías', residencia: 'Categoría de residencia (aves)', formas: 'Formas de crecimiento (plantas)', interac: 'Interacciones biológicas' }
+    campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', dist: 'Distribución (reportada en literatura)', amb: 'Ambiente', val: 'Solo válidos/aceptados', nom_com: 'Nombres comunes', biblio: 'Bibliografías', residencia: 'Categoría de residencia (aves)', formas: 'Formas de crecimiento (plantas)', interac: 'Interacciones biológicas' }
     checkBoxes = '<h6>Selecciona los campos a desplegar en el checklist</h6>'
 
     campos.each do |valor, label|
