@@ -197,11 +197,12 @@ class BusquedasController < ApplicationController
                  template: 'busquedas/checklist/checklists.pdf.erb',
                  encoding: 'UTF-8',
                  wkhtmltopdf: CONFIG.wkhtmltopdf_path,
-                 disposition: 'attachment',
+                 #disposition: 'attachment',
+                 #show_as_html: true,
                  header: {
-                     #html: {
-                     #template: 'busquedas/algo.html.erb'
-                     #},
+                     html: {
+                     template: 'busquedas/checklist/header.html.erb'
+                     },
                      right: '[page] de [topage]',
                      center: 'Catálogo de autoridades taxonómicas de flora y fauna con distribución en México',
                      line: true,
