@@ -1,0 +1,19 @@
+<div class="col-12" id="contenido-checklist">
+
+  <div class="mb-4">
+    El presente listado fue generado el <%= DateTime.now.strftime("%Y/%m/%d") %> y contiene lo siguiente:<br />
+    <%= @categorias_checklist.map{ |categoria| "#{categoria.nombre_categoria_taxonomica}: <b>#{categoria.totales}</b>" }.join(', ').html_safe %>
+
+    <hr />
+    <text class="mt-3">Si deseas consultar los criterios que se ocuparon para generar este listado, consulta la siguiente liga: <%= link_to request_url, request_url, target: :_blank %></text>
+  </div>
+
+  <% @taxones.each do |taxon| %>
+    <% next unless taxon.estatus == 2 %>
+    <div class="checklist-nivel-<%= taxon.nivel1 %> %>">
+      <%= "<span id=\"datos_busqueda-#{taxon.id}\">#{generaChecklist(taxon)}</span><br />".html_safe %>
+    </div>
+  <% end %>
+
+  <%= bibliografiasChecklist %>
+</div>

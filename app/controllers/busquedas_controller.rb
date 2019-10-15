@@ -183,20 +183,42 @@ class BusquedasController < ApplicationController
         format.html { render plain: '' }
         format.json { render json: {taxa: []} }
       elsif params[:checklist].present? && params[:checklist].to_i == 1  # Imprime el checklist de la taxa dada
-        format.html { render 'busquedas/checklists' }
-        format.pdf do  #Para imprimir el listado en PDF
-          ruta = Rails.root.join('public', 'pdfs').to_s
-          fecha = Time.now.strftime("%Y%m%d%H%M%S")
-          pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
-          FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
+        @bibliografias = []
+        @categorias_checklist = busqueda.categorias_checklist
 
-          render :pdf => 'listado_de_especies',
-                 :save_to_file => pdf,
-                 #:save_only => true,
-                 :template => 'busquedas/checklists.pdf.erb',
-                 :encoding => 'UTF-8',
-                 :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
-                 :orientation => 'Landscape'
+        format.html { render 'busquedas/checklist/checklists' }
+        format.pdf do  #Para imprimir el listado en PDF
+          #ruta = Rails.root.join('public', 'pdfs').to_s
+          #fecha = Time.now.strftime("%Y%m%d%H%M%S")
+          #pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
+          #FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
+
+          render pdf: 'listado_de_especies',
+                 template: 'busquedas/checklist/checklists.pdf.erb',
+                 encoding: 'UTF-8',
+                 wkhtmltopdf: CONFIG.wkhtmltopdf_path,
+                 #disposition: 'attachment',
+                 #show_as_html: true,
+                 header: {
+                     html: {
+                     template: 'busquedas/checklist/header.html.erb'
+                     },
+                     right: '[page] de [topage]',
+                     center: 'Catálogo de autoridades taxonómicas de flora y fauna con distribución en México',
+                     line: true,
+                     spacing: 5,
+                 },
+                 footer: {
+                     html: {
+                         template: 'busquedas/checklist/footer.html.erb'
+                     },
+                     line: true,
+                     spacing: 3
+                 },
+                 margin: {
+                     top: 23,
+                     bottom: 20
+                 }
         end
         format.xlsx do  # Falta implementar el excel de salida
           @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
