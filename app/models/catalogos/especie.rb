@@ -96,9 +96,10 @@ class Especie < ActiveRecord::Base
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join }
   #Select para el Checklist
-  scope :select_checklist, -> { select(:id, :nombre_cientifico).select("#{attribute_alias(:ancestry_ascendente_obligatorio)} AS ancestry") }
-  scope :select_ancestry, -> { select(:id).select("#{attribute_alias(:ancestry_ascendente_obligatorio)} AS ancestry") }
+  scope :select_checklist, -> { select(:id, :nombre_cientifico).select("#{attribute_alias(:ancestry_ascendente_directo)} AS ancestry") }
+  scope :select_ancestry, -> { select(:id).select("#{attribute_alias(:ancestry_ascendente_directo)} AS ancestry") }
   scope :datos_checklist, -> { select_checklist.order('ancestry ASC') }
+  scope :categorias_checklist, -> { where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} IN (?)", CategoriaTaxonomica::CATEGORIAS_CHECKLIST) }
   scope :datos_arbol_sin_filtros, -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo,
 ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id,
 categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, nombre_comun_principal,
