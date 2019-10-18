@@ -1,0 +1,29 @@
+<h1>Listing catalogos</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>Nombre</th>
+    <th>Número de especies</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @admin_catalogos.each do |catalogo| %>
+    <tr>
+      <td><%= catalogo.descripcion %>| </td>
+      <td></td>
+      <td><%= link_to 'Show', catalogo %>| </td>
+      <td><%= link_to 'Edit', edit_admin_catalogo_path(catalogo) %>| </td>
+      <td><%= link_to 'Destroy', catalogo, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Catalogo', new_admin_catalogo_path %>
