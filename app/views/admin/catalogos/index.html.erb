@@ -1,4 +1,4 @@
-<h1>Listing catalogos</h1>
+<h1>Catálogos</h1>
 
 <table>
   <thead>
@@ -6,19 +6,19 @@
     <th>Nombre</th>
     <th>Número de especies</th>
     <th></th>
-    <th></th>
-    <th></th>
   </tr>
   </thead>
 
   <tbody>
   <% @admin_catalogos.each do |catalogo| %>
     <tr>
-      <td><%= catalogo.descripcion %>| </td>
-      <td></td>
-      <td><%= link_to 'Show', catalogo %>| </td>
-      <td><%= link_to 'Edit', edit_admin_catalogo_path(catalogo) %>| </td>
-      <td><%= link_to 'Destroy', catalogo, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      <td><%= catalogo.descripcion %></td>
+      <td><%= catalogo.totales %></td>
+      <td>
+        <%= link_to 'Show', catalogo %>|
+        <%= link_to 'Edit', edit_admin_catalogo_path(catalogo) %> |
+        <%= link_to 'Destroy', catalogo, method: :delete, data: { confirm: 'Are you sure?' } %>
+      </td>
     </tr>
   <% end %>
   </tbody>

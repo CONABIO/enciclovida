@@ -5,7 +5,7 @@ class Admin::CatalogosController < Admin::AdminController
   # GET /admin/catalogos
   # GET /admin/catalogos.json
   def index
-    @admin_catalogos = Admin::Catalogo.all
+    @admin_catalogos = Admin::Catalogo.usos
   end
 
   # GET /admin/catalogos/1
