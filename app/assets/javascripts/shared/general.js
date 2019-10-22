@@ -43,9 +43,9 @@ var cambiaLocale = function(locale){
                 locale: locale
             }
         }).done(function(resp){
-            if (resp.estatus) location.reload(true);
-            return false;
-        });
+        if (resp.estatus) location.reload(true);
+        return false;
+    });
     return false;
 };
 
@@ -87,6 +87,19 @@ var scrolling_page = function(objeto, por_pagina, url)
         scroll  : true, // The main bit, if set to false posts will not load as the user scrolls.
         // but will still load if the user clicks.
         url     : url
+    });
+};
+
+var dameValidacionCorreo = function(recurso, notice)
+{
+    // Para validar en vivo el correo
+    $('#modal-descarga-' + recurso).on('keyup', '#correo-' + recurso, function(){
+        $(notice).empty().addClass('hidden');
+
+        if( !correoValido($(this).val()) )
+            $('#boton-descarga-' + recurso).attr('disabled', 'disabled');
+        else
+            $('#boton-descarga-' + recurso).removeAttr('disabled');
     });
 };
 

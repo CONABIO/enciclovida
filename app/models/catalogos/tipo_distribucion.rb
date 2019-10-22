@@ -10,17 +10,26 @@ class TipoDistribucion < ActiveRecord::Base
   has_many :especies_regiones
 
   scope :distribuciones_vista_general, -> { where(descripcion: DISTRIBUCIONES_VISTA_GENERAL) }
+  scope :distribuciones_vista_especialistas, -> { where(descripcion: DISTRIBUCIONES_VISTA_ESPECIALISTAS) }
 
   DISTRIBUCIONES_VISTA_GENERAL = %w(Endémica Nativa Exótica Exótica-Invasora)
+  DISTRIBUCIONES_VISTA_ESPECIALISTAS = DISTRIBUCIONES_VISTA_GENERAL + %w(Cuasiendémica Semiendémica)
 
   # REVISADO: Los tipos de distribucion de acuerdo a la vista y tambien en el show de especies en la simbologia de ayuda
   def self.distribuciones(vista_especialistas = true)
+    distribuciones = []
+
     if vista_especialistas
-      all
+      distribuciones_vista_especialistas.each do |d|
+        distribuciones[DISTRIBUCIONES_VISTA_ESPECIALISTAS.index(d.descripcion)] = d
+      end
     else
-      d = distribuciones_vista_general
-      [d[0], d[2], d[3], d[1]]  # Acomodo sugerido de cgalindo
+      distribuciones_vista_general.each do |d|
+        distribuciones[DISTRIBUCIONES_VISTA_GENERAL.index(d.descripcion)] = d
+      end
     end
+
+    distribuciones
   end
 
 end

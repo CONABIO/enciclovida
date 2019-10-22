@@ -31,8 +31,29 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
     end
   end
 
-  def busca_estadisticas
+  # Para el select de usos
+  def uso
+    if params[:uso].present? && params[:uso].any?
+      self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)} IN (?)", params[:uso]).left_joins(:catalogos)
+    end
+  end
 
+  # Para el select de ambiente
+  def ambiente
+    if params[:ambiente].present? && params[:ambiente].any?
+      self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)} IN (?)", params[:ambiente]).left_joins(:catalogos)
+    end
+  end
+
+  # Para el select de las regiones (estados y ecorregiones marinas)
+  def region
+    if params[:reg].present? && params[:reg].any?
+      self.taxones = taxones.where("#{EspecieRegion.table_name}.#{EspecieRegion.attribute_alias(:region_id)} IN (?)", params[:reg]).left_joins(:especies_regiones)
+    end
+  end
+
+  # Para las estadisticas dinamicas
+  def busca_estadisticas
     if params[:controller]=='estadisticas'
 
       # Si se definió condición para conteo de valores:
@@ -125,13 +146,13 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
     return if !(pagina == 1 && params[:solo_categoria].blank? && formato != 'xlsx')
 
     por_categoria = taxones.
-        select(:categoria_taxonomica_id, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.table_name}.#{Especie.attribute_alias(:id)}) AS cuantos").
+        select(:categoria_taxonomica_id, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.table_name}.#{Especie.attribute_alias(:id)}) AS cuantos, #{CategoriaTaxonomica.attribute_alias(:nivel2)} AS nivel2").
         group(:categoria_taxonomica_id, CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)).
         order(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica))
 
     self.por_categoria = por_categoria.map{|cat| {nombre_categoria_taxonomica: cat.nombre_categoria_taxonomica,
                                                   cuantos: cat.cuantos, url: "#{original_url}&solo_categoria=#{cat.categoria_taxonomica_id}",
-                                                  categoria_taxonomica_id: cat.categoria_taxonomica_id}}
+                                                  categoria_taxonomica_id: cat.categoria_taxonomica_id, nivel2: cat.nivel2}}
   end
 
   # REVISADO: Solo la categoria que escogi, en caso de haber escogido una pestaña en especifico
@@ -152,7 +173,7 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
 
   # REVISADO: Condicion para regresar solo los taxones publicos
   def solo_publicos
-    self.taxones = taxones.where("#{Scat.table_name}.#{Scat.attribute_alias(:publico)} = 1").left_joins(:scat)
+    self.taxones = taxones.where("#{Scat.table_name}.#{Scat.attribute_alias(:publico)} = 1")
   end
 
   # REVISADO: ALgunos valores como el offset, pagina y por pagina

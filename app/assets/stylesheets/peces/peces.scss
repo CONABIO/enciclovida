@@ -1,13 +1,19 @@
-@import "bootstrap-sprockets";
-@import "custom_bootstrap";
-@import "bootstrap";
-@import "bootstrap/theme";
+@import 'boots4-upgrade/bootstrap-variable-overrides';
+@import 'boots4-upgrade/boots4/bootstrap';
+
+@import 'jquery-ui';
+@import 'jquery-ui/core';
+@import 'jquery-ui/theme';
+@import 'jquery-ui/accordion';
+
+@import 'font-awesome';
 @import 'soulmate';
+@import 'scrolling';
+
 @import 'enciclovida_font_icons';
-@import "animation";
-@import 'general';
-//@import "dashboard";
-@import "jquery-ui";
-//@import "busquedas";
-@import "formtastic";
+@import 'animation';
+
+@import 'boots4-upgrade/general';
+@import 'boots4-upgrade/busquedas/avanzada/avanzada';
+@import 'formtastic';
 @import 'peces_extra';

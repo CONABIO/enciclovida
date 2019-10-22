@@ -1,4 +1,7 @@
 class BusquedaAvanzada < Busqueda
+
+  attr_accessor :categorias_checklist
+
   # REVISADO: Regresa la busqueda avanzada
   def resultados_avanzada
     paginado_y_offset
@@ -6,16 +9,16 @@ class BusquedaAvanzada < Busqueda
     solo_publicos
     estado_conservacion
     tipo_distribucion
-    solo_categoria
+    uso
+    ambiente
+    region
 
+    solo_categoria unless params[:checklist] == '1'
     return unless por_id_o_nombre
     categoria_por_nivel
-
-    conteo_por_categoria_taxonomica
-
-    busca_estadisticas
-
-    dame_totales
+    conteo_por_categoria_taxonomica unless params[:checklist] == '1'
+    busca_estadisticas unless params[:checklist] == '1'
+    dame_totales unless params[:checklist] == '1'
     resultados
   end
 
@@ -33,7 +36,6 @@ class BusquedaAvanzada < Busqueda
   # REVISADO: Regresa en formato de cheklist o para consulta en busqueda avanzada
   def resultados
     if params[:checklist] == '1'
-      self.taxones = taxones.datos_arbol_con_filtros
       checklist
     else
       self.taxones = taxones.select_basico.order(:nombre_cientifico)
@@ -48,6 +50,44 @@ class BusquedaAvanzada < Busqueda
         end
       end
     end  # End checklist
+  end
+
+
+  private
+
+  def checklist
+    # Saca todos los IDS con los criterios y los ancestros
+    ids_checklist = taxones.where(estatus: 2).select_ancestry.map{ |t| t.ancestry.split(',') }.flatten.uniq!
+    self.taxones = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional).datos_checklist.categorias_checklist.where(id: ids_checklist)
+
+    # Saca el conteo de los taxones en las 7 categorias principales
+    self.categorias_checklist = Especie.left_joins(:categoria_taxonomica).categorias_checklist.where(id: ids_checklist).select("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(*) AS totales").select_nivel_categoria.order('nivel_categoria ASC').group("nombre_categoria_taxonomica, nivel_categoria")
+
+    return unless params[:f_check].present? && params[:f_check].any?
+
+    params[:f_check].each do |campo|
+      case campo
+      when 'tipo_dist'
+        self.taxones = taxones.includes(:tipos_distribuciones)
+      when 'cat_riesgo', 'amb', 'formas', 'residencia'
+        self.taxones = taxones.includes(:catalogos)
+      when 'dist'
+        self.taxones = taxones.includes(:regiones)
+      when 'nom_com'
+        self.taxones = taxones.includes(:nombres_comunes)
+      when 'biblio'
+        self.taxones = taxones.includes(:bibliografias)
+      when 'interac'
+        self.taxones = taxones.includes(:regiones, especies_estatus: [especie: [:regiones]])
+      end
+    end
+
+    if !params[:f_check].include?('val') && !params[:f_check].include?('interac')
+      self.taxones = taxones.includes(especies_estatus: [:especie])
+    end
+
+
+
   end
 
 end

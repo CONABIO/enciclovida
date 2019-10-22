@@ -1,0 +1,29 @@
+@media (min-width: 993px){
+  #resultados-container.state-one #toggleFiltros:after{content: " Ocultar filtros de búsqueda";}
+  #resultados-container.state-one #toggleFiltros i:before{content: "\f053";}
+  #resultados-container.state-two #toggleFiltros:after{content: " Mostrar filtros de búsqueda";}
+  #resultados-container.state-two #toggleFiltros i:before{content: "\f054";}
+}
+@media (max-width: 992px){
+  #resultados-container.state-one #toggleFiltros:before{content: "Mostrar filtros de búsqueda ";}
+  #resultados-container.state-one #toggleFiltros span:after{content: "\f054";}
+  #resultados-container.state-two #toggleFiltros:before{content: "Ocultar filtros de búsqueda ";}
+  #resultados-container.state-two #toggleFiltros span:after{content: "\f053";}
+}
+div.result-img-container{
+  overflow: hidden;
+  height: 12rem;
+}
+
+.result-nombre-container{
+  min-height: 3rem;
+  background-color: #ececec;
+}
+i.ev1-ev-icon, button .actinopterygii-ev-icon, button  .chondrichthyes-ev-icon, button  .echinodermata-ev-icon, button  .mollusca-ev-icon, button  .crustacea-ev-icon{
+  transition: all .2s ease;
+  vertical-align: baseline;
+  font-size: 3rem;
+}
+#pestañas .nav-item i[class$="-ev-icon"]{
+  font-size: 1.40em;
+}

@@ -36,6 +36,7 @@ Buscador::Application.routes.draw do
     resources :peces, :as => :pez do
       collection do
         get :dameNombre
+        get :busqueda
       end
     end
 

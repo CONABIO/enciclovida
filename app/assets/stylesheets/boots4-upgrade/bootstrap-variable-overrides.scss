@@ -1,0 +1,20 @@
+/* Font para biomex más las default de Bootstrap */
+//$font-size-base:              2rem !default;
+$font-family-sans-serif:      opensans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;;
+
+/* Breadcrumbs overrides! */
+$breadcrumb-padding-y:              .5rem !default;
+
+$breadcrumb-item-padding:           .25rem !default;
+$breadcrumb-margin-bottom:          1rem !default;
+$breadcrumb-bg:                     #d0d0d0 !default;
+
+$breadcrumb-border-radius:          0 !default;
+
+$enable-responsive-font-sizes:      true !default;
+
+$primary: #bd0016;
+$success: #A0C11F;
+$info: #104C5B;
+$warning: #ea9028;
+$danger: #C77878;

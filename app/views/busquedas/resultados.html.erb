@@ -1,276 +1,119 @@
 <% content_for(:extrajs) do %>
   <%= javascript_include_tag 'lib/scrolling', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'busquedas/avanzada/basica', 'data-turbolinks-track' => true %>
+
+  <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+      // Hacemos un set para saber el por_apgina actual por categoria taxonomica
+      offset = [2];
+
+      // El valor del offset, paginado, url inicial y la categoria en la que se encuentra
+      settings.cat = 0;
+      settings.offset = offset[0];
+      settings.url = "<%= request.url %>";
+      settings.url_original = "<%= request.url %>";
+      settings.totales = <%= @totales %>;
+      settings.nop = (settings.totales/10) + 1;
+
+      POR_CATEGORIA = <%=raw @por_categoria.to_json %>;
+      //Variable globar para poder saber cuales datos descargar
+      datos_descarga = {};
+      datos_descarga.url = settings.url_original;
+      datos_descarga.cuantos = settings.totales;
+  </script>
 <% end %>
 
-<script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-    // Hacemos un set para saber el por_apgina actual por categoria taxonomica
-    offset = [2];
-
-    // El valor del offset, paginado, url inicial y la categoria en la que se encuentra
-    settings.cat = 0;
-    settings.offset = offset[0];
-    settings.url = "<%= request.url %>";
-    settings.url_original = "<%= request.url %>";
-    settings.totales = <%= @totales %>;
-    settings.nop = (settings.totales/10) + 1;
-
-    POR_CATEGORIA = <%=raw @por_categoria.to_json %>;
-    //Variable globar para poder saber cuales datos descargar
-    datos_descarga = {};
-    datos_descarga.url = settings.url_original;
-    datos_descarga.cuantos = settings.totales;
-
-    $(document).ready(function()
-    {
-        $('#pestañas').tabs(); // Inicia los tabs
-        scrolling_page("#resultados-0", settings.nop, settings.url);  // Inicia el scrolling
-
-        /**
-         *  Carga los taxones de la categoria dada
-         **/
-        $("#pestañas").on('click', '.tab_por_categoria', function (){
-            var id_por_categoria = parseInt($(this).attr('categoria_taxonomica_id'));
-            var url = $(this).attr('url');
-
-            if (id_por_categoria == 0)  // tab default
-            {
-                settings.offset = offset[0];
-                settings.cat = 0;
-                settings.url = settings.url_original;
-
-                datos_descarga.url = settings.url_original;
-                datos_descarga.cuantos = settings.totales;
-
-            } else {
-                $.each(POR_CATEGORIA, function (index, value) {
-                    if (value.categoria_taxonomica_id == id_por_categoria) {
-
-                        if (offset[value.categoria_taxonomica_id] == undefined)
-                        {
-                            offset[value.categoria_taxonomica_id] = 2;
-                            settings.offset = offset[value.categoria_taxonomica_id];
-                        } else
-                            settings.offset = offset[value.categoria_taxonomica_id];
-
-                        settings.cat = value.categoria_taxonomica_id;
-                        settings.url = value.url;
-
-                        datos_descarga.url = value.url;
-                        datos_descarga.cuantos = value.cuantos;
-                    }
-                });
-            }
-
-            // Carga el contenido cuando le da clic en una pestaña por primera vez
-            if ($("#resultados-" + settings.cat).html().length == 0)
-                $("#resultados-" + settings.cat).load(url);
-
-            if (datos_descarga.cuantos > 200)
-            {
-                $('#boton_enviar_descarga').attr('disabled','disabled');
-                $('#correo').show();
-                $('#label_correo').show();
-
-            } else {
-                $('#boton_enviar_descarga').removeAttr('disabled');
-                $('#correo').hide();
-                $('#label_correo').hide();
-            }
-        });
-
-        // Para validar en vivo el correo
-        $(document).on('keyup', '#correo', function(){
-            if( !correoValido($(this).val()) )
-            {
-                $(this).parent().addClass("has-error");
-                $(this).parent().removeClass("has-success");
-
-                $(this).siblings("span:first").addClass("glyphicon-remove");
-                $(this).siblings("span:first").removeClass("glyphicon-ok");
-                $('#boton_enviar_descarga').attr('disabled', 'disabled')
-            } else {
-                $(this).parent().removeClass("has-error");
-                $(this).parent().addClass("has-success");
-                $(this).siblings("span:first").addClass("glyphicon-ok");
-                $(this).siblings("span:first").removeClass("glyphicon-remove");
-                $('#boton_enviar_descarga').removeAttr('disabled')
-            }
-        });
-
-        // Para validar una ultima vez cuando paso la validacion del boton
-        $(document).on('click', '#boton_enviar_descarga', function(){
-            var url_xlsx = datos_descarga.url.replace("resultados?", "resultados.xlsx?");
-
-            // No datos mayores a 200
-            if (datos_descarga.cuantos > 200)
-            {
-                var correo = $('#correo').val();
-
-                if(correoValido(correo))
-                {
-                    $.ajax({
-                        url: url_xlsx + "&correo=" + correo,
-                        type: 'GET',
-                        dataType: "json"
-                    }).done(function(resp) {
-                        if (resp.estatus == 1)
-                        {
-                            $('#estatus_descargar_taxa').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados que seleccionaste');
-                        } else {
-                            $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
-                        }
-
-                    }).fail(function(){
-                        $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
-                    });
-
-                } else {
-                    return false;
-                }
-            } else {
-                window.location.replace(url_xlsx);
-                $('#estatus_descargar_taxa').empty().html('La descarga esta en proceso');
-            }
-        });
-    });
-</script>
-
-<% content_for(:title) do %>
-  <%= @titulo='Resultados' %>
-<% end %>
-<%- content_for(:extracss) do -%>
-  <%= stylesheet_link_tag "busquedas", media: "all", "data-turbolinks-track" => true %>
-<%- end -%>
-
-<% if notice.present? %>
-  <div class="alert alert-warning" role="alert"><%= notice %></div>
-<% end %>
-
-<% if @fuzzy_match.present? %>
-  <div class="alert alert-success">
-    <strong><%= @fuzzy_match %></strong>
-  </div>
-<% end %>
-
-<div id="resultados-container" class="<%= 'state-one' if params[:busqueda]=='avanzada' %>">
-  <div class="row">
-    <% if params[:busqueda]=='avanzada' %>
-      <button id="toggleFiltros" class="btn btn-sm btn-default pull-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button"><span class="glyphicon"></span></button>
-    <% end %>
-    <button type="button" class="btn btn-link pull-right" data-toggle="modal" data-target="#myModal">
-      Descargar &nbsp;<span class="glyphicon glyphicon-save"></span>
-    </button>
-    <% if @totales > 0 && I18n.locale.to_s == 'es-cientifico' && params[:busqueda] == 'avanzada' && params[:id].present? %>
-      <button type="button" class="btn btn-link pull-right" url="<%= checklist({request: request.original_url, totales: @totales}) %>" id="boton_checklist">
-        Listado para Revisión (✓)
-      </button>
-    <% end %>
-  </div>
-  <hr />
-  <% if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
-    <%= render :file => 'busquedas/avanzada' %>
+<% if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
+  <% content_for(:delayedjs) do %>
     <script type="text/javascript">
         $(document).ready(function(){
+            asignaFiltros(<%=raw @setParams.to_json %>);
 
-            var SET_PARAMS = <%=raw @setParams.to_json %>;
-
-            // Escogio de grupo iconico
-            if (SET_PARAMS.id != undefined && SET_PARAMS.nombre == undefined)
-            {
-                $('#id_gi_' + SET_PARAMS.id).prop('checked', true);
-                $('#id').val(SET_PARAMS.id);
-
-            } else if (SET_PARAMS.nombre != undefined) {
-                por_nombre();
-                $('#nombre').val(SET_PARAMS.nombre);
-            }
-
-            if (SET_PARAMS.por_pagina != undefined)
-                $('#por_pagina').val(SET_PARAMS.por_pagina);
-            if (SET_PARAMS.dist != undefined)
-            {
-                SET_PARAMS.dist.forEach(function(valor){
-                    $('#dist_' + valor).prop('checked', true);
-                });
-            }
-            if (SET_PARAMS.edo_cons != undefined)
-            {
-                SET_PARAMS.edo_cons.forEach(function(valor){
-                    $('#edo_cons_' + valor).prop('checked', true);
-                });
-            }
-            if (SET_PARAMS.prior != undefined)
-            {
-                SET_PARAMS.prior.forEach(function(valor){
-                    $('#prior_' + valor).prop('checked', true);
-                });
-            }
-            if (SET_PARAMS.estatus != undefined)
-            {
-                SET_PARAMS.estatus.forEach(function(valor){
-                    $('#estatus_' + valor).prop('checked', true);
-                });
-            }
-
-            <% if params[:id].present? && params[:nivel].present? &&params[:cat].present? %>
+            <% if params[:id].present? && params[:nivel].present? && params[:cat].present? %>
             cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
             <% end %>
         });
     </script>
   <% end %>
+<% end %>
 
-  <div id="pestañas" class="panel">
-    <ul class="nav nav-tabs" data-tabs="tabs">
-      <li class="active">
-        <a href="#resultados-0" data-toggle="tab" class="tab_por_categoria" url="<%= request.url %>" categoria_taxonomica_id="0">Todos (<%= @totales if @totales.present? %>)</a>
-      </li>
+<% content_for(:title) do %>
+  <%= @titulo='Resultados' %>
+<% end %>
+<%- content_for(:extracss) do -%>
+  <%= stylesheet_link_tag "boots4-upgrade/busquedas/avanzada/avanzada", media: "all", "data-turbolinks-track" => true %>
+<%- end -%>
 
-      <% @por_categoria.each do |cat| %>
-        <li>
-          <a href="#resultados-<%= cat[:categoria_taxonomica_id]%>" data-toggle="tab" class="tab_por_categoria" url="<%= cat[:url] %>" categoria_taxonomica_id="<%= cat[:categoria_taxonomica_id] %>">
-            <%= "#{cat[:nombre_categoria_taxonomica]} (#{cat[:cuantos]})" %>
-          </a>
-        </li>
-      <% end %>
-    </ul>
+<% if notice.present? %>
+  <div class="alert alert-warning col-12" role="alert"><%= notice %></div>
+<% end %>
 
-    <div class="tab-pane panel-body panel-resultados" id="resultados-0">
-      <%= render :partial => 'busquedas/resultados' %>
-    </div>
+<div class="alert alert-success d-none col-12" role="alert" id="notice-avanzada"></div>
 
-    <% @por_categoria.each do |cat| %>
-      <div class="tab-pane panel-body panel-resultados" id="resultados-<%= cat[:categoria_taxonomica_id] %>"></div>
-    <% end %>
+<% if @fuzzy_match.present? %>
+  <div class="alert alert-success col-12">
+    <strong><%= @fuzzy_match %></strong>
   </div>
+<% end %>
 
-</div>
+<div id="resultados-container" class="col-12 <%= 'state-one' if params[:busqueda]=='avanzada' %>">
+  <div class="row justify-content-end mb-3 mr-5">
+    <%# if params[:busqueda]=='avanzada' %>
+    <!--div class="col">
+      <button id="toggleFiltros" class="btn btn-outline-secondary float-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button"><i class="fa"></i></button>
+    </div-->
+    <%# end %>
 
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Descarga resultados</h4>
-      </div>
-      <div class="modal-body">
-        <p>
-          Para resultados mayores a <strong>200</strong> es necesario proporcionar un correo electrónico, al cual
-          se te enviará un archivo excel (.xlsx) con la busqueda correspondiente.
-        <p><small>NOTA: Los resultados a descargar varian, de acuerdo a la pestaña que estés consultando, así como el tiempo de respuesta puede variar dependiendo del número de resultados</small></p>
-        </p>
-        <div class="form-group has-feedback">
-          <%= label_tag 'correo', 'Correo electrónico ', class: 'control-label', id: 'label_correo', style: ('display:none;' if @totales <= 200) %>
-          <%= text_field_tag 'correo', nil, class: 'form-control', placeholder: 'correo ...', style: ('display:none;' if @totales <= 200) %>
-          <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-          <span id="inputSuccess2Status" class="sr-only">(success)</span>
-          <span id="estatus_descargar_taxa"></span>
+    <% if @totales > 0 %>
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Descargas
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <%= link_to("Datos en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-lista', 'onclick': "$('#modal-descarga-lista').modal('toggle');return false;", class: 'dropdown-item') %>
+          <%= link_to("Lista/checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-success" id="boton_enviar_descarga" <%= 'disabled="disabled"' if @totales > 200 %>">Enviar</button>
+    <% end %>
+
+  </div>
+
+  <div class="row">
+    <%= render file: 'busquedas/avanzada' if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
+
+    <div id="pestañas" class="<%= 'col-md-9' if params[:action]=='resultados' && params[:busqueda]=='avanzada' %> col-xs-12 panel">
+      <div class="row">
+        <ul class="nav nav-tabs" data-tabs="tabs">
+          <li class="nav-item active">
+            <a href="#resultados-0" data-toggle="tab" class="nav-link tab_por_categoria" url="<%= request.url %>" categoria_taxonomica_id="0">Todos (<%= @totales if @totales.present? %>)</a>
+          </li>
+
+          <% @por_categoria.each do |cat| %>
+            <% puts cat.inspect %>
+            <li class="nav-item">
+              <a href="#resultados-<%= cat[:categoria_taxonomica_id]%>" data-toggle="tab" class="nav-link tab_por_categoria" url="<%= cat[:url] %>" categoria_taxonomica_id="<%= cat[:categoria_taxonomica_id] %>">
+                <% if params[:id].blank? %>
+                  <%= cat[:nivel2] == 1 ? '<i class="animalia-ev-icon"></i>'.html_safe : '<i class="plantae-ev-icon"></i>'.html_safe %>
+                <% end %>
+                <%= "#{cat[:nombre_categoria_taxonomica]} (#{cat[:cuantos]})" %>
+              </a>
+            </li>
+          <% end %>
+        </ul>
       </div>
+
+      <div class="tab-pane panel-body panel-resultados row pt-3" id="resultados-0">
+        <%= render :partial => 'busquedas/resultados' %>
+      </div>
+
+      <% @por_categoria.each do |cat| %>
+        <div class="tab-pane panel-body panel-resultados row" id="resultados-<%= cat[:categoria_taxonomica_id] %>"></div>
+      <% end %>
     </div>
   </div>
+
 </div>
+
+<%= render partial: 'busquedas/form_descarga_lista' if @totales > 0 %>
+<%= render partial: 'busquedas/form_descarga_checklist' if @totales > 0 %>
+
+

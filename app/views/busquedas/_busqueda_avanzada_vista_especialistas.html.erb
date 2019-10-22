@@ -5,66 +5,67 @@
     });
 </script>
 
-<div class="col-xs-12 <%= 'col-sm-6 col-md-4 col-lg-3' if(params[:action] != 'resultados') %>">
-  <fieldset>
-    <div class="form-group">
-	    <legend><h5 class="text-primary"><strong>Búsqueda por nombre:</strong></h5></legend>
-	    <%= hidden_field_tag :id, nil %>
-	    <%= hidden_field_tag :busqueda, :avanzada %>
-
-      <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...',
-                         :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
+<div class="col-md">
+  <div class="form-group row" id="por_nombre">
+    <div class="col">
+      <h6><strong>Nombre común o científico</strong></h6>
+      <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
     </div>
-
-    <div class="form-group">
-	    <fieldset>
-	      <legend><h5 class="text-primary"><strong>Resultados por página:</strong></h5></legend>
-	      <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
-	    </fieldset>
-    </div>
-
-  </fieldset>
-
-  <div id="panelCategoriaTaxonomicaPt" style="display: none;">
-    <fieldset>
-      <legend><h5><strong>Categoria taxonómica</strong></h5></legend>
-    </fieldset>
-    <div id="datos_cat"></div>
   </div>
+
+  <div class="form-group row" id="panelCategoriaTaxonomicaPt" style="display: none;">
+    <div class="col-12">
+      <h6><strong>Categoria taxonómica</strong></h6>
+      <div class="row" id="datos_cat"></div>
+    </div>
+  </div>
+
+  <%= hidden_field_tag :id, nil %>
+  <%= hidden_field_tag :busqueda, :avanzada %>
 </div>
 
-<div class="col-xs-12 <%= 'col-sm-6 col-md-5 col-lg-5' if(params[:action] != 'resultados') %>">
-  <fieldset>
-    <legend><h5 class="text-primary"><strong>Categorías de riesgo y comercio internacional</strong></h5></legend>
-    <div class="checkbox">
-      <%= checkboxEstadoConservacion.html_safe %>
-    </div>
-  </fieldset>
+<div class="col-md">
+  <h6><strong>Categorías de riesgo y comercio internacional</strong></h6>
+  <%= checkboxEstadoConservacion.html_safe %>
 </div>
 
-<div class="col-xs-12 <%= 'col-sm-6 col-md-3 col-lg-3 col-sm-offset-1 col-md-offset-0 col-lg-offset-0' if(params[:action] != 'resultados') %>">
-  <fieldset>
-    <legend><h5 class="text-primary"><strong>Tipo de distribución</strong></h5></legend>
-    <div class="checkbox">
-      <%= checkboxTipoDistribucion.html_safe %>
-    </div>
-  </fieldset>
+<div class="col-md">
+  <h6><strong>Tipo de distribución</strong></h6>
+  <%= checkboxTipoDistribucion.html_safe %>
 </div>
+
+<div class="col-md">
+  <h6><strong>Usos</strong></h6>
+  <%= selectUsos.html_safe %>
+</div>
+
+<div class="w-100 mb-4"></div>
 
 <div class="col-xs-12 <%= 'col-sm-5 col-md-3 col-lg-3' if(params[:action] != 'resultados') %>">
   <fieldset>
-    <legend><h5 class="text-primary"><strong>Estatus taxonómico</strong></h5></legend>
+    <legend><h5 class="text-primary"><strong>Estatus taxonómico (default todos)</strong></h5></legend>
     <div class="checkbox">
-      <%= checkboxValidoSinonimo.html_safe %>
+      <%= checkboxSoloValidos.html_safe %>
     </div>
   </fieldset>
 </div>
 
-<div class="col-xs-12 <%= 'col-sm-5 col-md-3 col-lg-3' if(params[:action] != 'resultados') %>">
-  <fieldset>
-    <legend><h5 class="text-primary"><strong>Especies prioritarias para la conservación</strong></h5></legend>
-    <div class="checkbox">
-      <%= checkboxPrioritaria.html_safe %>
-    </div>
-  </fieldset>
+<div class="col-md">
+  <h6><strong>Ambiente</strong></h6>
+  <%= selectAmbiente.html_safe %>
+</div>
+
+<div class="col-md">
+  <h6><strong>Distribución (reportada en literatura)</strong></h6>
+  <%= selectRegiones.html_safe %>
+</div>
+
+<div class="col-md">
+  <h6><strong>Especies prioritarias para la conservación</strong></h6>
+  <%= checkboxPrioritaria.html_safe %>
+</div>
+
+<div class="col-md">
+    <h6><strong>Resultados por página:</strong></h6>
+    <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
 </div>

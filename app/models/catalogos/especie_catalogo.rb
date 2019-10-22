@@ -12,5 +12,5 @@ class EspecieCatalogo < ActiveRecord::Base
   belongs_to :especie
   belongs_to :catalogo, :foreign_key => Catalogo.attribute_alias(:id)
 
-  has_many :bibliografias, :class_name => 'EspecieCatalogoBibliografia', :dependent => :destroy, :foreign_key => Especie.attribute_alias(:id)
+  has_many :especies_catalogos_bibliografias, :class_name => 'EspecieCatalogoBibliografia', :dependent => :destroy, :foreign_key => Especie.attribute_alias(:id)
 end

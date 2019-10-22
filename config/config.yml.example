@@ -112,7 +112,7 @@ base: &base
     timeout: 1
 
   github:
-    api: https://api.github.com/repos/calonso-conabio/buscador
+    api: https://api.github.com/repos/conabio/enciclovida
 
   # Url del api de ebird (proxima a desaparecer)
   ebird:

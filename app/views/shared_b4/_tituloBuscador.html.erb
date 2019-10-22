@@ -1,0 +1,11 @@
+<div id="contenedor-titulo-busquedas" class="<%= icon_class %> row py-1 px-md-3">
+  <div class="col">
+    <h3 class="titulo-busquedas">
+      <%= titulo.html_safe %>
+      <i class="<%= icon_class %>-ev-icon"></i>
+      <% if local_assigns[:subtitulo] %>
+        <small id="contenedor-subtitulo-<%= icon_class %>"><%= subtitulo %></small>
+      <% end %>
+    </h3>
+  </div>
+</div>

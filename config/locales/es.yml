@@ -203,6 +203,15 @@ es:
     no-endemica: No endémica
     original: Original
     semiendemica: Semiendémica
+  ecorregiones-marinas:
+    golfo-de-california: Golfo de California
+    golfo-de-mexico-norte: Golfo de México Norte
+    golfo-de-mexico-sur: Golfo de México Sur
+    mar-caribe: Mar Caribe
+    pacifico-centroamericano: Pacífico Centroamericano
+    pacifico-sudcaliforniano: Pacífico Sudcaliforniano
+    pacifico-transicional-de-monterey: Pacífico Transicional de Monterey
+    pacifico-transicional-mexicano: Pacífico Transicional Mexicano
   el_taxon_no_tiene_kml: La especie o grupo no tiene KML.
   errors: &errors
     format: ! '%{attribute} %{message}'
@@ -256,42 +265,80 @@ es:
   este_taxon_no_tiene: Esta especie o grupo no tiene una foto predeterminada
   estados:
     aguascalientes: Aguascalientes
-    baja_california: Baja California
-    baja_california_sur: Baja California Sur
+    baja-california: Baja California
+    baja-california-sur: Baja California Sur
     campeche: Campeche
     chiapas: Chiapas
     chihuahua: Chihuahua
     coahuila: Coahuila
-    coahuila_de_zaragoza: Coahuila
+    coahuila-de-zaragoza: Coahuila
     colima: Colima
-    distrito_federal: Ciudad de México
+    distrito-federal: Ciudad de México
     durango: Durango
     guanajuato: Guanajuato
     guerrero: Guerrero
     hidalgo: Hidalgo
     jalisco: Jalisco
     mexico: Estado de México
-    estado_de_mexico: Estado de México
+    estado-de-mexico: Estado de México
     michoacan: Michoacán
-    michoacan_de_ocampo: Michoacán
+    michoacan-de-ocampo: Michoacán
     morelos: Morelos
     nayarit: Nayarit
-    nuevo_leon: Nuevo León
+    nuevo-leon: Nuevo León
     oaxaca: Oaxaca
     puebla: Puebla
     queretaro: Querétaro
-    queretaro_de_arteaga: Querétaro
-    quintana_roo: Quintana Roo
-    san_luis_potosi: San Luis Potosí
+    queretaro-de-arteaga: Querétaro
+    quintana-roo: Quintana Roo
+    san-luis-potosi: San Luis Potosí
     sinaloa: Sinaloa
     sonora: Sonora
     tabasco: Tabasco
     tamaulipas: Tamaulipas
     tlaxcala: Tlaxcala
     veracruz: Veracruz
-    veracruz_de_ignacio_de_la_llave: Veracruz
+    veracruz-de-ignacio-de-la-llave: Veracruz
     yucatan: Yucatán
     zacatecas: Zacatecas
+  estados_siglas:
+    aguascalientes: Ags.
+    baja-california: BC
+    baja-california-sur: BCS
+    campeche: Camp.
+    chiapas: Chis.
+    chihuahua: Chih.
+    coahuila: Coah.
+    coahuila-de-zaragoza: Coah.
+    colima: Col.
+    distrito-federal: CDMX
+    durango: Dgo.
+    guanajuato: Gto.
+    guerrero: Gro.
+    hidalgo: Hgo.
+    jalisco: Jal.
+    mexico: Mex.
+    estado-de-mexico: Mex.
+    michoacan: Mich.
+    michoacan-de-ocampo: Mich.
+    morelos: Mor.
+    nayarit: Nay.
+    nuevo-leon: NL
+    oaxaca: Oax.
+    puebla: Pue.
+    queretaro: Qro.
+    queretaro-de-arteaga: Qro.
+    quintana-roo: Q. Roo
+    san-luis-potosi: SLP
+    sinaloa: Sin.
+    sonora: Son.
+    tabasco: Tab.
+    tamaulipas: Tamp.
+    tlaxcala: Tlax.
+    veracruz: Ver.
+    veracruz-de-ignacio-de-la-llave: Ver.
+    yucatan: Yuc.
+    zacatecas: Zac.
   helpers:
     label:
       usuario:
@@ -511,6 +558,9 @@ es:
     errors:
       incorrect-captcha-sol: 'Fail'
       missing_confirm: 'Por favor confirma la casilla de "No soy un robot"'
+  regiones:
+    estado: Estatal
+    ecorregiones-marinas: Ecorregiones marinas
   sinonimo: inactivos
   solo_taxones: Solo especies o grupos
   support:

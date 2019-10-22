@@ -16,6 +16,7 @@ gem 'delayed_job_mongoid'
 gem 'delayed-web'
 gem 'devise'
 gem 'exifr'
+gem 'font-awesome-rails', '~> 4.7'
 gem 'fontello_rails_converter'
 gem 'formtastic'
 gem 'haml'
@@ -23,6 +24,7 @@ gem 'htmlentities'
 gem 'i18n-js'
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'mail'
 gem 'mime-types'
@@ -53,6 +55,7 @@ gem 'uglifier'
 gem 'wash_out'
 gem 'whenever', :require => false
 gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
 gem 'zip-zip' # Needed by axlsx
 
 group :doc do

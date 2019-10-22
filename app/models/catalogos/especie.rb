@@ -28,7 +28,7 @@ class Especie < ActiveRecord::Base
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
                 :x_naturalista_obs, :x_snib_registros, :x_geoportal_mapa,
-                :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion,
+                :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion, :x_distribucion,
                 :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista, :x_nombres_comunes_catalogos, :x_nombres_comunes_todos,
                 :x_fotos, :x_foto_principal, :x_square_url, :x_fotos_principales, :x_fotos_totales, :x_naturalista_fotos, :x_bdi_fotos,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
@@ -96,12 +96,16 @@ class Especie < ActiveRecord::Base
 
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join }
-  #Select para el Checklist (por_arbol)
-  scope :datos_arbol_sin_filtros , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo,
+  #Select para el Checklist
+  scope :select_checklist, -> { select(:id, :nombre_cientifico).select("#{attribute_alias(:ancestry_ascendente_directo)} AS ancestry") }
+  scope :select_ancestry, -> { select(:id).select("#{attribute_alias(:ancestry_ascendente_directo)} AS ancestry") }
+  scope :datos_checklist, -> { select_checklist.order('ancestry ASC') }
+  scope :categorias_checklist, -> { where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} IN (?)", CategoriaTaxonomica::CATEGORIAS_CHECKLIST) }
+  scope :datos_arbol_sin_filtros, -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo,
 ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id,
 categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, nombre_comun_principal,
 nombres_comunes as nombres_comunes_adicionales").categoria_taxonomica_join.adicional_join }
-  scope :datos_arbol_con_filtros , -> { select("CONCAT(#{attribute_alias(:ancestry_ascendente_directo)}, '/', #{attribute_alias(:id)} AS arbol") }
+
   #Selects para construir la taxonomía por cada uno del set de resultados cuando se usca por nombre cientifico en la básica
   scope :datos_arbol_para_json , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol")}
   scope :datos_arbol_para_json_2 , -> {select("especies.id, nombre_cientifico,
@@ -172,18 +176,21 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
   BAJO_GENERO = %w(género subgénero sección subsección serie subserie)
 
+  # Sobre escribiendo este metodo para las rutas mas legibles
+  def to_param
+    [id, nombre_cientifico.parameterize].join("-")
+  end
+
   # Regresa el taxon valido o el mismo en caso de serlo
   def dame_taxon_valido
     return self if estatus == 2  # el valido era el mismo
-    est = especies_estatus
+    est = especies_estatus.where(estatus_id: [1,2])
+    return nil unless est.first
 
-    if est.first  # Encontro el valido
-      begin
-        Especie.find(est.first.especie_id2)
-      rescue
-        nil
-      end
-    else  # Puede que no haya encontrado su valido o exista mas de uno
+    begin
+      t = Especie.find(est.first.especie_id2)
+      t.estatus == 2 ? t : nil
+    rescue
       nil
     end
   end
@@ -287,17 +294,11 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       cat = esp_cat.catalogo
       next unless cat.es_catalogo_permitido?
       nombre_catalogo = cat.dame_nombre_catalogo
-      biblio = esp_cat.bibliografias.where(catalogo_id: cat.id).map(&:bibliografia_id)
-      biblio_cita_completa = biblio.any? ? Bibliografia.find(biblio).map(&:cita_completa) : []
+      biblio_cita_completa = esp_cat.especies_catalogos_bibliografias.where(catalogo_id: cat.id).map { |b| b.bibliografia.cita_completa }
+      seccion = nombre_catalogo.estandariza.to_sym
 
-      if resp[nombre_catalogo.estandariza.to_sym].present?
-        resp[nombre_catalogo.estandariza.to_sym][:descripciones] << cat.descripcion
-        resp[nombre_catalogo.estandariza.to_sym][:bibliografias] << biblio_cita_completa
-        resp[nombre_catalogo.estandariza.to_sym][:observaciones] << esp_cat.observaciones
-      else
-        resp[nombre_catalogo.estandariza.to_sym] = { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion],
-                                                     bibliografias: biblio_cita_completa, observaciones: [esp_cat.observaciones] }
-      end
+      resp[seccion] = { nombre_catalogo: nombre_catalogo, datos: [] } unless resp[seccion].present?
+      resp[seccion][:datos] << { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion], bibliografias: biblio_cita_completa, observaciones: [esp_cat.observaciones] }
     end
 
     resp
@@ -307,14 +308,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   def tipo_distribucion(opc={})
     response = []
 
-    if opc[:tab_catalogos]
-      tipos_distribuciones.uniq.each do |distribucion|
-        response << distribucion.descripcion
-      end
-    else
-      tipos_distribuciones.distribuciones_vista_general.uniq.each do |distribucion|
-        response << distribucion.descripcion
-      end
+    tipos_distribuciones.uniq.each do |distribucion|
+      response << distribucion.descripcion
     end
 
     {'Tipo de distribución' => response}
@@ -400,6 +395,65 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
         self.x_fotos_totales+= fb[:fotos].count
       end
     end
+  end
+
+  # REVISADO: regresa todos los nombres comunes de catalogos
+  def dame_nombres_comunes_catalogos
+    # Los nombres comunes de catalogos en hash con la lengua
+    ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
+    #ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
+
+    nombres_inicio = []
+    nombres_mitad = []
+    nombres_final = []
+
+    ncc.each do |nombre|
+      lengua = nombre.keys.first  # Ya que es un hash
+
+      if NombreComun::LENGUAS_PRIMERO.include?(lengua)
+        index = NombreComun::LENGUAS_PRIMERO.index(lengua)
+
+        # Crea el arreglo dentro del hash lengua para agrupar nombres de la misma lengua
+        if nombres_inicio[index].nil?
+          nombres_inicio[index] = {}
+          nombres_inicio[index][lengua] = []
+        end
+
+        nombres_inicio[index][lengua] << nombre[lengua]
+
+      elsif NombreComun::LENGUAS_ULTIMO.include?(lengua)
+        index = NombreComun::LENGUAS_ULTIMO.index(lengua)
+
+        # Crea el arreglo dentro del hash lengua para agrupar nombres de la misma lengua
+        if nombres_final[index].nil?
+          nombres_final[index] = {}
+          nombres_final[index][lengua] = []
+        end
+
+        nombres_final[index][lengua] << nombre[lengua]
+
+      else
+        encontro_lengua = false
+        nombres_mitad.each do |nombre_mitad|
+          lengua_mitad = nombre_mitad.keys.first
+
+          # Quiere decir que ya habia metido esa lengua
+          if lengua_mitad == lengua
+            nombre_mitad[lengua] << nombre[lengua]
+            encontro_lengua = true
+            break
+          end
+        end
+
+        next if encontro_lengua
+
+        # Si llego a este punto, entonces creamos el hash
+        nombres_mitad << {lengua => [nombre[lengua]]}
+      end
+    end
+
+    # Los uno para obtener sus respectivas posiciones
+    (nombres_inicio + nombres_mitad + nombres_final).compact
   end
 
   # REVISADO: regresa todos los nombres comunes en diferentes proveedores en diferentes formatos
@@ -515,6 +569,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     if I18n.locale.to_s != 'es-cientifico'
       cats.where(nivel3: 0, nivel4: 0)
     end
+
+    cats
   end
 
   # Metodo para retraer el nombre comun principal ya sea que venga de un join con adicionales o lo construye
