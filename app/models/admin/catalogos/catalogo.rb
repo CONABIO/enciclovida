@@ -4,6 +4,6 @@ class Admin::Catalogo < Catalogo
   has_many :especies, through: :especies_catalogos
 
   scope :usos_count, -> { select(:id, :descripcion).select('COUNT(*) AS totales').group(:id, :descripcion) }
-  scope :usos, -> { usos_count.left_joins(:especies_catalogos).where(nivel1: 11).order(:descripcion) }
+  scope :usos, -> { usos_count.joins(:especies_catalogos).where(nivel1: 11).order(:descripcion) }
 
 end
