@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//ES"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+<head>
+  <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
+  <title>Listado/checklist</title>
+
+  <%= wicked_pdf_stylesheet_link_tag 'boots4-upgrade/application_b4' %>
+  <%= wicked_pdf_stylesheet_link_tag 'busquedas' %>
+  <%= wicked_pdf_stylesheet_link_tag 'busquedas/avanzada/checklist' %>
+
+  <style type="text/css">
+    body{
+      font-size: 10pt!important;
+    }
+  </style>
+</head>
+
+<body>
+<% request_url = request.url %>
+<%= render partial: 'busquedas/checklist/checklist_datos.html.erb', locals: { request_url: request_url.gsub('&checklist=1','').gsub('/resultados.pdf?','/resultados?') } %>
+</body>
+
+</html>

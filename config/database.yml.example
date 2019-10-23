@@ -18,6 +18,10 @@ production:
   <<: *login
   database: enciclovida
 
+fichas:
+  <<: *login
+  database: fichasespecies
+
 snib:
   adapter: postgresql
   database: snib

@@ -254,6 +254,14 @@ Buscador::Application.routes.draw do
     end
   end
 
+  namespace :plantid do
+    resources :plantas do
+      resources :imagenes
+      resources :catalogos
+      resources :bibliografias
+    end
+  end
+  
   # I. Clasificación y descripción de la especie
   get 'media_tropicos/:id' => 'tropicos#tropico_especie'
 

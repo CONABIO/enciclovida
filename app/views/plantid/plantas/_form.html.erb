@@ -1,0 +1,24 @@
+<%= simple_form_for @plantid_planta do |f| %>
+<% puts @plantid_planta.inspect %>
+
+  <%= f.input :especie_id %>
+  <br>
+  <%= f.input :nombre_cientifico %>
+  <br>
+  <%= f.input :nombre_comun %>
+  <br>
+  <%= f.input :nombres_comunes %>
+  <br>
+
+  <h3> Bibliografia </h3>
+
+  <div id="bibliografias">
+    <%= f.simple_fields_for :bibliografias do |bibliografia|  %>
+      <%= render 'bibliografia_fields', f: bibliografia %>
+    <% end %>
+    <div class='links'>
+      <%= link_to_add_association 'Add comment', f, :bibliografias %>
+    </div>
+  </div>
+    <%= f.submit %>
+<% end %>

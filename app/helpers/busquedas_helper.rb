@@ -4,7 +4,7 @@ module BusquedasHelper
   @@opciones = { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, 'data-none-results-text': 'Sin resultados para {0}', 'data-count-selected-text': '{0} seleccionados', title: '- - Selecciona - -', multiple: true, 'data-sanitize': false }
 
   @@html = ''
-  @@bibliografias = []
+  #@@bibliografias = []
 
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos(resultados = false)
@@ -12,14 +12,7 @@ module BusquedasHelper
       "<label>#{radio_button_tag('id_gi', taxon.id, false, id: "id_gi_#{taxon.id}")}<span class='mx-1'><span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn-title'></span></span></label>"
     end
 
-    radios = '<div class="col-md">'
-    radios << '<h6><strong>Reinos</strong></h6>'
-    @reinos.each do |taxon|  # Para tener los grupos ordenados
-      radios << arma_span(taxon)
-    end
-    radios << '</div>'
-    radios << '<div class="w-100"></div>' if resultados
-
+    radios = ''
     radios << '<div class="col-md">'
     radios << '<h6><strong>Grupos de animales</strong></h6>'
     @animales.each do |taxon|  # Para tener los grupos ordenados
@@ -119,8 +112,9 @@ module BusquedasHelper
 
   # Despliega el checklist
   def generaChecklist(taxon)
+
     @@html = ''
-    nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{link_to(taxon.nombre_cientifico, especie_path(taxon), target: :_blank)}</text>"
+    nombre_cientifico = "<text class='f-nom-cientifico-checklist'>#{link_to(taxon.nombre_cientifico, especie_url(taxon), target: :_blank)}</text>"
 
     unless taxon.especie_o_inferior?
       cat = taxon.nombre_categoria_taxonomica
@@ -151,13 +145,15 @@ module BusquedasHelper
 
     nombres = taxon.dame_nombres_comunes_catalogos
     return '' unless nombres.any?
-    html = "<label class='etiqueta-checklist'>Nombre(s) común(es):</label>"
+    html = "<label class='etiqueta-checklist'>Nombre(s) común(es):</label> "
 
+    nombres_completos = []
     nombres.each do |hash_nombres|
       lengua = hash_nombres.keys.first
-      html << " <span>#{hash_nombres[lengua].uniq.sort.join(', ')} <sub>(#{lengua})</sub>; </span>"
+      nombres_completos << "<span>#{hash_nombres[lengua].uniq.sort.join(', ')} <sub>(#{lengua})</sub></span>"
     end
 
+    html << nombres_completos.join('; ') + '.' if nombres_completos.any?
     @@html << "<p class='m-0'>#{html}</p>"
   end
 
@@ -297,11 +293,11 @@ module BusquedasHelper
     referencias = []
 
     taxon.bibliografias.each do |bibliografia|
-      if indice = @@bibliografias.index(bibliografia.cita_completa)
+      if indice = @bibliografias.index(bibliografia.cita_completa)
         referencias << (indice+1)
       else
-        @@bibliografias << bibliografia.cita_completa
-        referencias << @@bibliografias.length
+        @bibliografias << bibliografia.cita_completa
+        referencias << @bibliografias.length
       end
     end
 
@@ -312,11 +308,11 @@ module BusquedasHelper
   def bibliografiasChecklist
     return unless params[:f_check].present?
     return unless params[:f_check].include?('biblio')
-    return unless @@bibliografias.any?
+    return unless @bibliografias.any?
 
-    html = "<h5 class='etiqueta-checklist'>Bibliografias</h5>"
+    html = "<h5 class='etiqueta-checklist'>Bibliografía</h5>"
 
-    @@bibliografias.each_with_index do |bibliografia, indice|
+    @bibliografias.each_with_index do |bibliografia, indice|
       html << "<p id='biblio-checklist-#{indice+1}'>#{bibliografia} <sup><strong>[#{indice+1}]</strong></sup></p>"
     end
 
@@ -325,7 +321,7 @@ module BusquedasHelper
 
   # Los checkbox para que el usuario decida que descargar
   def campoDescargaChecklist
-    campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', dist: 'Distribución (reportada en literatura)', amb: 'Ambiente', val: 'Solo válidos/aceptados', nom_com: 'Nombres comúnes', biblio: 'Bibliografías', residencia: 'Categoría de residencia (aves)', formas: 'Formas de crecimiento (plantas)', interac: 'Interacciones biológicas' }
+    campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', dist: 'Distribución (reportada en literatura)', amb: 'Ambiente', val: 'Solo válidos/aceptados', nom_com: 'Nombres comunes', biblio: 'Bibliografía', residencia: 'Categoría de residencia (aves)', formas: 'Formas de crecimiento (plantas)', interac: 'Interacciones biológicas' }
     checkBoxes = '<h6>Selecciona los campos a desplegar en el checklist</h6>'
 
     campos.each do |valor, label|

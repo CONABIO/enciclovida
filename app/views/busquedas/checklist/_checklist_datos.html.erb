@@ -1,0 +1,16 @@
+<div class="col-12" id="contenido-checklist">
+
+  <div class="mb-4">
+    El presente listado fue generado en <%= link_to "EncicloVida", request_url, target: :_blank %>, el día <%= DateTime.now.strftime("%Y/%m/%d") %> y contiene lo siguiente:<br />
+    <%= @categorias_checklist.map{ |categoria| "#{categoria.nombre_categoria_taxonomica}: <b>#{categoria.totales}</b>" }.join(', ').html_safe %>
+    <hr />
+  </div>
+
+  <% @taxones.each do |taxon| %>
+    <div class="checklist-nivel-<%= taxon.nivel1 %> %>">
+      <%= "<span id=\"datos_busqueda-#{taxon.id}\">#{generaChecklist(taxon)}</span><br />".html_safe %>
+    </div>
+  <% end %>
+
+  <%= bibliografiasChecklist %>
+</div>
