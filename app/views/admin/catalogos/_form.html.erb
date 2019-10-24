@@ -1,17 +1,30 @@
-<%= form_for(@catalogo) do |f| %>
-  <% if @catalogo.errors.any? %>
+<%= simple_form_for @admin_catalogo, wrapper: :horizontal_form, wrapper_mappings: {
+    boolean:       :horizontal_boolean,
+    check_boxes:   :horizontal_collection,
+    file:          :horizontal_file,
+    radio_buttons: :horizontal_collection,
+    range:         :horizontal_range,
+    select:        :horizontal_collection
+    #select:        :floating_labels_select
+} do |f| %>
+
+  <% if @admin_catalogo.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@catalogo.errors.count, "error") %> prohibited this catalogo from being saved:</h2>
+      <h2><%= pluralize(@admin_catalogo.errors.count, 'error') %> prohibieron que el uso se guardara:</h2>
 
       <ul>
-      <% @catalogo.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
+        <% @admin_catalogo.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="actions">
-    <%= f.submit %>
+  <hr />
+
+  <div class="col-4">
+    <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
+    <%= link_to t('helpers.submit.pmc_pez.cancel'), @admin_catalogo.new_record? ? admin_catalogos_index_path : admin_catalogo_path(@admin_catalogo), { :class=>"btn btn-lg btn-block btn-secondary" } %>
   </div>
+
 <% end %>
