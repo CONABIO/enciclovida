@@ -8,15 +8,8 @@
   <title><%= yield :title %></title>
   <%= favicon_link_tag '/favicon.ico' %>
 
- 
-
-  <%#= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  
-
-
- 
-  <%#= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
-  
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
 
   <%= csrf_meta_tags %>
   <%= yield :extrahead %>
@@ -25,12 +18,9 @@
 </head>
 <body>
 
-
-
 <header class="container-fluid">
   <%= render :partial => 'shared/brandBar' %>
 </header>
-
 
 <section id="content" class="container-fluid">
   <div class="row main">

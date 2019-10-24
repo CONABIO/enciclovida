@@ -18,11 +18,13 @@ skip_before_action :set_locale
 
   # GET /plantas/new
   def new
+    @form_params = { url: 'plantid/plantas', method: 'post' }
     @plantid_planta = Plantid::Planta.new
   end
 
   # GET /plantas/1/edit
   def edit
+    @form_params = {}
   end
 
   # POST /plantas
@@ -35,6 +37,7 @@ skip_before_action :set_locale
         format.html { redirect_to @plantid_planta, notice: 'Planta was successfully created.' }
         format.json { render :show, status: :created, location: @plantid_planta }
       else
+        @form_params = { url: '/plantid/plantas', method: 'post' }
         format.html { render :new }
         format.json { render json: @plantid_planta.errors, status: :unprocessable_entity }
       end
@@ -68,7 +71,7 @@ skip_before_action :set_locale
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_planta
-      @plantid_planta = Plantid::Article.find(params[:id])
+      @plantid_planta = Plantid::Planta.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
