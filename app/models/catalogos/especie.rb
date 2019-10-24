@@ -43,6 +43,7 @@ class Especie < ActiveRecord::Base
   alias_attribute :x_nombre_cientifico, :nombre_cientifico
   attr_accessor :e_geodata, :e_nombre_comun_principal, :e_foto_principal, :e_nombres_comunes, :e_categoria_taxonomica,
                 :e_tipo_distribucion, :e_caracteristicas, :e_bibliografia, :e_fotos  # Atributos para la respuesta en json
+  attr_accessor :jres  # Para las respuest en json
 
   has_one :proveedor
   has_one :adicional
@@ -364,14 +365,15 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   def dame_fotos_todas
     # Fotos de naturalista
     if p = proveedor
-      fn = p.fotos_naturalista
+      p.fotos_naturalista
+      self.jres = p.jres
 
-      if fn[:estatus]
-        self.x_fotos_totales+= fn[:fotos].count
+      if jres[:estatus]
+        self.x_fotos_totales = jres[:fotos].count
 
-        if fn[:fotos].count > 0
-          self.x_square_url = fn[:fotos].first['photo']['square_url']
-          self.x_foto_principal = fn[:fotos].first['photo']['medium_url'] || fn[:fotos].first['photo']['large_url']
+        if jres[:fotos].count > 0
+          self.x_square_url = jres[:fotos].first['photo']['square_url']
+          self.x_foto_principal = jres[:fotos].first['photo']['medium_url'] || jres[:fotos].first['photo']['large_url']
         end
       end
     end
@@ -456,23 +458,24 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
   # REVISADO: regresa todos los nombres comunes en diferentes proveedores en diferentes formatos
   def dame_nombres_comunes_todos
+    self.jres = { estatus: false, msg: 'Hubo un error al procesar los nombres comunes' }  # mensaje default
+
     # Los nombres comunes de catalogos en hash con la lengua
     ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
     ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
 
     # Para los nombres comunes de naturalista
     if p = proveedor
-      ncnat = p.nombres_comunes_naturalista
-    else
-      ncnat = {estatus: false}
+      p.nombres_comunes_naturalista
+      self.jres = p.jres
     end
 
-    if ncnat[:estatus]
-      ncn = ncnat[:nombres_comunes].map do |nc|
+    if jres[:estatus]
+      ncn = jres[:nombres_comunes].map do |nc|
         next unless nc['name'].present?
         next if nc['lexicon'].present? && nc['lexicon'] == 'Scientific Names'
 
-        # Un nombre de catalogos es igualq ue uno de Naturalista, conservo el de Naturalista
+        # Un nombre de catalogos es igual que uno de Naturalista, conservo el de Naturalista
         if ncc_estandar.present? && ncc_estandar.include?(nc['name'].estandariza)
           ncc.each_with_index do |h, index|
             ncc.delete_at(index) if h.values.join('').estandariza == nc['name'].estandariza
@@ -489,7 +492,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
         end
 
         # Los nombres comunes de naturalista en hash con la lengua
-        {I18n.t("lenguas.#{l}", default: l.capitalize) => nc['name'].capitalize}
+        { I18n.t("lenguas.#{l}", default: l.capitalize) => nc['name'].capitalize }
       end
     else
       ncn = []
