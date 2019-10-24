@@ -8,6 +8,8 @@
   <br>
   <%= f.input :nombres_comunes %>
   <br>
+  <%= f.input :usuario_id %>
+  <br>
 
   <h3> Bibliografia </h3>
 
@@ -16,7 +18,7 @@
       <%= render 'bibliografia_fields', f: bibliografia %>
     <% end %>
     <div class='links'>
-      <%= link_to_add_association 'Add comment', f, :bibliografias %>
+      <%= link_to_add_association 'Add bibliografia', f, :bibliografias %>
     </div>
   </div>
     <%= f.submit %>

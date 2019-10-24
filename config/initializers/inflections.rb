@@ -22,6 +22,8 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'usuario_metamares', 'usuarios_metamares'
   inflect.irregular 'especy', 'especies'
   inflect.irregular 'pez', 'peces'
+  inflect.irregular 'planta', 'plantas'
+  inflect.irregular 'imagen', 'imagenes'
   inflect.irregular 'propiedad', 'propiedades'
   inflect.irregular "legislacion", 'legislaciones'
   inflect.irregular 'taxon', 'taxa'

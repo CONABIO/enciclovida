@@ -1,36 +1,45 @@
 <p id="notice"><%= notice %></p>
 
-<h2>Article</h2>
+<h2>Planta</h2>
 <p>
-  <strong>Title:</strong>
-  <%= @admin_article.title %>
+  <strong>Id especie:</strong>
+  <%= @plantid_planta.especie_id %>
 </p>
 
 <p>
-  <strong>Text:</strong>
-  <%= @admin_article.text %>
+  <strong>Nombre Comun:</strong>
+  <%= @plantid_planta.nombre_comun %>
+</p>
+
+<p>
+  <strong>Nombre Cientifico:</strong>
+  <%= @plantid_planta.nombre_cientifico %>
+</p>
+
+<p>
+  <strong>Nombres Comunes:</strong>
+  <%= @plantid_planta.nombres_comunes %>
 </p>
  
-<h2>Comments</h2>
+<h2>Bibliografias</h2>
 <table>
   <thead>
     <tr>
-      <th>Commenter</th>
-      <th>Comment</th>
-      <th colspan="3"></th>
+      <th>Descripcion</th>
+      <th colspan="2"></th>
     </tr>
   </thead>
 
   <tbody>
-    <% @admin_article.comments.each do |comment| %>
+    <% @plantid_planta.bibliografias.each do |bibliografia| %>
       <tr>
-        <td><%= comment.commenter %></td>
-        <td><%= comment.body %></td>
+        <td><%= bibliografia.commenter %></td>
+        <td><%= bibliografia.body %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-<%= puts @admin_article.comments %>
+<%= puts @plantid_planta.bibliografias %>
 
-<%= link_to 'Edit', edit_admin_article_path(@admin_article) %> |
-<%= link_to 'Back', admin_articles_path %>
+<%= link_to 'Edit', edit_plantid_planta_path(@plantid_planta) %> |
+<%= link_to 'Back', plantid_plantas_path %>

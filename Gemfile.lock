@@ -342,6 +342,8 @@ GEM
     turbolinks-source (5.1.0)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
+    tzinfo-data (1.2019.3)
+      tzinfo (>= 1.0.0)
     uglifier (4.1.17)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
@@ -436,6 +438,7 @@ DEPENDENCIES
   therubyracer
   trollop
   turbolinks (~> 5)
+  tzinfo-data
   uglifier
   wash_out
   web-console (>= 3.3.0)

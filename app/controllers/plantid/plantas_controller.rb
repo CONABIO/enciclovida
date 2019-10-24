@@ -18,7 +18,7 @@ skip_before_action :set_locale
 
   # GET /plantas/new
   def new
-    @form_params = { url: 'plantid/plantas', method: 'post' }
+    #@form_params = { url: 'plantid/plantas', method: 'post' }
     @plantid_planta = Plantid::Planta.new
   end
 
