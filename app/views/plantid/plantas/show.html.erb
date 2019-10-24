@@ -1,0 +1,36 @@
+<p id="notice"><%= notice %></p>
+
+<h2>Article</h2>
+<p>
+  <strong>Title:</strong>
+  <%= @admin_article.title %>
+</p>
+
+<p>
+  <strong>Text:</strong>
+  <%= @admin_article.text %>
+</p>
+ 
+<h2>Comments</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Commenter</th>
+      <th>Comment</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @admin_article.comments.each do |comment| %>
+      <tr>
+        <td><%= comment.commenter %></td>
+        <td><%= comment.body %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= puts @admin_article.comments %>
+
+<%= link_to 'Edit', edit_admin_article_path(@admin_article) %> |
+<%= link_to 'Back', admin_articles_path %>
