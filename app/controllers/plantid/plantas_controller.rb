@@ -32,6 +32,7 @@ skip_before_action :set_locale
   # POST /plantas.json
   def create
     @plantid_planta = Plantid::Planta.new(planta_params)
+    @plantid_planta.usuario_id = '1'
 
     respond_to do |format|
       if @plantid_planta.save
@@ -77,6 +78,6 @@ skip_before_action :set_locale
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def planta_params
-      params.require(:plantid_planta).permit(:especie_id, :nombre_cientifico, :nombre_comun, :nombre_comunes, :usuario_id,imagen_attributes: [:id, :nombre_cientifico,:nombre_comun,:nombres_comunes,:usuario_id, :_destroy] , bibliografia_attributes: [:id, :nombre_biblio, :_destroy])
+      params.require(:plantid_planta).permit(:especie_id, :nombre_cientifico, :nombre_comun, :nombres_comunes, :usuario_id,imagen_attributes: [:id, :nombre_orig, :tipo, :ruta_relativa, :_destroy] , bibliografia_attributes: [:id, :nombre_biblio, :_destroy])
     end
 end

@@ -1,6 +1,10 @@
 class Plantid::Planta < Plantidabs
   self.table_name = "#{CONFIG.bases.plantid}.plantas"
 
+  validates :especie_id, presence: true
+  validates :nombre_comun, presence: true, length: {maximum: 45}
+  validates :usuario_id, presence: true
+
   has_many :plantabibliografias, class_name: 'Plantid::PlantaBibliografia', inverse_of: :planta
   has_many :plantacatalogos, class_name: 'Plantid::PlantaCatalogo', inverse_of: :planta
   has_many :plantaimagenes, class_name: 'Plantid::PlantaImagen', inverse_of: :planta
