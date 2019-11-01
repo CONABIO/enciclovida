@@ -1,5 +1,5 @@
 class Plantid::Catalogo < Plantidabs
   self.table_name = "#{CONFIG.bases.plantid}.catalogos"
-  
-  belongs_to :plantas
+  has_many :plantacatalogos
+  has_many :plantas, through: :plantacatalogos
 end

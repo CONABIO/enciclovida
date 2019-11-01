@@ -13,13 +13,14 @@ skip_before_action :set_locale
   # GET /plantas/1
   # GET /plantas/1.json
   def show
-    @plantid_planta = Plantid::Planta.all
+    @plantid_planta = Plantid::Planta.find(params[:id])
   end
 
   # GET /plantas/new
   def new
     #@form_params = { url: 'plantid/plantas', method: 'post' }
     @plantid_planta = Plantid::Planta.new
+    @plantid_planta.usuario_id = '1'
   end
 
   # GET /plantas/1/edit
@@ -34,7 +35,7 @@ skip_before_action :set_locale
 
     respond_to do |format|
       if @plantid_planta.save
-        format.html { redirect_to @plantid_planta, notice: 'Planta was successfully created.' }
+        format.html { redirect_to @plantid_planta, notice: 'La Planta fue creada con exito.' }
         format.json { render :show, status: :created, location: @plantid_planta }
       else
         @form_params = { url: '/plantid/plantas', method: 'post' }
@@ -63,7 +64,7 @@ skip_before_action :set_locale
   def destroy
     @plantid_planta.destroy
     respond_to do |format|
-      format.html { redirect_to articles_url, notice: 'Planta was successfully destroyed.' }
+      format.html { redirect_to plantid_plantas_url, notice: 'Planta fue destruida con exito.' }
       format.json { head :no_content }
     end
   end
@@ -76,6 +77,6 @@ skip_before_action :set_locale
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def planta_params
-      params.require(:plantid_planta).permit(:especie_id, :nombre_cientifico, :nombre_comun, :nombre_comunes, :usuario_id,  bibliografias_attributes: [:id, :nombre_biblio, :destroy])
+      params.require(:plantid_planta).permit(:especie_id, :nombre_cientifico, :nombre_comun, :nombre_comunes, :usuario_id,imagen_attributes: [:id, :nombre_cientifico,:nombre_comun,:nombres_comunes,:usuario_id, :_destroy] , bibliografia_attributes: [:id, :nombre_biblio, :_destroy])
     end
 end

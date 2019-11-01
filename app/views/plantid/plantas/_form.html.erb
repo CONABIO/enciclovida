@@ -11,15 +11,27 @@
   <%= f.input :usuario_id %>
   <br>
 
+  <h3> Imagenes </h3>
+
+  <div id="imagenes">
+    <%= f.simple_fields_for :imagen do |img|  %>
+      <%= render 'imagen_fields', f: img %>
+    <% end %>
+    <div class='links'>
+      <%= link_to_add_association 'Añadir imagen', f, :imagen, partial: 'imagen_fields' %>
+    </div>
+  </div>
+
   <h3> Bibliografia </h3>
 
   <div id="bibliografias">
-    <%= f.simple_fields_for :bibliografias do |bibliografia|  %>
-      <%= render 'bibliografia_fields', f: bibliografia %>
+    <%= f.simple_fields_for :bibliografia do |biblio|  %>
+      <%= render 'bibliografia_fields', f: biblio %>
     <% end %>
     <div class='links'>
-      <%= link_to_add_association 'Add bibliografia', f, :bibliografias %>
+      <%= link_to_add_association 'Añadir bibliografia', f, :bibliografia, partial: 'bibliografia_fields' %>
     </div>
   </div>
+
     <%= f.submit %>
 <% end %>

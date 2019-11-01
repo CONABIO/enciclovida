@@ -1,10 +1,10 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Listing Plantas</h1>
+<h1>Listado de Plantas</h1>
 
 <br>
 
-<%= link_to 'New Plantas', new_plantid_planta_path %>
+<%= link_to 'Nueva Planta', new_plantid_planta_path %>
 <table>
   <thead>
     <tr>
@@ -12,7 +12,7 @@
       <th>Nombre Cientifico</th>
       <th>Nombre Comun</th>
       <th>Nombres Comunes</th>
-      <th colspan="3"></th>
+      <th colspan="4"></th>
     </tr>
   </thead>
 
@@ -23,9 +23,9 @@
         <td><%= planta.nombre_cientifico %></td>
         <td><%= planta.nombre_comun %></td>
         <td><%= planta.nombres_comunes %></td>
-        <td><%= link_to 'Show', planta %></td>
-        <td><%= link_to 'Edit', edit_plantid_planta_path(planta) %></td>
-        <td><%= link_to 'Destroy', planta, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Ver', planta %></td>
+        <td><%= link_to 'Editar', edit_plantid_planta_path(planta) %></td>
+        <td><%= link_to 'Destruir', planta, method: :delete, data: { confirm: 'Estas seguro?' } %></td>
       </tr>
     <% end %>
   </tbody>

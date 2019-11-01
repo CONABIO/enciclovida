@@ -20,26 +20,48 @@
   <strong>Nombres Comunes:</strong>
   <%= @plantid_planta.nombres_comunes %>
 </p>
+
+<h2>Imagenes</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Nombre de origen</th>
+      <th>Tipo</th>
+      <th>Ruta realtiva</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @plantid_planta.imagen.each do |img| %>
+      <tr>
+        <td><%= img.nombre_orig %></td>
+        <td><%= img.tipo %></td>
+        <td><%= img.ruta_relativa %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= puts @plantid_planta.imagen %>
  
 <h2>Bibliografias</h2>
 <table>
   <thead>
     <tr>
-      <th>Descripcion</th>
-      <th colspan="2"></th>
+      <th>Nombre de bibliografia</th>
+      <th colspan="1"></th>
     </tr>
   </thead>
 
   <tbody>
-    <% @plantid_planta.bibliografias.each do |bibliografia| %>
+    <% @plantid_planta.bibliografia.each do |biblio| %>
       <tr>
-        <td><%= bibliografia.commenter %></td>
-        <td><%= bibliografia.body %></td>
+        <td><%= biblio.nombre_biblio %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-<%= puts @plantid_planta.bibliografias %>
+<%= puts @plantid_planta.bibliografia %>
 
-<%= link_to 'Edit', edit_plantid_planta_path(@plantid_planta) %> |
-<%= link_to 'Back', plantid_plantas_path %>
+<%= link_to 'Editar', edit_plantid_planta_path(@plantid_planta) %> |
+<%= link_to 'Regresar', plantid_plantas_path %>
