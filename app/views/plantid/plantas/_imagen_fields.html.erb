@@ -1,6 +1,8 @@
  <div class="nested-fields">
- 	<%= f.input :nombre_orig %>
- 	<%= f.input :tipo %>
- 	<%= f.input :ruta_relativa %>
+ 	<div>
+ 	<%= f.text_field :remote_imagen_url %>
+    <small>Puedes ingresar una url remota</small>
+    <%= f.file_field :imagen %>
+    </div>
  	<%= link_to_remove_association "Eliminar imagen", f %>
  </div>

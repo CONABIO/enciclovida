@@ -21,6 +21,4 @@
 //= require i18n/translations
 //= require shared/general
 //= require shared/soulmate
-//= require metamares/metamares_extra
-//= require metamares/biomex
 //= require cocoon

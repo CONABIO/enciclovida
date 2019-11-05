@@ -70,4 +70,6 @@ db/metamares/migracion_base/metamares*sql
 db/metamares/migracion_base/*sql
 public/javascripts
 public/IUCN
+public/uploads
+NuevaGema.png
 

@@ -34,6 +34,17 @@ skip_before_action :set_locale
     @plantid_planta = Plantid::Planta.new(planta_params)
     @plantid_planta.usuario_id = '1'
 
+    #puts planta_params.inspect
+    #if @plantid_planta.imagen.all?
+    #  @plantid_planta.imagen.all.each do |img|
+    #      img.ruta_relativa = img.imagen.url
+    #      img.tipo = img.imagen.file.extension
+    #      img.nombre_orig = img.imagen.file.basename
+    #  end
+    #end
+
+    
+
     respond_to do |format|
       if @plantid_planta.save
         format.html { redirect_to @plantid_planta, notice: 'La Planta fue creada con exito.' }
@@ -78,6 +89,6 @@ skip_before_action :set_locale
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def planta_params
-      params.require(:plantid_planta).permit(:especie_id, :nombre_cientifico, :nombre_comun, :nombres_comunes, :usuario_id,imagen_attributes: [:id, :nombre_orig, :tipo, :ruta_relativa, :_destroy] , bibliografia_attributes: [:id, :nombre_biblio, :_destroy])
+      params.require(:plantid_planta).permit(:especie_id, :nombre_cientifico, :nombre_comun, :nombres_comunes, :usuario_id,imagen_attributes: [:id, :imagen, :remote_imagen_url,  :_destroy] , bibliografia_attributes: [:id, :nombre_biblio, :_destroy])
     end
 end

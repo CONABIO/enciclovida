@@ -1,7 +1,7 @@
 class Plantid::Planta < Plantidabs
   self.table_name = "#{CONFIG.bases.plantid}.plantas"
 
-  validates :especie_id, presence: true
+  validates :especie_id, presence: true , length: {minimum: 1}
   validates :nombre_comun, presence: true, length: {maximum: 45}
   validates :usuario_id, presence: true
 

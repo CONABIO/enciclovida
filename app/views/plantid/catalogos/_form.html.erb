@@ -20,6 +20,10 @@
     </div>
   </div>
 
+  <%= hidden_field :user, :avatars, multiple: true, value: avatar.identifier %>
+  <% end %>
+  <%= form.file_field :avatars, multiple: true %>
+
   <h3> Bibliografia </h3>
 
   <div id="bibliografias">
