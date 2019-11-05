@@ -28,7 +28,7 @@
         $(document).ready(function(){
             asignaFiltros(<%=raw @setParams.to_json %>);
 
-            <% if params[:id].present? && params[:nivel].present? &&params[:cat].present? %>
+            <% if params[:id].present? && params[:nivel].present? && params[:cat].present? %>
             cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
             <% end %>
         });
@@ -56,7 +56,7 @@
 <% end %>
 
 <div id="resultados-container" class="col-12 <%= 'state-one' if params[:busqueda]=='avanzada' %>">
-  <div class="row justify-content-end mb-3">
+  <div class="row justify-content-end mb-3 mr-5">
     <%# if params[:busqueda]=='avanzada' %>
     <!--div class="col">
       <button id="toggleFiltros" class="btn btn-outline-secondary float-left" onclick="$('#resultados-container').toggleClass('state-one state-two');" type="button"><i class="fa"></i></button>
@@ -64,21 +64,14 @@
     <%# end %>
 
     <% if @totales > 0 %>
-      <div class="btn-group col-1">
-        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i><%= icono_descarga %></i> Descargas <span class=""></span>
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Descargas
         </button>
-
-        <ul class="dropdown-menu dropdown-menu-right" style="z-index: 1001;">
-          <li>
-            <%= link_to("Lista de especies", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-lista', 'onclick': "$('#modal-descarga-lista').modal('toggle');return false;") %>
-          </li>
-
-          <%# if params[:id].present? %>
-          <!--li><%#= link_to("Checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;") %></li-->
-          <%# end %>
-        </ul>
-
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <%= link_to("Datos en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-lista', 'onclick': "$('#modal-descarga-lista').modal('toggle');return false;", class: 'dropdown-item') %>
+          <%= link_to("Lista/checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
+        </div>
       </div>
     <% end %>
 
@@ -95,8 +88,12 @@
           </li>
 
           <% @por_categoria.each do |cat| %>
+            <% puts cat.inspect %>
             <li class="nav-item">
               <a href="#resultados-<%= cat[:categoria_taxonomica_id]%>" data-toggle="tab" class="nav-link tab_por_categoria" url="<%= cat[:url] %>" categoria_taxonomica_id="<%= cat[:categoria_taxonomica_id] %>">
+                <% if params[:id].blank? %>
+                  <%= cat[:nivel2] == 1 ? '<i class="animalia-ev-icon"></i>'.html_safe : '<i class="plantae-ev-icon"></i>'.html_safe %>
+                <% end %>
                 <%= "#{cat[:nombre_categoria_taxonomica]} (#{cat[:cuantos]})" %>
               </a>
             </li>
@@ -116,7 +113,7 @@
 
 </div>
 
-<%= render partial: 'busquedas/form_descarga_lista' %>
-<%#= render partial: 'busquedas/form_descarga_checklist' %>
+<%= render partial: 'busquedas/form_descarga_lista' if @totales > 0 %>
+<%= render partial: 'busquedas/form_descarga_checklist' if @totales > 0 %>
 
 

@@ -4,11 +4,13 @@ var por_nombre = function()
     $("#datos_cat").html("");
     $("#panelCategoriaTaxonomicaPt").hide();
 
-    $("[id^='id_']").each(function(){
-        $(this).prop('checked', false);
-    });
+    if (I18n.locale == 'es'){
+        $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
 
-    $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
+        $("[id^='id_']").each(function(){
+            $(this).prop('checked', false);
+        });
+    }
 };
 
 var por_gi = function()
@@ -46,14 +48,16 @@ var asignaFiltros = function(SET_PARAMS)
     {
         $('#id_gi_' + SET_PARAMS.id).prop('checked', true);
         $('#id').val(SET_PARAMS.id);
-
-    } else if (SET_PARAMS.nombre != undefined) {
+    } else if (SET_PARAMS.id != undefined && SET_PARAMS.nombre != undefined) {  // escogio un nombre
+        $('#id').val(SET_PARAMS.id);
+        $('#nombre').val(SET_PARAMS.nombre);
+        if (I18n.locale == 'es') $('#por_gi, #por_nombre_fuente, #por_gi_fuente, #por_nombre').toggle('easeOutBounce');
+    } else if (SET_PARAMS.nombre != undefined){  // Solo escribio pero no escogio nombre
         por_nombre();
         $('#nombre').val(SET_PARAMS.nombre);
     }
 
     if (SET_PARAMS.por_pagina != undefined) $('#por_pagina').val(SET_PARAMS.por_pagina);
-
     if (SET_PARAMS.edo_cons != undefined) $('#edo_cons').val(SET_PARAMS.edo_cons);
     if (SET_PARAMS.dist != undefined) $('#dist').val(SET_PARAMS.dist);
     if (SET_PARAMS.uso != undefined) $('#uso').val(SET_PARAMS.uso);
@@ -110,6 +114,23 @@ $(document).ready(function()
     });
 
      */
+
+    // Para validar una ultima vez cuando paso la validacion del boton y quiere descragar el checklist
+    $('#modal-descarga-checklist').on('click', '#boton-descarga-checklist', function(){
+        var url = $('#modal-menu-checklist').attr('url');
+
+        var campos = [];
+        $.each($('#form-checklist').serializeArray(), function (index, json) {
+            if (json.name == 'f_check[]')
+                campos.push(json.name + '=' + json.value);
+        });
+
+        if (campos.length > 0) url = url + '&' + campos.join('&');
+
+        $('#modal-descarga-checklist').modal('toggle');
+        $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
+        window.open(url,'_blank');
+    });
 
     // Para la validacion del correo en la descarga del checklist
     dameValidacionCorreo('checklist', '#notice-avanzada');
