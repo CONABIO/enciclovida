@@ -38,10 +38,12 @@ $(document).ready(function(){
     vid = [{'videoId': 'RBVRckQ8omU', 'startSeconds': 0, 'suggestedQuality': 'hd720'}];
 
     setPaddingHeader();
-    var tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/player_api';
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    if( !(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) ) {
+        var tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/player_api';
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
 
     $(window).on('load', function(){
         vidRescale();
