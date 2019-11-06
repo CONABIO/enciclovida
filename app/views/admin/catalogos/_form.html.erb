@@ -21,11 +21,22 @@
   <% end %>
 
   <%= f.input :descripcion %>
-  <%#= f.input :nivel1 %>
-  <%#= f.input :nivel2 %>
-  <%#= f.input :nivel3 %>
-  <%#= f.input :nivel4 %>
-  <%#= f.input :nivel3 %>
+  <%= f.input :nivel1 %>
+  <%= f.input :nivel2 %>
+  <%= f.input :nivel3 %>
+  <%= f.input :nivel4 %>
+  <%= f.input :nivel5 %>
+
+  <h3>Especies asociadas</h3>
+  <div>
+    <%= f.simple_fields_for :especies do |especie| %>
+      <%= render partial: 'especies_fields', locals: { f: especie } %>
+    <% end %>
+
+    <div class='links'>
+      <%= link_to_add_association 'Asocia especie', f, :especies, partial: 'especies_fields' %>
+    </div>
+  </div>
 
   <hr />
 
