@@ -13,7 +13,6 @@
   <%= csrf_meta_tags %>
 
   <%= stylesheet_link_tag "boots4-upgrade/inicio", media: "all", "data-turbolinks-track" => true %>
-  <%= yield :extracss %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
@@ -26,7 +25,10 @@
       I18n.locale = "<%= I18n.locale %>";
       I18n.fallbacks = true;
   </script>
+
   <%= yield :extrajs %>
+  <%= yield :extracss %>
+
 </head>
 
 <body class="index">
@@ -45,6 +47,7 @@
   <%= render :partial => 'shared_b4/footer_social' %>
   <%= render :partial => 'shared_b4/footer_legal' %>
 </footer>
+<%= yield :delayedcss %>
 <%= yield :delayedjs %>
 </body>
 </html>

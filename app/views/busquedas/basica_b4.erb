@@ -5,15 +5,13 @@
       $(document).ready(function(){soulmateAsigna();});
   </script>
 <% end %>
-<% content_for(:extracss) do %>
-  <% if I18n.locale.to_s != 'es-cientifico' %>
+<% content_for(:delayedcss) do %>
     <style type="text/css">
       .soulmate-type-suggestions li{
         padding: 1em 0;
         min-height: 125px;
       }
     </style>
-  <% end %>
 <% end %>
 
 <%= form_tag busquedas_resultados_url, :method => :get, :id => :basica, :role => 'form' do %>
@@ -37,8 +35,4 @@
       </div>
     </div>
   </div>
-<% end %>
-
-<% if params[:controller] != 'inicio' %>
-
 <% end %>
