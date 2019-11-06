@@ -12,7 +12,7 @@ header {
   -o-background-size: cover;
 }
 #busqueda_basica label{
-  text-shadow: 2px 2px 2px #666666;
+  text-shadow: 1px 1px 1px #999999;
   font-size: 2rem;
 }
 
@@ -84,9 +84,19 @@ header {
 .btn-circle {
   visibility:hidden;
 }
-
-#que-es{
+#content text, #content tspan{
+  font-family: "opensans", "Helvetica", Arial, "texgyreadventorregular"!important;
+}
+#que-es, #herramientas-busqueda{
   background-color: #829E3D;
+}
+#que-es text, #herramientas-busqueda text, #que-es tspan, #herramientas-busqueda tspan, #que-es circle, #herramientas-busqueda circle, #que-es path, #herramientas-busqueda path{
+  fill: #ffffff;
+  font-size: 22px;
+}
+
+#como-funciona, #por-que-es-importante{
+  background-color: #ffffff;
 }
 
 /*
