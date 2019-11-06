@@ -12,24 +12,40 @@
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <h1 class="font-weight-bold text-left mb-n4">¿Cómo funciona?</h1>
+        <h1 class="font-weight-bold text-left mb-n2">¿Cómo funciona?</h1>
         <%= render :partial => 'index_como_funciona' %>
       </div>
     </div>
   </div>
 </div>
-<div id="herramientas-busqueda" class="col-12 p-3 text-center">
-    <div class="container">
+<div id="herramientas-busqueda" class="col-12 py-5 px-3 text-center">
+  <div class="container">
     <div class="row">
       <div class="col-12">
-        <h3 class="font-weight-bold text-white text-left mb-n4">Prueba nuestras diferentes <span style="color: #EEB82C;">herramientas de búsqueda:</span></h3>
+        <h3 class="font-weight-bold text-white text-left mb-n2">Prueba nuestras diferentes <span style="color: #EEB82C;">herramientas de búsqueda:</span></h3>
         <%= render :partial => 'index_herramientas_busqueda' %>
       </div>
     </div>
   </div>
 </div>
-<div id="por-que-es-importante" class="col-12 p-3 text-center">
-  <%= render :partial => 'index_por_que_es_importante' %>
+<div id="por-que-es-importante" class="col-12 py-5 px-3 text-center">
+  <div class="container">
+    <div class="row mb-2">
+      <div class="col-12">
+        <h1 class="font-weight-bold text-left mb-4">¿Por qué es importante?</h1>
+        <p>
+          El primer paso para valorar, usar sustentablemente y conservar la naturaleza mexicana es conocerla.<br />
+          Para resolver los problemas ambientales de la actualidad, <span style="color: #829E3D; font-weight: bold;">la participación de la sociedad<br />
+          es indispensable</span>. La ciencia ciudadana <span style="color: #829E3D; font-weight: bold;">brinda la oportunidad para colaborar</span>,<br />
+          apropiándonos del conocimiento de la naturaleza de México y contribuyendo juntos <span style="color: #829E3D; font-weight: bold;">en la<br />
+          solución de la crisis de la biodiversidad.</span>
+        </p>
+      </div>
+    </div>
+    <div class="row align-items-end">
+      <%= render :partial => 'index_por_que_es_importante' %>
+    </div>
+  </div>
 </div>
 <div id="especies-destacadas" class="col-12 p-0 text-center">
   <%#= render :partial => 'index_especies_destacadas' %>
