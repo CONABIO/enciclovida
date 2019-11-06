@@ -1,0 +1,8 @@
+ <div class="nested-fields">
+ 	<div>
+ 	<%= f.text_field :remote_imagen_url %>
+    <small>Puedes ingresar una url remota</small>
+    <%= f.file_field :imagen %>
+    </div>
+ 	<%= link_to_remove_association "Eliminar imagen", f %>
+ </div>

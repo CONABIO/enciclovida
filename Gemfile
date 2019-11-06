@@ -25,7 +25,8 @@ gem 'i18n-js'
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'levenshtein-ffi', :require => 'levenshtein'
+gem  'tzinfo-data'
+#gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'mail'
 gem 'mime-types'
 gem 'mysql2'
@@ -34,6 +35,7 @@ gem 'pg'
 gem 'puma', '~> 3.7'  # Use Puma as the app server
 gem 'rack-contrib'
 gem 'rack-google-analytics'
+gem 'carrierwave', :require => 'carrierwave/orm/activerecord'
 gem 'rails', '5.1.6.2'
 gem 'railties'
 gem 'rake'
@@ -64,7 +66,7 @@ group :doc do
 end
 
 group :development, :test, :production do
-  gem 'blurrily', git: 'https://github.com/calonsot/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # Forza a blurrily a usar rails 5
+  #gem 'blurrily', git: 'https://github.com/calonsot/blurrily.git', :ref => 'c0cbbd1e9961774a6b8e2546285d38095b4d1bfa', :require => 'blurrily/server.rb'  # Forza a blurrily a usar rails 5
 end
 
 group :development, :development_mac, :test do
