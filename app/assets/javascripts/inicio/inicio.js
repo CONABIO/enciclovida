@@ -43,6 +43,9 @@ $(document).ready(function(){
         tag.src = 'https://www.youtube.com/player_api';
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        //evento q hace q las especies destacadas se contraigan de manera "suave" (solo activarlo en desktop en movil no tiene caso)
+        $('#especies-destacadas .col').hover(function(){$( this ).toggleClass('col-5')});
     }
 
     $(window).on('load', function(){

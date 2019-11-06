@@ -109,6 +109,7 @@ header {
   background-attachment: local;
   background-size: cover;
   background-position: top;
+  transition: all 0.4s ease-out;
 }
 #especies-destacadas div.col, #especies-destacadas div.col a {
   height: 500px;
