@@ -85,7 +85,7 @@ header {
   visibility:hidden;
 }
 #content text, #content tspan{
-  font-family: "opensans", "Helvetica", Arial, "texgyreadventorregular"!important;
+  font-family: "opensans"!important;
 }
 #que-es, #herramientas-busqueda{
   background-color: #829E3D;
@@ -98,7 +98,10 @@ header {
 #como-funciona, #por-que-es-importante{
   background-color: #ffffff;
 }
-
+#como-funciona text, #por-que-es-importante text, #como-funciona tspan, #por-que-es-importante tspan, #como-funciona circle, #por-que-es-importante circle, #como-funciona path, #por-que-es-importante path{
+  fill: #000000;
+  font-size: 22px;
+}
 /*
 #about {
   background-color:#829E3D;
