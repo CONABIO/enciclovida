@@ -104,6 +104,16 @@ header {
   color: #000000;
 }
 
+#especies-destacadas div.col{
+  background-repeat: no-repeat !important;
+  background-attachment: local;
+  background-size: cover;
+  background-position: top;
+}
+#especies-destacadas div.col, #especies-destacadas div.col a {
+  height: 500px;
+  width: 100%;
+}
 
 /*Estilos del video como background de youtube*/
 @import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400);
