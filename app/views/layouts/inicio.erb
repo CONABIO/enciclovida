@@ -20,6 +20,8 @@
       PORT = "<%= PORT %>";
   </script>
   <%= javascript_include_tag "application_b4", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag 'inicio/inicio', 'data-no-turbolink' => true %>
+
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
       I18n.locale = "<%= I18n.locale %>";

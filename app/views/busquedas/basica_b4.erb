@@ -1,3 +1,11 @@
+<% content_for(:delayedcss) do %>
+  <style type="text/css">
+    .soulmate-type-suggestions li{
+      padding: 1em 0;
+      min-height: 125px;
+    }
+  </style>
+<% end %>
 <% content_for(:delayedjs) do %>
   <script src="http://www.google.com/jsapi" type="text/javascript" data-turbolinks-track="true"></script>
   <script data-turbolinks-track="true">
@@ -5,14 +13,7 @@
       $(document).ready(function(){soulmateAsigna();});
   </script>
 <% end %>
-<% content_for(:delayedcss) do %>
-    <style type="text/css">
-      .soulmate-type-suggestions li{
-        padding: 1em 0;
-        min-height: 125px;
-      }
-    </style>
-<% end %>
+
 
 <%= form_tag busquedas_resultados_url, :method => :get, :id => :basica, :role => 'form' do %>
   <%= hidden_field_tag :busqueda, :basica %>
@@ -24,7 +25,7 @@
     <div class="dropdown mt-3">
       <%= button_tag "Buscar", data: { disable_with: 'Procesando...' },:class => "btn btn-success btn-lg", :title=>'Buscar' %>
       <button class="btn btn-light btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Más herramientas de búsqueda
+        Más herramientas
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <%= link_to "<i class='busqueda-avanzada-ev-icon mr-2'></i>Avanzada".html_safe, avanzada_url, :class => "dropdown-item", :title => 'Ir a la búsqueda avanzada', data: { turbolinks: false }  %>
