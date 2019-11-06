@@ -1,4 +1,4 @@
-<div class="text-center col-xs-12 col-sm-10 col-md-5 col-lg-4 col-xs-offset-0 col-sm-offset-1 col-md-offset-7 col-lg-offset-8" id="buscadores">
+<div class="text-center col-12" id="buscadores">
   <h4><b>Prueba nuestras diferentes herramientas:</b></h4>
   <a href="/avanzada" class="btn btn-busquedas btn-basica btn-title" data-turbolinks="false" tooltip-title="Búsqueda avanzada">
     <i class="busqueda-avanzada-ev-icon"></i>
@@ -17,12 +17,13 @@
     <i class='datos-ecologicos-ev-icon'></i>
   </a>
 </div>
-<%= render :partial => 'inicio/index_news' %>
-<div class="text-center row" style="margin-top: -120px;">
-  <a href="#about" class="btn-circle page-scroll"><span class="glyphicon glyphicon-menu-down animated" aria-hidden="true"></span></a>
+
+<%# render :partial => 'inicio/index_news' %>
+<div class="text-center">
+  <a href="#about" class="btn-circle page-scroll"><span class="fa fa-angle-down animated" aria-hidden="true"></span></a>
 </div>
 <!-- About -->
-<section id="about">
+<div id="about">
   <div class="container-fluid">
     <div class="row">
       <div class="col-xs-10 col-sm-8 col-md-8 col-lg-6 col-xs-offset-1 col-sm-offset-2 col-md-offset-2 col-lg-offset3 text-left text-info">
@@ -49,8 +50,9 @@
       </div>
     </div>
   </div>
-</section>
+</div>
 <%= render :partial => 'index_como_usar' %>
 <%= render :partial => 'index_participa' %>
 <%= render :partial => 'index_especies_destacadas_video' %>
 <%= render :partial => 'index_intro_video' %>
+<%= render :partial => 'index_partners' %>

@@ -34,16 +34,16 @@ var vidRescale = function()
 
 var setPaddingHeader = function()
 {
-    var vacio = $(window).height()-$('#brandBar').height();
+    var vacio = $(window).height()-$('#brandBar').height()-342;
     $('header').css('padding-bottom', (vacio));
-    $('#news').css('margin-top', (30-vacio));
-    $('#issues').css('height', (vacio-150));
-    $('#buscadores').css('margin-top', (1-vacio));
+    //$('#news').css('margin-top', (30-vacio));
+    //$('#issues').css('height', (vacio-150));
+    //$('#buscadores').css('margin-top', (1-vacio));
 };
 
 $(document).ready(function(){
     tv, playerDefaults = {autoplay: 0, autohide: 1, modestbranding: 0, rel: 0, showinfo: 0, controls: 0, disablekb: 1, enablejsapi: 0, iv_load_policy: 3};
-    vid = [{'videoId': '8NanLwCSneM', 'startSeconds': 0, 'suggestedQuality': 'hd480'}];
+    vid = [{'videoId': 'RBVRckQ8omU', 'startSeconds': 0, 'suggestedQuality': 'hd720'}];
 
     setPaddingHeader();
     var tag = document.createElement('script');

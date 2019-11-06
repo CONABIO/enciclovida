@@ -1,59 +1,50 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es"
-      xmlns:fb="http://www.facebook.com/2008/fbml"
-      xmlns:og="http://ogp.me/ns#">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es-MX" lang="es-MX">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
+  <meta name="keywords" content="<%= t(:keywords) %>">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <meta name="description" content="<%= t(:short_description) %>">
+  <meta name="author" content="CONABIO">
 
-  <title><%= CONFIG.site_name_short %> &middot; <%= yield :title %></title>
+  <title><%= CONFIG.site_name_short %></title>
   <%= favicon_link_tag '/favicon.ico' %>
+
+  <%= csrf_meta_tags %>
+
+  <%= stylesheet_link_tag "boots4-upgrade/inicio", media: "all", "data-turbolinks-track" => true %>
+  <%= yield :extracss %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
       IP = "<%= IP %>";
       PORT = "<%= PORT %>";
   </script>
-
-  <%= stylesheet_link_tag "boots4-upgrade/inicio", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application_b4", "data-turbolinks-track" => true %>
-
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
       I18n.locale = "<%= I18n.locale %>";
       I18n.fallbacks = true;
   </script>
-
-  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" data-turbolinks-track="true"/>
-
-  <%= csrf_meta_tags %>
   <%= yield :extrajs %>
 </head>
 
-<body id="page-top" class="index">
+<body class="index">
+
 <header class="container-fluid" style="background-image:url('/assets/portada/img_portada_video.png');">
-  <%= render :partial => 'shared/brandBar' %>
+  <%= render :partial => 'inicio/layout/brandBar' %>
 </header>
 
-<%= yield %>
+<section id="content" class="container-fluid">
+  <div class="row main no-gutters">
+    <%= yield %>
+  </div>
+</section>
 
-<aside class="partners">
-  <%= render :partial => 'inicio/index_partners' %>
-</aside>
-
-<footer class="social">
-  <%= render :partial => 'shared/footer_social' %>
+<footer class="container-fluid">
+  <%= render :partial => 'shared_b4/footer_social' %>
+  <%= render :partial => 'shared_b4/footer_legal' %>
 </footer>
-
-<footer class="legal">
-  <%= render :partial => 'shared/footer_legal' %>
-</footer>
-
-<% if Rails.env.production? %>
-    <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
-<% end %>
+<%= yield :delayedjs %>
 </body>
 </html>
