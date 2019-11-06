@@ -15,65 +15,6 @@ header {
   text-shadow: 2px 2px 2px #666666;
   font-size: 2rem;
 }
-/*#buscadores{
-  background: rgba(51, 51, 51, 0.75);
-  padding-bottom: 15px;
-}
-#buscadores > h4{
-  padding: 7px 0;
-  margin: 0px;
-  color: #fafafa;
-}
-#buscadores .btn-busquedas{
-  padding: 5px 15px 5px 3px;
-  border-radius: 0px;
-  box-shadow: 1px 1px 0px #929292;
-  background: #ffffff60;
-}
-#buscadores .btn-busquedas:hover{
-  padding: 8px 14px;
-  box-shadow: -1px -1px 1px #424242;
-  outline: 0;
-  background: rgba(51, 51, 51, 0.75);
-}
-#buscadores .btn-busquedas i:before, #buscadores .btn-busquedas i:after{
-  font-size: 2.75em!important;
-  color: #423434 !important;
-  text-shadow: 1px 1px 0px #a0a0a0;
-  margin-top: 10px;
-  margin-bottom: -5px;
-}
-#buscadores .btn-busquedas:hover i:before, #buscadores .btn-busquedas:hover i:after{
-  font-size: 2.25em!important;
-  color: #fafafa !important;
-  text-shadow: 2px 2px 2px #564c4c;
-}
-#news{
-  color: #fafafa;
-  padding: 0;
-}
-#news > h4{
-  background-color: #829E3D;
-  display: block;
-  margin: 0;
-  padding: 0 10px;
-  line-height: 30px;
-  font-weight: bold;
-}
-#news a{
-  color: #d5e3e6;
-  text-decoration: underline;
-}
-#issues{
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.issue{
-  border-bottom: 1px solid rgba(213, 227, 230, 0.51);
-  padding: 5px 15px 5px 10px;
-  background-color: rgba(51, 51, 51, 0.75);
-}
-*/
 
 @media(min-width:768px){
   .btn-circle {
@@ -144,9 +85,11 @@ header {
   visibility:hidden;
 }
 
-section {
-  padding: 40px 0;
+#que-es{
+  background-color: #829E3D;
 }
+
+/*
 #about {
   background-color:#829E3D;
   padding-bottom:0;
@@ -264,6 +207,7 @@ aside.partners a{
 .partners li {
   padding: 0 5px;
 }
+*/
 
 #logo_eol{background-position-x: 0px;width: 74px;}
 #logo_wikipedia{background-position-x: -74px;width: 67px;}
