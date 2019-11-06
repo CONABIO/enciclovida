@@ -20,11 +20,18 @@
     </div>
   <% end %>
 
+  <%= f.input :descripcion %>
+  <%#= f.input :nivel1 %>
+  <%#= f.input :nivel2 %>
+  <%#= f.input :nivel3 %>
+  <%#= f.input :nivel4 %>
+  <%#= f.input :nivel3 %>
+
   <hr />
 
   <div class="col-4">
     <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
-    <%= link_to t('helpers.submit.pmc_pez.cancel'), @admin_catalogo.new_record? ? admin_catalogos_path : admin_catalogo_path(@admin_catalogo), { :class=>"btn btn-lg btn-block btn-secondary" } %>
+    <%= link_to t('helpers.submit.admin_catalogo.cancel'), @admin_catalogo.new_record? ? admin_catalogos_path : admin_catalogo_path(@admin_catalogo), { :class=>"btn btn-lg btn-block btn-secondary" } %>
   </div>
 
 <% end %>
