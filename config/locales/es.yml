@@ -367,6 +367,7 @@ es:
     ne: No evaluado (NE)
     nt: "Riesgo bajo (LR): Casi amenazado (nt)"
     lc: "Riesgo bajo (LR): Preocupación menor (lc)"
+  keywords: especies, México, consulta, buscador, fichas, imágenes, videos, taxonomía
   lenguas:
     afrikaans: Afrikáans
     albanian: Albanés
@@ -561,6 +562,7 @@ es:
   regiones:
     estado: Estatal
     ecorregiones-marinas: Ecorregiones marinas
+  short_description: EncicloVida es una plataforma de consulta creada por la Comisión Nacional para el Conocimiento y Uso de la Biodiversidad (CONABIO), sobre las especies que viven en México.
   sinonimo: inactivos
   solo_taxones: Solo especies o grupos
   support:
