@@ -10,6 +10,8 @@ es:
     labels:
       admin_catalogo:
         descripcion: Nombre del uso
+        especies:
+          nombre_cientifico: Nombre científico
     placeholders:
 
     "yes": 'Yes'
