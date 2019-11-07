@@ -45,7 +45,13 @@ $(document).ready(function(){
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
         //evento q hace q las especies destacadas se contraigan de manera "suave" (solo activarlo en desktop en movil no tiene caso)
-        $('#especies-destacadas .col').hover(function(){$( this ).toggleClass('col-5')});
+        /*$('#especies-destacadas .col').mouseenter(function(){
+            $( this ).addClass('col-5');
+        }).mouseleave(function(){
+            $( this ).removeClass('col-5');
+        });*/
+        $('#especies-destacadas .col').hover(function(){$(this).toggleClass('col-5')});
+        $('#especies-destacadas').hover(function(){$('#especies-destacadas div.col:first-of-type').toggleClass('col-4')});
     }
 
     $(window).on('load', function(){

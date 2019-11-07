@@ -15,7 +15,12 @@ header {
   text-shadow: 1px 1px 1px #999999;
   font-size: 2rem;
 }
-
+#basica i{
+  font-size: 1.75em;
+}
+#basica a{
+  font-weight: bold;
+}
 @media(min-width:768px){
   .btn-circle {
     visibility:visible !important;
@@ -108,11 +113,11 @@ header {
   background-repeat: no-repeat !important;
   background-attachment: local;
   background-size: cover;
-  background-position: top;
+  background-position: center center;
   transition: all 0.4s ease-out;
 }
-#especies-destacadas div.col, #especies-destacadas div.col a {
-  height: 500px;
+#especies-destacadas div.col a {
+  height: 550px;
   width: 100%;
 }
 
