@@ -1,10 +1,11 @@
 <div class='nested-fields'>
-  <div class="col-1">
-    <%= link_to_remove_association('<span class="glyphicon glyphicon-remove"></span>'.html_safe, f, :class => 'btn btn-link btn') %>
-  </div>
 
   <div class="col-12">
     <%= f.input :id, as: :hidden, required: true %>
     <%= f.input :nombre_cientifico %>
+  </div>
+
+  <div class="col-1 float-right">
+    <%= link_to_remove_association('<i class="fa fa-trash"></i>'.html_safe, f, :class => 'btn btn-link') %>
   </div>
 </div>
