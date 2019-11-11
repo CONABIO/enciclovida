@@ -62,7 +62,7 @@ skip_before_action :set_locale
   def update
     respond_to do |format|
       if @plantid_planta.update(planta_params)
-        format.html { redirect_to @plantid_planta, notice: 'Planta was successfully updated.' }
+        format.html { redirect_to @plantid_planta, notice: 'Planta fue actualizadaq con exito.' }
         format.json { render :show, status: :ok, location: @plantid_planta }
       else
         format.html { render :edit }
@@ -89,6 +89,6 @@ skip_before_action :set_locale
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def planta_params
-      params.require(:plantid_planta).permit(:especie_id, :nombre_cientifico, :nombre_comun, :nombres_comunes, :usuario_id,imagen_attributes: [:id, :imagen, :remote_imagen_url,  :_destroy] , bibliografia_attributes: [:id, :nombre_biblio, :_destroy])
+      params.require(:plantid_planta).permit(:especie_id, :nombre_cientifico, :nombre_comun, :nombres_comunes, :usuario_id,imagen_attributes: [:id, :imagen, :image_cache, :remote_imagen_url,  :_destroy] , bibliografia_attributes: [:id, :nombre_biblio, :_destroy])
     end
 end

@@ -3,6 +3,6 @@
  	<%= f.text_field :remote_imagen_url %>
     <small>Puedes ingresar una url remota</small>
     <%= f.file_field :imagen %>
-    </div>
+    <%= f.hidden_field :imagen_cache %>
  	<%= link_to_remove_association "Eliminar imagen", f %>
  </div>
