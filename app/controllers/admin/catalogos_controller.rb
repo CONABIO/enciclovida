@@ -70,7 +70,7 @@ class Admin::CatalogosController < Admin::AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def admin_catalogo_params
-    params[:admin_catalogo]
+    params.require(:admin_catalogo).permit(:descripcion, especies_attributes: [:id, :_destroy])
   end
 
 end

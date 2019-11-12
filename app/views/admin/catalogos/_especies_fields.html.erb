@@ -1,11 +1,10 @@
-<div class='nested-fields'>
+<div class='input-group mb-3'>
 
-  <div class="col-12">
-    <%= f.input :id, as: :hidden, required: true %>
-    <%= f.input :nombre_cientifico %>
+  <%= f.input :nombre_cientifico, class: 'form-control', 'aria-describedby': "remove-admin-catalogo" %>
+  <%= f.input :id, as: :hidden, required: true %>
+
+  <div class="input-group-append">
+    <%= link_to_remove_association('<i class="fa fa-trash"></i>'.html_safe, f, { id: 'remove-admin-catalogo', class: 'input-group-text' }) %>
   </div>
 
-  <div class="col-1 float-right">
-    <%= link_to_remove_association('<i class="fa fa-trash"></i>'.html_safe, f, :class => 'btn btn-link') %>
-  </div>
 </div>
