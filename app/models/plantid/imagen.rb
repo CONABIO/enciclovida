@@ -12,7 +12,10 @@ class Plantid::Imagen < Plantidabs
   	self.nombre_orig = self.imagen.file.basename
   	self.ruta_relativa = self.imagen.url
   	self.tipo = self.imagen.file.extension
-  	self.imagen = nil
+  end
+
+  def validar_norebundacia
+      #Bibliografia.exists?(CitaCompleta: self.)
   end
 
 end
