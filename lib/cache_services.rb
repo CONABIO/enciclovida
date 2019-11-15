@@ -3,11 +3,11 @@ module CacheServices
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
     guarda_redis_servicio
+
     if Rails.env.production?
       guarda_estadisticas_servicio
       guarda_observaciones_naturalista_servicio
       guarda_ejemplares_snib_servicio
-      #guarda_redis_servicio
       guarda_pez_servicios
       # estadisticas_naturalista_servicio
       # estadisticas_conabio_servicio
@@ -179,7 +179,7 @@ module CacheServices
     # Borra los actuales
     borra_redis(loader)
 
-    # Guarda el redis con el nombre cientifico
+    # Guarda el redis con el nombre cientifico y los demas servicios
     loader.add(asigna_redis(opc.merge({consumir_servicios: true})))
 
     # Guarda el redis con todos los nombres comunes
@@ -829,7 +829,7 @@ module CacheServices
 
   # REVISADO: Es el ID del nombre comun que va vinculado al nombre cientifico
   def nombre_comun_a_id_referencia(num_nombre)
-    # El 9 inicial es apra identificarlo, despues se forza el ID a 6 digitos y el numero de nombre comun a 2 digitos
+    # El 1 inicial es para identificarlo, despues se forza el ID a 6 digitos y el numero de nombre comun a 3 digitos
     "1#{id.to_s.rjust(6,'0')}#{num_nombre.to_s.rjust(3,'0')}".to_i
   end
 
@@ -840,7 +840,7 @@ module CacheServices
     loader.remove(nombre_cient_data)
 
     # Borra los nombre comunes
-    50.times do |i|
+    100.times do |i|
       id_referencia = nombre_comun_a_id_referencia(i+1)
       nombre_com_data = {id: id_referencia}.stringify_keys
       loader.remove(nombre_com_data)
@@ -854,7 +854,7 @@ module CacheServices
     FUZZY_NOM_CIEN.delete(id)
 
     # Borra los nombre comunes
-    50.times do |i|
+    100.times do |i|
       id_referencia = nombre_comun_a_id_referencia(i+1)
       FUZZY_NOM_COM.delete(id_referencia)
     end

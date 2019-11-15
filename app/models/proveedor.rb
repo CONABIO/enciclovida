@@ -31,7 +31,6 @@ class Proveedor < ActiveRecord::Base
         resp = RestClient.get "#{CONFIG.inaturalist_api}/observations/quality_grades?place_id=6793&taxon_id=#{naturalista_id}"
         consulta = JSON.parse(resp)
 
-        puts 'aqui'
         if consulta['total_results'] > 0
           { estatus: true, conteo_obs: consulta['results'][0] }
         else
@@ -53,24 +52,22 @@ class Proveedor < ActiveRecord::Base
         t = especie
         t.ficha_naturalista_por_nombre
         self.jres = t.jres
+
+        return unless jres.present?
       end
 
-      if naturalista_id.blank?
-        jres
-      else
-        begin
-          resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}?all_names=true"
-          ficha = JSON.parse(resp)
+      begin
+        resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}?all_names=true"
+        ficha = JSON.parse(resp)
 
-          if ficha['total_results'] == 1
-            { estatus: true, ficha: ficha['results'][0] }
-          else
-            { estatus: false, msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha' }
-          end
-
-        rescue => e
-          { estatus: false, msg: e }
+        if ficha['total_results'] == 1
+          { estatus: true, ficha: ficha['results'][0] }
+        else
+          { estatus: false, msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha' }
         end
+
+      rescue => e
+        { estatus: false, msg: e }
       end
 
     end  # End cache.fetch
