@@ -870,7 +870,7 @@ class EspeciesController < ApplicationController
           :id => especie.id,
           :nombre => {
               "comun" => especie.adicional.nombre_comun_principal,
-              "cientifico" => especie.NombreCompleto
+              "cientifico" => especie.nombre_cientifico
           },
           :tipo_busqueda_actual => params[:t_name].present? ? params[:t_name] : "cientifico" # Por default, buscará por nombre científico
       }
