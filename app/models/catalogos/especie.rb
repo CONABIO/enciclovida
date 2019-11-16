@@ -472,8 +472,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
     if jres[:estatus]
       ncn = jres[:nombres_comunes].map do |nc|
-        next unless nc['name'].present?
-        next if nc['lexicon'].present? && nc['lexicon'] == 'Scientific Names'
+        next if nc['name'].blank? || nc['locale'].blank? || nc['locale'] == 'sci'
 
         # Un nombre de catalogos es igual que uno de Naturalista, conservo el de Naturalista
         if ncc_estandar.present? && ncc_estandar.include?(nc['name'].estandariza)
@@ -483,13 +482,13 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
         end
 
         # Asigna la lengua
-        lengua = nc['lexicon']
+        lengua = nc['locale']
 
-        if lengua.present?
-          l = lengua.estandariza.gsub('-','_')
-        else
-          l = 'nd'
-        end
+        l = if lengua.present?
+              lengua.estandariza
+            else
+              'nd'
+            end
 
         # Los nombres comunes de naturalista en hash con la lengua
         { I18n.t("lenguas.#{l}", default: l.capitalize) => nc['name'].capitalize }
