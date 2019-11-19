@@ -1,15 +1,17 @@
 <div class="container">
 <p id="notice"><%= notice %></p>
+<h2>Planta</h2>
 <div class="row">
-  <div class="col-sm">
-      <h2>Planta</h2>
-      <label>Id especie</label>
-      <p><%= @plantid_planta.especie_id %></p>
-      <label>Nombre Comun</label>
+  <div class="col">
+      <strong>Nombre Comun</strong>
       <p><%= @plantid_planta.nombre_comun %></p>
-      <label>Nombre Cientifico</label>
+  </div>
+  <div class="col">
+      <strong>Nombre Cientifico</strong>
       <p><%= @plantid_planta.nombre_cientifico %></p>
-      <label>Nombres Comunes</label>
+  </div>
+  <div class="col">
+      <strong>Nombres Comunes</strong>
       <p><%= @plantid_planta.nombres_comunes %></p>
   </div>
 </div>
