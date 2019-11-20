@@ -2,6 +2,14 @@
 var co = ["xm.bo","g.oiba","noc","@adivol","cicne:o","tliam"];
 
 /**
+ * Emula el comportamiento de la funcion limpiar en ruby
+ */
+var limpiar = function (str)
+{
+    return str.replace(/\([^()]*\)/i, "").trim();
+};
+
+/**
  * Pone el tamaño inicial al mapa
  */
 var ponTamaño = function () {
