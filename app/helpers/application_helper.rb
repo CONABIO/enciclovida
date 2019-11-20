@@ -46,7 +46,7 @@ module ApplicationHelper
       end
 
     else   #vista general
-
+      nombre_cientifico = nombre_cientifico.limpiar({tipo: 'show'})
       nombre_comun = "<text class='f-nom-comun'>#{nom_comun}</text>" if nom_comun.present?
 
       case params[:render]

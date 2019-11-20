@@ -21,7 +21,7 @@ class Especie < ActiveRecord::Base
   alias_attribute :anotacion, :Anotacion
   alias_attribute :ancestry_ascendente_directo, :Ascendentes
   alias_attribute :ancestry_ascendente_obligatorio, :AscendentesObligatorios
-  alias_attribute :nombre_cientifico, :NombreCompleto
+  alias_attribute :nombre_cientifico, :TaxonCompleto
   alias_attribute :created_at, :FechaCaptura
   alias_attribute :updated_at, :FechaModificacion
 
