@@ -26,7 +26,7 @@ module EspeciesHelper
     def creaLista(taxon, lista=nil)
       link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
                         :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, render: 'link')
+      nombre = tituloNombreCientifico(taxon, render: 'arreglo-taxonomico')
       "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}#{lista.present? ? lista : ''}</li></ul>"
     end
 
@@ -48,7 +48,7 @@ module EspeciesHelper
     taxones.each do |taxon|
       link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
                         :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, render: 'link')
+      nombre = tituloNombreCientifico(taxon, render: 'arreglo-taxonomico')
       html << "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}</li></ul>"
     end
 
