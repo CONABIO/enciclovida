@@ -76,7 +76,7 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 $('#'+elemento.replace('nombre_cientifico','especie_id')).attr('value', data.id);
                 break;
             case 'plantid':
-                $('#especie_id').attr('value', data.id);
+                $('#especie_id').val(data.id);
                 $('#nombre_comun').attr('value',data.nombre_comun);
                 $('#nombre_cientifico').attr('value',data.nombre_cientifico);
                 $('#nombres_comunes').attr('value',data.nombres_comunes);

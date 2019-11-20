@@ -4,7 +4,7 @@ class Plantid::Bibliografia < Plantidabs
   has_many :plantabibliografias
   has_many :plantas, through: :plantabibliografias
 
-  before_save :validar_norebundaciaBibliografia
+  #before_save :validar_norebundaciaBibliografia
 
   def validar_norebundaciaBibliografia
       if Bibliografia.exists?(CitaCompleta: self.nombre_biblio)

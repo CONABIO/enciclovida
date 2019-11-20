@@ -25,7 +25,9 @@ skip_before_action :set_locale
 
   # GET /plantas/1/edit
   def edit
+    @no_render_busqueda_basica = true
     @form_params = {}
+
   end
 
   # POST /plantas
