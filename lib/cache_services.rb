@@ -87,7 +87,7 @@ module CacheServices
     escribe_cache('ficha_naturalista', CONFIG.cache.ficha_naturalista) if Rails.env.production?
 
     begin
-      respuesta = RestClient.get "#{CONFIG.inaturalist_api}/taxa?q=#{URI.escape(nombre_cientifico.limpia_ws)}"
+      respuesta = RestClient.get "#{CONFIG.inaturalist_api}/taxa?q=#{URI.escape(nombre_cientifico.limpiar)}"
       resultados = JSON.parse(respuesta)
     rescue => e
       self.jres = jres.merge({msg: e})
@@ -99,7 +99,7 @@ module CacheServices
 
     resultados['results'].each do |t|
       next unless t['ancestor_ids'].present?
-      next unless t['name'].downcase == nombre_cientifico.limpia_ws.downcase
+      next unless t['name'].downcase == nombre_cientifico.limpiar.downcase
 
       # Es un reino
       reino_naturalista = t['ancestor_ids'][1]

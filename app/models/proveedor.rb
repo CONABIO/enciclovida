@@ -227,19 +227,20 @@ class Proveedor < ActiveRecord::Base
 
   # REVISADO: Guarda las observaciones de naturalista
   def guarda_observaciones_naturalista
+    e = especie
 
     # Para no generar geodatos arriba de familia
-    return unless especie.apta_con_geodatos?
+    return unless e.apta_con_geodatos?
 
     # Para no guardar nada si el cache aun esta vigente
-    return if especie.existe_cache?('observaciones_naturalista')
+    return if e.existe_cache?('observaciones_naturalista')
 
     # Pone el cache para no volverlo a consultar
-    especie.escribe_cache('observaciones_naturalista', CONFIG.cache.observaciones_naturalista) if Rails.env.production?
+    e.escribe_cache('observaciones_naturalista', CONFIG.cache.observaciones_naturalista) if Rails.env.production?
 
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
-      resp = especie.ficha_naturalista_por_nombre
+      resp = e.ficha_naturalista_por_nombre
       return resp unless resp[:estatus]
     end
 
@@ -275,7 +276,7 @@ class Proveedor < ActiveRecord::Base
 
     # Crea carpeta y archivo
     carpeta = carpeta_geodatos
-    nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+    nombre = carpeta.join("observaciones_#{e.nombre_cientifico.limpiar.gsub(' ','_')}")
 
     archivo_observaciones = File.new("#{nombre}.json", 'w+')
     archivo_observaciones_mapa = File.new("#{nombre}_mapa.json", 'w+')
