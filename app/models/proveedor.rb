@@ -240,7 +240,8 @@ class Proveedor < ActiveRecord::Base
 
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
-      resp = e.ficha_naturalista_por_nombre
+      e.ficha_naturalista_por_nombre
+      resp = e.jres
       return resp unless resp[:estatus]
     end
 

@@ -82,9 +82,8 @@ module CacheServices
 
   # REVISADO: Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
   def ficha_naturalista_por_nombre
-    self.jres = { estatus: false, msg: 'No hay resultados' }  # Mensaje default
     return if existe_cache?('ficha_naturalista')
-    escribe_cache('ficha_naturalista', CONFIG.cache.ficha_naturalista) if Rails.env.production?
+    self.jres = { estatus: false, msg: 'No hay resultados' }  # Mensaje default
 
     begin
       respuesta = RestClient.get "#{CONFIG.inaturalist_api}/taxa?q=#{URI.escape(nombre_cientifico.limpiar)}"
@@ -120,6 +119,7 @@ module CacheServices
       end
 
       self.jres = jres.merge({ estatus: true, ficha: t, msg: nil })
+      escribe_cache('ficha_naturalista', CONFIG.cache.ficha_naturalista) if Rails.env.production?
       return
 
     end  # End resultados
