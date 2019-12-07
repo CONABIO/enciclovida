@@ -764,7 +764,7 @@ class EspeciesController < ApplicationController
       p.naturalista_id = new_id
     else
       # NO existe proveedor
-      p = @especie.proveedor.new({naturalista_id: new_id})
+      p = Proveedor.new({especie_id: @especie.id,naturalista_id: new_id})
     end
 
     if p.changed? && p.save
