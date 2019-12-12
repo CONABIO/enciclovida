@@ -1,12 +1,14 @@
 class String
   # Quita simbolos raros y quita los terminos con punto que estan abajo de especies y subgenero
-  def limpiar(ssp = false)
+  def limpiar(opc={})
     return self unless self.present?
 
-    # Para poner ssp. como esta en NaturaLista y el Banco de Imagenes
-    if ssp
+    case opc[:tipo]
+    when 'ssp'  # Para poner ssp. como esta en NaturaLista y el Banco de Imagenes
       self.limpia.gsub(/\([^()]*\)/, ' ').gsub(/( f\. | var\. | subf\. | subvar\. )/, ' ').gsub(/ subsp\. /, ' ssp. ').strip.gsub(/\s+/,' ')
-    else
+    when 'show'
+      self.limpia.gsub(/\([^()]*\)/, ' ').strip.gsub(/\s+/,' ')
+    else  # Lo más limpio posible, es para consultar diferentes API por nombre
       self.limpia.gsub(/\([^()]*\)/, ' ').gsub(/( subsp\. | f\. | var\. | subf\. | subvar\. )/, ' ').strip.gsub(/\s+/,' ')
     end
   end
@@ -15,11 +17,6 @@ class String
   def limpia
     return self unless self.present?
     self.gsub(/(\r\n|\r|\n)/, '').gsub('"', '\"').gsub("\t", ' ').strip.gsub(/\s+/,' ')
-  end
-
-  # Para cuando se quiere consultar un web service
-  def limpia_ws(bdi=false)
-    self.limpiar(bdi).limpia
   end
 
   def limpia_csv

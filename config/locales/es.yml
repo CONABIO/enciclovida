@@ -371,46 +371,91 @@ es:
   lenguas:
     afrikaans: Afrikáans
     albanian: Albanés
+    ar: Árabe
+    arabic: Árabe
     bengali: Bengalí
+    bg: Búlgaro
+    br: Bretón
     bulgarian: Búlgaro
+    ca: Catalán
     cebuano: Cebuano
     chinese_traditional: Chino tradicional
     creole_french: Criollo (Francés)
     creole_portuguese: Criollo (Portugués)
+    cs: Checo
+    da: Danés
     davawenyo: Davawenyo
+    de: Alemán
     dutch: Holandés
+    el: Griego
+    en: Inglés
     english: Inglés
+    eo: Esperanto
+    es: Español
+    es-mx: Español
     espanol_mexico: Español
     estonian: Estonio
+    et: Estonio
+    eu: Euskera
+    fi: Finlandés
+    fr: Francés
     french: Francés
     gela: Gela
     german: Alemán
+    gl: Gallego
     hawaiian: Hawaiano
+    he: Hebreo
     hebrew: Hebreo
     hiligaynon: Hiligainón
     icelandic: Islandés
+    id: Indonesio
     ilokano: Ilocano
+    it: Italiano
     italian: Italiano
+    ja: Japonés
     japanese: Japonés
+    ko: Coreano
     korean: Coreano
+    lb: Luxemburgués
+    lt: Lituano
     maltese: Maltés
     maori: Maorí
+    maya: Maya
+    mi: Maorí
+    mk: Macedonio
+    myn: Maya
     misima_paneati: Misima-paneati
     nahuatl: Náhuatl
     nd: ND
+    ndespanol: Español
+    nl: Holandés
+    nb: Noruego
     norwegian: Noruego
+    oc: Occitano
     pangasinan: Pangasinán
     persian: Persa
     portuguese: Portugués
+    pl: Polaco
+    pt: Portugués
+    pt-br: Portugués
     romanian: Rumano
+    ru: Ruso
     russian: Ruso
+    sk: Mongol
     spanish: Español
+    sq: Albanés
+    sv: Sueco
     swedish: Sueco
     tagalog: Tagalo
     tahitian: Tahitiano
     tokelauan: Tokelauano
+    tr: Turco
     turkish: Turco
+    und: ND
     waray_waray: Samareño
+    zh: Chino
+    zh-cn: Chino
+    zh-tw: Chino
   listas_columnas:
     generales:
       anotacion: Anotación
