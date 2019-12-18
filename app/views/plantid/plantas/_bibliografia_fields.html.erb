@@ -1,4 +1,16 @@
  <div class="nested-fields">
- 	<%= f.input :nombre_biblio %>
- 	<%= link_to_remove_association "Eliminar bibliografia", f %>
- </div>
+  <div id="custom-templates">
+    <%= f.input :nombre_biblio, input_html: { class: "typeahead", id:"biblio" } %>
+  </div>
+  <div>
+    <input class="typeahead" type="text" placeholder="Select Biblio">
+  </div>
+  <%= link_to_remove_association "Eliminar bibliografia", f %>
+</div>
+<script type="text/javascript">
+    $('#biblio').typeahead(null, {
+        name: 'bibliografia',
+        display: 'CitaCompleta',
+        source: biblio
+    });
+</script>
