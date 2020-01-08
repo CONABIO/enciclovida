@@ -136,7 +136,7 @@ module CacheServices
       cache = Rails.cache.read("#{recurso}_#{id}")
 
       r = cache[:created_at] && cache[:expires_in]
-      return unless r
+      return false unless r
 
       begin
         (cache[:created_at] + cache[:expires_in]) > Time.now.to_f
