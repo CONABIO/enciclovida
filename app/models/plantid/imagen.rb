@@ -2,7 +2,7 @@ class Plantid::Imagen < Plantidabs
   self.table_name = "#{CONFIG.bases.plantid}.imagenes"
 
   has_many :plantaimagenes
-  has_many :plantas, through: :plantaimagenes
+  has_many :plantas,through: :plantaimagenes
 
   mount_uploader :imagen, ImagenUploader
 
@@ -12,7 +12,10 @@ class Plantid::Imagen < Plantidabs
   	self.nombre_orig = self.imagen.file.basename
   	self.ruta_relativa = self.imagen.url
   	self.tipo = self.imagen.file.extension
-  	self.imagen = nil
+  end
+
+  def validar_norebundacia
+      #Bibliografia.exists?(CitaCompleta: self.)
   end
 
 end

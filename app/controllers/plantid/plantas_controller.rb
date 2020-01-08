@@ -18,14 +18,16 @@ skip_before_action :set_locale
 
   # GET /plantas/new
   def new
-    #@form_params = { url: 'plantid/plantas', method: 'post' }
+    @no_render_busqueda_basica = true
     @plantid_planta = Plantid::Planta.new
     @plantid_planta.usuario_id = '1'
   end
 
   # GET /plantas/1/edit
   def edit
+    @no_render_busqueda_basica = true
     @form_params = {}
+
   end
 
   # POST /plantas
@@ -34,16 +36,9 @@ skip_before_action :set_locale
     @plantid_planta = Plantid::Planta.new(planta_params)
     @plantid_planta.usuario_id = '1'
 
-    #puts planta_params.inspect
-    #if @plantid_planta.imagen.all?
-    #  @plantid_planta.imagen.all.each do |img|
-    #      img.ruta_relativa = img.imagen.url
-    #      img.tipo = img.imagen.file.extension
-    #      img.nombre_orig = img.imagen.file.basename
-    #  end
-    #end
+    puts @plantid_planta.valid?
+    puts @plantid_planta.errors.inspect
 
-    
 
     respond_to do |format|
       if @plantid_planta.save
@@ -62,7 +57,7 @@ skip_before_action :set_locale
   def update
     respond_to do |format|
       if @plantid_planta.update(planta_params)
-        format.html { redirect_to @plantid_planta, notice: 'Planta was successfully updated.' }
+        format.html { redirect_to @plantid_planta, notice: 'Planta fue actualizada con exito.' }
         format.json { render :show, status: :ok, location: @plantid_planta }
       else
         format.html { render :edit }

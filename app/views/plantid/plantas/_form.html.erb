@@ -1,12 +1,11 @@
 <%= simple_form_for @plantid_planta do |f| %>
-
-  <%= f.input :especie_id %>
+  <%= f.input :especie_id,as: :hidden, input_html: {id: 'especie_id'}%>
   <br>
-  <%= f.input :nombre_cientifico %>
+  <%= f.input :nombre_cientifico, input_html: {id: 'nombre_cientifico'} %>
   <br>
-  <%= f.input :nombre_comun,required: true,  error: 'La especie requiere de un nombre para ser registrada' %>
+  <%= f.input :nombre_comun, input_html: {id: 'nombre_comun'},required: true,  error: 'La especie requiere de un nombre para ser registrada' %>
   <br>
-  <%= f.input :nombres_comunes %>
+  <%= f.input :nombres_comunes, input_html: {id: 'nombres_comunes'} %>
   <br>
 
   <h3> Imagenes </h3>
@@ -32,4 +31,10 @@
   </div>
 
     <%= f.submit %>
+
+ <%= content_for :delayedjs do %>
+    <script type="text/javascript">
+      soulmateAsigna('plantid','nombre_cientifico');
+    </script>
+ <% end %>
 <% end %>

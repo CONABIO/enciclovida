@@ -1,32 +1,48 @@
+<div class="container">
 <p id="notice"><%= notice %></p>
-
-<h1>Listado de Plantas</h1>
-
-<br>
-
-<%= link_to 'Nueva Planta', new_plantid_planta_path %>
-<table>
-  <thead>
-    <tr>
-      <th>Id_Especie</th>
-      <th>Nombre Cientifico</th>
-      <th>Nombre Comun</th>
-      <th>Nombres Comunes</th>
-      <th colspan="4"></th>
-    </tr>
-  </thead>
-
-  <tbody>
+    <h1>Listado de Plantas</h1>
+    <%= link_to 'Nueva Planta', new_plantid_planta_path %>
+    <div class="row">
+      <div class="col">
+        <strong>Imagen</strong>
+      </div>
+      <div class="col">
+        <strong>Nombre Científico</strong>
+      </div>
+      <div class="col">
+        <strong>Nombre Común</strong>
+      </div>
+      <div class="col">
+        <strong>Nombres Comunes</strong>
+      </div>
+      <div class="col">
+        <strong>Links</strong>
+      </div>
+    </div>
     <% @plantid_plantas.each do |planta| %>
-      <tr>
-        <td><%= planta.especie_id %></td>
-        <td><%= planta.nombre_cientifico %></td>
-        <td><%= planta.nombre_comun %></td>
-        <td><%= planta.nombres_comunes %></td>
-        <td><%= link_to 'Ver', planta %></td>
-        <td><%= link_to 'Editar', edit_plantid_planta_path(planta) %></td>
-        <td><%= link_to 'Destruir', planta, method: :delete, data: { confirm: 'Estas seguro?' } %></td>
-      </tr>
+        <div class="row">
+          <div class="col">
+            <% unless planta.imagen.first.nil? %> 
+              <%= image_tag planta.imagen.first.imagen_url, class: 'img-fluid' %>
+            <% end %>
+          </div>
+          <div class="col">
+            
+            <p><%= planta.nombre_cientifico %></p>
+          </div>
+          <div class="col">
+            
+            <p><%= planta.nombre_comun %></p>
+          </div>
+          <div class="col">
+            
+            <p><%= planta.nombres_comunes %></p>
+          </div>
+          <div class="col">
+            <p class="mb-0"><%= link_to 'Ver', planta %></p>
+            <p class="mb-0"><%= link_to 'Editar', edit_plantid_planta_path(planta) %></p>
+            <p class="mb-0"><%= link_to 'Destruir', planta, mepod: :delete, data: { confirm: 'Estas seguro?' } %></p>
+          </div>
+        </div>
     <% end %>
-  </tbody>
-</table>
+</div>

@@ -9,8 +9,8 @@ class Plantid::Planta < Plantidabs
   has_many :plantacatalogos, class_name: 'Plantid::PlantaCatalogo', inverse_of: :planta
   has_many :plantaimagenes, class_name: 'Plantid::PlantaImagen', inverse_of: :planta
   has_many :bibliografia, through: :plantabibliografias, source: :bibliografia
-  has_many :catalogo,through: :plantacatalogos, source: :catalogo
-  has_many :imagen, through: :plantaimagenes
+  has_many :catalogo, through: :plantacatalogos, source: :catalogo
+  has_many :imagen, dependent: :destroy, through: :plantaimagenes
 
   accepts_nested_attributes_for :bibliografia, :reject_if => :all_blank, :allow_destroy => true
   accepts_nested_attributes_for :catalogo, :reject_if => :all_blank, :allow_destroy => true

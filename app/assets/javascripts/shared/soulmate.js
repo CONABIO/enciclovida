@@ -75,6 +75,12 @@ var soulmateAsigna = function(tipo_busqueda, elem)
             case 'metamares_proy_esp':
                 $('#'+elemento.replace('nombre_cientifico','especie_id')).attr('value', data.id);
                 break;
+            case 'plantid':
+                $('#especie_id').val(data.id);
+                $('#nombre_comun').attr('value',data.nombre_comun);
+                $('#nombre_cientifico').attr('value',data.nombre_cientifico);
+                $('#nombres_comunes').attr('value',data.nombres_comunes);
+                break;
             default:
                 // Para no pasar por el controlador de busquedas, ir directo a la especie, solo busqueda basica
                 var nom_cientifico = data.nombre_cientifico.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').replace(/[\(\)]/g, '');
