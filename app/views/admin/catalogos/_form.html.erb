@@ -1,10 +1,14 @@
-<%= simple_form_for @admin_catalogo, wrapper: :horizontal_form, wrapper_mappings: {
+<%= simple_form_for @admin_catalogo, **@form_params, wrapper: :horizontal_form, wrapper_mappings: {
     boolean:       :horizontal_boolean,
     check_boxes:   :horizontal_collection,
     file:          :horizontal_file,
     radio_buttons: :horizontal_collection,
     range:         :horizontal_range,
+    #time:          :custom_multi_select,
     select:        :horizontal_collection
+    #date:          :horizontal_multi_select,
+    #datetime:      :horizontal_multi_select,
+    #select:        :floating_labels_select
 } do |f| %>
 
   <% if @admin_catalogo.errors.any? %>
@@ -28,12 +32,12 @@
 
   <h3>Especies asociadas</h3>
   <div>
-    <%= f.simple_fields_for :especies do |especie| %>
+    <%= f.simple_fields_for :especies_catalogo do |especie| %>
       <%= render partial: 'especies_fields', locals: { f: especie } %>
     <% end %>
 
     <div>
-      <%= link_to_add_association 'Asocia especie', f, :especies, partial: 'especies_fields' %>
+      <%= link_to_add_association 'Asocia especie', f, :especies_catalogo, partial: 'especies_fields' %>
     </div>
   </div>
 

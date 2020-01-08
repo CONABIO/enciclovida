@@ -1,5 +1,9 @@
 class Admin::CatalogosController < Admin::AdminController
 
+  before_action do
+    @no_render_busqueda_basica = true
+  end
+
   before_action :set_admin_catalogo, only: [:show, :edit, :update, :destroy]
 
   # GET /admin/catalogos
@@ -15,11 +19,13 @@ class Admin::CatalogosController < Admin::AdminController
 
   # GET /admin/catalogos/new
   def new
+    @form_params = { url: '/pmc/peces', method: 'post' }
     @admin_catalogo = Admin::Catalogo.new
   end
 
   # GET /admin/catalogos/1/edit
   def edit
+    @form_params = {}
   end
 
   # POST /admin/catalogos
@@ -70,7 +76,7 @@ class Admin::CatalogosController < Admin::AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def admin_catalogo_params
-    params.require(:admin_catalogo).permit(:descripcion, especies_attributes: [:id, :_destroy])
+    params.require(:admin_catalogo).permit(:descripcion, especies_catalogo_attributes: [:id, :especie_id, :_destroy])
   end
 
 end
