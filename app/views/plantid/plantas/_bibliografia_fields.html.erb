@@ -1,5 +1,27 @@
  <div class="nested-fields">
- 	<%= f.input :nombre_biblio %>
- 	<br>
- 	<%= link_to_remove_association "Remove comment", f %>
- </div>
+  <div id="custom-templates">
+    <%= f.input :nombre_biblio, input_html: { class: "typeahead", id:"biblio" } %>
+  </div>
+  <%= link_to_remove_association "Eliminar bibliografia", f %>
+</div>
+<script type="text/javascript">
+    $('#biblio').autocomplete({
+        //Los datos, que son invocado mediante JQuery ajax
+        source: function (request, response) {
+        $.getJSON("http://localhost:3000/plantid/load_bibliosuggestions/" + request.term, function (data) {
+            response($.map(data, function (value, key) {
+                return {
+                    label: value,
+                    IdBibliografia: key
+                };
+            }));
+        });
+    },
+            //Minima letra permitida para mostrar la lista de resultado
+            minLength: 2,
+            //Cuando seleccione un valor muestra su resultado
+            select: function (event, ui) {
+                log("Selecciono Valor: " + ui.item.value + ", id: " + ui.item.id );
+            }
+        });
+</script>

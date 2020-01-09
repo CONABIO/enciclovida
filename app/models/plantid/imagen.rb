@@ -1,13 +1,21 @@
-class Plantid::Imagen < ActiveRecord::Base
+class Plantid::Imagen < Plantidabs
   self.table_name = "#{CONFIG.bases.plantid}.imagenes"
-  self.primary_key = 'id'
 
-   # Los alias con las tablas de imagen
-  alias_attribute :id, :id
-  alias_attribute :nombre_orig, :nombre_orig
-  alias_attribute :tipo, :tipo
-  alias_attribute :ruta_relativa, :ruta_relativa
+  has_many :plantaimagenes
+  has_many :plantas,through: :plantaimagenes
 
+  mount_uploader :imagen, ImagenUploader
 
-  has_and_belongs_to_many :plantas
+  before_save :completa_metadatos
+
+  def completa_metadatos
+  	self.nombre_orig = self.imagen.file.basename
+  	self.ruta_relativa = self.imagen.url
+  	self.tipo = self.imagen.file.extension
+  end
+
+  def validar_norebundacia
+      #Bibliografia.exists?(CitaCompleta: self.)
+  end
+
 end

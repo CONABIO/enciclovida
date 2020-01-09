@@ -1,13 +1,19 @@
 class Plantid::Planta < Plantidabs
-
   self.table_name = "#{CONFIG.bases.plantid}.plantas"
 
-  has_and_belongs_to_many :bibliografias
-  has_and_belongs_to_many :catalogos
-  has_and_belongs_to_many :imagenes
+  validates :especie_id, presence: true , length: {minimum: 1}
+  validates :nombre_comun, presence: true, length: {maximum: 45}
+  validates :usuario_id, presence: true
 
-  accepts_nested_attributes_for :bibliografias, :reject_if => :all_blank, :allow_destroy => true
-  accepts_nested_attributes_for :catalogos, :reject_if => :all_blank, :allow_destroy => true
-  accepts_nested_attributes_for :imagenes, :reject_if => :all_blank, :allow_destroy => true
+  has_many :plantabibliografias, class_name: 'Plantid::PlantaBibliografia', inverse_of: :planta
+  has_many :plantacatalogos, class_name: 'Plantid::PlantaCatalogo', inverse_of: :planta
+  has_many :plantaimagenes, class_name: 'Plantid::PlantaImagen', inverse_of: :planta
+  has_many :bibliografia, class_name: 'Plantid::Bibliografiaplantid', through: :plantabibliografias
+  has_many :catalogo, through: :plantacatalogos, source: :catalogo
+  has_many :imagen, dependent: :destroy, through: :plantaimagenes
+
+  accepts_nested_attributes_for :bibliografia, :reject_if => :all_blank, :allow_destroy => true
+  accepts_nested_attributes_for :catalogo, :reject_if => :all_blank, :allow_destroy => true
+  accepts_nested_attributes_for :imagen, :reject_if => :all_blank, :allow_destroy => true
 
 end
