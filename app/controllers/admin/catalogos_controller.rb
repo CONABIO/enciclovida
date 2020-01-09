@@ -26,6 +26,8 @@ class Admin::CatalogosController < Admin::AdminController
   # GET /admin/catalogos/1/edit
   def edit
     @form_params = {}
+
+    #@admin_catalogo.
   end
 
   # POST /admin/catalogos

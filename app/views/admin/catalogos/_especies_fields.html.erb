@@ -1,9 +1,12 @@
 <div class='nested-fields'>
-  <% nombre_cientifico = f.object.especie.nombre_cientifico %>
+  <% if especie = f.object.especie %>
+    <% nombre_cientifico = especie.nombre_cientifico %>
+    <%= f.input :nombre_cientifico, input_html: { value: nombre_cientifico } %>
+  <% else %>
+    <%= f.input :nombre_cientifico %>
+  <% end %>
 
-  <%= f.input :nombre_cientifico, input_html: { value: nombre_cientifico } %>
   <%= f.input :especie_id, as: :hidden, required: true %>
-
   <%= link_to_remove_association 'Desvincula especie', f %>
 </div>
 
