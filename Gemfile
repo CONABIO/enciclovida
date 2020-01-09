@@ -31,7 +31,7 @@ gem 'mime-types'
 gem 'mysql2'
 gem 'nokogiri'  # Hacer un parse con xml
 gem 'pg'
-gem 'puma', '~> 3.7'  # Use Puma as the app server
+gem 'puma', '~> 3.12' # Use Puma as the app server
 gem 'rack-contrib'
 gem 'rack-google-analytics'
 gem 'rails', '5.1.6.2'
