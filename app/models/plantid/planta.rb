@@ -8,7 +8,7 @@ class Plantid::Planta < Plantidabs
   has_many :plantabibliografias, class_name: 'Plantid::PlantaBibliografia', inverse_of: :planta
   has_many :plantacatalogos, class_name: 'Plantid::PlantaCatalogo', inverse_of: :planta
   has_many :plantaimagenes, class_name: 'Plantid::PlantaImagen', inverse_of: :planta
-  has_many :bibliografia, through: :plantabibliografias, source: :bibliografia
+  has_many :bibliografia, class_name: 'Plantid::Bibliografiaplantid', through: :plantabibliografias
   has_many :catalogo, through: :plantacatalogos, source: :catalogo
   has_many :imagen, dependent: :destroy, through: :plantaimagenes
 
