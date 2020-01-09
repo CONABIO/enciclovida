@@ -47,9 +47,22 @@
     </div>
   </div>
 </div>
-<div id="especies-destacadas" class="col-12 p-0 text-center">
+<div class="col-12 p-0 text-center bg-info">
   <div class="row">
-    <%= render :partial => 'index_especies_destacadas' %>
+    <div class="col-6">
+      <div class="row">
+        <div class="col promo-evida">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/J6_61JghkI8?list=PLLAcoRHqCmNQUXaU8m3PiiIGkojfLHfzv" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+      <h3 class="bg-info text-white font-weight-bold pull-left py-3 px-5 mx-0 rounded" style="margin-top: -500px;">Especies destacadas</h3>
+
+      <div id="especies-destacadas" class="row">
+        <%= render :partial => 'index_especies_destacadas' %>
+      </div>
+    </div>
   </div>
 </div>
 <div class="col-12">
