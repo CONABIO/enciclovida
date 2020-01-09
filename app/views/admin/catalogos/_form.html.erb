@@ -23,12 +23,14 @@
     </div>
   <% end %>
 
-  <%= f.input :descripcion %>
+  <div class="">
+  <%= f.input :descripcion, input_html: {} %>
   <%= f.input :nivel1 %>
   <%= f.input :nivel2 %>
   <%= f.input :nivel3 %>
   <%= f.input :nivel4 %>
   <%= f.input :nivel5 %>
+  </div>
 
   <h3>Especies asociadas</h3>
   <div>
@@ -36,9 +38,9 @@
       <%= render partial: 'especies_fields', locals: { f: especie } %>
     <% end %>
 
-    <div>
-      <%= link_to_add_association 'Asocia especie', f, :especies_catalogo, partial: 'especies_fields' %>
-    </div>
+
+      <%#= link_to_add_association 'Asocia especie', f, :especies_catalogo, partial: 'especies_fields' %>
+
   </div>
 
   <hr />

@@ -7,6 +7,6 @@ class Admin::Catalogo < Catalogo
   scope :usos, -> { usos_count.joins(:especies_catalogo).where(nivel1: 11).order(:descripcion) }
 
   accepts_nested_attributes_for :especies_catalogo, reject_if: :all_blank, allow_destroy: true
-    #accepts_nested_attributes_for :especies, reject_if: :all_blank, allow_destroy: true
+  #accepts_nested_attributes_for :especies, reject_if: :all_blank, allow_destroy: true
 
 end

@@ -19,7 +19,7 @@ class Admin::CatalogosController < Admin::AdminController
 
   # GET /admin/catalogos/new
   def new
-    @form_params = { url: '/pmc/peces', method: 'post' }
+    @form_params = { url: '/admin/catalogos', method: 'post' }
     @admin_catalogo = Admin::Catalogo.new
   end
 
