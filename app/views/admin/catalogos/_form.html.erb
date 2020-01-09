@@ -32,10 +32,13 @@
 
   <h3>Especies asociadas</h3>
   <div>
+    <% @index = 0 %>
     <%= f.simple_fields_for :especies_catalogo do |especie| %>
       <%= render partial: 'especies_fields', locals: { f: especie } %>
+      <% @index+= 1 %>
     <% end %>
 
+    <% @index = -1 %>
     <%= link_to_add_association 'Asocia especie', f, :especies_catalogo, partial: 'especies_fields' %>
   </div>
 

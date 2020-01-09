@@ -1,6 +1,6 @@
 <div class='nested-fields'>
-  <% if especie = f.object.especie %>
-    <% nombre_cientifico = especie.nombre_cientifico %>
+  <% if @index > -1 %>
+    <% nombre_cientifico = @admin_catalogos[0].especies_catalogo[@index].especie.nombre_cientifico %>
     <%= f.input :nombre_cientifico, input_html: { value: nombre_cientifico } %>
   <% else %>
     <%= f.input :nombre_cientifico %>
