@@ -2,8 +2,6 @@ class UsuarioEspecie < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.ev}.usuarios_especie"
 
-  alias_attribute :nombre_cientifico, :NombreCompleto
-
   belongs_to :usuario
   belongs_to :especie, :class_name=> 'Especie'
 

@@ -764,7 +764,7 @@ class EspeciesController < ApplicationController
       p.naturalista_id = new_id
     else
       # NO existe proveedor
-      p = @especie.proveedor.new({naturalista_id: new_id})
+      p = Proveedor.new({especie_id: @especie.id,naturalista_id: new_id})
     end
 
     if p.changed? && p.save
@@ -870,7 +870,7 @@ class EspeciesController < ApplicationController
           :id => especie.id,
           :nombre => {
               "comun" => especie.adicional.nombre_comun_principal,
-              "cientifico" => especie.NombreCompleto
+              "cientifico" => especie.nombre_cientifico
           },
           :tipo_busqueda_actual => params[:t_name].present? ? params[:t_name] : "cientifico" # Por default, buscará por nombre científico
       }
@@ -957,12 +957,14 @@ class EspeciesController < ApplicationController
       end
     end
 
-    # Si llego aqui quiere decir que encontro un id en la centralizacion valido
-    @especie.servicios if params[:action] == 'show' && params[:format].blank?
-
     # Por si no viene del arbol, ya que no necesito encontrar el valido
-    if !arbol
+    unless arbol
+      # seteo pedir el taxon valido ANTES de correr los servicios debido a que debo actualizar el valido en vez del sinonimo
       @especie = @especie.dame_taxon_valido
+
+      # Si llego aqui quiere decir que encontro un id en la centralizacion valido
+      @especie.servicios if params[:action] == 'show' && params[:format].blank?
+
       render :_error and return unless @especie
 
       if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
