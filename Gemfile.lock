@@ -219,7 +219,7 @@ GEM
     pg (1.0.0)
     public_suffix (3.0.2)
     puma (3.11.2)
-    rack (2.0.6)
+    rack (2.0.8)
     rack-contrib (2.0.1)
       rack (~> 2.0)
     rack-google-analytics (1.2.0)
