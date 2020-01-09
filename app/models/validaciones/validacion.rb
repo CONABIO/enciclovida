@@ -64,7 +64,6 @@ class Validacion
           ids = FUZZY_NOM_CIEN.find(nombre_cientifico.limpia, limit=CONFIG.limit_fuzzy).map{ |t| t.first}
         end
 
-
         if ids.present?
           taxones = Especie.solo_publicos.where(id: ids)
           taxones_con_distancia = []
@@ -82,7 +81,7 @@ class Validacion
             return
           else
             if taxones_con_distancia.length == 1
-              if nombre_cientifico.downcase == taxones_con_distancia.first.nombre_cientifico.limpiar(true).downcase  # Era el mismo, solo que tenia ssp. en vez de subsp.
+              if nombre_cientifico.downcase == taxones_con_distancia.first.nombre_cientifico.limpiar(tipo: 'ssp').downcase  # Era el mismo, solo que tenia ssp. en vez de subsp.
                 Rails.logger.debug "-#{nombre_cientifico.limpiar.estandariza}-#{taxones_con_distancia.first.nombre_cientifico.limpiar.estandariza}-"
                 self.validacion = {estatus: true, taxon: taxones_con_distancia.first, msg: 'Búsqueda exacta'}
               else

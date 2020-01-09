@@ -24,7 +24,7 @@ module ApplicationHelper
 
     if params[:solo_especies] || !taxon.especie_o_inferior?
       cat = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
-      cat_taxonomica = "<text class='f-nom-cientifico'>#{cat}</text> "
+      cat_taxonomica = "<text class='f-cat-tax'>#{cat}</text> "
     end
 
     if I18n.locale.to_s == 'es-cientifico'
@@ -39,12 +39,14 @@ module ApplicationHelper
         "<h3>#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico} #{taxon.nombre_autoridad} #{estatus}</h3>".html_safe
       when 'inline'
         "#{nombre_cientifico} #{taxon.nombre_autoridad}".html_safe
+      when 'arreglo-taxonomico'
+        "#{cat_taxonomica unless taxon.especie_o_inferior?} <b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon), link_params}</i></b> #{taxon.nombre_autoridad} #{estatus}".html_safe
       else
         "#{nombre_cientifico} #{taxon.nombre_autoridad} #{estatus}".html_safe
       end
 
     else   #vista general
-
+      nombre_cientifico = nombre_cientifico.limpiar({tipo: 'show'})
       nombre_comun = "<text class='f-nom-comun'>#{nom_comun}</text>" if nom_comun.present?
 
       case params[:render]

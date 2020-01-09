@@ -86,7 +86,7 @@ class BDIService
   end
 
   def arma_y_consulta_url(opts)
-    nombre = opts[:nombre].limpia_ws(true)
+    nombre = opts[:nombre].limpiar(tipo: 'ssp')
     url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{opts[:album]}/?#{opts[:campo]}='#{nombre}'"
     url << "&#{opts[:autor_campo]}=#{opts[:autor]}" if opts[:autor_campo].present? && opts[:autor].present?
     url << "&p=#{opts[:pagina]-1}" if opts[:pagina]

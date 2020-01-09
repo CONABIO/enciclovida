@@ -21,7 +21,7 @@ class Especie < ActiveRecord::Base
   alias_attribute :anotacion, :Anotacion
   alias_attribute :ancestry_ascendente_directo, :Ascendentes
   alias_attribute :ancestry_ascendente_obligatorio, :AscendentesObligatorios
-  alias_attribute :nombre_cientifico, :NombreCompleto
+  alias_attribute :nombre_cientifico, :TaxonCompleto
   alias_attribute :created_at, :FechaCaptura
   alias_attribute :updated_at, :FechaModificacion
 
@@ -117,7 +117,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
-  scope :select_basico, ->(attr_adicionales=[]) { select(:id, :nombre_cientifico, :estatus, :nombre_autoridad, :categoria_taxonomica_id, :cita_nomenclatural, :ancestry_ascendente_directo, "nombre_comun_principal, foto_principal, nombres_comunes as nombres_comunes_adicionales" << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')).select_categoria_taxonomica }
+  scope :select_basico, ->(attr_adicionales=[]) { select(:id, :nombre_cientifico, :estatus, :nombre_autoridad, :categoria_taxonomica_id, :cita_nomenclatural, :ancestry_ascendente_directo, "nombre_comun_principal, foto_principal, nombres_comunes as nombres_comunes_adicionales, TaxonCompleto AS NombreCompleto" << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')).select_categoria_taxonomica }
   # Select para nombre de la categoria y niveles
   scope :select_categoria_taxonomica, -> { select("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)} AS nivel1, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)} AS nivel2, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)} AS nivel3, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)} AS nivel4") }
   #select para los grupos iconicos en la busqueda avanzada para no realizar varios queries al mismo tiempo
@@ -472,8 +472,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
     if jres[:estatus]
       ncn = jres[:nombres_comunes].map do |nc|
-        next unless nc['name'].present?
-        next if nc['lexicon'].present? && nc['lexicon'] == 'Scientific Names'
+        next if nc['name'].blank? || nc['locale'].blank? || nc['locale'] == 'sci'
 
         # Un nombre de catalogos es igual que uno de Naturalista, conservo el de Naturalista
         if ncc_estandar.present? && ncc_estandar.include?(nc['name'].estandariza)
@@ -483,13 +482,13 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
         end
 
         # Asigna la lengua
-        lengua = nc['lexicon']
+        lengua = nc['locale']
 
-        if lengua.present?
-          l = lengua.estandariza.gsub('-','_')
-        else
-          l = 'nd'
-        end
+        l = if lengua.present?
+              lengua.estandariza
+            else
+              'nd'
+            end
 
         # Los nombres comunes de naturalista en hash con la lengua
         { I18n.t("lenguas.#{l}", default: l.capitalize) => nc['name'].capitalize }
