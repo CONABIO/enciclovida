@@ -93,8 +93,9 @@ class Admin::CatalogosController < Admin::AdminController
 
       p[atributo].each do |k,v|
         next unless v["id"].present?
-        id = v["id"].split(' ')
-        v["id"] = id
+        next unless v["catalogo_id"].present?
+        next unless v["especie_id"].present?
+        v["id"] = [v["catalogo_id"], v["especie_id"]]
       end
     end
 

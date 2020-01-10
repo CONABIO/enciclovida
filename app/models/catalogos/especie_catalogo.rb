@@ -1,7 +1,7 @@
 class EspecieCatalogo < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.cat}.RelNombreCatalogo"
-  self.primary_keys = :IdNombre, :IdCatNombre
+  self.primary_key = [:IdCatNombre, :IdNombre]
 
   # Los alias con las tablas de catalogos
   alias_attribute :especie_id, :IdNombre
@@ -10,7 +10,7 @@ class EspecieCatalogo < ActiveRecord::Base
 
   attr_accessor :catalogo_id_falso
   belongs_to :especie
-  belongs_to :catalogo, :foreign_key => Catalogo.attribute_alias(:id)
+  #belongs_to :catalogo, :foreign_key => Catalogo.attribute_alias(:id)
 
   has_many :especies_catalogos_bibliografias, :class_name => 'EspecieCatalogoBibliografia', :dependent => :destroy, :foreign_key => Especie.attribute_alias(:id)
 end
