@@ -27,12 +27,12 @@
 <div class="row">
   <div class="col">
   <h2>Bibliografias</h2>
-    <% @plantid_planta.bibliografia.each do |biblio| %>
+    <% @plantid_planta.bibliografiaplantids.each do |biblio| %>
       <p><%= biblio.nombre_biblio %><p>
     <% end %>
   </div>
 </div>
-  <%= puts @plantid_planta.bibliografia %>
+  <%# puts @plantid_planta.bibliografia %>
   <%= link_to 'Editar', edit_plantid_planta_path(@plantid_planta) %> |
   <%= link_to 'Regresar', plantid_plantas_path %>
 </div>
