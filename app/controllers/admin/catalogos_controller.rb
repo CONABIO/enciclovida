@@ -48,7 +48,7 @@ class Admin::CatalogosController < Admin::AdminController
   # PATCH/PUT /admin/catalogos/1
   # PATCH/PUT /admin/catalogos/1.json
   def update
-    puts admin_catalogo_params.inspect
+    #puts admin_catalogo_params.inspect
     respond_to do |format|
       if @admin_catalogo.update(admin_catalogo_params)
         format.html { redirect_to @admin_catalogo, notice: 'Catalogo was successfully updated.' }
@@ -80,7 +80,7 @@ class Admin::CatalogosController < Admin::AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def admin_catalogo_params
-    p = params.require(:admin_catalogo).permit(:descripcion, :nivel1, :nivel2, :nivel3, :nivel4, :nivel5, especies_catalogo_attributes: [:id, :especie_id, :_destroy])
+    p = params.require(:admin_catalogo).permit(:descripcion, :nivel1, :nivel2, :nivel3, :nivel4, :nivel5, especies_catalogo_attributes: [:id, :especie_id, :catalogo_id, :_destroy])
     separa_multiples_llaves_foraneas(p)
   end
 
@@ -92,7 +92,7 @@ class Admin::CatalogosController < Admin::AdminController
       next unless p.key?(atributo)
 
       p[atributo].each do |k,v|
-        break unless v["id"].present?
+        next unless v["id"].present?
         id = v["id"].split(' ')
         v["id"] = id
       end
