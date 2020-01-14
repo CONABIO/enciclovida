@@ -135,6 +135,9 @@ module CacheServices
     if Rails.cache.exist?("#{recurso}_#{id}")
       cache = Rails.cache.read("#{recurso}_#{id}")
 
+      r = cache[:created_at] && cache[:expires_in]
+      return false unless r
+
       begin
         (cache[:created_at] + cache[:expires_in]) > Time.now.to_f
       rescue
