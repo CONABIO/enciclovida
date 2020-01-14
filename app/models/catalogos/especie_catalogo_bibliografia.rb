@@ -8,6 +8,8 @@ class EspecieCatalogoBibliografia < ActiveRecord::Base
   alias_attribute :catalogo_id, :IdCatNombre
   alias_attribute :bibliografia_id, :IdBibliografia
 
-  belongs_to :bibliografia, :foreign_key => Bibliografia.attribute_alias(:id), primary_key: Bibliografia.attribute_alias(:id)
+  belongs_to :bibliografia, :foreign_key => attribute_alias(:bibliografia_id), primary_key: attribute_alias(:bibliografia_id)
+  belongs_to :especie, :foreign_key => attribute_alias(:especie_id), primary_key: attribute_alias(:especie_id)
+  belongs_to :catalogo, :foreign_key => attribute_alias(:catalogo_id), primary_key: attribute_alias(:catalogo_id)
 
 end

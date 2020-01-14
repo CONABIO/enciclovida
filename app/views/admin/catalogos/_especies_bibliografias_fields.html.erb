@@ -1,0 +1,9 @@
+<div class='nested-fields'>
+  <%= f.input :especie_id, required: true %>
+  <%= f.input :catalogo_id, required: true %>
+  <%= f.input :bibliografia_id, required: true %>
+  <%= link_to_remove_association 'Desvincula bibliografia', f, { class: 'float-right' } %>
+
+  <br />
+</div>
+
