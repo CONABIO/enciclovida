@@ -1,3 +1,7 @@
+<% content_for(:delayedjs) do %>
+  <%= javascript_include_tag 'admin/catalogos/catalogos_extra', 'data-turbolinks-track' => true %>
+<% end %>
+
 <%= simple_form_for @admin_catalogo, **@form_params, wrapper: :horizontal_form, wrapper_mappings: {
     boolean:       :horizontal_boolean,
     check_boxes:   :horizontal_collection,
