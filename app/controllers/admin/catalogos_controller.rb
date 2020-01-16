@@ -80,7 +80,7 @@ class Admin::CatalogosController < Admin::AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def admin_catalogo_params
-    p = params.require(:admin_catalogo).permit(:descripcion, :nivel1, :nivel2, :nivel3, :nivel4, :nivel5, especies_catalogo_attributes: [:id, :especie_id, :catalogo_id, :_destroy, bibliografias_attributes: [:id, :especie_id, :catalogo_id, :bibliografia_id, :_destroy]])
+    p = params.require(:admin_catalogo).permit(:descripcion, :nivel1, :nivel2, :nivel3, :nivel4, :nivel5, especies_catalogo_attributes: [:id, :especie_id, :catalogo_id, :_destroy, bibliografias_attributes: [:id, :especie_id, :catalogo_id, :bibliografia_id, :_destroy], regiones_attributes: [:id, :especie_id, :catalogo_id, :region_id, :_destroy]])
     separa_multiples_llaves_foraneas(p)
   end
 
@@ -97,14 +97,26 @@ class Admin::CatalogosController < Admin::AdminController
         next unless v["especie_id"].present?
         v["id"] = [v["catalogo_id"], v["especie_id"]]
 
-        next unless v["bibliografias_attributes"].present?
-        v["bibliografias_attributes"].each do |kbiblio, biblio|
-          next unless biblio.present?
-          next unless biblio["id"].present?
-          next unless biblio["catalogo_id"].present?
-          next unless biblio["especie_id"].present?
-          next unless biblio["bibliografia_id"].present?
-          biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["bibliografia_id"]]
+        if v["bibliografias_attributes"].present?
+          v["bibliografias_attributes"].each do |kbiblio, biblio|
+            next unless biblio.present?
+            next unless biblio["id"].present?
+            next unless biblio["catalogo_id"].present?
+            next unless biblio["especie_id"].present?
+            next unless biblio["bibliografia_id"].present?
+            biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["bibliografia_id"]]
+          end
+        end
+
+        if v["regiones_attributes"].present?
+          v["regiones_attributes"].each do |kregion, region|
+            next unless region.present?
+            next unless region["id"].present?
+            next unless region["catalogo_id"].present?
+            next unless region["especie_id"].present?
+            next unless region["region_id"].present?
+            region["id"] = [region["catalogo_id"], region["especie_id"], region["region_id"]]
+          end
         end
 
       end

@@ -1,9 +1,8 @@
 <div class='nested-fields'>
   <%= f.input :especie_id, as: :hidden, required: true %>
   <%= f.input :catalogo_id, as: :hidden, required: true %>
-  <%= f.input :bibliografia_id, required: true %>
-  <%= link_to_remove_association 'Desvincula la bibliografía', f, { class: 'float-right' } %>
+  <%= f.input :region_id, required: true %>
+  <%= link_to_remove_association 'Desvincula la región', f, { class: 'float-right' } %>
 
   <br />
 </div>
-
