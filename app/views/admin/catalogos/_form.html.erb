@@ -2,6 +2,17 @@
   <%= javascript_include_tag 'admin/catalogos/catalogos_extra', 'data-turbolinks-track' => true %>
 <% end %>
 
+<% content_for(:extracss) do %>
+  <% if I18n.locale.to_s != 'es-cientifico' %>
+    <style type="text/css" data-turbolinks-track="true">
+      .soulmate-type-suggestions li{
+        padding: 1em 0;
+        min-height: 125px;
+      }
+    </style>
+  <% end %>
+<% end %>
+
 <%= simple_form_for @admin_catalogo, **@form_params, wrapper: :horizontal_form, wrapper_mappings: {
     boolean:       :horizontal_boolean,
     check_boxes:   :horizontal_collection,
