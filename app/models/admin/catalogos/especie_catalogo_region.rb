@@ -1,2 +1,2 @@
-class Admin::EspecieCatalogoRegion < EspeciesCatalogoRegion
+class Admin::EspecieCatalogoRegion < EspecieCatalogoRegion
 end

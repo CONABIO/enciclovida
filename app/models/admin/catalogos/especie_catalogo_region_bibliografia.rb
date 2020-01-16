@@ -1,2 +1,2 @@
-class Admin::EspecieCatalogoRegionBibliografia < EspeciesCatalogoRegionBibliografia
+class Admin::EspecieCatalogoRegionBibliografia < EspecieCatalogoRegionBibliografia
 end

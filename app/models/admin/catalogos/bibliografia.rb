@@ -1,2 +1,2 @@
-class Admin::Bibliografia < ActiveRecord::Base
+class Admin::Bibliografia < Bibliografia
 end
