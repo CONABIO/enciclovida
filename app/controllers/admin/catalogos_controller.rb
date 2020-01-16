@@ -80,11 +80,11 @@ class Admin::CatalogosController < Admin::AdminController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def admin_catalogo_params
-    p = params.require(:admin_catalogo).permit(:descripcion, :nivel1, :nivel2, :nivel3, :nivel4, :nivel5, especies_catalogo_attributes: [:id, :especie_id, :catalogo_id, :_destroy, bibliografias_attributes: [:id, :especie_id, :catalogo_id, :bibliografia_id, :_destroy], regiones_attributes: [:id, :especie_id, :catalogo_id, :region_id, :_destroy]])
+    p = params.require(:admin_catalogo).permit(:descripcion, :nivel1, :nivel2, :nivel3, :nivel4, :nivel5, especies_catalogo_attributes: [:id, :especie_id, :catalogo_id, :_destroy, bibliografias_attributes: [:id, :especie_id, :catalogo_id, :bibliografia_id, :_destroy], regiones_attributes: [:id, :especie_id, :catalogo_id, :region_id, :_destroy, bibliografias_attributes: [:id, :especie_id, :catalogo_id, :region_id, :bibliografia_id, :_destroy]]])
     separa_multiples_llaves_foraneas(p)
   end
 
-  # Para que pueda seguir guardando con el comportamiento de cocoon
+  # Para que pueda seguir guardando con el comportamiento de cocoon con multiples llaves foráneas
   def separa_multiples_llaves_foraneas(p)
     atributos = %w(especies_catalogo_attributes)
 
@@ -116,6 +116,18 @@ class Admin::CatalogosController < Admin::AdminController
             next unless region["especie_id"].present?
             next unless region["region_id"].present?
             region["id"] = [region["catalogo_id"], region["especie_id"], region["region_id"]]
+
+            if region["bibliografias_attributes"].present?
+              region["bibliografias_attributes"].each do |kbiblio, biblio|
+                next unless biblio.present?
+                next unless biblio["id"].present?
+                next unless biblio["catalogo_id"].present?
+                next unless biblio["especie_id"].present?
+                next unless biblio["region_id"].present?
+                next unless biblio["bibliografia_id"].present?
+                biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["region_id"], biblio["bibliografia_id"]]
+              end
+            end
           end
         end
 
