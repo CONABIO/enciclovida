@@ -88,15 +88,18 @@ class Admin::CatalogosController < Admin::AdminController
   def separa_multiples_llaves_foraneas(p)
     atributos = %w(especies_catalogo_attributes)
 
+    # atributos del nivel 1 de anidamiento
     atributos.each do |atributo|
       next unless p.key?(atributo)
 
+      # Iterando cada elemento especie_catalogo
       p[atributo].each do |k,v|
         next unless v["id"].present?
         next unless v["catalogo_id"].present?
         next unless v["especie_id"].present?
         v["id"] = [v["catalogo_id"], v["especie_id"]]
 
+        # Iterando cada elemento especie_catalogo_bibliografia
         if v["bibliografias_attributes"].present?
           v["bibliografias_attributes"].each do |kbiblio, biblio|
             next unless biblio.present?
@@ -108,6 +111,7 @@ class Admin::CatalogosController < Admin::AdminController
           end
         end
 
+        # Iterando cada elemento especie_catalogo_region
         if v["regiones_attributes"].present?
           v["regiones_attributes"].each do |kregion, region|
             next unless region.present?
@@ -116,21 +120,21 @@ class Admin::CatalogosController < Admin::AdminController
             next unless region["especie_id"].present?
             next unless region["region_id"].present?
             region["id"] = [region["catalogo_id"], region["especie_id"], region["region_id"]]
+          end
 
-            if region["bibliografias_attributes"].present?
-              region["bibliografias_attributes"].each do |kbiblio, biblio|
-                next unless biblio.present?
-                next unless biblio["id"].present?
-                next unless biblio["catalogo_id"].present?
-                next unless biblio["especie_id"].present?
-                next unless biblio["region_id"].present?
-                next unless biblio["bibliografia_id"].present?
-                biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["region_id"], biblio["bibliografia_id"]]
-              end
+          # Iterando cada elemento especie_catalogo_region_bibliografia
+          if region["bibliografias_attributes"].present?
+            region["bibliografias_attributes"].each do |kbiblio, biblio|
+              next unless biblio.present?
+              next unless biblio["id"].present?
+              next unless biblio["catalogo_id"].present?
+              next unless biblio["especie_id"].present?
+              next unless biblio["region_id"].present?
+              next unless biblio["bibliografia_id"].present?
+              biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["region_id"], biblio["bibliografia_id"]]
             end
           end
         end
-
       end
     end
 
