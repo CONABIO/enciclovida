@@ -120,18 +120,18 @@ class Admin::CatalogosController < Admin::AdminController
             next unless region["especie_id"].present?
             next unless region["region_id"].present?
             region["id"] = [region["catalogo_id"], region["especie_id"], region["region_id"]]
-          end
 
-          # Iterando cada elemento especie_catalogo_region_bibliografia
-          if region["bibliografias_attributes"].present?
-            region["bibliografias_attributes"].each do |kbiblio, biblio|
-              next unless biblio.present?
-              next unless biblio["id"].present?
-              next unless biblio["catalogo_id"].present?
-              next unless biblio["especie_id"].present?
-              next unless biblio["region_id"].present?
-              next unless biblio["bibliografia_id"].present?
-              biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["region_id"], biblio["bibliografia_id"]]
+            # Iterando cada elemento especie_catalogo_region_bibliografia
+            if region["bibliografias_attributes"].present?
+              region["bibliografias_attributes"].each do |kbiblio, biblio|
+                next unless biblio.present?
+                next unless biblio["id"].present?
+                next unless biblio["catalogo_id"].present?
+                next unless biblio["especie_id"].present?
+                next unless biblio["region_id"].present?
+                next unless biblio["bibliografia_id"].present?
+                biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["region_id"], biblio["bibliografia_id"]]
+              end
             end
           end
         end
