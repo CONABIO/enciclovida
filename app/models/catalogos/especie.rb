@@ -266,6 +266,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     response = []
 
     response << {'NOM-059-SEMARNAT 2010' => catalogos.nom.map(&:descripcion).uniq}
+    response << {'Evaluación CONABIO' => catalogos.evaluacion_conabio.map(&:descripcion).uniq}
 
     if opc[:iucn_ws]
       iucn_ws = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico, id: id)

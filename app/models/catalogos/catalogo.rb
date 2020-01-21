@@ -25,7 +25,7 @@ class Catalogo < ActiveRecord::Base
 
   # REVISADO: Regresa true or false si el catalogo es de los permitidos a mostrar
   def es_catalogo_permitido?
-    (((nivel1 == 4 && (1..4).include?(nivel2)) || (nivel1 == 2 && nivel2 == 6)) && nivel3 > 0) || (nivel1 == 18 && nivel2 > 0)
+    (((nivel1 == 4 && (1..4).include?(nivel2)) || (nivel1 == 2 && nivel2 == 6)) && nivel3 > 0) || (nivel1 == 18 && nivel2 > 0) || (nivel1 == 4 && nivel2 == 6 && nivel3 > 0)
   end
 
   # REVISADO: Regresa la categoria superior del nombre del catalogo
