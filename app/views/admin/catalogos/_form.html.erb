@@ -54,7 +54,7 @@
     <% end %>
 
     <% @index = -1 %>
-    <%= link_to_add_association 'Asocia una especie', f, :especies_catalogo, partial: 'especies_fields', class: 'btn btn-info', role: 'button' %>
+    <%= link_to_add_association 'Asocia una especie', f, :especies_catalogo, partial: 'especies_fields', class: 'btn btn-info', role: 'button', 'data-association-insertion-method': :after %>
   </div>
 
   <hr />
