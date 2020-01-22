@@ -22,8 +22,8 @@
     <% @plantid_plantas.each do |planta| %>
         <div class="row">
           <div class="col">
-            <% unless planta.imagen.first.nil? %> 
-              <%= image_tag planta.imagen.first.imagen_url, class: 'img-fluid' %>
+            <% unless planta.pi_imagen.first.nil? %> 
+              <%= image_tag planta.pi_imagen.first.imagen_url, class: 'img-fluid' %>
             <% end %>
           </div>
           <div class="col">

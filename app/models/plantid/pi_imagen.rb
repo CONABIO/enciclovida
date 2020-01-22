@@ -1,8 +1,8 @@
-class Plantid::Imagen < Plantidabs
-  self.table_name = "#{CONFIG.bases.plantid}.imagenes"
+class Plantid::PiImagen < Plantid
+  self.table_name = "#{CONFIG.bases.plantid}.#{self.table_name_prefix}imagenes"
 
-  has_many :plantaimagenes
-  has_many :plantas,through: :plantaimagenes
+  has_many :piplantaimagenes
+  has_many :piplantas,through: :piplantaimagenes
 
   mount_uploader :imagen, ImagenUploader
 
@@ -17,5 +17,5 @@ class Plantid::Imagen < Plantidabs
   def validar_norebundacia
       #Bibliografia.exists?(CitaCompleta: self.)
   end
-
+  
 end

@@ -7,19 +7,19 @@ skip_before_action :set_locale
   # GET /plantas
   # GET /plantas.json
   def index
-    @plantid_plantas = Plantid::Planta.all
+    @plantid_plantas = Plantid::PiPlanta.all
   end
 
   # GET /plantas/1
   # GET /plantas/1.json
   def show
-    @plantid_planta = Plantid::Planta.find(params[:id])
+    @plantid_planta = Plantid::PiPlanta.find(params[:id])
   end
 
   # GET /plantas/new
   def new
     @no_render_busqueda_basica = true
-    @plantid_planta = Plantid::Planta.new
+    @plantid_planta = Plantid::PiPlanta.new
     @plantid_planta.usuario_id = '1'
   end
 
@@ -33,7 +33,7 @@ skip_before_action :set_locale
   # POST /plantas
   # POST /plantas.json
   def create
-    @plantid_planta = Plantid::Planta.new(planta_params)
+    @plantid_planta = Plantid::PiPlanta.new(planta_params)
     @plantid_planta.usuario_id = '1'
 
     puts @plantid_planta.valid?
@@ -86,11 +86,11 @@ skip_before_action :set_locale
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_planta
-      @plantid_planta = Plantid::Planta.find(params[:id])
+      @plantid_planta = Plantid::PiPlanta.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def planta_params
-      params.require(:plantid_planta).permit(:especie_id, :nombre_cientifico, :nombre_comun, :nombres_comunes, :usuario_id,imagen_attributes: [:id, :imagen, :remote_imagen_url,  :_destroy] , bibliografia_attributes: [:id, :nombre_biblio, :_destroy])
+      params.require(:plantid_planta).permit(:especie_id, :nombre_cientifico, :nombre_comun, :nombres_comunes, :usuario_id,piimagen_attributes: [:id, :imagen, :remote_imagen_url,  :_destroy] , pibibliografia_attributes: [:id, :nombre_biblio, :_destroy])
     end
 end
