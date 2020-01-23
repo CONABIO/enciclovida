@@ -138,6 +138,7 @@ class Admin::CatalogosController < Admin::AdminController
       end
     end
 
+    puts p.inspect + '--------------'
     p
   end
 
