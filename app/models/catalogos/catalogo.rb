@@ -3,6 +3,8 @@ class Catalogo < ActiveRecord::Base
   self.table_name = "#{CONFIG.bases.cat}.CatalogoNombre"
   self.primary_key = 'IdCatNombre'
 
+  attr_accessor :sigla
+
   # Los alias con las tablas de catalogos
   alias_attribute :id, :IdCatNombre
   alias_attribute :descripcion, :Descripcion
@@ -59,7 +61,8 @@ class Catalogo < ActiveRecord::Base
 
     evaluacion_conabio = self.evaluacion_conabio
     evaluacion_conabio.each do |eval|
-      eval.descripcion = eval.descripcion + '-eval'
+      eval.sigla = eval.descripcion.split('(')[1].gsub(')','')
+      eval.descripcion = eval.descripcion + ' Evaluación CONABIO'
     end
 
     { nom: nom, iucn: iucn, cites: cites, evaluacion_conabio: evaluacion_conabio }

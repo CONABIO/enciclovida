@@ -229,7 +229,11 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     caracteristicas = [taxon.tipo_distribucion.values, taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}).map{|h| h.values}].flatten
 
     caracteristicas.each{ |x|
-      response << "<span class='btn-title' title='#{x}'><i class ='#{x.estandariza}-ev-icon'></i></span>"
+      sigla = ''
+      if x.include?('(')
+        sigla =  x.split('(')[1].split(')')[0]
+      end
+      response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon #{x.estandariza}-ev-span' title='#{x}'><i class ='#{x.estandariza}-ev-icon' data-sigla ='#{sigla}'></i></span>"
     }
 
     response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600,
@@ -241,16 +245,21 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
   def ponCaracteristicaDistribucionAmbienteTodos
     response = {}
 
-    def creaSpan(recurso)
+    def creaSpan(recurso, sigla=false)
       nombre = recurso.descripcion
-      icono  = "<i class = '#{recurso.descripcion.parameterize}-ev-icon'></i>"
-      "<span title='#{nombre}' class='btn-title' alt='#{nombre}'>#{icono}</span>"
+      if sigla
+        icono  = "<i class = '#{recurso.descripcion.parameterize}-ev-icon' data-sigla = '#{recurso.sigla}'></i>"
+      else
+        icono  = "<i class = '#{recurso.descripcion.parameterize}-ev-icon'></i>"
+      end
+
+      "<span title='#{nombre}' class='btn-title #{recurso.descripcion.parameterize}-ev-span' alt='#{nombre}'>#{icono}</span>"
     end
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
       valores.each do |edo|
         response[k] ||=[]
-        response[k] << creaSpan(edo)
+        response[k] << creaSpan(edo, true)
       end
     end
 
