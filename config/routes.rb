@@ -5,6 +5,7 @@ Buscador::Application.routes.draw do
 
   namespace :admin do
     resources :catalogos
+    resources :bibliografias
   end
 
   if Rails.env.development?
@@ -226,8 +227,6 @@ Buscador::Application.routes.draw do
   resources :nombres_regiones
 
   resources :nombre_regiones_bibliografias
-
-  resources :bibliografias
 
   match 'especies/:id/edit_photos' => 'especies#edit_photos', :as => :edit_taxon_photos, :via => :get
   match 'especies/:id/photos' => 'especies#photos', :as => :taxon_photos, :via => :get
