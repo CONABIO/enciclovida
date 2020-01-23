@@ -4,3 +4,9 @@ $('form').on('focus', '.ncient-soulmate', function () {
     if (events === undefined)
         soulmateAsigna('admin/catalogos', $(this).attr('id'));
 });
+
+$('form').on('focus', '.biblio-autocomplete', function () {
+    $(this).autocomplete({
+        source: [ "c++", "java", "php", "coldfusion", "javascript", "asp", "ruby" ]
+    });
+});
