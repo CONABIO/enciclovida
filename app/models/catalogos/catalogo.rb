@@ -18,13 +18,14 @@ class Catalogo < ActiveRecord::Base
   scope :prioritarias, -> { where(nivel1: 4, nivel2: 4).where("#{attribute_alias(:nivel3)} > 0") }
   scope :ambientes, -> { where(nivel1: 2, nivel2: 6).where('nivel3 > 0').where.not(descripcion: AMBIENTE_EQUIV_MARINO) }
   scope :usos, -> { where(nivel1: 11, descripcion: USOS) }
+  scope :evaluacion_conabio, -> { where(nivel1: 4, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0") }
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
   USOS = ['Medicinal','Ornamental','Alimentación animal','Alimentación humana','Ambiental','Artesanía','Combustible','Industrial','Manejo de plagas','Materiales','Melíferas','Sociales/religiosos']
 
   # REVISADO: Regresa true or false si el catalogo es de los permitidos a mostrar
   def es_catalogo_permitido?
-    (((nivel1 == 4 && (1..4).include?(nivel2)) || (nivel1 == 2 && nivel2 == 6)) && nivel3 > 0) || (nivel1 == 18 && nivel2 > 0)
+    (((nivel1 == 4 && (1..4).include?(nivel2)) || (nivel1 == 2 && nivel2 == 6)) && nivel3 > 0) || (nivel1 == 18 && nivel2 > 0) || (nivel1 == 4 && nivel2 == 6 && nivel3 > 0)
   end
 
   # REVISADO: Regresa la categoria superior del nombre del catalogo
@@ -50,12 +51,18 @@ class Catalogo < ActiveRecord::Base
 
   # REVISADO: Las categorias de conservacion para la busqueda avanzada
   def self.nom_cites_iucn_todos
-    nom = self.nom#.map(&:descripcion)
+    nom = self.nom
     nom = [nom[3],nom[1],nom[0],nom[2]]  # Orden propuesto por cgalindo
-    iucn = self.iucn#.map(&:descripcion)
+    iucn = self.iucn
     iucn = [iucn[4],iucn[3],iucn[2],iucn[1],iucn[0]]  # Orden propuesto por cgalindo
-    cites = self.cites#.map(&:descripcion) #Esta ya viene en orden (I,II,III)
-    {:nom => nom, :iucn => iucn, :cites => cites}
+    cites = self.cites
+
+    evaluacion_conabio = self.evaluacion_conabio
+    evaluacion_conabio.each do |eval|
+      eval.descripcion = eval.descripcion + '-eval'
+    end
+
+    { nom: nom, iucn: iucn, cites: cites, evaluacion_conabio: evaluacion_conabio }
   end
 
   # REVISADO: Regresa todas las proritarias
