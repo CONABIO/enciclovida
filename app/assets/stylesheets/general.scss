@@ -263,25 +263,8 @@ ul.social-buttons li a:active {
 /*Termina NOM-059*/
 
 /* Evaluación CONABIO*/
-span[class$="evaluacion-conabio-ev-span"] {
-
-  padding: 0px 4px;
-  color: #EFEFEF;
-}
-i[class$="evaluacion-conabio-ev-icon"] {
-  border-radius: 14px;
-  background: #800000;
-  background: radial-gradient(circle, #800000d9 40%, #ebebeb 70%);
-}
-i[class$="evaluacion-conabio-ev-icon"]::before {
-  content: attr(data-sigla);
-  font-family: 'opensans';
-  font-size: 0.5em;
-  font-weight: bolder;
-  margin: 0px 8px;
-  text-shadow: #800000 1px 1px 1px;
-  color: #ebebeb;
-  vertical-align: middle;
+[class$="evaluacion-conabio-ev-icon"], [class*="evaluacion-conabio-ev-icon "]{
+  color: #800000;
 }
 /* Termina Evaluación CONABIO*/
 
