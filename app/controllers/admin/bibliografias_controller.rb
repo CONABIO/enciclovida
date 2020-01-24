@@ -62,6 +62,17 @@ class Admin::BibliografiasController < Admin::AdminController
     end
   end
 
+  # GET /admin/bibliografias/autocompleta?q=
+  def autocompleta
+    @admin_bibliografias = if params[:q].present?
+                             Admin::Bibliografia.autocompleta(params[:q])
+                           else
+                             []
+                           end
+
+    render json: @admin_bibliografias.map { |b| { id: b.id, cita_completa: b.cita_completa } }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_admin_bibliografia

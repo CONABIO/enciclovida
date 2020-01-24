@@ -5,7 +5,11 @@ Buscador::Application.routes.draw do
 
   namespace :admin do
     resources :catalogos
-    resources :bibliografias
+    resources :bibliografias do
+      collection do
+        get :autocompleta
+      end
+    end
   end
 
   if Rails.env.development?
