@@ -6,7 +6,24 @@ $('form').on('focus', '.ncient-soulmate', function () {
 });
 
 $('form').on('focus', '.biblio-autocomplete', function () {
+    var instancia = $(this).autocomplete( "instance" );
+    if (instancia !== undefined) return;
+
+    var biblio_id = '#' + $(this).attr('id');
+    var bibliografia_id = biblio_id.replace(/_biblio$/, '_bibliografia_id');
+
     $(this).autocomplete({
-        source: [ "c++", "java", "php", "coldfusion", "javascript", "asp", "ruby" ]
+        minLength: 2,
+        source: function( request, response ) {
+            $.getJSON( "/admin/bibliografias/autocompleta", request, function( data, status, xhr ) {
+                response( data );
+            });
+        },
+        select: function( event, ui ) {
+            console.log(ui.item.label);
+            $(bibliografia_id).val(ui.item.value);
+            $(biblio_id).val(ui.item.label);
+            return false;
+        }
     });
 });
