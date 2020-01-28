@@ -16,11 +16,14 @@
     <% @index_biblio+= 1 %>
   <% end %>
 
+  <% @index_reg = 0 %>
   <%= f.simple_fields_for :regiones do |region| %>
     <%= render partial: 'especies_regiones_fields', locals: { f: region } %>
+    <% @index_reg+= 1 %>
   <% end %>
 
   <% @index_biblio = -1 %>
+  <% @index_reg = -1 %>
   <%= link_to_add_association('Asocia una bibliografía', f, :bibliografias, partial: 'especies_bibliografias_fields') %>
   <br />
   <%= link_to_add_association('Asocia una región', f, :regiones, partial: 'especies_regiones_fields') %>

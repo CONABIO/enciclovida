@@ -1,7 +1,14 @@
 <div class='nested-fields'>
   <%= f.input :especie_id, as: :hidden, required: true %>
   <%= f.input :catalogo_id, as: :hidden, required: true %>
-  <%= f.input :region_id, required: true %>
+  <%= f.input :region_id, as: :hidden, required: true %>
+
+  <% if @index_reg > -1 %>
+    <% region = @admin_catalogos[0].especies_catalogo[@index].regiones[@index_reg].region.nombre_region %>
+    <%= f.input :reg, as: :text, input_html: { value: region, disabled: '' } %>
+  <% else %>
+    <%= f.input :reg, as: :text, input_html: { class: 'reg-autocomplete' } %>
+  <% end %>
 
   <%= f.simple_fields_for :bibliografias do |biblio| %>
     <%= render partial: 'especies_regiones_bibliografias_fields', locals: { f: biblio } %>
