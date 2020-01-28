@@ -61,6 +61,12 @@ class Admin::RegionesController < ApplicationController
     end
   end
 
+  # GET /admin/regiones/autocompleta?q=
+  def autocompleta
+    regiones = params[:term].present? ? Admin::Region.autocompleta(params[:term]) : []
+    render json: regiones.map { |b| { label: b.nombre_region, value: b.id } }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_admin_region

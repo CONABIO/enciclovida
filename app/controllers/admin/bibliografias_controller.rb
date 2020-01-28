@@ -64,8 +64,8 @@ class Admin::BibliografiasController < Admin::AdminController
 
   # GET /admin/bibliografias/autocompleta?q=
   def autocompleta
-    @admin_bibliografias = params[:term].present? ? Admin::Bibliografia.autocompleta(params[:term]) : []
-    render json: @admin_bibliografias.map { |b| { label: b.cita_completa, value: b.id } }
+    bibliografias = params[:term].present? ? Admin::Bibliografia.autocompleta(params[:term]) : []
+    render json: bibliografias.map { |b| { label: b.cita_completa, value: b.id } }
   end
 
   private

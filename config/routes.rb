@@ -5,7 +5,11 @@ Buscador::Application.routes.draw do
 
   namespace :admin do
     resources :catalogos
-    resources :regiones
+    resources :regiones do
+      collection do
+        get :autocompleta
+      end
+    end
     resources :bibliografias do
       collection do
         get :autocompleta
