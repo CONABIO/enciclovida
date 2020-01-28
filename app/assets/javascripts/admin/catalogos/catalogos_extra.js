@@ -20,7 +20,6 @@ $('form').on('focus', '.biblio-autocomplete', function () {
             });
         },
         select: function( event, ui ) {
-            console.log(ui.item.label);
             $(bibliografia_id).val(ui.item.value);
             $(biblio_id).val(ui.item.label);
             return false;

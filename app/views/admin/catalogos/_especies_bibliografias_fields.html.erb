@@ -5,9 +5,9 @@
 
   <% if @index_biblio > -1 %>
     <% bibliografia = @admin_catalogos[0].especies_catalogo[@index].bibliografias[@index_biblio].bibliografia.cita_completa %>
-    <%= f.input :biblio, input_html: { value: bibliografia, disabled: '' } %>
+    <%= f.input :biblio, as: :text, input_html: { value: bibliografia, disabled: '' } %>
   <% else %>
-    <%= f.input :biblio, as: :search, input_html: { class: 'biblio-autocomplete' } %>
+    <%= f.input :biblio, as: :text, input_html: { class: 'biblio-autocomplete' } %>
   <% end %>
 
   <%= link_to_remove_association 'Desvincula la bibliografía', f, { class: 'float-right' } %>
