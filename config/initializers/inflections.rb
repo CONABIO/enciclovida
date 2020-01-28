@@ -26,4 +26,5 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular "legislacion", 'legislaciones'
   inflect.irregular 'taxon', 'taxa'
   inflect.irregular 'bibliografia', 'bibliografias'
+  inflect.irregular 'region', 'regiones'
 end
