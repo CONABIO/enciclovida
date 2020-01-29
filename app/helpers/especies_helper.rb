@@ -229,7 +229,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     caracteristicas = [taxon.tipo_distribucion.values, taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}).map{|h| h.values}].flatten
 
     caracteristicas.each{ |x|
-      response << "<span class='btn-title' title='#{x}'><i class ='#{x.estandariza}-ev-icon'></i></span>"
+      response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon' title='#{x}'><i class ='#{x.estandariza}-ev-icon'></i></span>"
     }
 
     response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600,
@@ -244,7 +244,8 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     def creaSpan(recurso)
       nombre = recurso.descripcion
       icono  = "<i class = '#{recurso.descripcion.parameterize}-ev-icon'></i>"
-      "<span title='#{nombre}' class='btn-title' alt='#{nombre}'>#{icono}</span>"
+
+      "<span title='#{nombre}' class='btn-title alt='#{nombre}'>#{icono}</span>"
     end
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
