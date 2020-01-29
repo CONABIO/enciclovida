@@ -64,7 +64,7 @@ class Admin::RegionesController < ApplicationController
   # GET /admin/regiones/autocompleta?q=
   def autocompleta
     regiones = params[:term].present? ? Admin::Region.autocompleta(params[:term]) : []
-    render json: regiones.map { |b| { label: b.nombre_region, value: b.id } }
+    render json: regiones.map { |b| { label: "#{b.nombre_region}, #{b.tipo_region.descripcion}", value: b.id } }
   end
 
   private

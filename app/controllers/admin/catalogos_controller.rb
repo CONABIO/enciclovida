@@ -26,7 +26,7 @@ class Admin::CatalogosController < Admin::AdminController
   # GET /admin/catalogos/1/edit
   def edit
     @form_params = {}
-    @admin_catalogos = Admin::Catalogo.includes(especies_catalogo: [:especie, bibliografias: :bibliografia, regiones: :region]).where(id: params[:id])
+    @admin_catalogos = Admin::Catalogo.includes(especies_catalogo: [:especie, bibliografias: :bibliografia, regiones: [region: :tipo_region]]).where(id: params[:id])
   end
 
   # POST /admin/catalogos

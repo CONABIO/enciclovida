@@ -5,7 +5,8 @@
 
   <% if @index_reg > -1 %>
     <% region = @admin_catalogos[0].especies_catalogo[@index].regiones[@index_reg].region.nombre_region %>
-    <%= f.input :reg, as: :text, input_html: { value: region, disabled: '' } %>
+    <% tipo_region = @admin_catalogos[0].especies_catalogo[@index].regiones[@index_reg].region.tipo_region.descripcion %>
+    <%= f.input :reg, as: :text, input_html: { value: "#{region}, #{tipo_region}", disabled: '' } %>
   <% else %>
     <%= f.input :reg, as: :text, input_html: { class: 'reg-autocomplete' } %>
   <% end %>
