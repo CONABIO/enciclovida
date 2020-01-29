@@ -266,7 +266,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     response = []
 
     response << {'NOM-059-SEMARNAT 2010' => catalogos.nom.map(&:descripcion).uniq}
-    response << {'Evaluación CONABIO' => catalogos.evaluacion_conabio.map{ |cat| cat.descripcion + '-eval'} }
+
 
     if opc[:iucn_ws]
       iucn_ws = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico, id: id)
@@ -280,6 +280,10 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     else
       response << {'IUCN Red List of Threatened Species 2017-1' => catalogos.iucn.map(&:descripcion).uniq}
     end
+
+    response << {'Evaluación CONABIO' => catalogos.evaluacion_conabio.map do |cat|
+      cat.descripcion + ' Evaluación CONABIO'
+    end}
 
     response << {'CITES 2016' => catalogos.cites.map(&:descripcion)}
     response << {'Prioritarias DOF 2014' => catalogos.prioritarias.map(&:descripcion)}
