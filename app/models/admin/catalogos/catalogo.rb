@@ -27,7 +27,7 @@ class Admin::Catalogo < Catalogo
 
   def dame_nivel5
     return [] unless nivel5.present?
-    Admin::Catalogo.where(nivel1: nivel1, nivel2: nivel2, nivel3: nivel3, nivel4: nivel4, nivel4: 0).where("#{Catalogo.attribute_alias(:nivel5)} > ?", 0).order(:descripcion).map{ |c| [c.descripcion, c.nivel5] }
+    Admin::Catalogo.where(nivel1: nivel1, nivel2: nivel2, nivel3: nivel3, nivel4: nivel4).where("#{Catalogo.attribute_alias(:nivel5)} > ?", 0).order(:descripcion).map{ |c| [c.descripcion, c.nivel5] }
   end
 
   accepts_nested_attributes_for :especies_catalogo, reject_if: :all_blank, allow_destroy: true

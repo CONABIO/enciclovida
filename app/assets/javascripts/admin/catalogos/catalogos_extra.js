@@ -48,3 +48,31 @@ $('form').on('focus', '.reg-autocomplete', function () {
         }
     });
 });
+
+$('form').on('change', '.select-nivel', function () {
+    var nivel_id = '#' + $(this).attr('id');
+    var nivel = parseInt(nivel_id.slice(-1));
+
+    var i;
+    for(i=nivel+1; i < 6; i++)
+    {
+        var nivel_siguiente_id = nivel_id.replace(nivel, i);
+        console.log(nivel_siguiente_id);
+        $(nivel_siguiente_id).find('option').not(':first').remove();
+
+        if(i == nivel+1)
+        {
+            $.ajax({
+                url: "/admin/catalogos/" + especie_id + "/comentarios/" + comentario_id,
+                method: 'GET',
+                data: {ficha: ficha}
+
+            }).done(function(html) {
+                $('#historial_' + comentario_id).empty().append(html).slideDown();
+                var link_historial = $( "a[comentario_id='"+ comentario_id +"']");
+                link_historial.hide();
+                $('#ocultar_' + comentario_id).slideDown();
+            });
+        }  // end if
+    }  // end for
+});

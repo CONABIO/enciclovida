@@ -39,18 +39,11 @@
   <% end %>
 
   <%= f.input :descripcion %>
-
-  <% if @admin_catalogo.new_record? %>
-    <%= f.input :nivel1, as: :select, collection: @admin_catalogo.dame_nivel1, include_blank: '- - Selecciona un catálogo - -' %>
-  <% else %>
-    <%= f.input :nivel1, as: :select, collection: @admin_catalogo.dame_nivel1, include_blank: '- - Selecciona un catálogo - -' %>
-  <% end %>
-
-  <%= f.input :nivel2, as: :select, collection: @admin_catalogo.dame_nivel2, include_blank: '- - Selecciona un catálogo - -' %>
-  <%= f.input :nivel3, as: :select, collection: @admin_catalogo.dame_nivel3, include_blank: '- - Selecciona un catálogo - -' %>
-  <%= f.input :nivel4, as: :select, collection: @admin_catalogo.dame_nivel4, include_blank: '- - Selecciona un catálogo - -' %>
-  <%= f.input :nivel5, as: :select, collection: @admin_catalogo.dame_nivel5, include_blank: '- - Selecciona un catálogo - -' %>
-
+  <%= f.input :nivel1, as: :select, collection: @admin_catalogo.dame_nivel1, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel'} %>
+  <%= f.input :nivel2, as: :select, collection: @admin_catalogo.dame_nivel2, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel'} %>
+  <%= f.input :nivel3, as: :select, collection: @admin_catalogo.dame_nivel3, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel'} %>
+  <%= f.input :nivel4, as: :select, collection: @admin_catalogo.dame_nivel4, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel'} %>
+  <%= f.input :nivel5, as: :select, collection: @admin_catalogo.dame_nivel5, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel'} %>
 
   <h3>Especies asociadas</h3>
   <div>
