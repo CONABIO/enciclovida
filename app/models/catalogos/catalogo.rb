@@ -54,18 +54,19 @@ class Catalogo < ActiveRecord::Base
   # REVISADO: Las categorias de conservacion para la busqueda avanzada
   def self.nom_cites_iucn_todos
     nom = self.nom
-    nom = [nom[3],nom[1],nom[0],nom[2]]  # Orden propuesto por cgalindo
+    nom = [nom[2],nom[0],nom[1],nom[3]]  # Orden propuesto por cgalindo
     iucn = self.iucn
-    iucn = [iucn[4],iucn[3],iucn[2],iucn[1],iucn[0]]  # Orden propuesto por cgalindo
+    iucn = [iucn[0],iucn[1],iucn[2],iucn[3],iucn[4]]  # Orden propuesto por cgalindo
     cites = self.cites
 
-    evaluacion_conabio = self.evaluacion_conabio
+    eval = self.evaluacion_conabio
+    evaluacion_conabio = [eval[3],eval[4],eval[5],eval[0],eval[6],eval[1],eval[8],eval[7],eval[2],eval[9],eval[10]]
     evaluacion_conabio.each do |eval|
       eval.sigla = eval.descripcion.split('(')[1].gsub(')','')
       eval.descripcion = eval.descripcion + ' Evaluación CONABIO'
     end
 
-    { nom: nom, iucn: iucn, cites: cites, evaluacion_conabio: evaluacion_conabio }
+    { nom: nom, iucn: iucn, evaluacion_conabio: evaluacion_conabio, cites: cites }
   end
 
   # REVISADO: Regresa todas las proritarias
