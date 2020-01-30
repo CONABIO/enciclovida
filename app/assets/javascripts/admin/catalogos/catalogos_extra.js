@@ -53,26 +53,47 @@ $('form').on('change', '.select-nivel', function () {
     var nivel_id = '#' + $(this).attr('id');
     var nivel = parseInt(nivel_id.slice(-1));
 
+    // Pone vacios los select de niveles inferiores al escogido
     var i;
     for(i=nivel+1; i < 6; i++)
     {
         var nivel_siguiente_id = nivel_id.replace(nivel, i);
-        console.log(nivel_siguiente_id);
         $(nivel_siguiente_id).find('option').not(':first').remove();
+    }
 
-        if(i == nivel+1)
+    // Obtiene los valores de los select superiores al escogido
+    var n;
+    var params = {};
+    params.nivel = nivel;
+
+    for(n=nivel; n > 0; n--)
+    {
+        var nivel_anterior_id = nivel_id.replace(nivel, n);
+        var nivel_anterior = parseInt(nivel_anterior_id.slice(-1));
+        params["nivel"+nivel_anterior] = $(nivel_anterior_id).val();
+    }
+
+    // Llena las opciones del siguiente nivel
+    $.ajax({
+        url: "/admin/catalogos/dame_nivel",
+        method: "GET",
+        data: params,
+        dataType: "json"
+
+    }).done(function(json) {
+        console.log(json);
+        if (json.estatus && json.resultados != undefined && json.resultados.length > 0 && nivel > 0 && nivel <= 4)
         {
-            $.ajax({
-                url: "/admin/catalogos/" + especie_id + "/comentarios/" + comentario_id,
-                method: 'GET',
-                data: {ficha: ficha}
+            var nivel_siguiente_id = nivel_id.replace(nivel, nivel+1);
 
-            }).done(function(html) {
-                $('#historial_' + comentario_id).empty().append(html).slideDown();
-                var link_historial = $( "a[comentario_id='"+ comentario_id +"']");
-                link_historial.hide();
-                $('#ocultar_' + comentario_id).slideDown();
-            });
-        }  // end if
-    }  // end for
+            //for
+
+            console.log(json);
+
+            //$(nivel_siguiente_id)
+        }
+    }).fail(function () {
+        console.log("ERROR");
+    });
+
 });

@@ -70,6 +70,17 @@ class Admin::CatalogosController < Admin::AdminController
     end
   end
 
+  def dame_nivel
+    nivel = params[:nivel]
+    if nivel.present? && (0..5).to_a.include?(nivel.to_i)
+      admin_catalogo = Admin::Catalogo.new(admin_catalogo_niveles_params)
+      puts admin_catalogo.inspect + '-------------------'
+      render json: { estatus: true, resultados: admin_catalogo.send("dame_nivel#{nivel.to_i + 1}") }
+    else
+      render json: { estatus: false, msg: 'Parámetros incorrecto' }
+    end
+  end
+
 
   private
 
@@ -138,8 +149,11 @@ class Admin::CatalogosController < Admin::AdminController
       end
     end
 
-    puts p.inspect + '--------------'
     p
+  end
+
+  def admin_catalogo_niveles_params
+    params.permit(:nivel1, :nivel2, :nivel3, :nivel4, :nivel5)
   end
 
 end

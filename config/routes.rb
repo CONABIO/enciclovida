@@ -4,7 +4,11 @@ Buscador::Application.routes.draw do
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
   namespace :admin do
-    resources :catalogos
+    resources :catalogos do
+      collection do
+        get :dame_nivel
+      end
+    end
     resources :regiones do
       collection do
         get :autocompleta
