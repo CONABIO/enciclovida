@@ -18,12 +18,13 @@ class Catalogo < ActiveRecord::Base
   scope :iucn, -> { where(nivel1: 4, nivel2: 2).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: 'Riesgo bajo (LR): Dependiente de conservación (cd)') }
   scope :cites, -> { where(nivel1: 4, nivel2: 3).where("#{attribute_alias(:nivel3)} > 0") }
   scope :prioritarias, -> { where(nivel1: 4, nivel2: 4).where("#{attribute_alias(:nivel3)} > 0") }
-  scope :ambientes, -> { where(nivel1: 2, nivel2: 6).where('nivel3 > 0').where.not(descripcion: AMBIENTE_EQUIV_MARINO) }
+  scope :ambientes, -> { where(nivel1: 2, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: AMBIENTE_EQUIV_MARINO) }
   scope :usos, -> { where(nivel1: 11, descripcion: USOS) }
-  scope :evaluacion_conabio, -> { where(nivel1: 4, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0") }
+  scope :evaluacion_conabio, -> { where(nivel1: 4, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: EVALUACION) }
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
   USOS = ['Medicinal','Ornamental','Alimentación animal','Alimentación humana','Ambiental','Artesanía','Combustible','Industrial','Manejo de plagas','Materiales','Melíferas','Sociales/religiosos']
+  EVALUACION = ['Extinto (EX)','Extinto en estado silvestre (EW)','Datos insuficientes (DD)']  # Evaluaciones que no tienen datos, se quitan de la bsuqueda
 
   # REVISADO: Regresa true or false si el catalogo es de los permitidos a mostrar
   def es_catalogo_permitido?
@@ -60,7 +61,7 @@ class Catalogo < ActiveRecord::Base
     cites = self.cites
 
     eval = self.evaluacion_conabio
-    evaluacion_conabio = [eval[3],eval[4],eval[5],eval[0],eval[6],eval[1],eval[8],eval[7],eval[2],eval[9],eval[10]]
+    evaluacion_conabio = [eval[3],eval[0],eval[4],eval[1],eval[6],eval[5],eval[7]]
     evaluacion_conabio.each do |eval|
       eval.sigla = eval.descripcion.split('(')[1].gsub(')','')
       eval.descripcion = eval.descripcion + ' Evaluación CONABIO'
