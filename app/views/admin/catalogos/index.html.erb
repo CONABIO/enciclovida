@@ -1,5 +1,5 @@
 <div class="col-12">
-  <h3>Lista de usos</h3>
+  <h3>Lista de catálogos</h3>
 
   <div class="justify-content-end row">
     <div class="dropdown">
@@ -7,7 +7,7 @@
         Acciones
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <%= link_to('Nuevo uso', new_admin_catalogo_path, class: 'dropdown-item') %>
+        <%= link_to('Nuevo catálogo', new_admin_catalogo_path, class: 'dropdown-item') %>
       </div>
     </div>
   </div>
@@ -15,7 +15,7 @@
   <table>
     <thead>
     <tr>
-      <th>Nombre del uso</th>
+      <th>Nombre</th>
       <th>Número de especies</th>
       <th></th>
     </tr>
@@ -24,7 +24,7 @@
     <tbody>
     <% @admin_catalogos.each do |catalogo| %>
       <tr>
-        <td><%= catalogo.descripcion %></td>
+        <td><%= catalogo.descripcion %> | <%= catalogo.niveles %></td>
         <td><%= catalogo.totales %></td>
         <td>
 
@@ -33,7 +33,7 @@
 
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <%= link_to 'Ver las especies', catalogo, class: 'dropdown-item' %>
+              <%#= link_to 'Ver las especies', catalogo, class: 'dropdown-item' %>
               <%= link_to 'Editar', edit_admin_catalogo_path(catalogo), class: 'dropdown-item' %>
               <%= link_to 'Destruir', catalogo, method: :delete, data: { confirm: 'Are you sure?' }, class: 'dropdown-item' %>
             </div>
