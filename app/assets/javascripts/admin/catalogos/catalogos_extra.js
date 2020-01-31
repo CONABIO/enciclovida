@@ -54,19 +54,17 @@ $('form').on('change', '.select-nivel', function () {
     var nivel = parseInt(nivel_id.slice(-1));
 
     // Pone vacios los select de niveles inferiores al escogido
-    var i;
-    for(i=nivel+1; i < 6; i++)
+    for(var i=nivel+1; i < 6; i++)
     {
         var nivel_siguiente_id = nivel_id.replace(nivel, i);
         $(nivel_siguiente_id).find('option').not(':first').remove();
     }
 
     // Obtiene los valores de los select superiores al escogido
-    var n;
     var params = {};
     params.nivel = nivel;
 
-    for(n=nivel; n > 0; n--)
+    for(var n=nivel; n > 0; n--)
     {
         var nivel_anterior_id = nivel_id.replace(nivel, n);
         var nivel_anterior = parseInt(nivel_anterior_id.slice(-1));
@@ -81,16 +79,12 @@ $('form').on('change', '.select-nivel', function () {
         dataType: "json"
 
     }).done(function(json) {
-        console.log(json);
         if (json.estatus && json.resultados != undefined && json.resultados.length > 0 && nivel > 0 && nivel <= 4)
         {
             var nivel_siguiente_id = nivel_id.replace(nivel, nivel+1);
 
-            //for
-
-            console.log(json);
-
-            //$(nivel_siguiente_id)
+            for(var cat of json.resultados)
+                $(nivel_siguiente_id).append($("<option>", { value: cat[1], text: cat[0] }));
         }
     }).fail(function () {
         console.log("ERROR");

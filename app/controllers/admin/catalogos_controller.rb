@@ -74,7 +74,7 @@ class Admin::CatalogosController < Admin::AdminController
     nivel = params[:nivel]
     if nivel.present? && (0..5).to_a.include?(nivel.to_i)
       admin_catalogo = Admin::Catalogo.new(admin_catalogo_niveles_params)
-      puts admin_catalogo.inspect + '-------------------'
+      admin_catalogo.ajax = true
       render json: { estatus: true, resultados: admin_catalogo.send("dame_nivel#{nivel.to_i + 1}") }
     else
       render json: { estatus: false, msg: 'Parámetros incorrecto' }
