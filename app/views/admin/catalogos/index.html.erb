@@ -23,15 +23,17 @@
 
     <tbody>
     <% @admin_catalogos.each do |catalogo| %>
+    <%
+      niveles = [catalogo.nivel1, catalogo.nivel2, catalogo.nivel3, catalogo.nivel4, catalogo.nivel5]
+      niveles.delete_if { |n| n == 0 }
+    %>
       <tr>
-        <td><%= catalogo.descripcion %> | <%= catalogo.niveles %></td>
-        <td><%= catalogo.totales %></td>
+        <td><%= " - "*niveles.length %><%= catalogo.descripcion %></td>
+        <td><%= catalogo.especies_catalogo.length %></td>
         <td>
 
           <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-            </button>
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <%#= link_to 'Ver las especies', catalogo, class: 'dropdown-item' %>
               <%= link_to 'Editar', edit_admin_catalogo_path(catalogo), class: 'dropdown-item' %>

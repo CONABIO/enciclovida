@@ -5,12 +5,11 @@ class Admin::Catalogo < Catalogo
   has_many :especies_catalogo, class_name: Admin::EspecieCatalogo, foreign_key: attribute_alias(:id), inverse_of: :catalogo
   has_many :especies, -> { order(:nombre_cientifico) }, through: :especies_catalogo, source: :especie
 
-  scope :select_group_count, -> { select(:id, :descripcion).select('COUNT(*) AS totales').group(:id, :descripcion).joins(:especies_catalogo).select("CONCAT(#{attribute_alias(:nivel1)},#{attribute_alias(:nivel2)},#{attribute_alias(:nivel3)},#{attribute_alias(:nivel4)},#{attribute_alias(:nivel5)}) AS niveles").order("niveles ASC, #{attribute_alias(:descripcion)} ASC") }
-  scope :todos, -> { all.select_group_count }
-  scope :usos, -> { select_group_count.where(nivel1: 11) }
+  scope :select_index, -> { select("*, CONCAT(LPAD(#{attribute_alias(:nivel1)},2,'*'),LPAD(#{attribute_alias(:nivel2)},2,'*'),LPAD(#{attribute_alias(:nivel3)},2,'*'),LPAD(#{attribute_alias(:nivel4)},2,'*'),LPAD(#{attribute_alias(:nivel5)},2,'*')) AS niveles").order("niveles ASC, #{attribute_alias(:descripcion)} ASC") }
+  scope :usos, -> { where(nivel1: 11) }
 
   def dame_nivel1
-    Admin::Catalogo.where(nivel2: 0, nivel3: 0, nivel4: 0, nivel5: 0).where("#{Catalogo.attribute_alias(:nivel1)} > ?", 1).order(:descripcion).map{ |c| [c.descripcion, c.nivel1] }
+    Admin::Catalogo.where(nivel2: 0, nivel3: 0, nivel4: 0, nivel5: 0).where("#{Catalogo.attribute_alias(:nivel1)} > ?", 0).order(:descripcion).map{ |c| [c.descripcion, c.nivel1] }
   end
 
   def dame_nivel2

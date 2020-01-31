@@ -9,7 +9,8 @@ class Admin::CatalogosController < Admin::AdminController
   # GET /admin/catalogos
   # GET /admin/catalogos.json
   def index
-    @admin_catalogos = Admin::Catalogo.todos
+    #@admin_catalogos = Admin::Catalogo.select_index.usos.includes(:especies_catalogo)
+    @admin_catalogos = Admin::Catalogo.select_index.includes(:especies_catalogo)
   end
 
   # GET /admin/catalogos/1
