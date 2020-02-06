@@ -943,15 +943,17 @@ class EspeciesController < ApplicationController
   private
 
   def set_especie(arbol = false)
-    if params[:id].to_i.to_s === params[:id] || params[:id].include?('-')  # Quiere decir que es un ID de la centralizacion o del antiguo de millones
+    id = params[:id].split('-').first
+
+    if id.numeric?  # Quiere decir que es un ID de la centralizacion o del antiguo de millones
       begin
-        @especie = Especie.find(params[:id])  # Coincidio y es el ID de la centralizacion
+        @especie = Especie.find(id)  # Coincidio y es el ID de la centralizacion
       rescue
-        id_millon = Adicional.where(idMillon: params[:id]).first
+        id_millon = Adicional.where(idMillon: id).first
         @especie = Especie.find(id_millon.especie_id) if id_millon  # Es el ID viejo de millones
       end
 
-    elsif idCAT = Scat.where(catalogo_id: params[:id]).first
+    elsif idCAT = Scat.where(catalogo_id: id).first
       @especie = idCAT.especie  # Es el IdCAT de la tabla SCAT
     end
 
