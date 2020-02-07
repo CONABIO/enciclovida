@@ -22,7 +22,7 @@ class Validacion
       return
     end
 
-    taxones = Especie.solo_publicos.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) = ?", nombre_cientifico.limpia.downcase)
+    taxones = Especie.solo_publicos.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) = ?", nombre_cientifico.limpia.downcase).order(estatus: :desc)
 
     if taxones.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
       Rails.logger.debug "Coincidio busqueda exacta"

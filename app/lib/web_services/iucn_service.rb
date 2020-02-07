@@ -63,6 +63,7 @@ class IUCNService
             validacion[:taxones].each do |taxon|
               validacion[:taxon] = taxon
               if valida_extras  # Encontro el verdadero de entre las coincidencias
+                self.datos[7] = 'Búsqueda exacta'
                 cuantos_encontro+= 1
                 break
               end
