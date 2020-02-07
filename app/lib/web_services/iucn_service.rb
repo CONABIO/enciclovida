@@ -69,18 +69,32 @@ class IUCNService
               end
             end  # End each taxones
 
-            if cuantos_encontro == 0
-              self.datos[2] = nil
-              self.datos[3] = nil
-              self.datos[4] = nil
-              self.datos[5] = nil
-              self.datos[6] = nil
-              self.datos[7] = 'Sin coincidencias'
+            sin_coincidencias if cuantos_encontro == 0
+
+          else  # Si es busqueda similar con multiples coincidencias
+            cuantos_encontro = []
+
+            validacion[:taxones].each do |taxon|  # Descartando los que no son de la categoria o del phylum/division
+              validacion[:taxon] = taxon
+              next unless misma_categoria?
+              next unless mismo_phylum?
+
+              cuantos_encontro << taxon
+            end  # End each taxones
+
+            if cuantos_encontro.length == 0
+              sin_coincidencias
+            elsif cuantos_encontro.length == 1
+              sin_coincidencias
+              validacion[:taxon] = cuantos_encontro.first
+              self.datos[7] = 'Búsqueda similar'
+              valida_extras
+            else
+              sin_coincidencias
+              self.datos[7] = "Existe más de una búsqueda similar: #{validacion[:taxones].map{ |t| t.scat.catalogo_id }.join('|')}"
             end
 
-          else  # Si es
-            self.datos[7] = "Existe más de una búsqueda similar: #{validacion[:taxones].map{ |t| t.scat.catalogo_id }.join('|')}"
-          end
+          end  # End si existe mas de una busqueda exacta con multiples coincidencias
 
         end
       end
@@ -166,6 +180,15 @@ class IUCNService
 
     return true if ['Búsqueda similar'].include?(datos[7])
     return dame_el_valido if ['Búsqueda exacta', 'Existe más de una búsqueda exacta'].include?(datos[7])
+  end
+
+  def sin_coincidencias
+    self.datos[2] = nil
+    self.datos[3] = nil
+    self.datos[4] = nil
+    self.datos[5] = nil
+    self.datos[6] = nil
+    self.datos[7] = 'Sin coincidencias'
   end
 
 end
