@@ -20,6 +20,7 @@ class EspeciesController < ApplicationController
     tiene_permiso?('Administrador')  # Minimo administrador
   end
 
+  layout 'application_b4'
   layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :fotos_bdi, :videos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,

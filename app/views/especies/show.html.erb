@@ -13,7 +13,9 @@
 <% end %>
 
 <% if notice.present? %>
-  <div class="row alert alert-success" role="alert"><%= notice %></div>
+  <div class="col-12 alert alert-success" role="alert">
+    <%= notice %>
+  </div>
 <% end %>
 
 <% content_for(:meta_keywords) do %>
@@ -24,32 +26,29 @@
   <%= @titulo = tituloNombreCientifico(@especie, render: 'title') %>
 <% end %>
 
-<div class="row">
-  <div class="col-xs-12 col-sm-8 col-md-6 col-lg-6">
-    <%= tituloNombreCientifico(@especie, render: 'header') %>
-  </div>
 
-  <div class="col-xs-12 col-sm-4 col-md-6 col-lg-6 text-right f-fuentes">
-    <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
-  </div>
-
-  <% if (@datos[:especie_o_inferior]) %>
-    <div class="col-xs-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente">
-      <%= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
-    </div>
-  <% end %>
-
-  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <div id="nombres_comunes_todos"></div>
-    <br />
-    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %>
-    <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
-  </div>
+<div class="col-xs-12 col-sm-8 col-md-6 col-lg-6">
+  <%= tituloNombreCientifico(@especie, render: 'header') %>
 </div>
 
-<hr/>
+<div class="col-xs-12 col-sm-4 col-md-6 col-lg-6 text-right f-fuentes">
+  <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
+</div>
 
-<div class="btn-group pull-right" style="z-index: 1;">
+<%# if (@datos[:especie_o_inferior]) %>
+  <!--div class="col-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente"-->
+    <%#= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
+  <!--/div-->
+<%# end %>
+
+<div class="col-12">
+  <div id="nombres_comunes_todos"></div>
+  <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %>
+  <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
+</div>
+
+
+<div class="btn-group float-right" style="z-index: 1;">
   <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <b>Más información científica sobre la especie...  </b><span class="caret"></span>
   </button>
@@ -81,11 +80,11 @@
     </li>
   </ul>
 </div>
-<div class="btn-group pull-right" style="z-index: 1;">
+<div class="btn-group float-right" style="z-index: 1;">
   <%= link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'btn btn-basica btn-warning btn-sm noLoad', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
 </div>
 
-<div id="pestañas" class="panel row">
+<div id="pestañas" class="panel col-12">
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active">
       <a href="#geodata_e_imagen" class="noLoad" aria-controls="geodata_e_imagen" role="tab" data-toggle="pill"><i class="picture-ev-icon"></i>/<i class="glyphicon glyphicon-globe"></i><strong><small> Inicio</small></strong></a>
