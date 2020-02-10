@@ -49,7 +49,9 @@ class IUCNService
         v.nombre_cientifico = row['scientificName']
       end
 
+      v.nombre_cientifico = v.nombre_cientifico.gsub('ssp.', 'subsp.')
       v.encuentra_por_nombre
+
       self.validacion = v.validacion
       self.datos[7] = validacion[:msg]
 
