@@ -38,12 +38,12 @@ var fotosNaturalista = function()
                             $('#contenedor_fotos').html(fotos);
                             inicia_carrusel();
 
-                        }).error(function (error) {
+                        }).fail(function (error) {
                             fotosBDI();
                         });
                 }
             }
-        }).error(function (error) {
+        }).fail(function (error) {
             fotosBDI();
         });
 };
@@ -86,13 +86,13 @@ var fotosBDI = function()
 
                             $('#contenedor_fotos').html(fotos);
                             inicia_carrusel();
-                        }).error(function (error) {
+                        }).fail(function (error) {
                             $('#contenedor_fotos').remove();
                             if (jQuery.isEmptyObject(opciones.geodatos)) $('#sin_datos').html('Lo sentimos, pero aún no contamos con una imagen o geodato');
                         });
                 }
             }
-        }).error(function (error) {
+        }).fail(function (error) {
             $('#contenedor_fotos').remove();
             if (jQuery.isEmptyObject(opciones.geodatos)) $('#sin_datos').html('Lo sentimos, pero hubo un error al cargar las fotos');
         });
