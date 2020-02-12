@@ -6,8 +6,8 @@ class Plantid::PiPlanta < Plantid
   validates :usuario_id, presence: true
 
   has_many :piplantabibliografias, class_name: 'Plantid::PiPlantaBibliografia', inverse_of: :piplanta, foreign_key: :planta_id
-  has_many :piplantacatalogos, class_name: 'Plantid::PiPlantaCatalogo', inverse_of: :planta, foreign_key: :planta_id
-  has_many :piplantaimagenes, class_name: 'Plantid::PiPlantaImagen', inverse_of: :planta, foreign_key: :planta_id
+  has_many :piplantacatalogos, class_name: 'Plantid::PiPlantaCatalogo', inverse_of: :piplanta, foreign_key: :planta_id
+  has_many :piplantaimagenes, class_name: 'Plantid::PiPlantaImagen', inverse_of: :piplanta, foreign_key: :planta_id
   has_many :pibibliografias, class_name: 'Plantid::PiBibliografia', through: :piplantabibliografias, foreign_key: :bibliografia_id
   has_many :picatalogo, through: :piplantacatalogos, source: :picatalogo, foreign_key: :catalogo_id
   has_many :piimagen, class_name: 'Plantid::PiImagen', dependent: :destroy, through: :piplantaimagenes, foreign_key: :imagen_id

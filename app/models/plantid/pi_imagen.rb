@@ -1,7 +1,7 @@
 class Plantid::PiImagen < Plantid
   self.table_name = "#{CONFIG.bases.plantid}.#{self.table_name_prefix}imagenes"
 
-  has_many :piplantaimagenes,foreign_key: :imagen_id
+  has_many :piplantaimagenes,class_name: "Plantid::PiPlantaImagen", foreign_key: :imagen_id
   has_many :piplantas,through: :piplantaimagenes, foreign_key: :planta_id
 
   mount_uploader :imagen, ImagenUploader

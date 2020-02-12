@@ -18,7 +18,7 @@
 <div class="row">
   <div class="col-2">
       <h2>Imagenes</h2>
-      <% @plantid_planta.imagen.each do |img| %>
+      <% @plantid_planta.piimagen.each do |img| %>
           <%= image_tag img.imagen.url, class: 'img-fluid' %>
       <% end %>
   </div>
@@ -27,7 +27,7 @@
 <div class="row">
   <div class="col">
   <h2>Bibliografias</h2>
-    <% @plantid_planta.bibliografiaplantids.each do |biblio| %>
+    <% @plantid_planta.pibibliografias.each do |biblio| %>
       <p><%= biblio.nombre_biblio %><p>
     <% end %>
   </div>

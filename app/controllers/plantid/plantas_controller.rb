@@ -91,6 +91,6 @@ skip_before_action :set_locale
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def planta_params
-      params.require(:plantid_planta).permit(:especie_id, :nombre_cientifico, :nombre_comun, :nombres_comunes, :usuario_id,piimagen_attributes: [:id, :imagen, :remote_imagen_url,  :_destroy] , pibibliografia_attributes: [:id, :nombre_biblio, :_destroy])
+      params.require(:plantid_planta).permit(:especie_id, :nombre_cientifico, :nombre_comun, :nombres_comunes, :usuario_id,piimagen_attributes: [:id, :imagen, :remote_imagen_url,  :_destroy] ,pibibliografias_attributes: [:id, :nombre_biblio, :_destroy])
     end
 end

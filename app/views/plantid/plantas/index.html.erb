@@ -1,7 +1,7 @@
 <div class="container">
 <p id="notice"><%= notice %></p>
     <h1>Listado de Plantas</h1>
-    <%= link_to 'Nueva Planta', new_plantid_planta_path %>
+    <%= link_to 'Nueva Planta', new_plantid_pi_planta_path %>
     <div class="row">
       <div class="col">
         <strong>Imagen</strong>
@@ -40,7 +40,7 @@
           </div>
           <div class="col">
             <p class="mb-0"><%= link_to 'Ver', planta %></p>
-            <p class="mb-0"><%= link_to 'Editar', edit_plantid_planta_path(planta) %></p>
+            <p class="mb-0"><%= link_to 'Editar', edit_plantid_pi_planta_path(planta) %></p>
             <p class="mb-0"><%= link_to 'Destruir', planta, mepod: :delete, data: { confirm: 'Estas seguro?' } %></p>
           </div>
         </div>
