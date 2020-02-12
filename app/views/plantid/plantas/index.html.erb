@@ -19,7 +19,7 @@
         <strong>Links</strong>
       </div>
     </div>
-    <% @plantid_plantas.each do |planta| %>
+    <% @plantid_pi_plantas.each do |planta| %>
         <div class="row">
           <div class="col">
             <% unless planta.piimagen.first.nil? %> 
@@ -41,7 +41,7 @@
           <div class="col">
             <p class="mb-0"><%= link_to 'Ver', planta %></p>
             <p class="mb-0"><%= link_to 'Editar', edit_plantid_pi_planta_path(planta) %></p>
-            <p class="mb-0"><%= link_to 'Destruir', planta, mepod: :delete, data: { confirm: 'Estas seguro?' } %></p>
+            <p class="mb-0"><%= link_to 'Destruir', planta, method: :delete, data: { confirm: 'Estas seguro?' } %></p>
           </div>
         </div>
     <% end %>

@@ -4,21 +4,21 @@
 <div class="row">
   <div class="col">
       <strong>Nombre Comun</strong>
-      <p><%= @plantid_planta.nombre_comun %></p>
+      <p><%= @plantid_pi_planta.nombre_comun %></p>
   </div>
   <div class="col">
       <strong>Nombre Cientifico</strong>
-      <p><%= @plantid_planta.nombre_cientifico %></p>
+      <p><%= @plantid_pi_planta.nombre_cientifico %></p>
   </div>
   <div class="col">
       <strong>Nombres Comunes</strong>
-      <p><%= @plantid_planta.nombres_comunes %></p>
+      <p><%= @plantid_pi_planta.nombres_comunes %></p>
   </div>
 </div>
 <div class="row">
   <div class="col-2">
       <h2>Imagenes</h2>
-      <% @plantid_planta.piimagen.each do |img| %>
+      <% @plantid_pi_planta.piimagen.each do |img| %>
           <%= image_tag img.imagen.url, class: 'img-fluid' %>
       <% end %>
   </div>
@@ -27,12 +27,12 @@
 <div class="row">
   <div class="col">
   <h2>Bibliografias</h2>
-    <% @plantid_planta.pibibliografias.each do |biblio| %>
+    <% @plantid_pi_planta.pibibliografias.each do |biblio| %>
       <p><%= biblio.nombre_biblio %><p>
     <% end %>
   </div>
 </div>
-  <%# puts @plantid_planta.bibliografia %>
-  <%= link_to 'Editar', edit_plantid_planta_path(@plantid_planta) %> |
-  <%= link_to 'Regresar', plantid_plantas_path %>
+  <%# puts @plantid_pi_planta.bibliografia %>
+  <%= link_to 'Editar', edit_plantid_pi_planta_path(@plantid_pi_planta) %> |
+  <%= link_to 'Regresar', plantid_pi_plantas_path %>
 </div>
