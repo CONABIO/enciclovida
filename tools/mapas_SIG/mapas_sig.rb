@@ -20,6 +20,9 @@ end
 
 def actualiza_mapa_sig
   infraesp = %w(subsp. var.)
+
+  año = @row['title'][-5,4].numeric? ? @row['title'][-5,4] : nil
+
   nom = @row['title'].split(' ')
   nombre_cientifico = nil
 
@@ -34,6 +37,10 @@ def actualiza_mapa_sig
 
   nombre_cientifico = nombre_cientifico.gsub(',','').strip
 
+  if nombre_cientifico[-1,1] == '.'  #Quitando el ultimo caracter que era un punto
+    nombre_cientifico = nombre_cientifico[0..-2]
+  end
+
   v = Validacion.new
   v.nombre_cientifico = nombre_cientifico
   v.encuentra_por_nombre
@@ -44,9 +51,9 @@ def actualiza_mapa_sig
 
     if v.validacion[:estatus]
       v.validacion[:taxon] = v.validacion[:taxon_valido] if v.validacion[:taxon_valido].present?
-      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},#{v.validacion[:taxon].nombre_cientifico},\"#{v.validacion[:msg]}\""
+      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},#{v.validacion[:taxon].nombre_cientifico},\"#{v.validacion[:msg]}\",#{año}"
     else
-      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},,\"#{v.validacion[:msg]}\""
+      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},,\"#{v.validacion[:msg]}\",#{año}"
     end
 
   elsif validacion[:estatus] && validacion[:msg].include?('Búsqueda similar')
@@ -55,24 +62,25 @@ def actualiza_mapa_sig
 
     if v.validacion[:estatus]
       v.validacion[:taxon] = v.validacion[:taxon_valido] if v.validacion[:taxon_valido].present?
-      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},#{v.validacion[:taxon].nombre_cientifico},\"#{v.validacion[:msg]}\""
+      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},#{v.validacion[:taxon].nombre_cientifico},\"#{v.validacion[:msg]}\",#{año}"
     else
-      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},,\"#{v.validacion[:msg]}\""
+      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},,\"#{v.validacion[:msg]}\",#{año}"
     end
 
   elsif validacion[:taxones].present?
     v.quita_sinonimos_coincidencias
+    v.quita_subgeneros
     v.taxon_estatus
 
     if v.validacion[:estatus]
       v.validacion[:taxon] = v.validacion[:taxon_valido] if v.validacion[:taxon_valido].present?
-      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},#{v.validacion[:taxon].nombre_cientifico},\"#{v.validacion[:msg]}\""
+      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},#{v.validacion[:taxon].nombre_cientifico},\"#{v.validacion[:msg]}\",#{año}"
     else
-      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},\"#{validacion[:taxones].map(&:nombre_cientifico).join(', ')}\",\"#{validacion[:msg]}\""
+      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},\"#{validacion[:taxones].map(&:nombre_cientifico).join(', ')}\",\"#{validacion[:msg]}\",#{año}"
     end
 
   else
-    @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},,\"#{validacion[:msg]}\""
+    @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},,\"#{validacion[:msg]}\",#{año}"
   end
 
 end
@@ -80,7 +88,7 @@ end
 def lee_csv(csv_path)
   CSV.foreach(csv_path, :headers => true) do |r|
     @row = r
-    next unless @row["id"] == "8417"
+    #next unless @row["id"] == "7017"
     Rails.logger.debug "\tID: #{@row['id']}" if OPTS[:debug]
     actualiza_mapa_sig
   end
@@ -91,7 +99,7 @@ end
 def bitacora
   log_path = Rails.root.join('tools', 'mapas_SIG', Time.now.strftime('%Y-%m-%d_%H%M%S') + '_SIG.csv')
   @bitacora ||= File.new(log_path, 'a+')
-  @bitacora.puts "id,idcapa,title,nombre científico,nombre científico validado,msg"
+  @bitacora.puts "id,idcapa,title,nombre científico,nombre científico validado,msg,año"
 end
 
 
