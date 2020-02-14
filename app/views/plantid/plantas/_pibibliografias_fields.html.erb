@@ -1,0 +1,22 @@
+ <div class="nested-fields">
+  <div id="custom-templates">
+    <%= f.input :nombre_biblio, input_html: { id:"biblio" } %>
+  </div>
+  <%= link_to_remove_association "Eliminar bibliografia", f %>
+</div>
+<script type="text/javascript">
+$('#biblio').autocomplete({
+    source: function (request, response) {
+        $.getJSON("/plantid/load_bibliosuggestions/" + request.term, function (data) {
+            response($.map(data, function (biblio) {
+                return {
+                    value: biblio.CitaCompleta
+                };
+            }));
+        });
+    },
+    minLength: 2,
+    delay: 100
+});
+
+</script>

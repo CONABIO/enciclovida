@@ -1,7 +1,7 @@
 <div class="container">
 <p id="notice"><%= notice %></p>
     <h1>Listado de Plantas</h1>
-    <%= link_to 'Nueva Planta', new_plantid_planta_path %>
+    <%= link_to 'Nueva Planta', new_plantid_pi_planta_path %>
     <div class="row">
       <div class="col">
         <strong>Imagen</strong>
@@ -19,11 +19,11 @@
         <strong>Links</strong>
       </div>
     </div>
-    <% @plantid_plantas.each do |planta| %>
+    <% @plantid_pi_plantas.each do |planta| %>
         <div class="row">
           <div class="col">
-            <% unless planta.imagen.first.nil? %> 
-              <%= image_tag planta.imagen.first.imagen_url, class: 'img-fluid' %>
+            <% unless planta.piimagen.first.nil? %> 
+              <%= image_tag planta.piimagen.first.imagen_url, class: 'img-fluid' %>
             <% end %>
           </div>
           <div class="col">
@@ -40,8 +40,8 @@
           </div>
           <div class="col">
             <p class="mb-0"><%= link_to 'Ver', planta %></p>
-            <p class="mb-0"><%= link_to 'Editar', edit_plantid_planta_path(planta) %></p>
-            <p class="mb-0"><%= link_to 'Destruir', planta, mepod: :delete, data: { confirm: 'Estas seguro?' } %></p>
+            <p class="mb-0"><%= link_to 'Editar', edit_plantid_pi_planta_path(planta) %></p>
+            <p class="mb-0"><%= link_to 'Destruir', planta, method: :delete, data: { confirm: 'Estas seguro?' } %></p>
           </div>
         </div>
     <% end %>
