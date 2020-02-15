@@ -83,8 +83,13 @@ class Proveedor < ActiveRecord::Base
 
       geodatos[:cuales] << 'geoserver'
       geodatos[:geoserver_url] = CONFIG.geoserver_url.to_s
-      geodatos[:geoserver_descarga_url] = "#{CONFIG.geoserver_descarga_url}&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
-      geodatos[:geoserver_layer] = info['layers']
+      geodatos[:geoserver_descargas_url] = []
+
+      info.each do |año, layers|
+        layers.each do |layer|
+          geodatos[:geoserver_descargas_url] << { id: layer, año: año, url: "#{CONFIG.geoserver_descarga_url}&layers=cnb:#{layer}&styles=&bbox=&transparent=true" }
+        end
+      end
     end
 
     # Para las descargas del SNIB
