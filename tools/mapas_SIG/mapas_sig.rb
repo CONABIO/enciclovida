@@ -111,7 +111,7 @@ def asigna_geoserver_info(v, geoserver_info=nil)
 
   if geoserver_info.present?
     begin
-      geo = eval(geoserver_info)
+      geo = JSON.parse(geoserver_info)
       geo[año] = [] if !geo.key?(año)
       geo[año] << v[:idcapa]
     rescue
@@ -122,7 +122,7 @@ def asigna_geoserver_info(v, geoserver_info=nil)
     geo[año] << v[:idcapa]
   end
 
-  geo.sort.reverse.to_h.to_s
+  geo.sort.reverse.to_h.to_json
 end
 
 def lee_csv(csv_path)
