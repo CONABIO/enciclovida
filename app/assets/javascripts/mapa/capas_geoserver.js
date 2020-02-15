@@ -39,16 +39,25 @@ var leyendaGeoserver = function()
  * @param url
  */
 var capaDistribucionGeoserver = function (url) {
-    distribucionLayer = L.tileLayer.wms(url, {
-        layers: opciones.geodatos.geoserver_layer,
-        format: 'image/png',
-        transparent: true,
-        opacity:.5,
-        zIndex: 4
+    var primer_layer = false;
+    geoserver_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
+
+    $.each(opciones.geodatos.geoserver_descargas_url, function (index, datos) {
+        console.log(datos);
+
+        window[datos.id] = L.tileLayer.wms(url, {
+            layers: datos.id,
+            format: 'image/png',
+            transparent: true,
+            opacity:.5,
+            zIndex: 4
+        });
+
+        if(!primer_layer) map.addLayer(window[datos.id]);
+        primer_layer = true;
+
+        geoserver_control.addOverlay(window[datos.id],
+            "<b>Dist. potencial</b>: " + datos.id + ' / ' + datos.anio
+        );
     });
-
-    map.addLayer(distribucionLayer);
-    leyendaGeoserver();
-
-    distribucionLayer.bringToFront();  // Para desde un inicio que se muestre el mapa de distribucion
 };

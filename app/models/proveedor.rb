@@ -87,7 +87,7 @@ class Proveedor < ActiveRecord::Base
 
       info.each do |año, layers|
         layers.each do |layer|
-          geodatos[:geoserver_descargas_url] << { id: layer, año: año, url: "#{CONFIG.geoserver_descarga_url}&layers=cnb:#{layer}&styles=&bbox=&transparent=true" }
+          geodatos[:geoserver_descargas_url] << { id: layer, anio: año }
         end
       end
     end
