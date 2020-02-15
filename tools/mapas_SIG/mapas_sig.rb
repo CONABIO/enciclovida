@@ -83,6 +83,46 @@ def actualiza_mapa_sig
     @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},,\"#{validacion[:msg]}\",#{año}"
   end
 
+  v.validacion.merge({ año: año, idcapa: @row['idcapa'] })
+
+end
+
+# Guarda en la base lo que resulto de la asignacion de geoserver_info
+def guarda_geoserver_info(v)
+  return unless (v[:estatus] && v[:msg].include?('Búsqueda exacta'))
+  t = v[:taxon]
+
+  if p = t.proveedor
+    geoserver_info = asigna_geoserver_info(v, p.geoserver_info)
+    p.geoserver_info = geoserver_info
+    p.save if p.changed?
+  else
+    geoserver_info = asigna_geoserver_info(v)
+    p = Proveedor.new({ especie_id: t.id, geoserver_info: geoserver_info })
+    p.save
+  end
+
+end
+
+# Asigna el valor y el acomodo de geoserver_info
+def asigna_geoserver_info(v, geoserver_info=nil)
+  geo = {}
+  año = v[:año] || '- - -'
+
+  if geoserver_info.present?
+    begin
+      geo = eval(geoserver_info)
+      geo[año] = [] if !geo.key?(año)
+      geo[año] << v[:idcapa]
+    rescue
+      nil
+    end
+  else
+    geo[año] = []
+    geo[año] << v[:idcapa]
+  end
+
+  geo.sort.reverse.to_h.to_s
 end
 
 def lee_csv(csv_path)
@@ -90,7 +130,8 @@ def lee_csv(csv_path)
     @row = r
     #next unless @row["id"] == "7017"
     Rails.logger.debug "\tID: #{@row['id']}" if OPTS[:debug]
-    actualiza_mapa_sig
+    v = actualiza_mapa_sig
+    guarda_geoserver_info(v)
   end
 
   @bitacora.close
