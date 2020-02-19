@@ -29,6 +29,8 @@ Buscador::Application.configure do
 
   config.assets.initialize_on_precompile = true
 
+  config.serve_static_assets = true
+
   # Para habilitar web console en otros enviroments
   config.web_console.development_only = false
   config.web_console.whitelisted_ips = '172.16.3.0/16'

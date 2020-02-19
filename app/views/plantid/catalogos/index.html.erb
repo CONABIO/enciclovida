@@ -1,0 +1,32 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listado de Plantas</h1>
+
+<br>
+
+<%= link_to 'Nueva Planta', new_plantid_planta_path %>
+<table>
+  <thead>
+    <tr>
+      <th>Id_Especie</th>
+      <th>Nombre Cientifico</th>
+      <th>Nombre Comun</th>
+      <th>Nombres Comunes</th>
+      <th colspan="4"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @plantid_plantas.each do |planta| %>
+      <tr>
+        <td><%= planta.especie_id %></td>
+        <td><%= planta.nombre_cientifico %></td>
+        <td><%= planta.nombre_comun %></td>
+        <td><%= planta.nombres_comunes %></td>
+        <td><%= link_to 'Ver', planta %></td>
+        <td><%= link_to 'Editar', edit_plantid_planta_path(planta) %></td>
+        <td><%= link_to 'Destruir', planta, method: :delete, data: { confirm: 'Estas seguro?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
