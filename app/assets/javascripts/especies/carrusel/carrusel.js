@@ -28,11 +28,11 @@ var fotosNaturalista = function()
                                 fotos: JSON.stringify(json.results[0].taxon_photos.slice(0, 5))
                             }
                         }).done(function (fotos) {
-                            if (jQuery.isEmptyObject(opciones.geodatos))
-                                $('#contenedor_fotos').removeClass().addClass('col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2');
+                            if (jQuery.isEmptyObject(opciones.geodatos)){}
+                            //$('#contenedor_fotos').removeClass().addClass('col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2');
                             else {
-                                $('#contenedor_fotos').removeClass().addClass('col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
-                                $('#contenedor_mapa').removeClass().addClass('col-xs-12 col-sm-10 col-md-7 col-lg-7 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
+                                //$('#contenedor_fotos').removeClass().addClass('col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
+                                $('#contenedor_mapa').removeClass().addClass('col-xs-12');
                             }
 
                             $('#contenedor_fotos').html(fotos);
@@ -77,11 +77,11 @@ var fotosBDI = function()
                             type: 'POST',
                             data: {fotos: JSON.stringify(json.fotos.slice(0, 5))}
                         }).done(function (fotos) {
-                            if (jQuery.isEmptyObject(opciones.geodatos))
-                                $('#contenedor_fotos').removeClass().addClass('col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2');
+                            if (jQuery.isEmptyObject(opciones.geodatos)){}
+                                //$('#contenedor_fotos').removeClass().addClass('col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2');
                             else {
-                                $('#contenedor_fotos').removeClass().addClass('col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
-                                $('#contenedor_mapa').removeClass().addClass('col-xs-12 col-sm-10 col-md-7 col-lg-7 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
+                                //$('#contenedor_fotos').removeClass().addClass('col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
+                                $('#contenedor_mapa').removeClass().addClass('col-xs-12');
                             }
 
                             $('#contenedor_fotos').html(fotos);
