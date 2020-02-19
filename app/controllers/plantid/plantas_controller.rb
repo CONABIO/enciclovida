@@ -77,8 +77,7 @@ skip_before_action :set_locale
   end
 
    def load_bibliosuggestions
-    @find = Bibliografia.select(:id,:CitaCompleta).where("CitaCompleta LIKE ?","%#{params[:q]}%")
-    puts @find.inspect
+    @find = Bibliografia.select(:id,:CitaCompleta).where("CitaCompleta LIKE ?","%#{params[:q]}%").limit(10)
     render json: @find
   end
 
