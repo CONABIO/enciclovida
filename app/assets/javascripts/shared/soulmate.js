@@ -79,9 +79,8 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 break;
             case 'plantid':
                 $('#especie_id').val(data.id);
-                $('#nombre_comun').attr('value',data.nombre_comun);
-                $('#nombre_cientifico').attr('value',data.nombre_cientifico);
-                $('#nombres_comunes').attr('value',data.nombres_comunes);
+                $('#nombre_comun').val(data.nombre_comun);
+                $('#nombre_cientifico').val(data.nombre_cientifico);
                 break;
             default:
                 // Para no pasar por el controlador de busquedas, ir directo a la especie, solo busqueda basica
