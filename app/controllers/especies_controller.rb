@@ -180,10 +180,10 @@ class EspeciesController < ApplicationController
           @describers.each do |d|
             @describer = d
             @description = begin
-              d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-            rescue OpenURI::HTTPError, Timeout::Error => e
-              nil
-            end
+                             d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
+                           rescue OpenURI::HTTPError, Timeout::Error => e
+                             nil
+                           end
             break unless @description.blank?
           end
         end
@@ -558,10 +558,10 @@ class EspeciesController < ApplicationController
       @describers.each do |d|
         @describer = d
         @description = begin
-          d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-        rescue OpenURI::HTTPError, Timeout::Error => e
-          nil
-        end
+                         d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
+                       rescue OpenURI::HTTPError, Timeout::Error => e
+                         nil
+                       end
         break unless @description.blank?
       end
     end
@@ -582,10 +582,10 @@ class EspeciesController < ApplicationController
       describers.each do |describer|
 
         sumamry = begin
-          describer.get_summary(@especie)
-        rescue OpenURI::HTTPError, Timeout::Error => e
-          nil
-        end
+                    describer.get_summary(@especie)
+                  rescue OpenURI::HTTPError, Timeout::Error => e
+                    nil
+                  end
 
         break unless sumamry.blank?
       end
@@ -764,7 +764,7 @@ class EspeciesController < ApplicationController
       p.naturalista_id = new_id
     else
       # NO existe proveedor
-      p = @especie.proveedor.new({naturalista_id: new_id})
+      p = Proveedor.new({especie_id: @especie.id,naturalista_id: new_id})
     end
 
     if p.changed? && p.save
@@ -870,7 +870,7 @@ class EspeciesController < ApplicationController
           :id => especie.id,
           :nombre => {
               "comun" => especie.adicional.nombre_comun_principal,
-              "cientifico" => especie.NombreCompleto
+              "cientifico" => especie.nombre_cientifico
           },
           :tipo_busqueda_actual => params[:t_name].present? ? params[:t_name] : "cientifico" # Por default, buscará por nombre científico
       }
@@ -943,26 +943,36 @@ class EspeciesController < ApplicationController
   private
 
   def set_especie(arbol = false)
-    begin  # Coincidio y es el ID de la centralizacion
-      @especie = Especie.find(params[:id])
-    rescue   #si no encontro el taxon, puede ser el ID viejo de millones
-      if id_millon = Adicional.where(idMillon: params[:id]).first
-        @especie = Especie.find(id_millon.especie_id)
-      else  # Tampoco era el ID de millon
-        if params[:action] == 'show' && params[:format] == 'json'
-          render json: {} and return
-        else
-          render :_error and return
-        end
+    id = params[:id].split('-').first
+
+    if id.numeric?  # Quiere decir que es un ID de la centralizacion o del antiguo de millones
+      begin
+        @especie = Especie.find(id)  # Coincidio y es el ID de la centralizacion
+      rescue
+        id_millon = Adicional.where(idMillon: id).first
+        @especie = Especie.find(id_millon.especie_id) if id_millon  # Es el ID viejo de millones
+      end
+
+    elsif idCAT = Scat.where(catalogo_id: id).first
+      @especie = idCAT.especie  # Es el IdCAT de la tabla SCAT
+    end
+
+    unless @especie.present?
+      if params[:action] == 'show' && params[:format] == 'json'
+        render json: {} and return
+      else
+        render :_error and return
       end
     end
 
-    # Si llego aqui quiere decir que encontro un id en la centralizacion valido
-    @especie.servicios if params[:action] == 'show' && params[:format].blank?
-
     # Por si no viene del arbol, ya que no necesito encontrar el valido
-    if !arbol
+    unless arbol
+      # seteo pedir el taxon valido ANTES de correr los servicios debido a que debo actualizar el valido en vez del sinonimo
       @especie = @especie.dame_taxon_valido
+
+      # Si llego aqui quiere decir que encontro un id en la centralizacion valido
+      @especie.servicios if params[:action] == 'show' && params[:format].blank?
+
       render :_error and return unless @especie
 
       if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados

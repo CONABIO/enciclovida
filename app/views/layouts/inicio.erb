@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es-MX" lang="es-MX">
+<head>
+  <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
+  <meta name="keywords" content="<%= t(:keywords) %>">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="<%= t(:short_description) %>">
+  <meta name="author" content="CONABIO">
+
+  <title><%= CONFIG.site_name_short %></title>
+  <%= favicon_link_tag '/favicon.ico' %>
+
+  <%= csrf_meta_tags %>
+
+  <%= stylesheet_link_tag "boots4-upgrade/inicio", media: "all", "data-turbolinks-track" => true %>
+
+  <script type="text/javascript" data-turbolinks-track="true">
+      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
+      IP = "<%= IP %>";
+      PORT = "<%= PORT %>";
+  </script>
+  <%= javascript_include_tag "application_b4", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag 'inicio/inicio', 'data-no-turbolink' => true %>
+
+  <script type="text/javascript" data-turbolinks-track="true">
+      I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
+      I18n.locale = "<%= I18n.locale %>";
+      I18n.fallbacks = true;
+  </script>
+
+  <%= yield :extrajs %>
+  <%= yield :extracss %>
+
+</head>
+
+<body class="index">
+
+<header class="container-fluid" style="background-image:url('/assets/portada/img_portada_video.png');">
+  <%= render :partial => 'inicio/layout/brandBar' %>
+
+</header>
+
+<section id="content" class="container-fluid">
+  <div class="row">
+    <%= yield %>
+  </div>
+</section>
+
+<footer class="container-fluid">
+  <%= render :partial => 'shared_b4/footer_social' %>
+  <%= render :partial => 'shared_b4/footer_legal' %>
+</footer>
+
+<div id="app-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay=5000 style="position: fixed; bottom: 0px; right: 20px;">
+  <div class="toast-header">
+    <strong class="mr-auto">Noticias</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="toast-body">
+    <h5 class="text-center"><%= link_to '¡Descarga nuestra app!', '#por-que-es-importante', 'data-turbolinks'=>"false" %></h5>
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('.toast').toast('show')
+  });
+</script>
+<%= yield :delayedcss %>
+<%= yield :delayedjs %>
+</body>
+</html>

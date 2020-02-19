@@ -1,56 +1,58 @@
-<div class="text-center col-xs-12 col-sm-10 col-md-5 col-lg-4 col-xs-offset-0 col-sm-offset-1 col-md-offset-7 col-lg-offset-8" id="buscadores">
-  <h4><b>Prueba nuestras diferentes herramientas:</b></h4>
-  <a href="/avanzada" class="btn btn-busquedas btn-basica btn-title" data-turbolinks="false" tooltip-title="Búsqueda avanzada">
-    <i class="busqueda-avanzada-ev-icon"></i>
-  </a>
-  <a href="/explora-por-region" class="btn btn-busquedas btn-basica btn-title" data-turbolinks="false" tooltip-title="Búsqueda por región">
-    <i class="busqueda-region-ev-icon"></i>
-  </a>
-  <a href="/peces" class="btn btn-busquedas btn-basica btn-title" data-turbolinks="false" tooltip-title="Peces y mariscos comerciales">
-    <i class="peces-mariscos-comerciales-ev-icon"></i>
-  </a>
-  <a href="/exoticas-invasoras" class="btn btn-busquedas btn-basica btn-title" data-turbolinks="false" tooltip-title="Búsqueda de especies exóticas invasoras">
-    <i class="exotica-invasora-ev-icon"></i>
-  </a>
-  &middot;
-  <a href="http://proyecto-species.org/" class="btn btn-busquedas btn-basica btn-title" data-turbolinks="false" tooltip-title="Explora datos ecológicos" data-confirm="La consulta externa a EncicloVida se realizará en una nueva ventana." target="_blank">
-    <i class='datos-ecologicos-ev-icon'></i>
-  </a>
-</div>
-<%= render :partial => 'inicio/index_news' %>
-<div class="text-center row" style="margin-top: -120px;">
-  <a href="#about" class="btn-circle page-scroll"><span class="glyphicon glyphicon-menu-down animated" aria-hidden="true"></span></a>
-</div>
-<!-- About -->
-<section id="about">
-  <div class="container-fluid">
+<div id="que-es" class="col-12 py-5 px-3 text-center">
+  <div class="container">
     <div class="row">
-      <div class="col-xs-10 col-sm-8 col-md-8 col-lg-6 col-xs-offset-1 col-sm-offset-2 col-md-offset-2 col-lg-offset3 text-left text-info">
-        <p>
-          <h2 style="color: #FFCC00;">EncicloVida</h2> Es una plataforma digital para conocer a las especies de plantas, hongos y animales de México. <strong style="color: #FFCC00;">EncicloVida</strong> integra información que la Comisión Nacional para el Conocimiento y Uso de la Biodiversidad (CONABIO) ha reunido a través del Sistema Nacional de Información sobre Biodiversidad (SNIB).
-        </p>
-        <p>
-          En <strong style="color: #FFCC00;">EncicloVida</strong> puedes encontrar los nombres de las especies en español y en lenguas indígenas, nombres científicos, fotografías, mapas y registros de ocurrencia, información sobre las categorías de riesgo de México y del mundo. También se identifican las especies con requerimientos especiales para el comercio internacional y las especies seleccionadas como prioritarias por el gobierno mexicano.
-          La descripción de las especies, su distribución y hábitat, alimentación, comportamiento y reproducción, proviene de distintas fuentes proviene de CONABIO, Encyclopedia of Life (EOL) y Wikipedia y se actualizan periódicamente. Conoce nuestras <a href="http://www.biodiversidad.gob.mx/planeta/redes/index.html" target="_blank" style="color: #104C5B;" >redes de información.</a>
-        </p>
-        <div class="text-right">
-          <a href="https://www.youtube.com/watch?v=BeiYK9z7HJM" target="_blank" class="btn btn-sm btn-link" style="color: #104C5B;">Ver video en YouTube <span class="glyphicon glyphicon-new-window"></span></a>
-          <div class="btn-group" role="group">
-            <%= link_to "Acerca de...  <span class='caret'></span>".html_safe, '#', :class => 'btn btn-info dropdown-toggle', :role => 'button', 'data-toggle' =>'dropdown', 'aria-haspopup'=>'true', 'aria-expanded'=>'false' %>
-            <ul class="dropdown-menu">
-              <li><%= link_to '¿Qué es?', inicio_acerca_path << '?tab=queEs', data: { turbolinks: false } %></li>
-              <li><%= link_to 'Dos vistas', inicio_acerca_path << '?tab=dosVistas', data: { turbolinks: false } %></li>
-              <li><%= link_to 'Usos', inicio_acerca_path << '?tab=usos', data: { turbolinks: false } %></li>
-              <li><%= link_to 'Advertencias', inicio_acerca_path << '?tab=advertencias', data: { turbolinks: false } %></li>
-            </ul>
-          </div>
-        </div>
-        <img class="img-responsive" src="/assets/portada/bosqueEncabezado.png" alt="especies">
+      <div class="col-12">
+        <h1 class="font-weight-bold text-white text-left mb-n4">¿Qué es?</h1>
+        <%= render :partial => 'index_que_es' %>
       </div>
     </div>
   </div>
-</section>
-<%= render :partial => 'index_como_usar' %>
-<%= render :partial => 'index_participa' %>
-<%= render :partial => 'index_especies_destacadas_video' %>
-<%= render :partial => 'index_intro_video' %>
+</div>
+<div id="como-funciona" class="col-12 py-5 px-3 text-center">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="font-weight-bold text-left mb-n2">¿Cómo funciona?</h1>
+        <%= render :partial => 'index_como_funciona' %>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="herramientas-busqueda" class="col-12 py-5 px-3 text-center">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h3 class="font-weight-bold text-white text-left mb-n2">Prueba nuestras diferentes <span style="color: #EEB82C;">herramientas de búsqueda:</span></h3>
+        <%= render :partial => 'index_herramientas_busqueda' %>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="por-que-es-importante" class="col-12 py-5 px-3 text-center">
+  <div class="container">
+    <div class="row mb-2">
+      <div class="col-12">
+        <h1 class="font-weight-bold text-left mb-4">¿Por qué es importante?</h1>
+        <p>
+          El primer paso para valorar, usar sustentablemente y conservar la naturaleza mexicana es conocerla.<br />
+          Para resolver los problemas ambientales de la actualidad, <span style="color: #829E3D; font-weight: bold;">la participación de la sociedad<br />
+          es indispensable</span>. La ciencia ciudadana <span style="color: #829E3D; font-weight: bold;">brinda la oportunidad para colaborar</span>,<br />
+          apropiándonos del conocimiento de la naturaleza de México y contribuyendo juntos <span style="color: #829E3D; font-weight: bold;">en la<br />
+          solución de la crisis de la biodiversidad.</span>
+        </p>
+      </div>
+    </div>
+    <div class="row align-items-end">
+      <%= render :partial => 'index_por_que_es_importante' %>
+    </div>
+  </div>
+</div>
+<div class="col-12 p-0 text-center bg-info">
+  <div class="row">
+    <%= render :partial => 'index_especies_destacadas' %>
+  </div>
+</div>
+<div class="col-12">
+  <%= render :partial => 'index_intro_video' %>
+</div>
+

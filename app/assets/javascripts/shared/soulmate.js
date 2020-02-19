@@ -16,6 +16,8 @@ var soulmateAsigna = function(tipo_busqueda, elem)
             var nombres = '<h5> ' + data.nombre_comun + '</h5>' + '<h5><a href="" class="not-active">' + data.nombre_cientifico + ' </a><i>' + data.autoridad + '</i></h5><h5>&nbsp;</h5>';
             return nombres;
         }else{
+            data.nombre_cientifico = limpiar(data.nombre_cientifico);
+            
             if(data.nombre_comun == null) {
                 var nombres = '<a href="" class="not-active">' + data.nombre_cientifico + '</a>';
             }else {
@@ -38,7 +40,7 @@ var soulmateAsigna = function(tipo_busqueda, elem)
             });
 
             if(data.geodatos != undefined && data.geodatos.length > 0){
-                iconos = iconos + "<span class='btn-title' tooltip-title='Tiene datos geográficos'><i class='glyphicon glyphicon-globe'></i></span>";
+                iconos = iconos + "<span class='btn-title' tooltip-title='Tiene datos geográficos'><i class='fa fa-globe'></i></span>";
             }
 
             if(data.fotos > 0) {

@@ -7,7 +7,7 @@ class IUCNService
     @iucn = CONFIG.iucn.api
     @token = CONFIG.iucn.token
 
-    url = "#{@iucn}/api/v3/species/#{opts[:nombre].limpia_ws}?token=#{@token}"
+    url = "#{@iucn}/api/v3/species/#{opts[:nombre].limpiar(tipo: 'ssp')}?token=#{@token}"
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
     req = Net::HTTP::Get.new(uri.to_s)

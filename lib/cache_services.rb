@@ -3,11 +3,11 @@ module CacheServices
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
     guarda_redis_servicio
+
     if Rails.env.production?
       guarda_estadisticas_servicio
       guarda_observaciones_naturalista_servicio
       guarda_ejemplares_snib_servicio
-      #guarda_redis_servicio
       guarda_pez_servicios
       # estadisticas_naturalista_servicio
       # estadisticas_conabio_servicio
@@ -82,12 +82,11 @@ module CacheServices
 
   # REVISADO: Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
   def ficha_naturalista_por_nombre
-    self.jres = { estatus: false, msg: 'No hay resultados' }  # Mensaje default
     return if existe_cache?('ficha_naturalista')
-    escribe_cache('ficha_naturalista', CONFIG.cache.ficha_naturalista) if Rails.env.production?
+    self.jres = { estatus: false, msg: 'No hay resultados' }  # Mensaje default
 
     begin
-      respuesta = RestClient.get "#{CONFIG.inaturalist_api}/taxa?q=#{URI.escape(nombre_cientifico.limpia_ws)}"
+      respuesta = RestClient.get "#{CONFIG.inaturalist_api}/taxa?q=#{URI.escape(nombre_cientifico.limpiar)}"
       resultados = JSON.parse(respuesta)
     rescue => e
       self.jres = jres.merge({msg: e})
@@ -99,7 +98,7 @@ module CacheServices
 
     resultados['results'].each do |t|
       next unless t['ancestor_ids'].present?
-      next unless t['name'].downcase == nombre_cientifico.limpia_ws.downcase
+      next unless t['name'].downcase == nombre_cientifico.limpiar.downcase
 
       # Es un reino
       reino_naturalista = t['ancestor_ids'][1]
@@ -120,6 +119,7 @@ module CacheServices
       end
 
       self.jres = jres.merge({ estatus: true, ficha: t, msg: nil })
+      escribe_cache('ficha_naturalista', CONFIG.cache.ficha_naturalista) if Rails.env.production?
       return
 
     end  # End resultados
@@ -134,6 +134,9 @@ module CacheServices
   def existe_cache?(recurso)
     if Rails.cache.exist?("#{recurso}_#{id}")
       cache = Rails.cache.read("#{recurso}_#{id}")
+
+      r = cache[:created_at] && cache[:expires_in]
+      return false unless r
 
       begin
         (cache[:created_at] + cache[:expires_in]) > Time.now.to_f
@@ -179,7 +182,7 @@ module CacheServices
     # Borra los actuales
     borra_redis(loader)
 
-    # Guarda el redis con el nombre cientifico
+    # Guarda el redis con el nombre cientifico y los demas servicios
     loader.add(asigna_redis(opc.merge({consumir_servicios: true})))
 
     # Guarda el redis con todos los nombres comunes
@@ -804,9 +807,12 @@ module CacheServices
 
     # Caracteristicas de riesgo y conservacion, ambiente y distribucion
     cons_amb_dist = {}
-    caracteristicas = nom_cites_iucn_ambiente_prioritaria(iucn_ws: true) << tipo_distribucion
 
-    caracteristicas.reduce({}, :merge).each do |nombre, valores|
+    caracteristicas = nom_cites_iucn_ambiente_prioritaria({iucn_ws: true})
+    caracteristicas[:grupo1] << tipo_distribucion
+
+    # Paso de la muerte para que solo itere sobre un hash
+    caracteristicas.map { |k,v| v.reduce({}, :merge) }.reduce({}, :merge).each do |nombre, valores|
       next unless valores.any?
 
       valores.each do |valor|
@@ -829,7 +835,7 @@ module CacheServices
 
   # REVISADO: Es el ID del nombre comun que va vinculado al nombre cientifico
   def nombre_comun_a_id_referencia(num_nombre)
-    # El 9 inicial es apra identificarlo, despues se forza el ID a 6 digitos y el numero de nombre comun a 2 digitos
+    # El 1 inicial es para identificarlo, despues se forza el ID a 6 digitos y el numero de nombre comun a 3 digitos
     "1#{id.to_s.rjust(6,'0')}#{num_nombre.to_s.rjust(3,'0')}".to_i
   end
 
@@ -840,7 +846,7 @@ module CacheServices
     loader.remove(nombre_cient_data)
 
     # Borra los nombre comunes
-    50.times do |i|
+    100.times do |i|
       id_referencia = nombre_comun_a_id_referencia(i+1)
       nombre_com_data = {id: id_referencia}.stringify_keys
       loader.remove(nombre_com_data)
@@ -854,7 +860,7 @@ module CacheServices
     FUZZY_NOM_CIEN.delete(id)
 
     # Borra los nombre comunes
-    50.times do |i|
+    100.times do |i|
       id_referencia = nombre_comun_a_id_referencia(i+1)
       FUZZY_NOM_COM.delete(id_referencia)
     end
