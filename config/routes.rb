@@ -255,11 +255,8 @@ Buscador::Application.routes.draw do
   end
 
   namespace :plantid do
-    resources :plantas, :as => "pi_plantas" do
-      resources :imagenes, :as => "pi_imagenes"
-      resources :catalogos, :as => "pi_catalogos"
-      resources :bibliografias, :as => "pi_bibliografias"
-    end
+    resources :catalogos, :as => "pi_catalogos"
+    resources :plantas, :as => "pi_plantas"
     get 'load_bibliosuggestions/:q' => 'plantas#load_bibliosuggestions'
   end
   
