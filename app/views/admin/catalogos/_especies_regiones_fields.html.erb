@@ -4,9 +4,8 @@
   <%= f.input :region_id, as: :hidden, required: true %>
 
   <% if @index_reg > -1 %>
-    <% puts "$#{@index}-#{@index_reg}$" %>
-    <% region = @admin_catalogos.especies_catalogo[@index].regiones[@index_reg].region.nombre_region %>
-    <% tipo_region = @admin_catalogos.especies_catalogo[@index].regiones[@index_reg].region.tipo_region.descripcion %>
+    <% region = @admin_catalogo.especies_catalogo[@index].regiones[@index_reg].region.nombre_region %>
+    <% tipo_region = @admin_catalogo.especies_catalogo[@index].regiones[@index_reg].region.tipo_region.descripcion %>
     <%= f.input :reg, as: :text, input_html: { value: "#{region}, #{tipo_region}", disabled: '' } %>
   <% else %>
     <%= f.input :reg, as: :text, input_html: { class: 'reg-autocomplete' } %>
