@@ -48,7 +48,9 @@
   <h3>Especies asociadas</h3>
   <div>
     <% @index = 0 %>
+    <% puts 'antes de especies_catalogo' %>
     <%= f.simple_fields_for :especies_catalogo do |especie| %>
+      <% puts 'loop de especies_catalogo' %>
       <%= render partial: 'especies_fields', locals: { f: especie } %>
       <% @index+= 1 %>
     <% end %>

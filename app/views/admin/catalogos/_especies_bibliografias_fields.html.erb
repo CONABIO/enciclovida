@@ -4,7 +4,7 @@
   <%= f.input :bibliografia_id, as: :hidden, required: true %>
 
   <% if @index_biblio > -1 %>
-    <% bibliografia = @admin_catalogos[0].especies_catalogo[@index].bibliografias[@index_biblio].bibliografia.cita_completa %>
+    <% bibliografia = @admin_catalogo.especies_catalogo[@index].bibliografias[@index_biblio].bibliografia.cita_completa %>
     <%= f.input :biblio, as: :text, input_html: { value: bibliografia, disabled: '' } %>
   <% else %>
     <%= f.input :biblio, as: :text, input_html: { class: 'biblio-autocomplete' } %>

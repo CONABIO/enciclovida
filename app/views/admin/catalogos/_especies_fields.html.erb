@@ -1,7 +1,7 @@
 <div class='nested-fields'>
 
-  <% if @index > -1 %>
-    <% nombre_cientifico = @admin_catalogos[0].especies_catalogo[@index].especie.nombre_cientifico %>
+  <% if !f.object.new_record? %>
+    <% nombre_cientifico = @admin_catalogo.especies_catalogo[@index].especie.nombre_cientifico %>
     <%= f.input :nombre_cientifico, input_html: { value: nombre_cientifico, disabled: '' } %>
   <% else %>
     <%= f.input :nombre_cientifico, as: :search, input_html: { class: 'ncient-soulmate' } %>
