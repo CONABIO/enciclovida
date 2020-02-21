@@ -5,7 +5,10 @@ class Admin::Catalogo < Catalogo
   has_many :especies_catalogo, class_name: Admin::EspecieCatalogo, foreign_key: attribute_alias(:id), inverse_of: :catalogo
   has_many :especies, -> { order(:nombre_cientifico) }, through: :especies_catalogo, source: :especie
 
-  scope :select_index, -> { select("*, CONCAT(LPAD(#{attribute_alias(:nivel1)},2,'*'),LPAD(#{attribute_alias(:nivel2)},2,'*'),LPAD(#{attribute_alias(:nivel3)},2,'*'),LPAD(#{attribute_alias(:nivel4)},2,'*'),LPAD(#{attribute_alias(:nivel5)},2,'*')) AS niveles").order("niveles ASC, #{attribute_alias(:descripcion)} ASC") }
+  before_save :verifica_niveles
+
+  scope :select_index, -> { select(:id, :descripcion, :nivel1, :nivel2, :nivel3, :nivel4, :nivel5).select("CONCAT(LPAD(#{attribute_alias(:nivel1)},2,'*'),LPAD(#{attribute_alias(:nivel2)},2,'*'),LPAD(#{attribute_alias(:nivel3)},2,'*'),LPAD(#{attribute_alias(:nivel4)},2,'*'),LPAD(#{attribute_alias(:nivel5)},2,'*')) AS niveles, COUNT(#{Admin::EspecieCatalogo.table_name}.#{Admin::EspecieCatalogo.attribute_alias(:especie_id)}) AS totales") }
+  scope :query_index, -> { select_index.left_joins(:especies_catalogo).group("#{Admin::Catalogo.table_name}.#{Admin::Catalogo.attribute_alias(:id)}").order("niveles ASC, #{attribute_alias(:descripcion)} ASC") }
   scope :usos, -> { where(nivel1: 11) }
 
   def dame_nivel1
@@ -33,5 +36,16 @@ class Admin::Catalogo < Catalogo
   end
 
   accepts_nested_attributes_for :especies_catalogo, reject_if: :all_blank, allow_destroy: true
+
+
+  private
+
+  def verifica_niveles
+    self.nivel1 = 0 unless nivel1.present?
+    self.nivel2 = 0 unless nivel2.present?
+    self.nivel3 = 0 unless nivel3.present?
+    self.nivel4 = 0 unless nivel4.present?
+    self.nivel5 = 0 unless nivel5.present?
+  end
 
 end

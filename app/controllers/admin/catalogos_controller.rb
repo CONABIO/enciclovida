@@ -9,8 +9,7 @@ class Admin::CatalogosController < Admin::AdminController
   # GET /admin/catalogos
   # GET /admin/catalogos.json
   def index
-    #@admin_catalogos = Admin::Catalogo.select_index.usos.includes(:especies_catalogo)
-    @admin_catalogos = Admin::Catalogo.select_index.includes(:especies_catalogo)
+    @admin_catalogos = Admin::Catalogo.query_index
   end
 
   # GET /admin/catalogos/1
@@ -49,7 +48,6 @@ class Admin::CatalogosController < Admin::AdminController
   # PATCH/PUT /admin/catalogos/1
   # PATCH/PUT /admin/catalogos/1.json
   def update
-    #puts admin_catalogo_params.inspect
     respond_to do |format|
       if @admin_catalogo.update(admin_catalogo_params)
         format.html { redirect_to @admin_catalogo, notice: 'Catalogo was successfully updated.' }
