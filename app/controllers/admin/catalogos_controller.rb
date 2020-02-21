@@ -9,7 +9,7 @@ class Admin::CatalogosController < Admin::AdminController
   # GET /admin/catalogos
   # GET /admin/catalogos.json
   def index
-    @admin_catalogos = Admin::Catalogo.query_index
+    @admin_catalogos = Admin::Catalogo.new(admin_catalogo_index).query_index
   end
 
   # GET /admin/catalogos/1
@@ -81,10 +81,6 @@ class Admin::CatalogosController < Admin::AdminController
     end
   end
 
-  # El ajax para los filtros de especie y catalogo del index
-  def filtro_index
-
-  end
 
   private
 
@@ -161,9 +157,9 @@ class Admin::CatalogosController < Admin::AdminController
     params.permit(:nivel1, :nivel2, :nivel3, :nivel4, :nivel5)
   end
 
-  # La lista blanca para los filtros de especie y catalogo del index
+  # La lista blanca para los filtros de especie y nivel1
   def admin_catalogo_index
-    params.permit(:especie_id, :catalogo_id)
+    params.require(:admin_catalogo).permit(:especie_id, :nivel1)
   end
 
 end
