@@ -69,6 +69,7 @@ class Admin::CatalogosController < Admin::AdminController
     end
   end
 
+  # El ajax cuando edita los niveles de una catalogo
   def dame_nivel
     nivel = params[:nivel]
     if nivel.present? && (0..5).to_a.include?(nivel.to_i)
@@ -80,6 +81,10 @@ class Admin::CatalogosController < Admin::AdminController
     end
   end
 
+  # El ajax para los filtros de especie y catalogo del index
+  def filtro_index
+
+  end
 
   private
 
@@ -151,8 +156,14 @@ class Admin::CatalogosController < Admin::AdminController
     p
   end
 
+  # La lista blanca para el ajax cuando edita los niveles de una catalogo
   def admin_catalogo_niveles_params
     params.permit(:nivel1, :nivel2, :nivel3, :nivel4, :nivel5)
+  end
+
+  # La lista blanca para los filtros de especie y catalogo del index
+  def admin_catalogo_index
+    params.permit(:especie_id, :catalogo_id)
   end
 
 end
