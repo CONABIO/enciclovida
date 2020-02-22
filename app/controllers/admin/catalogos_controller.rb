@@ -160,7 +160,11 @@ class Admin::CatalogosController < Admin::AdminController
 
   # La lista blanca para los filtros de especie y nivel1
   def admin_catalogo_index
-    params.require(:admin_catalogo).permit(:especie_id, :nivel1)
+    begin
+      params.require(:admin_catalogo).permit(:especie_id, :nivel1)
+    rescue
+      {}
+    end
   end
 
 end

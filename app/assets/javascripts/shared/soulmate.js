@@ -80,6 +80,10 @@ var soulmateAsigna = function(tipo_busqueda, elem)
             case 'admin/catalogos':
                 $('#'+elemento.replace('nombre_cientifico','especie_id')).attr('value', data.id);
                 break;
+            case 'admin/catalogos/index':
+                $('#admin_catalogo_especie_id').val(data.id);
+                $('#admin_catalogo_nombre_cientifico').val(data.nombre_cientifico);
+                break;
             default:
                 // Para no pasar por el controlador de busquedas, ir directo a la especie, solo busqueda basica
                 var nom_cientifico = data.nombre_cientifico.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').replace(/[\(\)]/g, '');

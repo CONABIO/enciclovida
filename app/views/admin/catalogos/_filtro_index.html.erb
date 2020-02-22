@@ -6,6 +6,11 @@
 
   <div class="col-4">
     <%= f.submit value: 'Filtrar', class: 'btn btn-success' %>
+    <%= link_to "Limpiar", admin_catalogos_path, class: "btn btn-light" %>
   </div>
 
 <% end %>
+
+<script>
+  soulmateAsigna("admin/catalogos/index","admin_catalogo_nombre_cientifico");
+</script>
