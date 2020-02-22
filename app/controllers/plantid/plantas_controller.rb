@@ -1,4 +1,4 @@
----------------------------------------------------class Plantid::PlantasController < Plantid::PlantidController
+class Plantid::PlantasController < Plantid::PlantidController
 
 skip_before_action :set_locale
 
@@ -77,12 +77,7 @@ skip_before_action :set_locale
   end
 
    def load_bibliosuggestions
-<<<<<<< HEAD
-    @find = Bibliografia.select(:id,:CitaCompleta).where("CitaCompleta LIKE ?","%#{params[:q]}%").limit(5)
-    puts @find.inspect
-=======
     @find = Bibliografia.select(:id,:CitaCompleta).where("CitaCompleta LIKE ?","%#{params[:q]}%").limit(10)
->>>>>>> c042d3c3672ab0ebc46694985ad1888a6dcdc581
     render json: @find
   end
 
