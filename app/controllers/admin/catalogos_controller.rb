@@ -9,7 +9,8 @@ class Admin::CatalogosController < Admin::AdminController
   # GET /admin/catalogos
   # GET /admin/catalogos.json
   def index
-    @admin_catalogos = Admin::Catalogo.new(admin_catalogo_index).query_index
+    @admin_catalogo = Admin::Catalogo.new(admin_catalogo_index)
+    @admin_catalogos = @admin_catalogo.query_index
   end
 
   # GET /admin/catalogos/1

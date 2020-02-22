@@ -1,6 +1,6 @@
 class Admin::Catalogo < Catalogo
 
-  attr_accessor :ajax, :especie_id, :catalogo_id
+  attr_accessor :ajax, :especie_id, :catalogo_id, :nombre_cientifico
 
   has_many :especies_catalogo, class_name: Admin::EspecieCatalogo, foreign_key: attribute_alias(:id), inverse_of: :catalogo
   has_many :especies, -> { order(:nombre_cientifico) }, through: :especies_catalogo, source: :especie
@@ -13,8 +13,17 @@ class Admin::Catalogo < Catalogo
   # Para hacer el query con o sin filtros
   def query_index
     query = Admin::Catalogo.select_index.left_joins(:especies_catalogo).group("#{Admin::Catalogo.table_name}.#{Admin::Catalogo.attribute_alias(:id)}").order("niveles ASC, #{Admin::Catalogo.attribute_alias(:descripcion)} ASC")
-    query = query.where("#{Admin::EspecieCatalogo.table_name}.#{Admin::EspecieCatalogo.attribute_alias(:especie_id)}=?", especie_id) if especie_id.present?
+
     query = query.where(nivel1: nivel1) if nivel1.present?
+
+    if especie_id.present?
+      begin
+        self.nombre_cientifico = Especie.find(especie_id).nombre_cientifico
+      end
+
+      query = query.where("#{Admin::EspecieCatalogo.table_name}.#{Admin::EspecieCatalogo.attribute_alias(:especie_id)}=?", especie_id)
+    end
+
     query
   end
 
