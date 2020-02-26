@@ -9,6 +9,7 @@ Buscador::Application.routes.draw do
         get :dame_nivel
       end
     end
+    resources :especies_catalogos
     resources :regiones do
       collection do
         get :autocompleta
