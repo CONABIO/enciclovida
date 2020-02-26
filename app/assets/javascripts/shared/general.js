@@ -115,7 +115,7 @@ $(document).ready(function(){
     tooltip();
 
     $(window).resize(function(){
-        refreshMediaQueries();
+        //refreshMediaQueries();
     });
 });
 

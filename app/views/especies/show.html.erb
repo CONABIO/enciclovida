@@ -10,7 +10,7 @@
 <% end %>
 
 <% content_for(:extracss) do %>
-  <%= stylesheet_link_tag 'carrusel', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'boots4-upgrade/especies/especies', 'data-turbolinks-track' => true %>
 <% end %>
 
 <% content_for(:meta_keywords) do %>
@@ -29,26 +29,31 @@
   </div>
 <% end %>
 
-<div class="col-xs-12 col-sm-8 col-md-6">
-  <%= tituloNombreCientifico(@especie, render: 'header') %>
+<div class="col-12">
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-7">
+      <%= tituloNombreCientifico(@especie, render: 'header') %>
 
 <%# if (@datos[:especie_o_inferior]) %>
-  <!--div class="col-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente"-->
-  <%#= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
-  <!--/div-->
+      <!--div class="col-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente"-->
+      <%#= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
+      <!--/div-->
 <%# end %>
-  <div id="nombres_comunes_todos"></div>
-  <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %>
+      <div id="nombres_comunes_todos"></div>
+      <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %>
 <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
-  <div class="f-fuentes">
-    <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
+      <div class="f-fuentes">
+        <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col" id="contenedor_fotos">
+      <p class="text-center">
+        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
+      <h4 class="text-center">Cargando las fotos ... por favor, espera</h4>
+      </p>
+    </div>
   </div>
-</div>
-<div class="col-xs-12 col-sm-4 col-md-6" id="contenedor_fotos">
-  <p class="text-center">
-    <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-  <h4 class="text-center">Cargando las fotos ... por favor, espera</h4>
-  </p>
 </div>
 
 <div class="col-xs-6 col-sm-3 col-lg-2">

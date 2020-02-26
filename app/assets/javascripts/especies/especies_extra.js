@@ -27,4 +27,7 @@ $(document).ready(function(){
         $("#historial_ficha_" + comentario_id).slideDown();
         return false;
     });
+
 });
+
+//TODO PONER CAJAS FIJAS, EN EL EVENTO DONE RELLENAR LOS BACKGROUND
