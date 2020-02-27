@@ -236,7 +236,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
         tiene_valor = true
       end
 
-      response << "&nbsp;"*5 if tiene_valor  # Espacios para seprar las categorias
+      response << "&nbsp;"*2 if tiene_valor  # Espacios para seprar las categorias
     end
 
     response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600,

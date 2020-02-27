@@ -14,7 +14,9 @@ $(document).ready(function(){
 
     if (opciones.naturalista_api != undefined) fotosNaturalista(); else fotosBDI();
 
-    $('#nombres_comunes_todos').load("/especies/" + opciones.taxon + "/nombres-comunes-todos");
+    $('#nombres_comunes_todos').load("/especies/" + opciones.taxon + "/nombres-comunes-todos", function(){
+        console.log(this);
+    });
 
     $('#enlaces_externos').on('click', '#boton_pdf', function(){
         window.open("/especies/" + opciones.taxon + ".pdf?from=" + opciones.cual_ficha);
@@ -27,7 +29,7 @@ $(document).ready(function(){
         $("#historial_ficha_" + comentario_id).slideDown();
         return false;
     });
+    $("html,body").animate({scrollTop: 127}, 500);
+
 
 });
-
-//TODO PONER CAJAS FIJAS, EN EL EVENTO DONE RELLENAR LOS BACKGROUND
