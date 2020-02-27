@@ -30,8 +30,8 @@
       niveles.delete_if { |n| n == 0 }
     %>
       <tr>
-        <td><%= " - "*niveles.length %><%= catalogo.descripcion %></td>
-        <td><%= catalogo.totales %></td>
+        <td class="<%= 'bg-secondary text-white border-top border-dark' if catalogo.nivel2 == 0 %>"><%= ("&nbsp;"*5*niveles.length).html_safe %><%= catalogo.descripcion %></td>
+        <td class="<%= 'bg-secondary text-white border-top border-dark' if catalogo.nivel2 == 0 %>"><%= catalogo.totales %></td>
         <td>
 
           <div class="dropdown">
