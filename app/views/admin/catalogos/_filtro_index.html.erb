@@ -4,7 +4,7 @@
   <%= f.input :nombre_cientifico %>
   <%= f.input :especie_id, as: :hidden %>
 
-  <div class="col-4">
+  <div>
     <%= f.submit value: 'Filtrar', class: 'btn btn-success' %>
     <%= link_to "Limpiar", admin_catalogos_path, class: "btn btn-light" %>
   </div>
