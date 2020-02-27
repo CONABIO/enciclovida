@@ -32,7 +32,7 @@ var fotosNaturalista = function()
                     //$('#contenedor_fotos').removeClass().addClass('col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2');
                     else {
                         //$('#contenedor_fotos').removeClass().addClass('col-xs-12 col-sm-10 col-md-5 col-lg-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-0');
-                        $('#contenedor_mapa').removeClass().addClass('col-xs-12');
+                        $('#contenedor_mapa').removeClass().addClass('row');
                     }
 
                     $('#contenedor_fotos').html(fotos);

@@ -13,7 +13,7 @@ var limpiar = function (str)
  * Pone el tamaño inicial al mapa
  */
 var ponTamaño = function () {
-    $('#map').css('height', $('#contenedor_mapa').height() - 30);
+    $('#map').css('height', $('#contenedor_mapa').height());
     map.invalidateSize(true);
 };
 

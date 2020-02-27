@@ -57,7 +57,7 @@
 </div>
 
 <div class="col-xs-6 col-sm-3 col-lg-2">
-  <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+  <div class="nav flex-column" id="v-pills-tab" role="tablist" aria-orientation="vertical">
     <a class="nav-link active" id="eodata_e_imagen-tab" data-toggle="pill" href="#geodata_e_imagen" role="tab" aria-controls="geodata_e_imagen" aria-selected="true">Inicio</a>
     <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-media" role="tab" aria-controls="v-pills-profile" aria-selected="false">Media</a>
     <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-messages" aria-selected="false">Fichas</a>
@@ -75,17 +75,28 @@
       <%= link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
       <div class="dropdown-divider"></div>
       <% if @datos[:ficha_naturalista] %>
-        <%= link_to("<small>#{imagotipo_naturalista_nombre}</small><i class='fa fa-external-link-square'></i>".html_safe, @datos[:ficha_naturalista], class: 'dropdown-item', target: '_blank') %>
+        <%= link_to("#{imagotipo_naturalista_nombre}<i class='fa fa-external-link-square'></i>".html_safe, @datos[:ficha_naturalista], class: 'dropdown-item', target: '_blank') %>
       <% end %>
       <%= ponBotonEditaIDNaturalista if usuario_signed_in? && editarIDNaturalista = tiene_permiso?('Administrador') %>
     </div>
 
   </div>
 </div>
-<div class="col-xs-6 col-sm-9 col-10">
+
+<div class="col-xs-6 col-sm-9 col-lg-10">
   <div class="tab-content" id="v-pills-tabContent">
     <div class="tab-pane fade show active" id="geodata_e_imagen" role="tabpanel" aria-labelledby="geodata_e_imagen-tab">
-      <%= render :partial => 'geodata_e_imagen' %>
+      <div class="row">
+        <div class="col-xs-12 col-md-9">
+          <% if @datos[:geodatos].present? %>
+            <%= render :partial => 'geodata_e_imagen' %>
+          <% end %>
+          <p id='sin_datos' class="text-primary text-center"></p>
+        </div>
+        <div class="col-xs-12 col-md" id="arbol">
+          <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
+        </div>
+      </div>
     </div>
     <div class="tab-pane fade" id="v-pills-media" role="tabpanel" aria-labelledby="v-pills-profile-tab">b</div>
     <div class="tab-pane fade" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-messages-tab">c</div>
@@ -146,9 +157,6 @@
     <li role="presentation" >
       <a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="label label-primary"><%= @datos[:cuantos_comentarios] %></span></a>
     </li>
-    <!--li role="presentation" >
-      <a href="#noticias" aria-controls="noticias" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-flash" aria-hidden="true"></span><strong><small>Noticias</small></strong></a>
-    </li-->
   </ul>
 
   <div class="tab-content">
@@ -251,7 +259,7 @@
       </div>
     </div>
 
-    <div id="arbol" role="tabpanel" class="tab-pane fade panel-body"></div>
+    <div  role="tabpanel" class="tab-pane fade panel-body"></div>
     <div id="comentario" role="tabpanel" class="tab-pane fade panel-body"></div>
     <!--div id="noticias" role="tabpanel" class="tab-pane fade panel-body"></div-->
   </div>

@@ -24,7 +24,7 @@ module EspeciesHelper
     html = ''
 
     def creaLista(taxon, lista=nil)
-      link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
+      link = "#{link_to("<i class='fa fa-plus' id='span_#{taxon.id}'></i>".html_safe, '',
                         :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
       nombre = tituloNombreCientifico(taxon, render: 'arreglo-taxonomico')
       "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}#{lista.present? ? lista : ''}</li></ul>"
@@ -36,6 +36,16 @@ module EspeciesHelper
       else
         html = creaLista(taxon)
       end
+    end
+
+    html.html_safe
+  end
+
+  def dameArbolInicialSinIndentar(taxones)
+    html = ''
+    taxones.reverse.each do |taxon|
+      nombre = tituloNombreCientifico(taxon, render: 'link')
+      html << "<tr><td id='td_#{taxon.id}' class=''>#{nombre}</td></tr>"
     end
 
     html.html_safe
