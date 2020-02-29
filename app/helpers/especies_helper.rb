@@ -45,7 +45,7 @@ module EspeciesHelper
     html = ''
     taxones.reverse.each do |taxon|
       nombre = tituloNombreCientifico(taxon, render: 'link')
-      html << "<tr><td id='td_#{taxon.id}' class=''>#{nombre}</td></tr>"
+      html << "<tr><td></td><td id='td_#{taxon.id}' class=''>#{nombre}</td></tr>"
     end
 
     html.html_safe

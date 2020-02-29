@@ -2,13 +2,13 @@
 <%#= javascript_include_tag 'especies/arbol/arbol_identado' %>
 <% if @taxones.present? && @taxones.length > 0 %>
   <div class="table-responsive table-bordered">
-    <table class="table table-sm">
+    <table class="table table-sm ">
       <thead>
       <tr class="bg-success">
-        <th scope="col">Taxonomía</th>
+        <th scope="col" colspan="2">Taxonomía</th>
       </tr>
       </thead>
-      <tbody style="font-size: .85em;">
+      <tbody class="table-light" style="font-size: .85em;">
         <%= dameArbolInicialSinIndentar(@taxones) %>
     </table>
   </div>

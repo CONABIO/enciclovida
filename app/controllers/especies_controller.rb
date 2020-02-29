@@ -41,7 +41,7 @@ class EspeciesController < ApplicationController
   def show
     render 'especies/noPublicos' and return unless @especie.scat.Publico
     ## Para mostrar la taxonomia en la página inicial del show
-    @taxones = Especie.arbol_identado_inicial(@especie)
+    @taxones = Especie.arbol_nodo_inicial(@especie)
 
     respond_to do |format|
       format.html do

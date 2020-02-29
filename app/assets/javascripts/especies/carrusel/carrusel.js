@@ -38,8 +38,8 @@ var fotosNaturalista = function()
                     $('#contenedor_fotos').html(fotos);
                     //inicia_carrusel();
 
-                    $('#especies-destacadas .col').hover(function(){$(this).toggleClass('col-5')});
-                    $('#especies-destacadas').hover(function(){$('#especies-destacadas div.col:first-of-type').toggleClass('col-4')});
+                    $('#especies-destacadas .col').hover(function(){$(this).toggleClass('col-7')});
+                    $('#especies-destacadas').hover(function(){$('#especies-destacadas div.col:first-of-type').toggleClass('col-6')});
                 }).fail(function (error) {
                     fotosBDI();
                 });

@@ -57,8 +57,8 @@
 </div>
 
 <div class="col-xs-6 col-sm-3 col-lg-2">
-  <div class="nav flex-column" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-    <a class="nav-link active" id="eodata_e_imagen-tab" data-toggle="pill" href="#geodata_e_imagen" role="tab" aria-controls="geodata_e_imagen" aria-selected="true">Inicio</a>
+  <div class="nav flex-column nav-tabs" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+    <a class="nav-link active" id="geodata_e_imagen-tab" data-toggle="pill" href="#geodata_e_imagen" role="tab" aria-controls="geodata_e_imagen" aria-selected="true">Inicio</a>
     <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-media" role="tab" aria-controls="v-pills-profile" aria-selected="false">Media</a>
     <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-messages" aria-selected="false">Fichas</a>
     <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-comments" role="tab" aria-controls="v-pills-settings" aria-selected="false">Comentarios</a>
@@ -87,15 +87,17 @@
   <div class="tab-content" id="v-pills-tabContent">
     <div class="tab-pane fade show active" id="geodata_e_imagen" role="tabpanel" aria-labelledby="geodata_e_imagen-tab">
       <div class="row">
-        <div class="col-xs-12 col-md-9">
+        <div class="col-xs-12 col-md" id="arbol">
+          <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
+        </div>
+        <div class="col-xs-12 col-md-8
+">
           <% if @datos[:geodatos].present? %>
             <%= render :partial => 'geodata_e_imagen' %>
           <% end %>
           <p id='sin_datos' class="text-primary text-center"></p>
         </div>
-        <div class="col-xs-12 col-md" id="arbol">
-          <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
-        </div>
+
       </div>
     </div>
     <div class="tab-pane fade" id="v-pills-media" role="tabpanel" aria-labelledby="v-pills-profile-tab">b</div>
