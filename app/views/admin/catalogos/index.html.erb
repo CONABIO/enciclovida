@@ -55,8 +55,9 @@
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <%#= link_to 'Ver las especies', catalogo, class: 'dropdown-item' %>
-                  <%= link_to 'Editar', edit_admin_catalogo_path(catalogo), class: 'dropdown-item' %>
-                  <%= link_to 'Destruir', catalogo, method: :delete, data: { confirm: 'Are you sure?' }, class: 'dropdown-item' %>
+                  <%= link_to("Editar solo a #{params[:admin_catalogo][:nombre_cientifico]}", "/admin/especies_catalogos/#{catalogo.id},#{params[:admin_catalogo][:especie_id]}/edit", class: 'dropdown-item') if params[:admin_catalogo].present? && params[:admin_catalogo][:especie_id].present? %>
+                  <%= link_to "Editar", edit_admin_catalogo_path(catalogo), class: 'dropdown-item' %>
+                  <%= link_to 'Destruir', catalogo, method: :delete, data: { confirm: 'Esta acción es irreversible y borrará tambien las especies, bibiografias y regiones vinculadas a este catálogo, ¿Estás segur@ de esta edición?' }, class: 'dropdown-item' %>
                 </div>
               </div>
 
