@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'actionpack-action_caching'  # Fue removido del core en 4.0
 gem 'activerecord-session_store'  # Pasa los request con POST a traves de la base (para request muy largos)
 gem 'ancestry', git: 'https://github.com/calonsot/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
-gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+gem 'caxlsx'#, git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'caxlsx_rails'  # Gema para exportar en excel
 gem 'bootstrap-sass', '~> 3.4.1'
 gem 'carrierwave'  # Form file upload
@@ -55,7 +55,7 @@ gem 'uglifier'
 gem 'wash_out'
 gem 'whenever', :require => false
 gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary'
+gem 'wkhtmltopdf-binary', '0.12.4'  # Actualizando la version truena (TODO)
 gem 'zip-zip' # Needed by axlsx
 
 group :doc do
