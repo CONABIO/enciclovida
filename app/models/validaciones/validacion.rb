@@ -22,7 +22,7 @@ class Validacion
       return
     end
 
-    taxones = Especie.solo_publicos.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) = ?", nombre_cientifico.limpia.downcase)
+    taxones = Especie.solo_publicos.where("LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) = ?", nombre_cientifico.limpia.downcase).order(estatus: :desc)
 
     if taxones.length == 1  # Caso mas sencillo, coincide al 100 y solo es uno
       Rails.logger.debug "Coincidio busqueda exacta"
@@ -31,11 +31,11 @@ class Validacion
 
     elsif taxones.length > 1  # Encontro el mismo nombre cientifico mas de una vez
       Rails.logger.debug "Coincidio mas de uno directo en la base"
-      self.validacion = {taxones: taxones, msg: 'Existe más de una coincidencia'}
+      self.validacion = {estatus: false, taxones: taxones, msg: 'Existe más de una búsqueda exacta'}
       return
 
     else
-      Rails.logger.debug "ratando de encontrar concidencias con la base, separando el nombre"
+      Rails.logger.debug "Tratando de encontrar concidencias con la base, separando el nombre"
       # Parte de expresiones regulares a ver si encuentra alguna coincidencia
       nombres = I18n.transliterate(nombre_cientifico.limpia.limpiar.limpia_sql.downcase).split(' ')
 
@@ -48,11 +48,11 @@ class Validacion
                 end
 
       if taxones.present? && taxones.length == 1  # Caso mas sencillo
-        self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda exacta'}
+        self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda similar'}
         return
 
       elsif taxones.present? && taxones.length > 1  # Mas de una coincidencia
-        self.validacion = {taxones: taxones, msg: 'Existe más de una coincidencia'}
+        self.validacion = {estatus: false, taxones: taxones, msg: 'Existe más de una búsqueda similar'}
         return
 
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo levenshtein
@@ -83,14 +83,14 @@ class Validacion
             if taxones_con_distancia.length == 1
               if nombre_cientifico.downcase == taxones_con_distancia.first.nombre_cientifico.limpiar(tipo: 'ssp').downcase  # Era el mismo, solo que tenia ssp. en vez de subsp.
                 Rails.logger.debug "-#{nombre_cientifico.limpiar.estandariza}-#{taxones_con_distancia.first.nombre_cientifico.limpiar.estandariza}-"
-                self.validacion = {estatus: true, taxon: taxones_con_distancia.first, msg: 'Búsqueda exacta'}
+                self.validacion = {estatus: true, taxon: taxones_con_distancia.first, msg: 'Búsqueda similar'}
               else
                 self.validacion = {estatus: true, taxon: taxones_con_distancia.first, msg: 'Búsqueda similar'}
               end
 
               return
             else
-              self.validacion = {taxones: taxones_con_distancia, msg: 'Existe más de una coincidencia'}
+              self.validacion = {estatus: false, taxones: taxones_con_distancia, msg: 'Existe más de una búsqueda similar'}
             end
           end
 
