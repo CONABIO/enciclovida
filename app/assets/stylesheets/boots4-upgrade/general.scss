@@ -39,7 +39,7 @@
   font-family: "acumin-pro-extra-condensed";
 }
 
-#brandBar .dropdown {
+#brandBar > .dropdown {
   position: fixed;
   right: -3px;
   top: -3px;
@@ -49,7 +49,7 @@
 
 #brandBar .form-group{margin: 4px 0;}
 #brandBar .btn-group{min-width: 100%;}
-#brandBar a.btn-busquedas, #brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
+#brandBar a.btn-busquedas, #brandBar  > .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
   padding: 5px 5%;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
@@ -150,7 +150,7 @@ footer .list-group-item {
 }
 .enciclo-ev-icon:before, .vida-ev-icon:before, .conabio_completo-ev-icon:before{
   margin: 0;
-  font-size: 4em;
+  font-size: 3em;
   width: 2em !important;
 }
 
