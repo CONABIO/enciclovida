@@ -3,6 +3,7 @@ Buscador::Application.routes.draw do
 
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
+=begin
   namespace :admin do
     resources :catalogos do
       collection do
@@ -21,6 +22,7 @@ Buscador::Application.routes.draw do
       end
     end
   end
+=end
 
   if Rails.env.development?
     namespace :metamares do
