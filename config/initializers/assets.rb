@@ -13,4 +13,5 @@ fichas/fichas.js fichas.css estadisticas/estadisticas.js estadisticas/estadistic
 application_b4.js boots4-upgrade/application_b4.scss boots4-upgrade/busquedas/avanzada/avanzada.scss
 boots4-upgrade/inicio.scss
 admin/admin.js admin/catalogos/catalogos_extra.js
+lib/bootstrap-select.min.css lib/bootstrap-select.min.js
 )
