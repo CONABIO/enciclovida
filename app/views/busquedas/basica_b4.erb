@@ -20,7 +20,9 @@
   <%= hidden_field_tag :id %>
 
   <div class="input-group">
-    <div class="w-100 text-center"><label class="font-weight-bold text-white" for="nombre">Busca entre más de 103 mil especies</label></div>
+    <div class="w-100 text-center">
+      <label class="font-weight-bold text-white" for="nombre">Busca entre más de 103 mil especies</label>
+    </div>
     <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
 
     <div class="input-group-append">
@@ -39,5 +41,5 @@
       </div>
     </div>
   </div>
-
+  <ul id="soulmate"></ul>
 <% end %>
