@@ -43,9 +43,9 @@ module EspeciesHelper
 
   def dameArbolInicialSinIndentar(taxones)
     html = ''
-    taxones.reverse.each do |taxon|
+    taxones.each do |taxon|
       nombre = tituloNombreCientifico(taxon, render: 'link')
-      html << "<tr><td class='text-capitalize font-weight-bold'>#{taxon.nombre_categoria_taxonomica}</td><td id='td_#{taxon.id}' class=''>#{nombre}</td></tr>"
+      html << "<tr class='d-flex align-items-center'><td class='text-capitalize font-weight-bold'>#{taxon.nombre_categoria_taxonomica}</td><td id='td_#{taxon.id}' class=''>#{nombre}</td></tr>"
     end
 
     html.html_safe

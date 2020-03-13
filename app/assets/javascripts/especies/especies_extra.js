@@ -63,7 +63,7 @@ $(document).ready(function(){
         $("#historial_ficha_" + comentario_id).slideDown();
         return false;
     });
-    $("html,body").animate({scrollTop: 127}, 500);
+    $("html,body").animate({scrollTop: 101}, 500);
 
     $('#arbol').on('click', '.sub_link_taxon', function(){
         despliegaOcontrae($(this));

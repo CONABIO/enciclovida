@@ -29,8 +29,8 @@
   </div>
 <% end %>
 
-<div class="col-12 mb-2">
-  <div class="row">
+<div class="col-12 mb-2 p-0">
+  <div class="row no-gutters">
     <div class="col-xs-12 col-md-6">
       <%= tituloNombreCientifico(@especie, render: 'header') %>
 
@@ -48,10 +48,10 @@
     </div>
 
     <div class="col-xs-12 col-md" id="contenedor_fotos">
-      <p class="text-center">
-        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-      <h4 class="text-center">Cargando las fotos ... por favor, espera</h4>
-      </p>
+      <p>Cargando las fotos ... por favor, espera</p>
+      <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
     </div>
   </div>
 </div>
@@ -59,15 +59,26 @@
 
 
 
-<div class="col-12">
-  <div class="nav flex-sm-row flex-md-column nav-tabs" id="navegacion" role="tablist" aria-orientation="vertical">
-    <a class="nav-link active" id="geodata_e_imagen-tab" data-toggle="pill" href="#geodata_e_imagen" role="tab" aria-controls="geodata_e_imagen" aria-selected="true">Inicio</a>
-    <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-media" role="tab" aria-controls="v-pills-profile" aria-selected="false">Media</a>
-    <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-messages" aria-selected="false">Fichas</a>
-    <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-comments" role="tab" aria-controls="v-pills-settings" aria-selected="false">Comentarios</a>
+<div class="col-12 d-flex flex-column flex-md-row">
 
+  <div class="nav flex-row flex-md-column nav-pills mr-md-4 flex-nowrap flex-md-wrap justify-content-around justify-content-md-start" id="navegacion" role="tablist" aria-orientation="vertical">
 
-    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Más info</a>
+    <a class="nav-link w-100 text-center text-md-left active" id="geodata_e_imagen-tab" data-toggle="pill" href="#geodata_e_imagen" role="tab" aria-controls="geodata_e_imagen" aria-selected="true">
+      <i class="fa fa-home d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Inicio</b>
+    </a>
+    <a class="nav-link w-100 text-center text-md-left" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-media" role="tab" aria-controls="v-pills-profile" aria-selected="false">
+      <i class="fa fa-forward d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Media</b>
+    </a>
+    <a class="nav-link w-100 text-center text-md-left" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-messages" aria-selected="false">
+      <i class="fa fa-file-text d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Fichas</b>
+    </a>
+    <a class="nav-link w-100 text-center text-md-left" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-comments" role="tab" aria-controls="v-pills-settings" aria-selected="false">
+      <i class="fa fa-comments-o d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Comentarios</b>
+    </a>
+    <a class="nav-link w-100 text-center text-md-left text-md-left dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-info-circle d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Más info</b>
+    </a>
+
     <div class="dropdown-menu" id="enlaces_externos">
       <%= button_tag("<b>Ficha en PDF <i class='fa fa-file-pdf-o'></i></b>".html_safe, :class => 'dropdown-item', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
       <div class="dropdown-divider"></div>
@@ -86,13 +97,13 @@
   </div>
 
 
-  <div class="tab-content" id="v-pills-tabContent">
-    <div class="tab-pane fade show active" id="geodata_e_imagen" role="tabpanel" aria-labelledby="geodata_e_imagen-tab">
+  <div class="tab-content w-100" id="v-pills-tabContent">
+    <div class="tab-pane show active w-100" id="geodata_e_imagen" role="tabpanel" aria-labelledby="geodata_e_imagen-tab">
       <div class="row">
-        <div class="col-xs-12 col" id="arbol">
+        <div class="col-12 d-none d-lg-inline-block col-lg-3" id="arbol">
           <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
         </div>
-        <div class="col-xs-12 col-sm-9">
+        <div class="col-12 col-lg-9">
           <% if @datos[:geodatos].present? %>
             <%= render :partial => 'geodata_e_imagen' %>
           <% end %>
@@ -101,11 +112,16 @@
 
       </div>
     </div>
-    <div class="tab-pane fade" id="v-pills-media" role="tabpanel" aria-labelledby="v-pills-profile-tab">b</div>
-    <div class="tab-pane fade" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-messages-tab">c</div>
-    <div class="tab-pane fade" id="v-pills-comments" role="tabpanel" aria-labelledby="v-pills-settings-tab">d</div>
-    <div class="tab-pane fade" id="v-pills-more" role="tabpanel" aria-labelledby="v-pills-settings-tab">d</div>
+
+    <div class="tab-pane fade w-100" id="v-pills-media" role="tabpanel" aria-labelledby="v-pills-profile-tab">b</div>
+
+    <div class="tab-pane fade w-100" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-messages-tab">c</div>
+
+    <div class="tab-pane fade w-100" id="v-pills-comments" role="tabpanel" aria-labelledby="v-pills-settings-tab">d</div>
+
+    <div class="tab-pane fade w-100" id="v-pills-more" role="tabpanel" aria-labelledby="v-pills-settings-tab">d</div>
   </div>
+
 </div>
 
 

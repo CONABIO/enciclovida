@@ -1,4 +1,4 @@
-<div id="especies-destacadas" class="row">
+<div id="especies-destacadas" class="row no-gutters">
   <% @fotos.each_with_index do |f, i|%>
     <%-
       next unless f.square_url.present?
@@ -7,7 +7,7 @@
       next unless img_normal.present?
     -%>
     <div class="col <%= 'col-6' if i == 0  %>" style="background-image: url('<%= img_normal %>');">
-      <a class="btn btn-title" href="<%= f.native_page_url %>" title="<%= f.attribution_txt %>"></a>
+      <a class="btn btn-title" <%#= f.native_page_url %> title="<%= f.attribution_txt %>"></a>
     </div>
   <% end %>
 
