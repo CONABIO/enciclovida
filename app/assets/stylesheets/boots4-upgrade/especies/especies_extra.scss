@@ -147,3 +147,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 #arbol td{
   vertical-align: middle!important;
 }
+#navegacion .btn.btn-outline-primary{
+  border-radius: 0px!important;
+  border-color: rgba(189, 0, 22, 0.1)!important;
+}
