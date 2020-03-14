@@ -38,7 +38,7 @@ var borraObservacionesAnterioresNaturalista = function()
  */
 var leyendaNaturalista = function()
 {
-    naturalista_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
+    naturalista_control = L.control.layers({}, {}, {collapsed: true, position: 'bottomleft'}).addTo(map);
 
     naturalista_control.addOverlay(naturalistaLayer,
         '<b>Observaciones de <span aria-hidden="true" class="naturalista-3-ev-icon"></span><span aria-hidden="true" class="naturalista-4-ev-icon"></span></b><br />(ciencia ciudadana) <sub>' + observaciones_conteo + '</sub>'

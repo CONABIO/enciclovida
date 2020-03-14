@@ -37,7 +37,7 @@ var borraEjemplaresAnterioresSnib = function()
  */
 var leyendaSnib = function()
 {
-    snib_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
+    snib_control = L.control.layers({}, {}, {collapsed: true, position: 'bottomleft'}).addTo(map);
 
     snib_control.addOverlay(snibLayer,
         '<b>Ejemplares del SNIB</b><br />(museos, colectas y proyectos) <sub>' + ejemplares_conteo + '</sub>'

@@ -66,32 +66,57 @@
     <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary active" id="geodata_e_imagen-tab" data-toggle="pill" href="#geodata_e_imagen" role="tab" aria-controls="geodata_e_imagen" aria-selected="true">
       <i class="fa fa-home d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Inicio</b>
     </a>
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-media" role="tab" aria-controls="v-pills-profile" aria-selected="false">
-      <i class="fa fa-forward d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Media</b>
-    </a>
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-messages" aria-selected="false">
+
+    <div class="btn-group dropright" style="z-index: 1001;">
+      <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary text-md-left dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-forward d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Media</b>
+      </a>
+
+      <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" style="z-index: 1001;">
+        <h6 class="dropdown-header">CONABIO - Banco de imágenes</h6>
+        <a href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="pill">
+          Fotos
+        </a>
+        <!--a href="#videos-bdi" aria-controls="videos-bdi" role="tab" data-toggle="tab"> Activar hasta nuevo aviso
+          <i class='glyphicon glyphicon-film' aria-hidden='true'></i>
+        </a-->
+        <div class="dropdown-divider"></div>
+
+        <h6 class="dropdown-header">Biblioteca MacCaulay</h6>
+        <a class="hasParams" data-params="media-cornell?type=photo" href="#mediaCornell_p" aria-controls="mediaCornell_p" role="tab" data-toggle="tab">Fotos</a>
+        <a class="hasParams" data-params="media-cornell?type=video" href="#mediaCornell_v" aria-controls="mediaCornell_v" role="tab" data-toggle="tab">Videos</a>
+        <a class="hasParams" data-params="media-cornell?type=audio" href="#mediaCornell_a" aria-controls="mediaCornell_a" role="tab" data-toggle="tab">Audios</a>
+        <div class="dropdown-divider"></div>
+        <h6 class="dropdown-header">Biblioteca Tropicos (Plantas)</h6>
+        <a href="#media_tropicos" aria-controls="media_tropicos" role="tab" data-toggle="tab">Fotos</a>
+      </div>
+    </div>
+
+    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary" id="v-pills-messages-tab" data-toggle="pill" href="#describe" role="tab" aria-controls="v-pills-messages" aria-selected="false">
       <i class="fa fa-file-text d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Fichas</b>
     </a>
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-comments" role="tab" aria-controls="v-pills-settings" aria-selected="false">
-      <i class="fa fa-comments-o d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Comentarios</b>
-    </a>
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary text-md-left dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-      <i class="fa fa-info-circle d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Más info</b>
+    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary d-inline-flex" id="v-pills-settings-tab" data-toggle="pill" href="#comentario" role="tab" aria-controls="v-pills-settings" aria-selected="false">
+      <i class="fa fa-comments-o d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Comentarios</b><span id="totales" class="badge"><%= @datos[:cuantos_comentarios] %></span>
     </a>
 
-    <div class="dropdown-menu" id="enlaces_externos">
-      <%= button_tag("<b>Ficha en PDF <i class='fa fa-file-pdf-o'></i></b>".html_safe, :class => 'dropdown-item', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
-      <div class="dropdown-divider"></div>
-      <h6 class="dropdown-header">Consultar en <i class="fa fa-external-link-square"></i>:</h6>
-      <%= link_to('BHL', "http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}", target: '_blank', class: 'dropdown-item', title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
-      <%= link_to(' Google Académico', "https://scholar.google.com.mx/scholar?hl=es&q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en Google Académico (Schoolar)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
-      <%= link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
-      <%= link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
-      <div class="dropdown-divider"></div>
-      <% if @datos[:ficha_naturalista] %>
-        <%= link_to("#{imagotipo_naturalista_nombre}<i class='fa fa-external-link-square'></i>".html_safe, @datos[:ficha_naturalista], class: 'dropdown-item', target: '_blank') %>
-      <% end %>
-      <%= ponBotonEditaIDNaturalista if usuario_signed_in? && editarIDNaturalista = tiene_permiso?('Administrador') %>
+    <div class="btn-group dropright" style="z-index: 1001;">
+      <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary text-md-left dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-info-circle d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Más info</b>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" id="enlaces_externos">
+        <%= button_tag("<b>Ficha en PDF <i class='fa fa-file-pdf-o'></i></b>".html_safe, :class => 'dropdown-item', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
+        <div class="dropdown-divider"></div>
+        <h6 class="dropdown-header">Consultar en <i class="fa fa-external-link-square"></i>:</h6>
+        <%= link_to('BHL', "http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}", target: '_blank', class: 'dropdown-item', title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
+        <%= link_to(' Google Académico', "https://scholar.google.com.mx/scholar?hl=es&q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en Google Académico (Schoolar)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
+        <%= link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
+        <%= link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
+        <div class="dropdown-divider"></div>
+        <% if @datos[:ficha_naturalista] %>
+          <%= link_to("#{imagotipo_naturalista_nombre}<i class='fa fa-external-link-square'></i>".html_safe, @datos[:ficha_naturalista], class: 'dropdown-item', target: '_blank') %>
+        <% end %>
+        <%= ponBotonEditaIDNaturalista if usuario_signed_in? && editarIDNaturalista = tiene_permiso?('Administrador') %>
+      </div>
     </div>
 
   </div>
@@ -113,126 +138,58 @@
       </div>
     </div>
 
-    <div class="tab-pane fade w-100" id="v-pills-media" role="tabpanel" aria-labelledby="v-pills-profile-tab">b</div>
-
-    <div class="tab-pane fade w-100" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-messages-tab">c</div>
-
-    <div class="tab-pane fade w-100" id="v-pills-comments" role="tabpanel" aria-labelledby="v-pills-settings-tab">d</div>
-
-    <div class="tab-pane fade w-100" id="v-pills-more" role="tabpanel" aria-labelledby="v-pills-settings-tab">d</div>
-  </div>
-
-</div>
-
-
-
-
-
-
-
-<div id="pestañas" class="panel col-12">
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active">
-      <a href="" aria-controls="geodata_e_imagen" role="tab" data-toggle="pill"><i class="picture-ev-icon"></i>/<i class="glyphicon glyphicon-globe"></i><strong><small> Inicio</small></strong></a>
-    </li>
-
-    <li role="presentation" class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="picture-ev-icon"></i><strong><small> Media </small></strong><span class="caret"></span></a>
-
-      <ul class="dropdown-menu" style="z-index: 1001;">
-        <li class="dropdown-header">CONABIO - Banco de imágenes</li>
-        <li style="display: inline-block;" role="presentation">
-          <a href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="tab">
-            <i class='glyphicon glyphicon-camera' aria-hidden='true'></i>
-          </a>
-        </li>
-        <!--li style="display: inline-block;" role="presentation">   Activar hasta nuevo aviso
-          <a href="#videos-bdi" aria-controls="videos-bdi" role="tab" data-toggle="tab">
-            <i class='glyphicon glyphicon-film' aria-hidden='true'></i>
-          </a>
-        </li-->
-        <li role="separator" class="divider"></li>
-        <li class="dropdown-header">Biblioteca MacCaulay</li>
-        <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=photo" href="#mediaCornell_p" aria-controls="mediaCornell_p" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i></a></li>
-        <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=video" href="#mediaCornell_v" aria-controls="mediaCornell_v" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-film' aria-hidden='true'></i></a></li>
-        <li style="display: inline-block;" role="presentation"><a class="hasParams" data-params="media-cornell?type=audio" href="#mediaCornell_a" aria-controls="mediaCornell_a" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-volume-up' aria-hidden='true'></i></a></li>
-        <li role="separator" class="divider"></li>
-        <li class="dropdown-header">Biblioteca Tropicos (Plantas)</li>
-        <li role="presentation"><a href="#media_tropicos" aria-controls="media_tropicos" role="tab" data-toggle="tab"><i class='glyphicon glyphicon-camera' aria-hidden='true'></i>
-        </a>
-        </li>
-      </ul>
-    </li>
-
-    <li role="presentation" >
-      <a href="#describe" aria-controls="describe" role="tab" data-toggle="tab"><i class="newspaper-ev-icon"></i><strong><small>  Acerca de</small></strong></a>
-    </li>
-    <li role="presentation" >
-      <a href="#descripcion_catalogos" aria-controls="descripcion_catalogos" role="tab" data-toggle="tab"><i class="archive-ev-icon"></i><strong><small> Ficha técnica</small></strong></a>
-    </li>
-    <li role="presentation" >
-      <a href="#arbol" aria-controls="arbol" role="tab" data-toggle="tab"><i class="flow-cascade-ev-icon"></i><strong><small>  <%= t :arreglo_taxonomico %></small></strong></a>
-    </li>
-    <li role="presentation" >
-      <a href="#comentario" aria-controls="comentario" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-comment"></i><strong><small>  Comentarios</small></strong> <span id="totales" class="label label-primary"><%= @datos[:cuantos_comentarios] %></span></a>
-    </li>
-  </ul>
-
-  <div class="tab-content">
-
-
-    <div id="descripcion_catalogos" role="tabpanel" class="tab-pane fade panel-body">
-      <p class="text-center">
-        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-      <h4>Cargando... Por favor, espera</h4>
-      </p>
+    <div class="tab-pane fade w-100 p-2" id="fotos-bdi" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+      <p>Cargando... por favor, espera</p>
+      <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
     </div>
 
-    <div id="describe" role="tabpanel" class="tab-pane fade panel-body">
-      <p class="text-center">
-        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-      <h4>Cargando... Por favor, espera</h4>
-      </p>
+    <div class="tab-pane fade w-100 p-2" id="videos-bdi" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+      <p>Cargando... por favor, espera</p>
+      <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
     </div>
 
-    <div id="fotos-bdi" role="tabpanel" class="tab-pane fade panel-body media-tabs">
-      <p class="text-center">
-        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-      <h4>Cargando... Por favor, espera</h4>bdi
-      </p>
+    <div class="tab-pane fade w-100 p-2" id="mediaCornell_p" role="tabpanel" aria-labelledby="v-pills-profile-tab" data-page="1">
+      <p>Cargando las fotos ... por favor, espera</p>
+      <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
+    </div>
+    <div class="tab-pane fade w-100 p-2" id="mediaCornell_v" role="tabpanel" aria-labelledby="v-pills-profile-tab" data-page="1">
+      <p>Cargando... por favor, espera</p>
+      <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
+    </div>
+    <div  class="tab-pane fade w-100 p-2"id="mediaCornell_a" role="tabpanel" aria-labelledby="v-pills-profile-tab" data-page="1">
+      <p>Cargando... por favor, espera</p>
+      <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
     </div>
 
-    <div id="videos-bdi" role="tabpanel" class="tab-pane fade panel-body media-tabs">
-      <p class="text-center">
-        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-      <h4>Cargando... Por favor, espera</h4>
-      </p>
+    <div class="tab-pane fade w-100 p-2" id="media_tropicos" role="tabpanel" aria-labelledby="v-pills-profile-tab" data-page="1">
+      <p>Cargando... por favor, espera</p>
+      <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
     </div>
 
-    <div id="mediaCornell_p" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
-      <p class="text-center">
-        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-      <h4>Cargando... Por favor, espera</h4>
-      </p>
-    </div>
-    <div id="mediaCornell_v" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
-      <p class="text-center">
-        <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-      <h4>Cargando... Por favor, espera</h4>
-      </p>
-    </div>
-    <div id="mediaCornell_a" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
-      <p class="text-center">
-        <i class="spin3-ev-icon animate-spin" style="font-style: oblique; font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-      <h4>Cargando... Por favor, espera</h4>
-      </p>
+    <div class="tab-pane fade w-100 p-2" id="describe" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+      <p>Cargando... por favor, espera</p>
+      <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
     </div>
 
-    <div id="media_tropicos" role="tabpanel" class="tab-pane fade panel-body media-tabs" data-page="1">
-      <p class="text-center">
-        <i class="spin3-ev-icon animate-spin" style="font-style: oblique; font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>
-      <h4>Cargando... Por favor, espera</h4>
-      </p>
+    <div class="tab-pane fade w-100 p-2" id="comentario" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+      <p>Cargando... por favor, espera</p>
+      <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
     </div>
 
     <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
@@ -278,10 +235,10 @@
       </div>
     </div>
 
-    <div  role="tabpanel" class="tab-pane fade panel-body"></div>
-    <div id="comentario" role="tabpanel" class="tab-pane fade panel-body"></div>
-    <!--div id="noticias" role="tabpanel" class="tab-pane fade panel-body"></div-->
+    <!--div class="tab-pane fade w-100 p-2" id="noticias" role="tabpanel" aria-labelledby="v-pills-settings-tab"></div-->
+
   </div>
 
   <%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
+
 </div>

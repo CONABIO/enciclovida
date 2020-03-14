@@ -59,6 +59,6 @@ var cargaMapa = function (id)
         //"Vista de terreno": GTM_layer,
     };
 
-    L.control.layers(baseMaps).addTo(map);
+    //L.control.layers(baseMaps).addTo(map);
 
 };

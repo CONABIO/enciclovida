@@ -48,6 +48,13 @@ $(document).ready(function(){
         }
     });
 
+    $('#navegacion a.nav-link').one('click',function(){
+        var idPestaña = $(this).data('params') || this.getAttribute('href').replace('#','');
+        var pestaña = '/especies/' + opciones.taxon + '/'+idPestaña;
+        $(this.getAttribute('href')).load(pestaña, function () {
+            if (idPestaña == 'descripcion_catalogos') $('.biblio-cat').popover({html: true});
+        });
+    });
     if (opciones.naturalista_api != undefined) fotosNaturalista(); else fotosBDI();
 
     $('#nombres_comunes_todos').load("/especies/" + opciones.taxon + "/nombres-comunes-todos");
