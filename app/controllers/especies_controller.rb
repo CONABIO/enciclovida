@@ -42,9 +42,7 @@ class EspeciesController < ApplicationController
     render 'especies/noPublicos' and return unless @especie.scat.Publico
     ## Para mostrar la taxonomia en la página inicial del show
     @taxones = Especie.arbol_nodo_inicial(@especie)
-    puts '----------------------------------------'
-puts @taxones.inspect
-    puts '----------------------------------------'
+
     respond_to do |format|
       format.html do
 
@@ -54,7 +52,7 @@ puts @taxones.inspect
           @datos[:nombres_comunes] =  adicional.nombres_comunes
         end
 
-        @datos[:especie_o_inferior] = @especie.especie_o_inferior?
+        @datos[:especie_o_inferior] = @especie
 
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if proveedor = @especie.proveedor
