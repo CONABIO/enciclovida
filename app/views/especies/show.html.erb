@@ -39,7 +39,7 @@
       <%#= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
       <!--/div-->
 <%# end %>
-      <div id="nombres_comunes_todos"></div>
+      <div id="nombres_comunes_todos" class="text-secondary"></div>
       <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %>
 <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
       <div class="f-fuentes">
@@ -72,7 +72,7 @@
         <i class="fa fa-image d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Media</b>
       </a>
 
-      <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" style="z-index: 1001;">
+      <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left text-center" style="z-index: 1001;">
         <h6 class="dropdown-header">CONABIO - Banco de imágenes</h6>
         <a class="nav-link" href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="pill">
           Fotos
@@ -122,7 +122,7 @@
   </div>
 
 
-  <div class="tab-content w-100 p-3 border" id="v-pills-tabContent">
+  <div class="tab-content w-100 p-3 bg-white border" id="v-pills-tabContent">
     <div class="tab-pane show active w-100" id="geodata_e_imagen" role="tabpanel" aria-labelledby="geodata_e_imagen-tab">
       <div class="row">
         <div class="col-12 d-block d-lg-inline-block col-lg-3" id="arbol">

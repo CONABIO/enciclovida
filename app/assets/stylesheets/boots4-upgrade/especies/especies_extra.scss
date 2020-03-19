@@ -98,8 +98,8 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   color: #808080;
 }
 #nombres_comunes_todos span {
-  margin-right: 12px;
-  color: #606060;
+  /*margin-right: 12px;
+  color: #606060;*/
 }
 #contenedor_mapa .naturalista-3-ev-icon,#contenedor_mapa .naturalista-4-ev-icon{
   vertical-align: text-bottom;
@@ -158,4 +158,11 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   /*background-color: #343a40 !important;*/
   background-color: #ffffff!important;
   color: #343a40 !important;
+}
+#navegacion .dropdown-menu .nav-link{
+  display: inline-block!important;
+  background-color: transparent!important;
+  border: 1px solid rgba(189, 0, 22, 0.1)!important;
+  color: #bd0016!important;
+  padding: .5em;
 }

@@ -15,6 +15,7 @@
   <%= javascript_include_tag 'especies/mapa/mapa_delayed', 'data-turbolinks-track' => true %>
   <script data-turbolinks-track="true">
       $('#map').css('height', $('#contenedor_mapa').height());
+      $('#contenedor_mapa').removeClass(); //Esto es para quitar los embed responsive ¬¬
   </script>
 <% end %>
 

@@ -45,7 +45,7 @@ module EspeciesHelper
     html = ''
     taxones.each do |taxon|
       nombre = tituloNombreCientifico(taxon, render: 'link')
-      html << "<tr><td class='text-capitalize font-weight-bold'>#{taxon.nombre_categoria_taxonomica}</td><td id='td_#{taxon.id}' class=''>#{nombre}</td></tr>"
+      html << "<div class='d-flex flex-column-reverse flex-lg-row flex-fill align-items-center border-bottom'><div class='text-capitalize p-2'>#{taxon.nombre_categoria_taxonomica}</div><div class='flex-fill text-center p-1' id='td_#{taxon.id}' >#{nombre}</div></div><div class='d-flex flex-fill d-lg-none align-items-center px-1 border-bottom'><i class='fa fa-chevron-right'></i></div>"
     end
 
     html.html_safe

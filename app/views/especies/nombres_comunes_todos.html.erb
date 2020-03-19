@@ -2,20 +2,20 @@
   <% @nombres_comunes.each_with_index do |hash_nombres, i| %>
     <% lengua = hash_nombres.keys.first %>
     <% if i == 0 %>
-      <span class="badge badge-pill badge-light"><%= lengua %>: </span>
-      <span><%= hash_nombres[lengua].sort.join(', ') %></span>
-      <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-        <i class="fa fa-plus-circle"></i>
-      </button>
+      <b><%= lengua %>: </b>
+      <small><%= hash_nombres[lengua].sort.join(', ') %></small>
+      <button class="btn p-1" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        <i class="fa fa-plus-square"></i>
+      </button>...
       <div class="collapse position-absolute" id="collapseExample" style="z-index: 1001;">
         <div class="card card-body overflow-auto" style="max-height: 200px;">
           <dl class="row">
     <% else %>
-      <dt class="col-sm-2">
-        <span class="badge badge-pill badge-white" ><%= lengua %>: </span>
+      <dt class="col-sm-3">
+        <b><%= lengua %>: </b>
       </dt>
-      <dd class="col-sm-10">
-        <span><%= hash_nombres[lengua].sort.join(', ') %></span>
+      <dd class="col-sm-9">
+        <small><%= hash_nombres[lengua].sort.join(', ') %></small>
       </dd>
     <% end %>
 
