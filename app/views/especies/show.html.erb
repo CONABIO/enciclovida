@@ -61,15 +61,15 @@
 
 <div class="col-12 d-flex flex-column flex-md-row my-3 p-0">
 
-  <div class="nav flex-row flex-md-column nav-pills mr-md-4 flex-nowrap flex-md-wrap justify-content-around justify-content-md-start" id="navegacion" role="tablist" aria-orientation="vertical">
+  <div class="nav flex-row flex-md-column nav-pills flex-nowrap flex-md-wrap justify-content-around justify-content-md-start" id="navegacion" role="tablist" aria-orientation="vertical">
 
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary active" id="geodata_e_imagen-tab" data-toggle="pill" href="#geodata_e_imagen" role="tab" aria-controls="geodata_e_imagen" aria-selected="true">
+    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary active mb-2" id="geodata_e_imagen-tab" data-toggle="pill" href="#geodata_e_imagen" role="tab" aria-controls="geodata_e_imagen" aria-selected="true">
       <i class="fa fa-home d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Inicio</b>
     </a>
 
-    <div class="btn-group dropright" style="z-index: 1001;">
-      <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary text-md-left dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-forward d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Media</b>
+    <div class="btn-group dropright w-100" style="z-index: 1001;">
+      <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary text-md-left dropdown-toggle mb-2" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-image d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Media</b>
       </a>
 
       <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" style="z-index: 1001;">
@@ -92,15 +92,15 @@
       </div>
     </div>
 
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary" id="v-pills-messages-tab" data-toggle="pill" href="#describe" role="tab" aria-controls="v-pills-messages" aria-selected="false">
+    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary mb-2" id="v-pills-messages-tab" data-toggle="pill" href="#describe" role="tab" aria-controls="v-pills-messages" aria-selected="false">
       <i class="fa fa-file-text d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Fichas</b>
     </a>
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary d-inline-flex" id="v-pills-settings-tab" data-toggle="pill" href="#comentario" role="tab" aria-controls="v-pills-settings" aria-selected="false">
+    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary d-inline-flex mb-2" id="v-pills-settings-tab" data-toggle="pill" href="#comentario" role="tab" aria-controls="v-pills-settings" aria-selected="false">
       <i class="fa fa-comments-o d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Comentarios</b><span id="totales" class="badge"><%= @datos[:cuantos_comentarios] %></span>
     </a>
 
-    <div class="btn-group dropright" style="z-index: 1001;">
-      <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary text-md-left dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+    <div class="btn-group dropright w-100" style="z-index: 1001;">
+      <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary text-md-left dropdown-toggle mb-2" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-info-circle d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Más info</b>
       </a>
       <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" id="enlaces_externos">
@@ -122,10 +122,10 @@
   </div>
 
 
-  <div class="tab-content w-100 p-2" id="v-pills-tabContent">
+  <div class="tab-content w-100 p-3 border" id="v-pills-tabContent">
     <div class="tab-pane show active w-100" id="geodata_e_imagen" role="tabpanel" aria-labelledby="geodata_e_imagen-tab">
       <div class="row">
-        <div class="col-12 d-none d-lg-inline-block col-lg-3" id="arbol">
+        <div class="col-12 d-block d-lg-inline-block col-lg-3" id="arbol">
           <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
         </div>
         <div class="col-12 col-lg-9">

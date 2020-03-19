@@ -144,10 +144,18 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   padding: 1em 0;
   min-height: 125px;
 }
-#arbol td{
-  vertical-align: middle!important;
+#arbol > div > div:last-child{
+  display: none!important;
 }
 #navegacion .btn.btn-outline-primary{
-  border-radius: 0px!important;
-  border-color: rgba(189, 0, 22, 0.1)!important;
+  border-radius: 0px !important;
+  /* border-color: rgba(189, 0, 22, 0.1) !important; */
+  border-color: transparent!important;
+  box-shadow: rgba(189, 0, 22, 0.1) 1px 1px 2px;
+}
+#navegacion .btn-outline-primary:not(:disabled):not(.disabled):active, #navegacion .btn-outline-primary:not(:disabled):not(.disabled).active, #navegacion .show > .btn-outline-primary.dropdown-toggle{
+  border-color: #dee2e6!important;
+  /*background-color: #343a40 !important;*/
+  background-color: #ffffff!important;
+  color: #343a40 !important;
 }
