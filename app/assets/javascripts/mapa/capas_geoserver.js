@@ -41,7 +41,7 @@ var leyendaGeoserver = function()
 var capaDistribucionGeoserver = function (url) {
     var primer_layer = false;
     distribucionLayer = L.layerGroup([], { zIndex: 100 });
-    geoserver_control = L.control.layers({}, {}, {collapsed: true, position: 'topright'}).addTo(map);
+    geoserver_control = L.control.layers({}, {}, {collapsed: true, position: 'bottomleft'}).addTo(map);
 
     $.each(opciones.geodatos.geoserver_descargas_url, function (index, datos) {
         console.log(datos);

@@ -369,14 +369,17 @@ sub{
 }
 // Formato general para el nombre cientifico y comun, no importa la vista
 .f-nom-cientifico{
-  font-size: 1em;
-  font-style: italic;
-  color: #828b87;
-  margin-top: 20px;
+  /*font-size: 1em;*/
+  /*font-style: italic;*/
+  /*color: #828b87;*/
+  /*margin-top: 20px;*/
+  /*background-color: #f8f9fa;*/
 }
 .f-nom-comun{
-  font-size: 1em;
-  font-weight: bold;
+  /*font-size: 1em;*/
+  /*font-weight: bold;*/
+  /*background-color: #f8f9fa;*/
+  color: #444444;
 }
 
 

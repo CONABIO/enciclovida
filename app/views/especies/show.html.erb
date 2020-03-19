@@ -30,21 +30,18 @@
 <% end %>
 
 <div class="col-12 mb-2 p-0">
-  <div class="row no-gutters">
-    <div class="col-xs-12 col-md-6">
+  <div class="bg-white no-gutters rounded-lg row shadow-sm">
+    <div class="col-12 col-md-6 pl-3 pt-3 text-secondary">
       <%= tituloNombreCientifico(@especie, render: 'header') %>
-
-<%# if (@datos[:especie_o_inferior]) %>
+      <%# if (@datos[:especie_o_inferior]) %>
       <!--div class="col-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente"-->
       <%#= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
       <!--/div-->
-<%# end %>
+      <%# end %>
       <div id="nombres_comunes_todos" class="text-secondary"></div>
       <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %>
-<%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
-      <div class="f-fuentes">
-        <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
-      </div>
+      <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
+      <div class="f-fuentes"><%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %></div>
     </div>
 
     <div class="col-xs-12 col-md" id="contenedor_fotos">
@@ -63,12 +60,12 @@
 
   <div class="nav flex-row flex-md-column nav-pills flex-nowrap flex-md-wrap justify-content-around justify-content-md-start" id="navegacion" role="tablist" aria-orientation="vertical">
 
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary active mb-2" id="geodata_e_imagen-tab" data-toggle="pill" href="#geodata_e_imagen" role="tab" aria-controls="geodata_e_imagen" aria-selected="true">
+    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary active mt-2" id="geodata_e_imagen-tab" data-toggle="pill" href="#geodata_e_imagen" role="tab" aria-controls="geodata_e_imagen" aria-selected="true">
       <i class="fa fa-home d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Inicio</b>
     </a>
 
     <div class="btn-group dropright w-100" style="z-index: 1001;">
-      <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary text-md-left dropdown-toggle mb-2" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+      <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary text-md-left dropdown-toggle mt-2" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-image d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Media</b>
       </a>
 
@@ -92,15 +89,15 @@
       </div>
     </div>
 
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary mb-2" id="v-pills-messages-tab" data-toggle="pill" href="#describe" role="tab" aria-controls="v-pills-messages" aria-selected="false">
+    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary mt-2" id="v-pills-messages-tab" data-toggle="pill" href="#describe" role="tab" aria-controls="v-pills-messages" aria-selected="false">
       <i class="fa fa-file-text d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Fichas</b>
     </a>
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary d-inline-flex mb-2" id="v-pills-settings-tab" data-toggle="pill" href="#comentario" role="tab" aria-controls="v-pills-settings" aria-selected="false">
+    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary d-inline-flex mt-2" id="v-pills-settings-tab" data-toggle="pill" href="#comentario" role="tab" aria-controls="v-pills-settings" aria-selected="false">
       <i class="fa fa-comments-o d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Comentarios</b><span id="totales" class="badge"><%= @datos[:cuantos_comentarios] %></span>
     </a>
 
-    <div class="btn-group dropright w-100" style="z-index: 1001;">
-      <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary text-md-left dropdown-toggle mb-2" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+    <div class="btn-group dropright w-100 mt-2" style="z-index: 1001;">
+      <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary text-md-left dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-info-circle d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Más info</b>
       </a>
       <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" id="enlaces_externos">
