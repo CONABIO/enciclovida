@@ -45,6 +45,7 @@ class Proveedor < ActiveRecord::Base
   end
 
   # REVISADO: Consulta la ficha de naturalista por medio de su API nodejs
+  # TODO se requiere un boton de borrar cache
   def ficha_naturalista_api_nodejs
     self.jres = Rails.cache.fetch("ficha_naturalista_#{especie_id}", expires_in: eval(CONFIG.cache.ficha_naturalista)) do
 
