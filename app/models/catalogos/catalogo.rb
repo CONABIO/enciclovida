@@ -19,11 +19,11 @@ class Catalogo < ActiveRecord::Base
   scope :cites, -> { where(nivel1: 4, nivel2: 3).where("#{attribute_alias(:nivel3)} > 0") }
   scope :prioritarias, -> { where(nivel1: 4, nivel2: 4).where("#{attribute_alias(:nivel3)} > 0") }
   scope :ambientes, -> { where(nivel1: 2, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: AMBIENTE_EQUIV_MARINO) }
-  scope :usos, -> { where(nivel1: 11, descripcion: USOS) }
+  scope :usos, -> { where(id: USOS).order(:descripcion) }
   scope :evaluacion_conabio, -> { where(nivel1: 4, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: EVALUACION) }
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
-  USOS = ['Medicinal','Ornamental','Alimentación animal','Alimentación humana','Ambiental','Artesanía','Combustible','Industrial','Manejo de plagas','Materiales','Melíferas','Sociales/religiosos']
+  USOS = [1216, 1217, 464, 1058, 465, 468, 469, 470, 471, 1055, 1057, 1056]
   EVALUACION = ['Extinto (EX)','Extinto en estado silvestre (EW)','Datos insuficientes (DD)']  # Evaluaciones que no tienen datos, se quitan de la bsuqueda
 
   # REVISADO: Regresa true or false si el catalogo es de los permitidos a mostrar
