@@ -68,6 +68,14 @@ Buscador::Application.routes.draw do
     end
   end
 
+  namespace :api do
+    resources :descripciones do
+      collection do
+
+      end
+    end
+  end
+
   namespace :fichas do
     #resources :taxa
     resources :front do
