@@ -1,8 +1,8 @@
 class Api::ConabioPlinian
 
-  attr_accessor :nombre_servicio, :servidor, :timeout, :debug, :taxon
+  attr_accessor :taxon, :nombre_servicio, :servidor, :timeout, :debug
 
-  def self.nombre
+  def nombre
     'CONABIO (plinian core)'
   end
 
@@ -21,27 +21,18 @@ class Api::ConabioPlinian
     end
   end
 
-
-  #private
-
-  #def conabio_service
-  #  @conabio_service=New_Conabio_Service.new(:timeout => 20)
-  #end
-
-
   def initialize(options = {})
     self.nombre_servicio = 'CONABIO_FICHAS'
     self.servidor = options[:servidor] || "#{IP}:#{PORT}" # después del puerto, termina con '/'
     self.timeout = options[:timeout] || 8
     self.debug = options[:debug] || false
-    Rails.logger.debug "[DEBUG] Inicializar el servicio: #{@service_name}"
+    Rails.logger.debug "[DEBUG] Inicializar el servicio: #{nombre}"
   end
 
-  def buscar(q)
-    Rails.logger.debug "[DEBUG] Se realizará la busqueda de: #{q}"
-    # Llamar a 'infoEspecie', quien nos devolverá código html con la infomración de la especie
-    # Por prueba, se envia el taxón 1, pero q, se envía el que se va a buscar realmente
 
+  private
+
+  def buscar(q)
     if Fichas::Taxon.where(IdCAT: q).first
       request("fichas/front/#{q}")
     else
@@ -49,25 +40,23 @@ class Api::ConabioPlinian
     end
   end
 
-  def request(method, *args)
-    request_uri = get_uri(method, *args)
-    Rails.logger.debug "Los argumentos son: #{args}"
+  def request(uri)
+    request_uri = valida_uri(uri)
 
     begin
-      timed_out = Timeout::timeout(@timeout) do
+      Timeout::timeout(timeout) do
         Nokogiri::HTML(open(request_uri), nil, 'UTF-8')
       end
     rescue Timeout::Error
-      raise Timeout::Error, "#{@service_name} didn't respond within #{@timeout} seconds."
+      raise Timeout::Error, "#{nombre} no respondio en los primeros #{timeout} segundos."
     end
   end
 
-  def get_uri(method, *args)
-    arg = args.first unless args.first.is_a?(Hash)
-    uri = "http://#{@server}#{method}"
+  def valida_uri(uri)
+    parsed_uri = URI.parse(URI.encode("http://#{servidor}#{uri}"))
 
-    Rails.logger.debug "[DEBUG] Invocando URL con los datos: " + uri
-    URI.parse(URI.encode(uri))
+    Rails.logger.debug "[DEBUG] Invocando URL: #{parsed_uri}"
+    parsed_uri
   end
 
 end
