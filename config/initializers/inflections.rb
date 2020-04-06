@@ -28,4 +28,6 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'bibliografia', 'bibliografias'
   inflect.irregular 'region', 'regiones'
   inflect.irregular 'especie_catalogo', 'especies_catalogos'
+  inflect.irregular 'api', 'api'
+  inflect.irregular 'descripcion', 'descripciones'
 end
