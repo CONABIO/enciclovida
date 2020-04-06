@@ -16,7 +16,7 @@ module ApplicationHelper
                   end
                 end.try(:capitalize)
 
-    nombre_cientifico = "<text class='f-nom-cientifico'>#{taxon.nombre_cientifico}</text>"
+    nombre_cientifico = "<i class='f-nom-cientifico'>#{taxon.nombre_cientifico}</i>"
 
     if params[:adicional_nom_cient].present?
       nombre_cientifico += "&nbsp;&nbsp;#{params[:adicional_nom_cient]}"
@@ -55,7 +55,7 @@ module ApplicationHelper
       when 'link'
         "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
       when 'header'
-        "<h3>#{nombre_comun}#{'<br />' if nombre_comun.present?}#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico}</h3>".html_safe
+        "<h2><b>#{nombre_comun}</b>#{'<br />' if nombre_comun.present?}#{cat_taxonomica unless taxon.especie_o_inferior?}<small>#{nombre_cientifico}</small></h2>".html_safe
       when 'inline'
         nombre_cientifico.html_safe
       when 'link-inline'
@@ -233,11 +233,11 @@ module ApplicationHelper
   end
 
   def icono_globo
-    "<i class='glyphicon glyphicon-globe'></i>".html_safe
+    "<i class='fa fa-globe'></i>".html_safe
   end
 
   def icono_descarga
-    "<i class='glyphicon glyphicon-save'></i>".html_safe
+    "<i class='fa fa-download'></i>".html_safe
   end
 
   def tiene_permiso?(nombre_rol, con_hijos=false)

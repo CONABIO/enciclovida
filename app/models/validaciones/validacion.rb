@@ -117,26 +117,27 @@ class Validacion
 
   # Este metodo se manda a llamar cuando el taxon coincidio ==  validacion[:estatus] = true
   def taxon_estatus
+    return unless validacion[:msg] == 'Búsqueda exacta'
     return unless validacion[:estatus]
+    return if validacion[:taxon].estatus == 2
     taxon = validacion[:taxon]
+    estatus = taxon.especies_estatus     # Checa si existe alguna sinonimia
 
-    if taxon.estatus == 1  # Si es sinonimo, asocia el nombre_cientifico valido
-      estatus = taxon.especies_estatus     # Checa si existe alguna sinonimia
-
-      if estatus.length == 1  # Encontro el valido y solo es uno, como se esperaba
-        begin  # Por si ya no existe ese taxon, suele pasar!
-          taxon_valido = Especie.find(estatus.first.especie_id2)
-          # Asigna el taxon valido al taxon original
-          self.validacion[:taxon_valido] = taxon_valido
-          self.validacion[:msg] = 'Es un sinónimo'
-        rescue
-          self.validacion[:msg] = 'No hay un taxon valido para la coincidencia'
-        end
-
-      else  # No existe el valido o hay mas de uno >.>!
+    if estatus.length == 1  # Encontro el valido y solo es uno, como se esperaba
+      begin  # Por si ya no existe ese taxon, suele pasar!
+        taxon_valido = Especie.find(estatus.first.especie_id2)
+        # Asigna el taxon valido al taxon original
+        self.validacion[:taxon_valido] = taxon_valido
+        self.validacion[:msg] = 'Búsqueda exacta, era un sinónimo'
+      rescue
+        self.validacion[:estatus] = false
         self.validacion[:msg] = 'No hay un taxon valido para la coincidencia'
       end
-    end  # End estatus = 1
+
+    else  # No existe el valido o hay mas de uno >.>!
+      self.validacion[:estatus] = false
+      self.validacion[:msg] = 'No hay un taxon valido para la coincidencia'
+    end
   end
 
   # Para quitar los sinonimos y ver si la unica coincidencia es valida
@@ -149,7 +150,23 @@ class Validacion
     end
 
     if validos.count == 1
-      self.validacion = {estatus: true, taxon: validos.first, msg: 'Búsqueda similar'}
+      self.validacion[:taxones] = nil
+
+      if validacion[:msg] == 'Existe más de una búsqueda exacta'
+        self.validacion = { estatus: true, taxon: validos.first, msg: 'Búsqueda exacta' }
+      else
+        self.validacion = { estatus: true, taxon: validos.first, msg: 'Búsqueda similar' }
+      end
+    end
+  end
+
+  # Si es una sola coincidencia trata de quitar subgeneros si existieran para dar la busqueda exacta
+  def quita_subgeneros
+    return unless validacion[:estatus]
+    return unless validacion[:msg] == 'Búsqueda similar'
+
+    if nombre_cientifico == validacion[:taxon].nombre_cientifico.gsub(/\([^()]*\)/, ' ').squeeze(" ").strip
+      self.validacion = { estatus: true, taxon: validacion[:taxon], msg: 'Búsqueda exacta' }
     end
   end
 

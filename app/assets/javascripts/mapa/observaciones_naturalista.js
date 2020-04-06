@@ -38,18 +38,18 @@ var borraObservacionesAnterioresNaturalista = function()
  */
 var leyendaNaturalista = function()
 {
-    naturalista_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
+    naturalista_control = L.control.layers({}, {}, {collapsed: true, position: 'bottomleft'}).addTo(map);
 
     naturalista_control.addOverlay(naturalistaLayer,
         '<b>Observaciones de <span aria-hidden="true" class="naturalista-3-ev-icon"></span><span aria-hidden="true" class="naturalista-4-ev-icon"></span></b><br />(ciencia ciudadana) <sub>' + observaciones_conteo + '</sub>'
     );
 
     naturalista_control.addOverlay(investigacionLayer,
-        '<span aria-hidden="true" class="glyphicon glyphicon-map-marker div-icon-naturalista"></span>Grado de investigación <sub>' + investigacion_conteo + '</sub>'
+        '<i class="fa fa-map-marker div-icon-naturalista"></i>Grado de investigación <sub>' + investigacion_conteo + '</sub>'
     );
 
     naturalista_control.addOverlay(casualLayer,
-        '<span aria-hidden="true" class="glyphicon glyphicon-flag div-icon-naturalista"></span>Grado casual <sub>' + casual_conteo + '</sub>'
+        '<i class="fa fa-flag div-icon-naturalista"></i>Grado casual <sub>' + casual_conteo + '</sub>'
     );
 };
 
@@ -68,13 +68,13 @@ var aniadePuntosNaturaLista = function()
                 if (feature.properties.d[1] == 1)  // Este campos quiere decir que es de grado de investigacion
                 {
                     investigacion_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<i class="fa fa-map-marker"></i>'})});
                 }
             } else {
                 if (feature.properties.d.quality_grade.toLowerCase() == 'investigación')
                 {
                     investigacion_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<i class="fa fa-flag"></i>'})});
                 }
             }
         },
@@ -98,13 +98,13 @@ var aniadePuntosNaturaLista = function()
                 if (feature.properties.d[1] == 2)  // Este campos quiere decir que es de grado casual
                 {
                     casual_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<span aria-hidden="true" class="glyphicon glyphicon-flag"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<i class="fa fa-flag"></i>'})});
                 }
             } else {
                 if (feature.properties.d.quality_grade.toLowerCase() == 'casual')
                 {
                     casual_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<span aria-hidden="true" class="glyphicon glyphicon-flag"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<i class="fa fa-flag"></i>'})});
                 }
             }
         },

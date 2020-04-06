@@ -44,7 +44,7 @@ var soulmateAsigna = function(tipo_busqueda, elem)
             }
 
             if(data.fotos > 0) {
-                iconos = iconos + "<span class='btn-title' tooltip-title='Tiene imágenes'><i class='picture-ev-icon'></i><sub>" + data.fotos + "</sub></span>";
+                iconos = iconos + "<span class='btn-title' tooltip-title='Tiene imágenes'><i class='fa fa-photo'></i><sub>" + data.fotos + "</sub></span>";
             }
 
             return foto + " " + nombres + "<h5 class='soulmate-icons'>" + iconos + "</h5>";
