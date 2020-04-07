@@ -2,6 +2,14 @@ class Api::ConabioPlinian
 
   attr_accessor :taxon, :nombre_servicio, :servidor, :timeout, :debug
 
+  def initialize(options = {})
+    self.nombre_servicio = 'CONABIO_FICHAS'
+    self.servidor = options[:servidor] || "#{IP}:#{PORT}" # después del puerto, termina con '/'
+    self.timeout = options[:timeout] || 8
+    self.debug = options[:debug] || false
+    Rails.logger.debug "[DEBUG] Inicializar el servicio: #{nombre}"
+  end
+
   def nombre
     'CONABIO (plinian core)'
   end
@@ -19,14 +27,6 @@ class Api::ConabioPlinian
     else  # Consulta en las fichas viejas
       #TaxonDescribers::ConabioViejo.describe(taxon)
     end
-  end
-
-  def initialize(options = {})
-    self.nombre_servicio = 'CONABIO_FICHAS'
-    self.servidor = options[:servidor] || "#{IP}:#{PORT}" # después del puerto, termina con '/'
-    self.timeout = options[:timeout] || 8
-    self.debug = options[:debug] || false
-    Rails.logger.debug "[DEBUG] Inicializar el servicio: #{nombre}"
   end
 
 
