@@ -1,62 +1,46 @@
 class Api::ConabioXml
 
-  attr_accessor :taxon, :nombre_servicio, :servidor, :timeout, :debug
+  attr_accessor :taxon, :nombre_servicio, :servidor, :timeout, :debug, :wsdl, :key
 
-  def initialize(options = {})
-    self.nombre_servicio = 'CONABIO_FICHAS'
-    self.servidor = options[:servidor] || "#{IP}:#{PORT}" # después del puerto, termina con '/'
-    self.timeout = options[:timeout] || 8
-    self.debug = options[:debug] || false
-    Rails.logger.debug "[DEBUG] Inicializar el servicio: #{nombre}"
+  def initialize(opc = {})
+    self.servidor = opc[:servidor] || 'conabioweb.conabio.gob.mx'
+    self.wsdl = opc[:wsdl] || "http://#{servidor}/webservice/conabio_varias_fichas.wsdl"
+    self.key = opc[:key] || 'La completa armonia de una obra imaginativa con frecuencia es la causa que los irreflexivos la supervaloren.'
+    self.timeout = opc[:timeout] || 8
+    self.debug = opc[:debug] || Rails.env.development? || false
+    Rails.logger.debug "[DEBUG] Inicializar el servicio: #{nombre}" if debug
   end
-  
+
   def nombre
     'CONABIO (XML)'
   end
 
   def dame_descripcion
-    if cat = taxon.scat
-      desc = buscar(cat.catalogo_id)
-
-      if desc.blank?
-        #TaxonDescribers::ConabioViejo.describe(taxon)
-      else
-        desc
-      end
-
-    else  # Consulta en las fichas viejas
-      #TaxonDescribers::ConabioViejo.describe(taxon)
-    end
+    buscar(taxon.nombre_cientifico.limpiar.limpia)
   end
 
 
   private
 
   def buscar(q)
-    if Fichas::Taxon.where(IdCAT: q).first
-      request("fichas/front/#{q}")
-    else
-      nil
-    end
-  end
-
-  def request(uri)
-    request_uri = valida_uri(uri)
-
     begin
-      Timeout::timeout(timeout) do
-        Nokogiri::HTML(open(request_uri), nil, 'UTF-8')
+      Rails.logger.debug "[DEBUG] Invocando URL: #{wsdl}" if debug
+      client = Savon.client(wsdl: wsdl)
+
+      begin
+        Timeout::timeout(timeout) do
+          response = client.call(:data_taxon, message: { scientific_name: URI.encode(q.gsub(' ', '_')), key: key })
+
+          response.body[:data_taxon_response][:return].encode('iso-8859-1').force_encoding('UTF-8').gsub(/\n/,'<br>') if
+              response.body[:data_taxon_response][:return].present?
+        end
+      rescue Timeout::Error, Errno::ECONNRESET
+        raise Timeout::Error, "#{nombre} no respondio en los primeros #{timeout} segundos."
       end
-    rescue Timeout::Error
-      raise Timeout::Error, "#{nombre} no respondio en los primeros #{timeout} segundos."
+
+    rescue Savon::SOAPFault => e
+      Rails.logger.debug e.message if debug
     end
-  end
-
-  def valida_uri(uri)
-    parsed_uri = URI.parse(URI.encode("http://#{servidor}#{uri}"))
-
-    Rails.logger.debug "[DEBUG] Invocando URL: #{parsed_uri}"
-    parsed_uri
   end
 
 end

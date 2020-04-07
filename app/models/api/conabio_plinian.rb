@@ -2,12 +2,11 @@ class Api::ConabioPlinian
 
   attr_accessor :taxon, :nombre_servicio, :servidor, :timeout, :debug
 
-  def initialize(options = {})
-    self.nombre_servicio = 'CONABIO_FICHAS'
-    self.servidor = options[:servidor] || "#{IP}:#{PORT}" # después del puerto, termina con '/'
-    self.timeout = options[:timeout] || 8
-    self.debug = options[:debug] || false
-    Rails.logger.debug "[DEBUG] Inicializar el servicio: #{nombre}"
+  def initialize(opc = {})
+    self.servidor = opc[:servidor] || "#{IP}:#{PORT}" # después del puerto, termina con '/'
+    self.timeout = opc[:timeout] || 8
+    self.debug = opc[:debug] || Rails.env.development? || false
+    Rails.logger.debug "[DEBUG] Inicializar el servicio: #{nombre}" if debug
   end
 
   def nombre
@@ -16,16 +15,7 @@ class Api::ConabioPlinian
 
   def dame_descripcion
     if cat = taxon.scat
-      desc = buscar(cat.catalogo_id)
-
-      if desc.blank?
-        #TaxonDescribers::ConabioViejo.describe(taxon)
-      else
-        desc
-      end
-
-    else  # Consulta en las fichas viejas
-      #TaxonDescribers::ConabioViejo.describe(taxon)
+      buscar(cat.catalogo_id)
     end
   end
 
@@ -55,7 +45,7 @@ class Api::ConabioPlinian
   def valida_uri(uri)
     parsed_uri = URI.parse(URI.encode("http://#{servidor}#{uri}"))
 
-    Rails.logger.debug "[DEBUG] Invocando URL: #{parsed_uri}"
+    Rails.logger.debug "[DEBUG] Invocando URL: #{parsed_uri}" if debug
     parsed_uri
   end
 
