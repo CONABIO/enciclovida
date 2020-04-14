@@ -3,10 +3,8 @@ class Api::Wikipedia
   attr_accessor :taxon, :nombre_servicio, :servidor, :timeout, :debug, :wsdl, :key, :locale, :endpoint, :method_param, :default_params
 
   def initialize(opc = {})
-    self.servidor = opc[:servidor] || "http://en.wikipedia.org/w/api.php?"
-    self.method_param = 'action'
-    self.default_params = { :format => 'xml' }
     self.locale = options[:locale] || I18n.locale || 'en'
+    self.servidor = opc[:servidor] || "http://#{locale}.wikipedia.org/w/api.php?redirects=true&action=parse&format=xml"
     self.timeout = opc[:timeout] || 8
     self.debug = opc[:debug] || Rails.env.development? || false
     Rails.logger.debug "[DEBUG] Inicializar el servicio: #{nombre}" if debug
@@ -55,6 +53,26 @@ class Api::Wikipedia
 
     decoded
   end
+
+  def request(uri)
+    request_uri = valida_uri(uri)
+
+    begin
+      Timeout::timeout(timeout) do
+        Nokogiri::HTML(open(request_uri), nil, 'UTF-8')
+      end
+    rescue Timeout::Error
+      raise Timeout::Error, "#{nombre} no respondio en los primeros #{timeout} segundos."
+    end
+  end
+
+  def valida_uri(uri)
+    parsed_uri = URI.parse(URI.encode("http://#{servidor}#{uri}"))
+
+    Rails.logger.debug "[DEBUG] Invocando URL: #{parsed_uri}" if debug
+    parsed_uri
+  end
+
 
   def limpia_html(html, options = {})
     coder = HTMLEntities.new

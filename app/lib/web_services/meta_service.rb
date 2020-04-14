@@ -43,14 +43,12 @@ class MetaService
   # TODO: handle bad responses!
   #
   def request(method, args = {})
-    Rails.logger.debug "-#{args}-#{method}-"
     params      = args.merge({@method_param => method})
     params      = params.merge(@default_params)
     endpoint    = api_endpoint ? api_endpoint.base_url : @endpoint
     url         = endpoint + params.map {|k,v| "#{k}=#{v}"}.join('&')
     uri         = URI.encode(url)
     request_uri = URI.parse(uri)
-    Rails.logger.debug "--#{request_uri}--"
     response = nil
     begin
       MetaService.fetch_request_uri(request_uri: request_uri, timeout: @timeout,
