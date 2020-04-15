@@ -1,9 +1,10 @@
 class Api::Wikipedia
 
-  attr_accessor :taxon, :nombre_servicio, :servidor, :timeout, :debug, :wsdl, :key, :locale, :endpoint, :method_param, :default_params
+  attr_accessor :taxon, :nombre_servicio, :servidor, :timeout, :debug, :wsdl, :key, :locale
 
   def initialize(opc = {})
-    self.locale = options[:locale] || I18n.locale || 'en'
+    self.taxon = opc[:taxon]
+    self.locale = opc[:locale] || I18n.locale || 'en'
     self.servidor = opc[:servidor] || "http://#{locale}.wikipedia.org/w/api.php?redirects=true&action=parse&format=xml"
     self.timeout = opc[:timeout] || 8
     self.debug = opc[:debug] || Rails.env.development? || false
@@ -11,68 +12,62 @@ class Api::Wikipedia
   end
 
   def nombre
-    'Wikipedia (Inglés)'
+    "Wikipedia (#{locale.upcase})"
   end
 
   def dame_descripcion
-    buscar(taxon.nombre_cientifico.limpiar.limpia)
+    buscar
   end
 
-  def summary(title)
+  def resumen
     begin
-      response = parse(:page => title, :redirects => true)
+      resp = solicita
 
-      hxml = Nokogiri::HTML(HTMLEntities.new.decode(response.at( "text" ).try( :inner_text )))
+      hxml = Nokogiri::HTML(HTMLEntities.new.decode(resp))
       hxml.search('table').remove
       hxml.search("//comment()").remove
-      summary = ( hxml.search("//p").detect{|node| !node.inner_html.strip.blank?} || hxml ).inner_html.to_s.strip
-      summary = summary.sanitize(tags: %w(p i em b strong))
-      summary.gsub! /\[.*?\]/, ''
-      summary
+      res = ( hxml.search("//p").detect{|node| !node.inner_html.strip.blank?} || hxml ).inner_html.to_s.strip
+      res = res.sanitize(tags: %w(p i em b strong))
+      res.gsub! /\[.*?\]/, ''
+      res
 
     rescue Timeout::Error => e
-      Rails.logger.info "[INFO] Wikipedia API call failed while setting taxon summary: #{e.message}"
+      Rails.logger.info "[INFO] Wikipedia API falló a intentar consutar el resumen: #{e.message}"
       return
     end
   end
 
   private
 
-  def buscar(q)
-    decoded = ''
-
+  def buscar
     begin
-      response = request()
-      #response = wikipedia.parse(:page => q, :redirects => true)
-      return if response.nil?
-      parsed = response.at('text').try(:inner_text).to_s
-      decoded = clean_html(parsed) if parsed
+      resp = solicita
+      html = limpia_html(resp)
     rescue Timeout::Error => e
       Rails.logger.debug "[INFO] Wikipedia API call failed: #{e.message}" if debug
     end
 
-    decoded
+    html
   end
 
-  def request(uri)
-    request_uri = valida_uri(uri)
-
+  def solicita
     begin
-      Timeout::timeout(timeout) do
-        Nokogiri::HTML(open(request_uri), nil, 'UTF-8')
-      end
+      uri = valida_uri
+      resp = JSON.parse(open(uri).read)["parse"]["text"]["*"]
+      return if resp.nil?
     rescue Timeout::Error
       raise Timeout::Error, "#{nombre} no respondio en los primeros #{timeout} segundos."
     end
+
+    resp
   end
 
-  def valida_uri(uri)
-    parsed_uri = URI.parse(URI.encode("http://#{servidor}#{uri}"))
+  def valida_uri
+    uri = URI.parse(URI.encode("http://#{servidor}&page=#{taxon.nombre_cientifico.limpiar.limpia}"))
+    Rails.logger.debug "[DEBUG] Invocando URL: #{uri}" if debug
 
-    Rails.logger.debug "[DEBUG] Invocando URL: #{parsed_uri}" if debug
-    parsed_uri
+    uri
   end
-
 
   def limpia_html(html, options = {})
     coder = HTMLEntities.new
@@ -89,73 +84,6 @@ class Api::Wikipedia
     end
 
     decoded
-  end
-
-  def request(method, args = {})
-    params      = args.merge({@method_param => method})
-    params      = params.merge(@default_params)
-    endpoint    = api_endpoint ? api_endpoint.base_url : @endpoint
-    url         = endpoint + params.map {|k,v| "#{k}=#{v}"}.join('&')
-    uri         = URI.encode(url)
-    request_uri = URI.parse(uri)
-    response = nil
-    begin
-      MetaService.fetch_request_uri(request_uri: request_uri, timeout: @timeout,
-                                    api_endpoint: api_endpoint,
-                                    user_agent: "#{CONFIG.site_name}/#{self.class}/#{SERVICE_VERSION}")
-    rescue Timeout::Error
-      raise Timeout::Error, "#{@service_name} didn't respond within #{@timeout} seconds."
-    end
-  end
-
-  def self.fetch_request_uri(options = {})
-    return unless options[:request_uri]
-    options[:timeout] ||= 5
-    options[:user_agent] ||= CONFIG.site_name
-    if options[:api_endpoint]
-      api_endpoint_cache = ApiEndpointCache.find_or_create_by(
-          api_endpoint: options[:api_endpoint],
-          request_url: options[:request_uri].to_s)
-      return if api_endpoint_cache.in_progress?
-      if api_endpoint_cache.cached?
-        return Nokogiri::XML(api_endpoint_cache.response)
-      end
-    end
-    response = nil
-    begin
-      if api_endpoint_cache
-        api_endpoint_cache.update_attributes(request_began_at: Time.now,
-                                             request_completed_at: nil, success: nil, response: nil)
-      end
-      timed_out = Timeout::timeout(options[:timeout]) do
-        response = fetch_with_redirects(options)
-      end
-    rescue Timeout::Error
-      if api_endpoint_cache
-        api_endpoint_cache.update_attributes(
-            request_completed_at: Time.now, success: false)
-      end
-      raise Timeout::Error
-    end
-    if api_endpoint_cache
-      api_endpoint_cache.update_attributes(
-          request_completed_at: Time.now, success: true, response: response.body)
-    end
-    Nokogiri::XML(response.body)
-  end
-
-  def self.fetch_with_redirects(options, attempts = 3)
-    http = Net::HTTP.new(options[:request_uri].host, options[:request_uri].port)
-    # using SSL if we have an https URL
-    http.use_ssl = (options[:request_uri].scheme == "https")
-    response = http.get("#{options[:request_uri].path}?#{options[:request_uri].query}",
-                        "User-Agent" => options[:user_agent])
-    # following redirects if we haven't followed too many already
-    if response.is_a?(Net::HTTPRedirection) && attempts > 0
-      options[:request_uri] = URI.parse(response["location"])
-      return fetch_with_redirects(options, attempts - 1)
-    end
-    response
   end
 
 end
