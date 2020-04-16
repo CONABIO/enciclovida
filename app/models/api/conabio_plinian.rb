@@ -2,7 +2,7 @@ class Api::ConabioPlinian < Api::Descripcion
 
   def initialize(opc = {})
     super(opc)
-    self.servidor = servidor || "#{IP}:#{PORT}"
+    self.servidor = servidor || "http://#{IP}:#{PORT}"
   end
 
   def nombre
@@ -38,7 +38,7 @@ class Api::ConabioPlinian < Api::Descripcion
   end
 
   def valida_uri(uri)
-    parsed_uri = URI.parse(URI.encode("http://#{servidor}#{uri}"))
+    parsed_uri = URI.parse(URI.encode("#{servidor}#{uri}"))
 
     Rails.logger.debug "[DEBUG] Invocando URL: #{parsed_uri}" if debug
     parsed_uri

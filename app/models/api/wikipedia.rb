@@ -1,14 +1,11 @@
-class Api::Wikipedia
+class Api::Wikipedia < Api::Descripcion
 
-  attr_accessor :taxon, :nombre_servicio, :servidor, :timeout, :debug, :wsdl, :key, :locale
+  attr_accessor :locale
 
   def initialize(opc = {})
-    self.taxon = opc[:taxon]
+    super(opc)
     self.locale = opc[:locale] || I18n.locale || 'en'
-    self.servidor = opc[:servidor] || "http://#{locale}.wikipedia.org/w/api.php?redirects=true&action=parse&format=xml"
-    self.timeout = opc[:timeout] || 8
-    self.debug = opc[:debug] || Rails.env.development? || false
-    Rails.logger.debug "[DEBUG] Inicializar el servicio: #{nombre}" if debug
+    self.servidor = servidor || "http://#{locale}.wikipedia.org/w/api.php?redirects=true&action=parse&format=xml"
   end
 
   def nombre

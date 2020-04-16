@@ -1,14 +1,12 @@
-class Api::ConabioXml
+class Api::ConabioXml < Api::Descripcion
 
-  attr_accessor :taxon, :nombre_servicio, :servidor, :timeout, :debug, :wsdl, :key
+  attr_accessor :wsdl, :key
 
   def initialize(opc = {})
-    self.servidor = opc[:servidor] || 'conabioweb.conabio.gob.mx'
-    self.wsdl = opc[:wsdl] || "http://#{servidor}/webservice/conabio_varias_fichas.wsdl"
+    super(opc)
+    self.servidor = servidor || 'http://conabioweb.conabio.gob.mx'
+    self.wsdl = opc[:wsdl] || "#{servidor}/webservice/conabio_varias_fichas.wsdl"
     self.key = opc[:key] || 'La completa armonia de una obra imaginativa con frecuencia es la causa que los irreflexivos la supervaloren.'
-    self.timeout = opc[:timeout] || 8
-    self.debug = opc[:debug] || Rails.env.development? || false
-    Rails.logger.debug "[DEBUG] Inicializar el servicio: #{nombre}" if debug
   end
 
   def nombre
