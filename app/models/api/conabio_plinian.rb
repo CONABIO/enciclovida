@@ -1,12 +1,8 @@
-class Api::ConabioPlinian
-
-  attr_accessor :taxon, :nombre_servicio, :servidor, :timeout, :debug
+class Api::ConabioPlinian < Api::Descripcion
 
   def initialize(opc = {})
-    self.servidor = opc[:servidor] || "#{IP}:#{PORT}" # después del puerto, termina con '/'
-    self.timeout = opc[:timeout] || 8
-    self.debug = opc[:debug] || Rails.env.development? || false
-    Rails.logger.debug "[DEBUG] Inicializar el servicio: #{nombre}" if debug
+    super(opc)
+    self.servidor = servidor || "#{IP}:#{PORT}"
   end
 
   def nombre
@@ -14,9 +10,8 @@ class Api::ConabioPlinian
   end
 
   def dame_descripcion
-    if cat = taxon.scat
-      buscar(cat.catalogo_id)
-    end
+    return unless cat = taxon.scat
+    buscar(cat.catalogo_id)
   end
 
 
