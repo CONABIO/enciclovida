@@ -211,6 +211,7 @@ Buscador::Application.routes.draw do
       get ':id/arbol_nodo_hojas' => 'especies#arbol_nodo_hojas'
       get ':id/arbol_identado_hojas' => 'especies#arbol_identado_hojas'
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
+      get ':id/media' => 'especies#media'
       get ':id/fotos-bdi' => 'especies#fotos_bdi'
       get ':id/videos-bdi' => 'especies#videos_bdi'
       get ':id/media-cornell' => 'especies#media_cornell'

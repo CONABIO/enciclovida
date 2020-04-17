@@ -4,7 +4,7 @@ class EspeciesController < ApplicationController
                                          :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
                                          :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :wikipedia_summary]
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :media, :describe,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :fotos_bdi, :videos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
@@ -21,7 +21,7 @@ class EspeciesController < ApplicationController
   end
 
   layout 'application_b4'
-  layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
+  layout false, :only => [:media, :describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :fotos_bdi, :videos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
@@ -379,6 +379,11 @@ class EspeciesController < ApplicationController
     end
 
     @foto_default = @fotos.first
+  end
+
+  # Acción necesaria para la tab media, similar a describe ¬¬
+  def media
+    render :partial => 'media'
   end
 
   # Servicio de lib/bdi_service.rb

@@ -60,39 +60,21 @@
 
   <div class="nav flex-row flex-md-column nav-pills flex-nowrap flex-md-wrap justify-content-around justify-content-md-start" id="navegacion" role="tablist" aria-orientation="vertical">
 
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary active mt-2" id="geodata_e_imagen-tab" data-toggle="pill" href="#geodata_e_imagen" role="tab" aria-controls="geodata_e_imagen" aria-selected="true">
+    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary mt-2 active" id="geodata-tab" data-toggle="pill" href="#geodata" role="tab" aria-controls="geodata" aria-selected="true">
       <i class="fa fa-home d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Inicio</b>
     </a>
 
-    <div class="btn-group dropright w-100" style="z-index: 1001;">
-      <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary text-md-left dropdown-toggle mt-2" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-image d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Media</b>
-      </a>
+    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary mt-2 load-tab" id="media-tab" data-toggle="pill" href="#media" role="tab" aria-controls="geodata" aria-selected="true">
+      <i class="fa fa-image d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Media</b>
+    </a>
 
-      <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left text-center" style="z-index: 1001;">
-        <h6 class="dropdown-header">CONABIO - Banco de imágenes</h6>
-        <a class="nav-link" href="#fotos-bdi" aria-controls="fotos-bdi" role="tab" data-toggle="pill">
-          Fotos
-        </a>
-        <!--a href="#videos-bdi" aria-controls="videos-bdi" role="tab" data-toggle="tab"> Activar hasta nuevo aviso
-          <i class='glyphicon glyphicon-film' aria-hidden='true'></i>
-        </a-->
-        <div class="dropdown-divider"></div>
 
-        <h6 class="dropdown-header">Biblioteca MacCaulay</h6>
-        <a class="nav-link hasParams" data-params="media-cornell?type=photo" href="#mediaCornell_p" aria-controls="mediaCornell_p" role="tab" data-toggle="tab">Fotos</a>
-        <a class="nav-link hasParams" data-params="media-cornell?type=video" href="#mediaCornell_v" aria-controls="mediaCornell_v" role="tab" data-toggle="tab">Videos</a>
-        <a class="nav-link hasParams" data-params="media-cornell?type=audio" href="#mediaCornell_a" aria-controls="mediaCornell_a" role="tab" data-toggle="tab">Audios</a>
-        <div class="dropdown-divider"></div>
-        <h6 class="dropdown-header">Biblioteca Tropicos (Plantas)</h6>
-        <a class="nav-link" href="#media_tropicos" aria-controls="media_tropicos" role="tab" data-toggle="tab">Fotos</a>
-      </div>
-    </div>
 
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary mt-2" id="v-pills-messages-tab" data-toggle="pill" href="#describe" role="tab" aria-controls="v-pills-messages" aria-selected="false">
+    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary mt-2 load-tab" id="describe-tab" data-toggle="pill" href="#describe" role="tab" aria-controls="describe" aria-selected="false">
       <i class="fa fa-file-text d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Fichas</b>
     </a>
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary d-inline-flex mt-2" id="v-pills-settings-tab" data-toggle="pill" href="#comentario" role="tab" aria-controls="v-pills-settings" aria-selected="false">
+
+    <a class="load-tab nav-link w-100 text-center text-md-left btn btn-outline-primary d-inline-flex mt-2" id="v-pills-settings-tab" data-toggle="pill" href="#comentario" role="tab" aria-controls="v-pills-settings" aria-selected="false">
       <i class="fa fa-comments-o d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Comentarios</b><span id="totales" class="badge"><%= @datos[:cuantos_comentarios] %></span>
     </a>
 
@@ -120,15 +102,16 @@
   </div>
 
 
-  <div class="tab-content w-100 p-3 bg-white border" id="v-pills-tabContent">
-    <div class="tab-pane show active w-100" id="geodata_e_imagen" role="tabpanel" aria-labelledby="geodata_e_imagen-tab">
+  <div class="tab-content w-100 p-3 bg-white border" id="tabContent">
+
+    <div class="tab-pane show active w-100" id="geodata" role="tabpanel" aria-labelledby="geodata-tab">
       <div class="row">
         <div class="col-12 d-block d-lg-inline-block col-lg-3" id="arbol">
           <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
         </div>
         <div class="col-12 col-lg-9">
           <% if @datos[:geodatos].present? %>
-            <%= render :partial => 'geodata_e_imagen' %>
+            <%= render :partial => 'geodata' %>
           <% end %>
           <p id='sin_datos' class="text-primary text-center"></p>
         </div>
@@ -136,47 +119,14 @@
       </div>
     </div>
 
-    <div class="tab-pane fade w-100 p-2" id="fotos-bdi" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+    <div class="tab-pane fade w-100 p-2" id="media" role="tabpanel" aria-labelledby="media-tab">
       <p>Cargando... por favor, espera</p>
       <div class="spinner-border text-secondary" role="status">
         <span class="sr-only">Cargando...</span>
       </div>
     </div>
 
-    <div class="tab-pane fade w-100 p-2" id="videos-bdi" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-      <p>Cargando... por favor, espera</p>
-      <div class="spinner-border text-secondary" role="status">
-        <span class="sr-only">Cargando...</span>
-      </div>
-    </div>
-
-    <div class="tab-pane fade w-100 p-2" id="mediaCornell_p" role="tabpanel" aria-labelledby="v-pills-profile-tab" data-page="1">
-      <p>Cargando las fotos ... por favor, espera</p>
-      <div class="spinner-border text-secondary" role="status">
-        <span class="sr-only">Cargando...</span>
-      </div>
-    </div>
-    <div class="tab-pane fade w-100 p-2" id="mediaCornell_v" role="tabpanel" aria-labelledby="v-pills-profile-tab" data-page="1">
-      <p>Cargando... por favor, espera</p>
-      <div class="spinner-border text-secondary" role="status">
-        <span class="sr-only">Cargando...</span>
-      </div>
-    </div>
-    <div  class="tab-pane fade w-100 p-2"id="mediaCornell_a" role="tabpanel" aria-labelledby="v-pills-profile-tab" data-page="1">
-      <p>Cargando... por favor, espera</p>
-      <div class="spinner-border text-secondary" role="status">
-        <span class="sr-only">Cargando...</span>
-      </div>
-    </div>
-
-    <div class="tab-pane fade w-100 p-2" id="media_tropicos" role="tabpanel" aria-labelledby="v-pills-profile-tab" data-page="1">
-      <p>Cargando... por favor, espera</p>
-      <div class="spinner-border text-secondary" role="status">
-        <span class="sr-only">Cargando...</span>
-      </div>
-    </div>
-
-    <div class="tab-pane fade w-100 p-2" id="describe" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+    <div class="tab-pane fade w-100 p-2" id="describe" role="tabpanel" aria-labelledby="describe-tab">
       <p>Cargando... por favor, espera</p>
       <div class="spinner-border text-secondary" role="status">
         <span class="sr-only">Cargando...</span>
