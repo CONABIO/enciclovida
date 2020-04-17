@@ -1,7 +1,7 @@
 class MacaulayService
 
   def dameMedia_nc(taxonNC, type, page=1, min_page_size = 20)
-    cornell = CONFIG.cornell.api
+    cornell = Rails.env.production? ? CONFIG.cornell.api : CONFIG.cornell.api_rp
 
     url = "#{cornell}sciName=#{taxonNC.limpiar.gsub(' ','+')}&assetFormatCode=#{type}&taxaLocale=es&page=#{page}&pageSize=#{min_page_size}"
     url_escape = URI.escape(url)
