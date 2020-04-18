@@ -1,7 +1,8 @@
 class Api::WikipediaEn < Api::Wikipedia
 
   def initialize(opc = {})
-    self.servidor = servidor || "http://en.wikipedia.org/w/api.php?redirects=true&action=parse&format=json"
+    self.locale = 'en'
+    self.servidor = "http://#{locale}.wikipedia.org/w/api.php?redirects=true&action=parse&format=json"
     super(opc)
   end
 

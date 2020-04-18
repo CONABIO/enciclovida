@@ -4,7 +4,7 @@ class Api::Wikipedia < Api::Descripcion
 
   def initialize(opc = {})
     super(opc)
-    self.locale = opc[:locale] || I18n.locale || 'en'
+    self.locale = locale || opc[:locale] || I18n.locale || 'en'
     self.servidor = servidor || "http://#{locale}.wikipedia.org/w/api.php?redirects=true&action=parse&format=json"
   end
 
