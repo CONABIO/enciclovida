@@ -13,8 +13,8 @@ class Api::Descripcion
   def dame_descripcion
     return if Api::ConabioPlinian.new(taxon: taxon).dame_descripcion
     return if Api::ConabioXml.new(taxon: taxon).dame_descripcion
-    return if Api::Wikipedia.new(taxon: taxon, locale: 'es').dame_descripcion
-    return if Api::Wikipedia.new(taxon: taxon, locale: 'en').dame_descripcion
+    return if Api::WikipediaEs.new(taxon: taxon).dame_descripcion
+    return if Api::WikipediaEn.new(taxon: taxon).dame_descripcion
     return if Api::ConabioTecnico.new(taxon: taxon).dame_descripcion
   end
 
