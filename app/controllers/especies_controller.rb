@@ -168,31 +168,8 @@ class EspeciesController < ApplicationController
           @fotos = fotos[:fotos] if fotos[:estatus] && fotos[:fotos].any?
         end
 
-        # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
-        @describers = if CONFIG.taxon_describers
-                        CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                      elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
-                        [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
-                      else
-                        [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
-                      end
-
-        if params[:from].present? && CONFIG.taxon_describers.include?(params[:from].downcase)
-          # Especifico una descripcion y esta dentro de los permitidos
-          d = TaxonDescribers.get_describer(params[:from])
-          @description = d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-
-        else  # No especifico una descripcion y mandara a llamar el que encuentre
-          @describers.each do |d|
-            @describer = d
-            @description = begin
-                             d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-                           rescue OpenURI::HTTPError, Timeout::Error => e
-                             nil
-                           end
-            break unless @description.blank?
-          end
-        end
+        # Ya tiene la descripcion asignada
+        asigna_variables_descripcion
 
         ruta = Rails.root.join('public', 'pdfs').to_s
         fecha = Time.now.strftime("%Y%m%d%H%M%S")
@@ -558,22 +535,7 @@ class EspeciesController < ApplicationController
 
   # Viene de la pestaña "Acerca de " de la ficha
   def descripcion
-    if params[:from].present?
-      begin
-        desc = eval("Api::#{params[:from].camelize}")
-        @descripcion = desc.new(taxon: @especie).dame_descripcion
-        @api = params[:from]
-      rescue
-      end
-    else
-      begin
-        desc = Api::Descripcion.new(taxon: @especie).dame_descripcion
-        @descripcion = desc[:descripcion]
-        @api = desc[:api]
-      rescue
-      end
-    end
-
+    asigna_variables_descripcion
     render 'especies/descripciones/descripcion'
   end
 
@@ -996,6 +958,24 @@ class EspeciesController < ApplicationController
                                     nombres_regiones_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :_destroy],
                                     nombres_regiones_bibliografias_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :bibliografia_id, :_destroy]
     )
+  end
+
+  def asigna_variables_descripcion
+    if params[:from].present?
+      begin
+        desc = eval("Api::#{params[:from].camelize}")
+        @descripcion = desc.new(taxon: @especie).dame_descripcion
+        @api = params[:from]
+      rescue
+      end
+    else
+      begin
+        desc = Api::Descripcion.new(taxon: @especie).dame_descripcion
+        @descripcion = desc[:descripcion]
+        @api = desc[:api]
+      rescue
+      end
+    end
   end
 
   def guardaRelaciones(tipoRelacion)

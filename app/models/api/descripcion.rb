@@ -5,7 +5,6 @@ class Api::Descripcion
   DESCRIPCIONES = %w(conabio_plinian conabio_xml wikipedia_es wikipedia_en conabio_tecnico)
 
   def initialize(opc = {})
-    Rails.logger.debug "- - quex2?"
     self.taxon = opc[:taxon]
     self.servidor = opc[:servidor]
     self.timeout = opc[:timeout] || 8
@@ -18,9 +17,7 @@ class Api::Descripcion
   end
 
   def dame_descripcion
-    Rails.logger.debug "- - que?"
     DESCRIPCIONES.each do |descripcion|
-      Rails.logger.debug "- - #{descripcion}"
       desc = eval("Api::#{descripcion.camelize}")
       resp = desc.new(taxon: taxon).dame_descripcion
       return { api: descripcion, descripcion: resp } if resp
