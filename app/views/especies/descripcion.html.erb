@@ -8,8 +8,8 @@
       <h4>Descripción de:</h4>
     </div>
     <div class="col-xs-3">
-      <% if params[:from].present? %>
-        <%= select_tag :from, options_for_select(Api::Descripcion.opciones_select, :selected => params[:from]), :class => "form-control" %>
+      <% if @descripcion.present? %>
+        <%= select_tag :from, options_for_select(Api::Descripcion.opciones_select, :selected => @api, :class => "form-control"), prompt: '- - Selecciona - -' %>
       <% else %>
         <%= select_tag :from, options_for_select(Api::Descripcion.opciones_select, :class => "form-control"), prompt: '- - Selecciona - -' %>
       <% end %>

@@ -546,7 +546,7 @@ class EspeciesController < ApplicationController
     @nombres_comunes = @especie.dame_nombres_comunes_todos
   end
 
-  # Viene de la pestaña de la ficha
+  # Viene de la pestaña "Acerca de " de la ficha
   def descripcion
     if params[:from].present?
       begin
@@ -563,11 +563,6 @@ class EspeciesController < ApplicationController
       rescue
       end
     end
-
-    #@describer_url = @describer.page_url(@especie)
-    #respond_to do |format|
-    #  format.html { render :partial => 'description' }
-    #end
   end
 
   # Regresa el resumen de wikipedia en español o ingles
