@@ -573,6 +573,8 @@ class EspeciesController < ApplicationController
       rescue
       end
     end
+
+    render 'especies/descripciones/descripcion'
   end
 
   # Regresa el resumen de wikipedia en español o ingles
@@ -599,6 +601,7 @@ class EspeciesController < ApplicationController
 
   # Viene de la pestaña de la ficha
   def descripcion_catalogos
+    render 'especies/descripciones/descripcion_catalogos'
   end
 
   # Devuelve las observaciones de naturalista en diferentes formatos
