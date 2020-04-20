@@ -13,11 +13,22 @@ class Api::Descripcion
   end
 
   def dame_descripcion
-    return if Api::ConabioPlinian.new(taxon: taxon).dame_descripcion
-    return if Api::ConabioXml.new(taxon: taxon).dame_descripcion
-    return if Api::WikipediaEs.new(taxon: taxon).dame_descripcion
-    return if Api::WikipediaEn.new(taxon: taxon).dame_descripcion
-    return if Api::ConabioTecnico.new(taxon: taxon).dame_descripcion
+    DESCRIPCIONES.each do |descripcion|
+      desc = eval("Api::#{descripcion.camelize}")
+      resp = desc.new(taxon: taxon).dame_descripcion
+      return { api: descripcion, descripcion: resp } if resp
+    end
+  end
+
+  def self.opciones_select
+    opciones = []
+
+    DESCRIPCIONES.each do |descripcion|
+      desc = eval("Api::#{descripcion.camelize}")
+      opciones << [desc.new.nombre, descripcion]
+    end
+
+    opciones
   end
 
   private

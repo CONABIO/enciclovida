@@ -548,16 +548,21 @@ class EspeciesController < ApplicationController
 
   # Viene de la pestaña de la ficha
   def descripcion
-    @descripcion = if params[:from]
-                     begin
-                       d = "Api::#{parsms[:from].camelize}"
-                       d.new(taxon: @especie).dame_descripcion
-                     rescue
-                       nil
-                     end
-                   else
-                     Api::Descripcion.new(taxon: @especie).new.dame_descripcion
-                   end
+    if params[:from]
+      begin
+        desc = eval("Api::#{parsms[:from].camelize}")
+        @descripcion = desc.new(taxon: @especie).dame_descripcion
+        @api = params[:from]
+      rescue
+      end
+    else
+      begin
+        desc = Api::Descripcion.new(taxon: @especie).dame_descripcion
+        @descripcion = desc[:descripcion]
+        @api = desc[:api]
+      rescue
+      end
+    end
 
     #@describer_url = @describer.page_url(@especie)
     #respond_to do |format|

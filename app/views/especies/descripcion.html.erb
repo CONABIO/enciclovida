@@ -1,5 +1,6 @@
 <% css_class = "clear taxon_description" %>
-<% css_class += " wikipedia_description" if %(wikipedia_es wikipedia_en).include?(params[:from]) %>
+<% wikipedia = %(wikipedia_es wikipedia_en).include?(@api) %>
+<% css_class += " wikipedia_description" if wikipedia %>
 
 <div class="<%= css_class %>" id="taxon_description">
   <div class="row">
@@ -8,23 +9,19 @@
     </div>
     <div class="col-xs-3">
       <% if params[:from].present? %>
-        <%= select_tag :from, options_for_select(@describers.map{|d| [d.describer_name, d.name.split('::').last]}, :selected => @describer.name.split('::').last), :class => "form-control" %>
+        <%= select_tag :from, options_for_select(Api::Descripcion.opciones_select, :selected => @api), :class => "form-control" %>
       <% else %>
-        <%= select_tag :from, options_for_select(@describers.map{|d| [d.describer_name, d.name.split('::').last]}, :class => "form-control") %>
+        <%= select_tag :from, options_for_select(Api::Descripcion.opciones_select, :class => "form-control") %>
       <% end %>
     </div>
   </div>
 
   <% if @descripcion.blank? %>
     <p class="nocontent meta">
-      <% if @describer == TaxonDescribers::Wikipedia || @describer.blank? %>
-        <%= t :no_matching_article_from_x_to_y, :x => 'CONABIO', :y => @especie.nombre_cientifico %>
-      <% elsif @describer %>
-        <%= t :no_matching_article_from_x_to_y, :x => @describer.describer_name, :y => @especie.nombre_cientifico %>
-      <% end %>
+      <%= t :no_matching_article_from_x_to_y, :x => eval("Api::#{@api.camelize}").new.nombre, :y => @especie.nombre_cientifico %>
     </p>
   <% else %>
-    <% if %(wikipedia_es wikipedia_en).include?(params[:from]) %>
+    <% if wikipedia %>
       <div id="section_SpokenWikipedia" class="infobox sisterproject plainlinks bg-warning"><strong>NOTA:</strong> La clasificación taxonómica de Wikpedia puede diferir de la que se considera en CONABIO</div>
     <% end %>
 
