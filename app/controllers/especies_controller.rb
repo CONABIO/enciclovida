@@ -1,12 +1,13 @@
 class EspeciesController < ApplicationController
 
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
-                                         :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
+                                         :fotos_naturalista, :bdi_photos, :bdi_videos, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
                                          :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :wikipedia_summary]
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :descripcion,
+
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :comentarios, :fotos_bdi, :videos_bdi,
+                                     :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
                                      :dame_nombre_con_formato, :noticias, :media_tropicos, :wikipedia_summary]
@@ -21,9 +22,10 @@ class EspeciesController < ApplicationController
   end
 
   layout 'application_b4'
-  layout false, :only => [:descripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
+
+  layout false, :only => [:media, :decripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :videos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
                           :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :wikipedia_summary]
 
@@ -381,8 +383,13 @@ class EspeciesController < ApplicationController
     @foto_default = @fotos.first
   end
 
+  # Acción necesaria para la tab media, similar a describe ¬¬
+  def media
+    render :partial => 'media'
+  end
+
   # Servicio de lib/bdi_service.rb
-  def fotos_bdi
+  def bdi_photos
     @pagina = params['pagina']
 
     if @pagina.present?
@@ -412,6 +419,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
+          render 'especies/media/bdi_photos' and return
         end  # End format html
       end  # End respond
 
@@ -421,7 +429,7 @@ class EspeciesController < ApplicationController
   end
 
   #Videos de BDI
-  def videos_bdi
+  def bdi_videos
     @pagina = params['pagina']
 
     if @pagina.present?
@@ -451,6 +459,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
+          render 'especies/media/bdi_videos' and return
         end  # End format html
       end  # End respond
 
@@ -467,7 +476,7 @@ class EspeciesController < ApplicationController
     mc = MacaulayService.new
     @array = mc.dameMedia_nc(taxonNC, type, page)
 
-    render :locals => {type: type, page: page}
+    render 'especies/media/media_cornell', :locals => {type: type, page: page}
   end
 
   # Servicio Tropicos
@@ -520,6 +529,7 @@ class EspeciesController < ApplicationController
     end
 
     @array = [{msg: "Aún no hay imágenes para esta especie :/ "}] if @array[0]["Error"].present?
+    render 'especies/media/media_tropicos'
   end
 
   def fotos_naturalista

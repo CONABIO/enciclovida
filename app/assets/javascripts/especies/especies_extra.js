@@ -38,11 +38,30 @@ $(document).ready(function(){
     tooltip();
     refreshMediaQueries();
 
-    $('#navegacion a.nav-link').one('click',function(){
+    $('#navegacion a.load-tab').one('click',function(){
         var idPestaña = $(this).data('params') || this.getAttribute('href').replace('#','');
         var pestaña = '/especies/' + opciones.taxon + '/'+idPestaña;
         $(this.getAttribute('href')).load(pestaña, function () {
-            if (idPestaña == 'descripcion_catalogos') $('.biblio-cat').popover({html: true});
+            switch (idPestaña) {
+                case 'media':
+                    $('#bdi_p').load('/especies/' + opciones.taxon + '/bdi-photos', function () {
+                        $('#bdi_v').load('/especies/' + opciones.taxon + '/bdi-videos', function () {
+                            $('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {
+                                $('#mediaCornell_v').load('/especies/' + opciones.taxon + '/media-cornell?type=video', function () {
+                                    $('#mediaCornell_a').load('/especies/' + opciones.taxon + '/media-cornell?type=audio',function () {
+                                        $('#mediaTropicos').load('/especies/' + opciones.taxon + '/media-tropicos');
+                                    });
+                                });
+                            });
+                        });
+                    });
+                    break;
+                case 'descripcion_catalogos':
+                    $('.biblio-cat').popover({html: true});
+                    break;
+                default:
+                    break;
+            }
         });
     });
     if (opciones.naturalista_api != undefined) fotosNaturalista(); else fotosBDI();
