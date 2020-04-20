@@ -259,13 +259,6 @@ Buscador::Application.routes.draw do
 
   match 'adicionales/:especie_id/edita_nom_comun' => 'adicionales#edita_nom_comun', :as => :edita_nombre_comun_principal, :via => :get
 
-  match 'flickr/photo_fields' => 'flickr#photo_fields', :via => :get
-  match '/conabio/photo_fields' => 'conabio#photo_fields', :via => :get
-  match '/eol/photo_fields' => 'eol#photo_fields', :via => :get
-  match '/wikimedia_commons/photo_fields' => 'wikimedia_commons#photo_fields', :via => :get
-  #match 'photos/local_photo_fields' => 'photos#local_photo_fields', :as => :local_photo_fields
-  match '/photos/:id/repair' => 'photos#repair', :as => :photo_repair, :via => :put
-  match 'flickr/photos.:format' => 'flickr#photos', :via => :get
   get '/especies/:id/descripcion_catalogos' => 'especies#descripcion_catalogos'
   get '/especies/:id/comentario' => 'especies#comentarios'
   get '/especies/:id/noticias' => 'especies#noticias'
