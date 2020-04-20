@@ -2,7 +2,7 @@ class Api::Descripcion
 
   attr_accessor :taxon, :servidor, :timeout, :debug
 
-  DESCRIPCIONES = %w(conabio_plinian conabio_xml wikipedia_es wikipedia_en conabio_tecnico)
+  DESCRIPCIONES = %w(conabio wikipedia_es wikipedia_en conabio_tecnico)
 
   def initialize(opc = {})
     self.taxon = opc[:taxon]

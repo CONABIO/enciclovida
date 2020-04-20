@@ -1,5 +1,4 @@
-class Api::ConabioXml < Api::Descripcion
-
+class Api::ConabioXml < Api::Conabio
   attr_accessor :wsdl, :key
 
   def initialize(opc = {})

@@ -1,4 +1,4 @@
-class Api::ConabioTecnico < Api::Descripcion
+class Api::ConabioTecnico < Api::Conabio
 
   def initialize(opc = {})
     super(opc)
