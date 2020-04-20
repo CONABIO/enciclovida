@@ -610,6 +610,8 @@ es:
     ecorregiones-marinas: Ecorregiones marinas
   short_description: EncicloVida es una plataforma de consulta creada por la Comisión Nacional para el Conocimiento y Uso de la Biodiversidad (CONABIO), sobre las especies que viven en México.
   sinonimo: inactivos
+  sin_descripcion_en_x_para_y: No existe ninguna descripción en %{x} para %{y}
+  sin_descripcion_para_y: No existe ninguna descripción para %{y}
   solo_taxones: Solo especies o grupos
   support:
     array:

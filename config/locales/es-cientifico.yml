@@ -230,7 +230,6 @@ es-cientifico:
     sis_clas_cat_dicc: Sistema de clasificación, catalogo o diccionario
     tipo_distribucion: Tipo distribución
     updated_at: Fecha de última modificación
-  no_matching_article_from_x_to_y: No existe ninguna descripción en %{x} para %{y}
   nombre_comun: Nombre común
   nombre_cientifico: Taxa
   nombres_modelos:

@@ -229,6 +229,7 @@ Buscador::Application.routes.draw do
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
       get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
       get ':id/wikipedia-summary' => 'especies#wikipedia_summary'
+      get ':id/descripcion' => 'especies#descripcion'
     end
   end
 
@@ -265,7 +266,7 @@ Buscador::Application.routes.draw do
   #match 'photos/local_photo_fields' => 'photos#local_photo_fields', :as => :local_photo_fields
   match '/photos/:id/repair' => 'photos#repair', :as => :photo_repair, :via => :put
   match 'flickr/photos.:format' => 'flickr#photos', :via => :get
-  match '/especies/:id/describe' => 'especies#describe', :as => :descripcion, :via => :get
+  #match '/especies/:id/describe' => 'especies#describe', :as => :descripcion, :via => :get
   get '/especies/:id/descripcion_catalogos' => 'especies#descripcion_catalogos'
   get '/especies/:id/comentario' => 'especies#comentarios'
   get '/especies/:id/noticias' => 'especies#noticias'

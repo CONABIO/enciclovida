@@ -548,9 +548,9 @@ class EspeciesController < ApplicationController
 
   # Viene de la pestaña de la ficha
   def descripcion
-    if params[:from]
+    if params[:from].present?
       begin
-        desc = eval("Api::#{parsms[:from].camelize}")
+        desc = eval("Api::#{params[:from].camelize}")
         @descripcion = desc.new(taxon: @especie).dame_descripcion
         @api = params[:from]
       rescue
