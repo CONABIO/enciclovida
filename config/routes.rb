@@ -229,7 +229,7 @@ Buscador::Application.routes.draw do
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
       get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
-      get ':id/wikipedia-summary' => 'especies#wikipedia_summary'
+      get ':id/resumen-wikipedia' => 'especies#resumen_wikipedia'
       get ':id/descripcion' => 'especies#descripcion'
     end
   end

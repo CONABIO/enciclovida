@@ -3,14 +3,14 @@ class EspeciesController < ApplicationController
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
                                          :fotos_naturalista, :bdi_photos, :bdi_videos, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
-                                         :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :wikipedia_summary]
+                                         :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :resumen_wikipedia]
 
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
-                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :wikipedia_summary]
+                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :resumen_wikipedia]
   before_action :only => [:arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas] do
     set_especie(true)
   end
@@ -27,10 +27,10 @@ class EspeciesController < ApplicationController
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
-                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :wikipedia_summary]
+                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :resumen_wikipedia]
 
   # Pone en cache el webservice que carga por default
-  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
+  caches_action :descripcion, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
 
   # GET /especies
   # GET /especies.json
@@ -540,25 +540,10 @@ class EspeciesController < ApplicationController
   end
 
   # Regresa el resumen de wikipedia en español o ingles
-  def wikipedia_summary
-    describers = [TaxonDescribers::WikipediaEs, TaxonDescribers::Wikipedia]
+  def resumen_wikipedia
+    resumen = Api::Wikipedia.new(taxon: @especie).dame_descripcion
 
-    if describer = TaxonDescribers.get_describer(params[:from])
-      sumamry = describer.get_summary(@especie)
-    else
-      describers.each do |describer|
-
-        sumamry = begin
-                    describer.get_summary(@especie)
-                  rescue OpenURI::HTTPError, Timeout::Error => e
-                    nil
-                  end
-
-        break unless sumamry.blank?
-      end
-    end
-
-    render json: { estatus: (sumamry.present? ? true : false), sumamry: sumamry }
+    render json: { estatus: (reumen.present? ? true : false), resumen: resumen }
   end
 
   # Viene de la pestaña de la ficha
@@ -1132,7 +1117,7 @@ class EspeciesController < ApplicationController
 
   # Este método es necesario para ver params antes de que se inicialice dicha variable (caches_action corre antes q eso)
   def params_from_conabio_present?
-    Rails.env.production? && params.present? && params[:from].present? && params[:from] != 'Conabio'
+    Rails.env.production? && params.present? && params[:from].present? && params[:from] != 'conabio'
   end
 
 end
