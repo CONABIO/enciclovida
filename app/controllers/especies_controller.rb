@@ -4,7 +4,7 @@ class EspeciesController < ApplicationController
                                          :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
                                          :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :wikipedia_summary]
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :descripcion,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :fotos_bdi, :videos_bdi,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
@@ -21,7 +21,7 @@ class EspeciesController < ApplicationController
   end
 
   layout 'application_b4'
-  layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
+  layout false, :only => [:descripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :fotos_bdi, :videos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
@@ -547,33 +547,22 @@ class EspeciesController < ApplicationController
   end
 
   # Viene de la pestaña de la ficha
-  def describe
-    @describers = if CONFIG.taxon_describers
-                    CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                  elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
-                    [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
-                  else
-                    [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
-                  end
+  def descripcion
+    @descripcion = if params[:from]
+                     begin
+                       d = "Api::#{parsms[:from].camelize}"
+                       d.new(taxon: @especie).dame_descripcion
+                     rescue
+                       nil
+                     end
+                   else
+                     Api::Descripcion.new(taxon: @especie).new.dame_descripcion
+                   end
 
-    if @describer = TaxonDescribers.get_describer(params[:from])
-      @description = @describer.equal?(TaxonDescribers::EolEs) ? @describer.describe(@especie, :language => 'es') : @describer.describe(@especie)
-    else
-      @describers.each do |d|
-        @describer = d
-        @description = begin
-                         d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-                       rescue OpenURI::HTTPError, Timeout::Error => e
-                         nil
-                       end
-        break unless @description.blank?
-      end
-    end
-
-    @describer_url = @describer.page_url(@especie)
-    respond_to do |format|
-      format.html { render :partial => 'description' }
-    end
+    #@describer_url = @describer.page_url(@especie)
+    #respond_to do |format|
+    #  format.html { render :partial => 'description' }
+    #end
   end
 
   # Regresa el resumen de wikipedia en español o ingles
