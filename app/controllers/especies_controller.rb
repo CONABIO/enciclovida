@@ -23,7 +23,7 @@ class EspeciesController < ApplicationController
 
   layout 'application_b4'
 
-  layout false, :only => [:media, :decripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
+  layout false, :only => [:media, :descripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,

@@ -5,7 +5,6 @@
 
   <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
       opciones = <%=raw @datos.to_json %>;
-      //opciones.nombre = "<%#= tituloNombreCientifico(@especie, render: 'link') %>";
   </script>
 <% end %>
 
@@ -70,8 +69,8 @@
 
 
 
-    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary mt-2 load-tab" id="describe-tab" data-toggle="pill" href="#describe" role="tab" aria-controls="describe" aria-selected="false">
-      <i class="fa fa-file-text d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Fichas</b>
+    <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary mt-2 load-tab" id="descripcion-tab" data-toggle="pill" href="#descripcion" role="tab" aria-controls="descripcion" aria-selected="false">
+      <i class="fa fa-file-text d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Acerca de</b>
     </a>
 
     <a class="load-tab nav-link w-100 text-center text-md-left btn btn-outline-primary d-inline-flex mt-2" id="v-pills-settings-tab" data-toggle="pill" href="#comentario" role="tab" aria-controls="v-pills-settings" aria-selected="false">
@@ -126,7 +125,7 @@
       </div>
     </div>
 
-    <div class="tab-pane fade w-100 p-2" id="describe" role="tabpanel" aria-labelledby="describe-tab">
+    <div class="tab-pane fade w-100 p-2" id="descripcion" role="tabpanel" aria-labelledby="descripcion-tab">
       <p>Cargando... por favor, espera</p>
       <div class="spinner-border text-secondary" role="status">
         <span class="sr-only">Cargando...</span>
