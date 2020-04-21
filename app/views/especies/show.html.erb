@@ -17,7 +17,7 @@
 <% end %>
 
 <% content_for(:title) do %>
-  <%= @titulo = tituloNombreCientifico(@especie, render: 'title') %>
+  <%= @titulo = tituloNombreCientifico(@especie, render: 'title').strip_tags %>
 <% end %>
 
 <% #### Ends Contents for... #### %>

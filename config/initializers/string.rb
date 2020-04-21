@@ -29,6 +29,10 @@ class String
     self.gsub("'", "''")
   end
 
+  def strip_tags
+    ActionController::Base.helpers.strip_tags(self)
+  end
+
   def codifica64
     Base64.encode64(self)
   end
