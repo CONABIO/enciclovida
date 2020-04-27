@@ -107,7 +107,7 @@ end
 # Asigna el valor y el acomodo de geoserver_info
 def asigna_geoserver_info(v, geoserver_info=nil)
   geo = {}
-  año = v[:año] || '- - -'
+  año = v[:año] || 'N/D'
 
   if geoserver_info.present?
     begin

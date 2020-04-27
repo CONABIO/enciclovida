@@ -44,7 +44,6 @@ var capaDistribucionGeoserver = function (url) {
     geoserver_control = L.control.layers({}, {}, {collapsed: true, position: 'bottomleft'}).addTo(map);
 
     $.each(opciones.geodatos.geoserver_descargas_url, function (index, datos) {
-        console.log(datos);
 
         window[datos.id] = L.tileLayer.wms(url, {
             layers: datos.id,
