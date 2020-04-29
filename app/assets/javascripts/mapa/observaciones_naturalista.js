@@ -125,7 +125,7 @@ var aniadePuntosNaturaLista = function()
     map.addLayer(investigacionLayer);
 
     leyendaNaturalista();
-    tituloControlLayer();
+    tituloControlLayerNaturalista();
 };
 
 /**
@@ -231,8 +231,8 @@ var geojsonNaturalista = function(url)
 /**
  * Pone el titulo en el control del layer, esto para darle formato y quede visible sin pasarle el mouse
  */
-var tituloControlLayer = function()
+var tituloControlLayerNaturalista = function()
 {
     $('.leaflet-control-layers:nth-child(1) a').remove();
-    $('.leaflet-control-layers:nth-child(1)').prepend('<div class="text-center m-2 font-weight-bold">Observaciones de Naturalista <br /> (ciencia ciudadana) <sub>' + observaciones_conteo + '</sub><div>');
+    $('.leaflet-control-layers:nth-child(1)').prepend('<div class="text-center m-2"><span class=" font-weight-bold mr-2">Naturalista </span> <sub>' + observaciones_conteo + '</sub><br /> (ciencia ciudadana)<div>');
 };
