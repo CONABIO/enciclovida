@@ -42,8 +42,8 @@ var leyendaSnib = function()
     if (opciones.geodatos === undefined)
     {
         snib_control.addOverlay(snibLayer,
-           '<b>Ejemplares del SNIB</b><br />(museos, colectas y proyectos) <sub>' + ejemplares_conteo + '</sub>'
-       );
+            '<b>Ejemplares del SNIB</b><br />(museos, colectas y proyectos) <sub>' + ejemplares_conteo + '</sub>'
+        );
     }
 
     snib_control.addOverlay(coleccionesLayer,
@@ -82,7 +82,7 @@ var aniadePuntosSnib = function()
                 }
             } else {
                 if (!feature.properties.d.coleccion.toLowerCase().includes('averaves') && !feature.properties.d.coleccion.toLowerCase().includes('ebird')
-                && feature.properties.d.ejemplarfosil.toLowerCase() != 'si' && feature.properties.d.probablelocnodecampo.toLowerCase() != 'si')
+                    && feature.properties.d.ejemplarfosil.toLowerCase() != 'si' && feature.properties.d.probablelocnodecampo.toLowerCase() != 'si')
                 {
                     colecciones_conteo++;
                     return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="fa fa-map-marker"></i>'})});
@@ -320,6 +320,6 @@ var geojsonSnib = function(url)
  */
 var tituloControlLayerSnib = function()
 {
-        $('.leaflet-control-layers:nth-child(1) a').remove();
-        $('.leaflet-control-layers:nth-child(1)').prepend('<div class="text-center m-2"><span class="font-weight-bold mr-2">SNIB/CONABIO</span><sub>' +  ejemplares_conteo+ '</sub> <br /> (museos, colectas y proyectos)<div>');
+    $('.leaflet-control-layers:nth-child(1) a').remove();
+    $('.leaflet-control-layers:nth-child(1)').prepend('<div class="text-center m-2"><span class="font-weight-bold mr-2">SNIB/CONABIO</span><sub>' +  ejemplares_conteo+ '</sub> <br /> (museos, colectas y proyectos)<div>');
 };
