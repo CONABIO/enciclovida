@@ -362,7 +362,7 @@ class EspeciesController < ApplicationController
 
   # Acción necesaria para la tab media, similar a describe ¬¬
   def media
-    render :partial => 'media'
+    render 'especies/media/media'
   end
 
   # Servicio de lib/bdi_service.rb

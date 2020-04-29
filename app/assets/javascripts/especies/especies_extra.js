@@ -45,7 +45,7 @@ $(document).ready(function(){
             switch (idPestaña) {
                 case 'media':
                     $('#bdi_p').load('/especies/' + opciones.taxon + '/bdi-photos', function () {
-                        $('#bdi_v').load('/especies/' + opciones.taxon + '/bdi-videos', function () {
+                        //$('#bdi_v').load('/especies/' + opciones.taxon + '/bdi-videos', function () {
                             $('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {
                                 $('#mediaCornell_v').load('/especies/' + opciones.taxon + '/media-cornell?type=video', function () {
                                     $('#mediaCornell_a').load('/especies/' + opciones.taxon + '/media-cornell?type=audio',function () {
@@ -54,7 +54,7 @@ $(document).ready(function(){
                                 });
                             });
                         });
-                    });
+                    //});
                     break;
                 case 'descripcion_catalogos':
                     $('.biblio-cat').popover({html: true});

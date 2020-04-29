@@ -318,7 +318,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     copyright = "BDI - CONABIO"
     case type
     when 'photo'
-      link_to("<img src='#{item.medium_url}' style='height: 280px; width: auto;'/>".html_safe, '',
+      link_to("<img src='#{item.medium_url}' class='img-thumbnail'/>".html_safe, '',
               "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn-title modal-buttons",
               "data-type" => 'photo',
               "data-copyright" => copyright,
@@ -398,6 +398,10 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
 
   def dejaComentario
     link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie))
+  end
+
+  def cargandoEspera
+    "<p>Cargando... por favor, espera</p><div class='spinner-border text-secondary' role='status'><span class='sr-only'>Cargando...</span></div>".html_safe
   end
 
 end
