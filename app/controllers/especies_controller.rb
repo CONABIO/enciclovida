@@ -368,6 +368,8 @@ class EspeciesController < ApplicationController
   # Servicio de lib/bdi_service.rb
   def bdi_photos
     @pagina = params['pagina']
+    type = params['type']
+    page = params['page']
 
     if @pagina.present?
       bdi = @especie.fotos_bdi({pagina: @pagina.to_i})
@@ -396,7 +398,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
-          render 'especies/media/bdi_photos' and return
+          render 'especies/media/bdi_photos', :locals => {type: type, page: page} and return
         end  # End format html
       end  # End respond
 
@@ -408,6 +410,8 @@ class EspeciesController < ApplicationController
   #Videos de BDI
   def bdi_videos
     @pagina = params['pagina']
+    type = params['type']
+    page = params['page']
 
     if @pagina.present?
       bdi = @especie.videos_bdi({pagina: @pagina.to_i})
@@ -436,7 +440,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
-          render 'especies/media/bdi_videos' and return
+          render 'especies/media/bdi_videos', :locals => {type: type, page: page} and return
         end  # End format html
       end  # End respond
 

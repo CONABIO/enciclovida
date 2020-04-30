@@ -318,8 +318,8 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     copyright = "BDI - CONABIO"
     case type
     when 'photo'
-      link_to("<img src='#{item.medium_url}' class='img-thumbnail'/>".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn-title modal-buttons",
+      link_to("<img src='#{item.medium_url}' class='rounded-sm border-light' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
               "data-type" => 'photo',
               "data-copyright" => copyright,
               "data-url" => item.medium_url,
@@ -328,8 +328,8 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
               "data-observation"=> item.native_page_url
       )
     when 'video' # Datos fasos por ahora
-      link_to("<img src='#{item.preview_img}' class='img-fluid img-thumbnail' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn-title modal-buttons",
+      link_to("<img src='#{item.preview_img}' class='rounded-sm border-light' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
               "data-type" => 'video',
               "data-copyright" => item.licencia.present? ? "<a href='#{item.licencia}' target='_blank'>#{copyright}</a>" : copyright,
               "data-observation"=> item.href_info,

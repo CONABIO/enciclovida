@@ -166,3 +166,10 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   color: #bd0016!important;
   padding: .5em;
 }
+.paginado-media{
+  overflow-x: auto;
+}
+.paginado-media img{
+  height: 250px;
+  width: auto;
+}

@@ -1,42 +1,26 @@
 <% if page.nil? %>
-  <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4 media-supplier">
-    <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
+  <div class="d-flex flex-column flex-md-row justify-content-between">
+    <% icono = {'photo' => 'camera', 'video' => 'film'} %>
+    <i class='fa fa-<%=icono[type]%>'></i>
+    <i class ='macaulay_library-ev-icon'></i>
+    <span>
       <i class ='cornell_lab-ev-icon'></i>
       <i class ='cornell_lab_colors-ev-icon'></i>
-    </div>
-    <div class="col-xs-12 col-sm-4 col-md-12 col-lg-12">
-      <i class ='macaulay_library-ev-icon'></i>
-    </div>
-    <div class="col-xs-12 col-sm-2 col-md-12 col-lg-12">
-      <% icono = {'photo' => 'camera', 'video' => 'film', 'audio' => 'volume-up'} %>
-      <span class='glyphicon glyphicon-<%=icono[type]%>' aria-hidden='true'></span>
-    </div>
+    </span>
   </div>
-  <div class="inner_media">
+  <div class="paginado-media d-flex">
 <% end %>
 
 <% if @array[0][:msg].present? %>
-  <div class='result-img-container'>
-    <strong><%= @array[0][:msg] %></strong>
-  </div>
+  <p><strong><%= @array[0][:msg] %></strong></p>
 <% else %>
   <% @array.each do |item|  %>
-    <div class="result-img-container">
-      <%= imprimeMediaCornell(item,type) %>
-    </div>
+    <%= imprimeMediaCornell(item,type) %>
   <% end %>
 <% end %>
 
 <% if page.nil? %>
+  <b class="next"><a href data-params="media-cornell?type=<%= type %>" data-direccion="1"> <span aria-hidden="true">&rarr;</span></a></b>
   </div>
-
-  <nav aria-label="...">
-    <ul class="pager">
-      <li class="previous"><a href class="disabled" data-params="media-cornell?type=<%= type %>" data-direccion="-1"><span aria-hidden="true">&larr;</span> </a></li>
-      <li class="next"><a href data-params="media-cornell?type=<%= type %>" data-direccion="1"> <span aria-hidden="true">&rarr;</span></a></li>
-    </ul>
-  </nav>
 <% end %>
-
-<%#= javascript_include_tag 'especies/media/multimedia', 'data-turbolinks-track' => true %>
 

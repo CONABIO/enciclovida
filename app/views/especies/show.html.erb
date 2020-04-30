@@ -44,10 +44,7 @@
     </div>
 
     <div class="col-xs-12 col-md" id="contenedor_fotos">
-      <p>Cargando las fotos ... por favor, espera</p>
-      <div class="spinner-border text-secondary" role="status">
-        <span class="sr-only">Cargando...</span>
-      </div>
+      <%= cargandoEspera %>
     </div>
   </div>
 </div>
@@ -57,7 +54,7 @@
 
 <div class="col-12 d-flex flex-column flex-md-row my-3 p-0">
 
-  <div class="nav flex-row flex-md-column nav-pills flex-nowrap flex-md-wrap justify-content-around justify-content-md-start" id="navegacion" role="tablist" aria-orientation="vertical">
+  <div class="flex-row flex-md-column flex-nowrap flex-md-wrap nav-pills justify-content-around justify-content-md-start nav" id="navegacion" role="tablist" aria-orientation="vertical">
 
     <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary mt-2 active" id="geodata-tab" data-toggle="pill" href="#geodata" role="tab" aria-controls="geodata" aria-selected="true">
       <i class="fa fa-home d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Inicio</b>
@@ -66,8 +63,6 @@
     <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary mt-2 load-tab" id="media-tab" data-toggle="pill" href="#media" role="tab" aria-controls="geodata" aria-selected="true">
       <i class="fa fa-image d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Media</b>
     </a>
-
-
 
     <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary mt-2 load-tab" id="descripcion-tab" data-toggle="pill" href="#descripcion" role="tab" aria-controls="descripcion" aria-selected="false">
       <i class="fa fa-file-text d-inline-block d-lg-none"></i><b class="d-none d-lg-inline-block">Acerca de</b>
@@ -101,10 +96,9 @@
 
   </div>
 
+  <div class="d-flex flex-column flex-grow-1 p-2 bg-white border tab-content" id="tabContent">
 
-  <div class="tab-content w-100 p-3 bg-white border" id="tabContent">
-
-    <div class="tab-pane show active w-100" id="geodata" role="tabpanel" aria-labelledby="geodata-tab">
+    <div class="tab-pane show active" id="geodata" role="tabpanel" aria-labelledby="geodata-tab">
       <div class="row">
         <div class="col-12 d-block d-lg-inline-block col-lg-3" id="arbol">
           <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
@@ -119,74 +113,15 @@
       </div>
     </div>
 
-    <div class="tab-pane fade w-100 p-2" id="media" role="tabpanel" aria-labelledby="media-tab">
-      <p>Cargando... por favor, espera</p>
-      <div class="spinner-border text-secondary" role="status">
-        <span class="sr-only">Cargando...</span>
-      </div>
-    </div>
+    <div class="tab-pane fade p-2" id="media" role="tabpanel" aria-labelledby="media-tab"><%= cargandoEspera %></div>
+    <div class="tab-pane fade p-2" id="descripcion" role="tabpanel" aria-labelledby="descripcion-tab"><%= cargandoEspera %></div>
+    <div class="tab-pane fade p-2" id="comentario" role="tabpanel" aria-labelledby="comentario-tab"><%= cargandoEspera %></div>
+    <!--div class="tab-pane fade p-2" id="noticias" role="tabpanel" aria-labelledby="noticias-tab"><%#= cargandoEspera %></div-->
 
-    <div class="tab-pane fade w-100 p-2" id="descripcion" role="tabpanel" aria-labelledby="descripcion-tab">
-      <p>Cargando... por favor, espera</p>
-      <div class="spinner-border text-secondary" role="status">
-        <span class="sr-only">Cargando...</span>
-      </div>
-    </div>
-
-    <div class="tab-pane fade w-100 p-2" id="comentario" role="tabpanel" aria-labelledby="comentario-tab">
-      <p>Cargando... por favor, espera</p>
-      <div class="spinner-border text-secondary" role="status">
-        <span class="sr-only">Cargando...</span>
-      </div>
-    </div>
-
-    <div class="modal fade" id="modal_reproduce" tabindex="-1" role="dialog" aria-labelledby="modal_reproduce_label">
-      <div class="modal-dialog modal-lg" id="modalTamanio" role="document">
-        <div class="modal-content" style="background-color: #c5c5c5;">
-
-          <div class="modal-header">
-            <b id="modal_title"></b>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          </div>
-
-          <div class="modal-body text-success" id="modal_reproduce_body">
-            <div class="row">
-              <div class="col-md-9">
-                <div class="embed-responsive embed-responsive-16by9" id="img-container">
-                </div>
-              </div>
-              <div class="col-md-3">
-
-                <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
-                <b id="modal_localidad"></b>
-                <h5 id="modal_ubicacion"></h5>
-                <small id="modal_fecha"></small><br>
-                <small id="modal_imgTipo"></small>
-                <small id="modal_caption"></small><br>
-                <small id="modal_imgDescripcion"></small>
-                <hr>
-                <a id="modal_observacion" target="_blank" class="btn btn-block btn-info btn-sm">Ir a la observación <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
-              </div>
-
-            </div>
-          </div>
-
-          <div class="modal-footer">
-            <h5 class="modal-title">
-              <i class="copyright-ev-icon"></i>
-              <b id="modal_autor"></b>
-              <span id="modal_copyright"></span>
-            </h5>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!--div class="tab-pane fade w-100 p-2" id="noticias" role="tabpanel" aria-labelledby="v-pills-settings-tab"></div-->
 
   </div>
 
-  <%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
 
 </div>
+<%= render :partial => 'especies/media/modalMedia' %>
+<%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>
