@@ -30,3 +30,9 @@ snib:
   password:
   host:
   port: 5434
+
+admin:
+  <<: *login
+  username:
+  password: 
+  database: enciclovida

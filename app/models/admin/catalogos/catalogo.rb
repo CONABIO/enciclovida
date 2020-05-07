@@ -1,5 +1,6 @@
 class Admin::Catalogo < Catalogo
 
+  establish_connection :admin
   attr_accessor :ajax, :especie_id, :catalogo_id, :nombre_cientifico
 
   has_many :especies_catalogo, class_name: Admin::EspecieCatalogo, foreign_key: attribute_alias(:id), inverse_of: :catalogo

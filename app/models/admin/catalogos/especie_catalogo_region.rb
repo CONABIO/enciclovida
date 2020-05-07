@@ -1,5 +1,6 @@
 class Admin::EspecieCatalogoRegion < EspecieCatalogoRegion
 
+  establish_connection :admin
   attr_accessor :reg
 
   has_many :bibliografias, class_name: 'Admin::EspecieCatalogoRegionBibliografia', primary_key: [attribute_alias(:especie_id),attribute_alias(:catalogo_id),attribute_alias(:region_id)], foreign_key: [attribute_alias(:especie_id),attribute_alias(:catalogo_id),attribute_alias(:region_id)]
