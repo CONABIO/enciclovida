@@ -147,13 +147,13 @@ footer .list-group-item {
 }
 .biomex-ev-icon:before, .conabio-ev-icon:before{
   width: 2.5em !important;
-  font-size: 3em;
+  font-size: 2em;
   color: #f7f7f7;
 }
-.enciclo-ev-icon:before, .vida-ev-icon:before, .conabio_completo-ev-icon:before{
+.enciclo-ev-icon:before, .enciclo-ev-icon:after, .vida-ev-icon:before, .conabio_completo-ev-icon:before{
   margin: 0;
-  font-size: 3em;
-  width: 2em !important;
+  font-size: 2.5em;
+  width: 5em !important;
 }
 
 .media-supplier .glyphicon:before, .media-supplier .conabio_completo-ev-icon:before, .bdi-ev-icon:before{font-size: 3em;min-width: 4em!important;}
@@ -167,7 +167,8 @@ div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:
 
 .ev1-ev-icon:after { margin-left: -1.2em; content: '\e861'; }
 .enciclo-ev-icon:before, header .conabio_completo-ev-icon:before, footer .conabio_completo-ev-icon:before{color: #fdfdfd;}
-.vida-ev-icon:before{color: #889b45; margin-left: -2em;}
+.enciclo-ev-icon:after{color: #889b45; margin-left: -5em;}
+/*.vida-ev-icon:before{color: #889b45; margin-left: -2em;}*/
 .ev2-ev-icon:before{margin-left: -1.25em;}
 
 ul.social-buttons li a {
@@ -273,14 +274,16 @@ ul.social-buttons li a:active {
 /* Termina ambiente */
 
 .ev1-ev-icon:before { content: '\e84f'; }
-.vida-ev-icon:before { content: '\e850'; }
+.enciclo-ev-icon:before { content: '\e860'; }
+.enciclo-ev-icon:after { content: '\e850'; }
+/*.vida-ev-icon:before { content: '\e850'; }*/
 .naturalista-3-ev-icon:before { content: '\e853'; }
 .naturalista-4-ev-icon:before { content: '\e854'; }
 .enciclo-ev-icon:before { content: '\e860'; }
 
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 
-.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after, .ev1-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
+.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after, .ev1-ev-icon:after, .enciclo-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
   font-family: "enciclovida_font_icons";
   font-style: normal;
   font-weight: normal;
@@ -298,33 +301,6 @@ ul.social-buttons li a:active {
 }
 
 /*TODO tengo entendido esto debería estar en especies.scss*/
-.media-tabs{
-  text-align: center;
-}
-.media-tabs div.result-img-container{
-  display: inline-block;
-  overflow: hidden;
-  max-width: 100%;
-  margin: 0px;
-  position: relative;
-}
-.media-tabs div.result-img-container img{
-  max-height: 210px;
-  margin: -20px;
-  transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
-  vertical-align: middle;
-}
-.media-tabs div.result-img-container.cornell-audios img{max-height: 180px;}
-.media-tabs div.result-img-container img:hover{
-  transform:scale(.75);
-  -ms-transform:scale(.75); /* IE 9 */
-  -moz-transform:scale(.75); /* Firefox */
-  -webkit-transform:scale(.75); /* Safari and Chrome */
-  -o-transform:scale(.75); /* Opera */
-}
-.media-tabs div.result-img-container a{
-  cursor: pointer;
-}
 #map .glyphicon, #map span[class$="-ev-icon"]{
   text-shadow: 2px 1px 1px rgba(255, 255, 255, 0.85);
 }
