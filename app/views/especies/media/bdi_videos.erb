@@ -1,5 +1,5 @@
 <% if page.nil? %>
-  <div class="d-flex flex-column flex-md-row justify-content-between">
+  <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
     <% icono = {'photo' => 'camera', 'video' => 'film'} %>
     <i class='fa fa-<%=icono[type]%>'></i>
     <i class ='bdi-ev-icon'></i>
@@ -9,6 +9,8 @@
 <% end %>
 
 <% if @videos.any? %>
+  <button type="button" class="btn btn-sm btn-light btn-outline-dark"><i class="fa fa-hand-o-left"></i></button>
+  <button type="button" class="btn btn-sm btn-light btn-outline-dark"><i class="fa fa-hand-o-right"></i></button>
   <% @videos.each do |video| %>
     <%= imprime_media_bdi(video, 'video') %>
   <% end %>

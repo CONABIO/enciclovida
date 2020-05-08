@@ -167,24 +167,26 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   padding: .5em;
 }
 
-.media-tabs{display: grid;}
-.media-tabs .fa{font-size: 2em;}
-/*.media-tabs div.result-img-container{
-  display: inline-block;
-  overflow: hidden;
-  max-width: 100%;
-  margin: 0px;
+.media-tabs{
+  display: grid;
   position: relative;
-}*/
-.paginado-media{
-  overflow-x: auto;
 }
+.media-tabs .fa{font-size: 1.5em;}
+.paginado-media{overflow-x: auto;}
 .paginado-media img{
   max-height: 210px;
   width: auto;
   transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
   vertical-align: middle;
 }
+.paginado-media button{
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+}
+.paginado-media button:first-of-type{left: 0px;}
+.paginado-media button:last-of-type{right: 0px;}
+
 #mediaCornell_a img{max-height: 180px;}
 .paginado-media img:hover{
   transform:scale(.95);

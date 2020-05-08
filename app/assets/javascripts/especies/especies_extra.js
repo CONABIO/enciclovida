@@ -44,6 +44,12 @@ $(document).ready(function(){
         $(this.getAttribute('href')).load(pestaña, function () {
             switch (idPestaña) {
                 case 'media':
+                    $('.media-tabs').on('click','.paginado-media button:first-of-type',function(){
+                        $(this).parent().animate({scrollLeft: "-=600px"}, 250);
+                    });
+                    $('.media-tabs').on('click','.paginado-media button:last-of-type',function(){
+                        $(this).parent().animate({scrollLeft: "+=600px"}, 250);
+                    });
                     $('#mediaBDI_p').load('/especies/' + opciones.taxon + '/bdi-photos?type=photo', function () {
                         $('#mediaBDI_v').load('/especies/' + opciones.taxon + '/bdi-videos?type=video', function () {
                             $('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {

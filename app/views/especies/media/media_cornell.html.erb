@@ -1,5 +1,5 @@
 <% if page.nil? %>
-  <div class="d-flex flex-column flex-md-row justify-content-between">
+  <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
     <% icono = {'photo' => 'camera', 'video' => 'film', 'audio' => 'volume-up'} %>
     <i class='fa fa-<%=icono[type]%>'></i>
     <i class ='macaulay_library-ev-icon'></i>
@@ -14,6 +14,8 @@
 <% if @array[0][:msg].present? %>
   <p><strong><%= @array[0][:msg] %></strong></p>
 <% else %>
+  <button type="button" class="btn btn-sm btn-light btn-outline-dark"><i class="fa fa-hand-o-left"></i></button>
+  <button type="button" class="btn btn-sm btn-light btn-outline-dark"><i class="fa fa-hand-o-right"></i></button>
   <% @array.each do |item|  %>
     <%= imprimeMediaCornell(item,type) %>
   <% end %>
