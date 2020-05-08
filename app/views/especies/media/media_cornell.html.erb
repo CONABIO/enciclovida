@@ -14,8 +14,8 @@
 <% if @array[0][:msg].present? %>
   <p><strong><%= @array[0][:msg] %></strong></p>
 <% else %>
-  <button type="button" class="btn btn-sm btn-light btn-outline-dark"><i class="fa fa-hand-o-left"></i></button>
-  <button type="button" class="btn btn-sm btn-light btn-outline-dark"><i class="fa fa-hand-o-right"></i></button>
+  <button type="button" class="btn btn-light"><i class="fa fa-angle-double-left"></i></button>
+  <button type="button" class="btn btn-light"><i class="fa fa-angle-double-right"></i></button>
   <% @array.each do |item|  %>
     <%= imprimeMediaCornell(item,type) %>
   <% end %>

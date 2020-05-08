@@ -9,8 +9,8 @@
 <% end %>
 
 <% if @fotos.any? %>
-  <button type="button" class="btn btn-sm btn-light btn-outline-dark"><i class="fa fa-hand-o-left"></i></button>
-  <button type="button" class="btn btn-sm btn-light btn-outline-dark"><i class="fa fa-hand-o-right"></i></button>
+  <button type="button" class="btn btn-light"><i class="fa fa-angle-double-left"></i></button>
+  <button type="button" class="btn btn-light"><i class="fa fa-angle-double-right"></i></button>
   <% @fotos.each do |foto| %>
     <%= imprime_media_bdi(foto, 'photo') %>
   <% end %>
