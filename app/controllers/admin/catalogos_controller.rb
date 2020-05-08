@@ -43,7 +43,7 @@ class Admin::CatalogosController < Admin::AdminController
 
     respond_to do |format|
       if @admin_catalogo.save
-        format.html { redirect_to @admin_catalogo, notice: 'Catalogo was successfully created.' }
+        format.html { redirect_to admin_catalogos_path"El catálogo \"#{@admin_catalogo.descripcion}\" fue creado correcamente." }
         format.json { render action: 'show', status: :created, location: @admin_catalogo }
       else
         format.html { render action: 'new' }
@@ -57,7 +57,7 @@ class Admin::CatalogosController < Admin::AdminController
   def update
     respond_to do |format|
       if @admin_catalogo.update(admin_catalogo_params)
-        format.html { redirect_to @admin_catalogo, notice: 'Catalogo was successfully updated.' }
+        format.html { redirect_to admin_catalogos_path, notice: "El catálogo \"#{@admin_catalogo.descripcion}\" fue actualizado correcamente." }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -71,7 +71,7 @@ class Admin::CatalogosController < Admin::AdminController
   def destroy
     @admin_catalogo.destroy
     respond_to do |format|
-      format.html { redirect_to catalogos_url }
+      format.html { redirect_to admin_catalogos_url, "El catálogo fue borrado correcamente." }
       format.json { head :no_content }
     end
   end

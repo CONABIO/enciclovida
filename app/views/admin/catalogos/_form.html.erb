@@ -18,18 +18,7 @@
   <% end %>
 <% end %>
 
-<%= simple_form_for @admin_catalogo, **@form_params, wrapper: :horizontal_form, wrapper_mappings: {
-    boolean:       :horizontal_boolean,
-    check_boxes:   :horizontal_collection,
-    file:          :horizontal_file,
-    radio_buttons: :horizontal_collection,
-    range:         :horizontal_range,
-    #time:          :custom_multi_select,
-    select:        :horizontal_collection
-    #date:          :horizontal_multi_select,
-    #datetime:      :horizontal_multi_select,
-    #select:        :floating_labels_select
-} do |f| %>
+<%= simple_form_for @admin_catalogo, **@form_params, wrapper: :horizontal_form do |f| %>
 
   <% if @admin_catalogo.errors.any? %>
     <div id="error_explanation">
@@ -43,13 +32,14 @@
     </div>
   <% end %>
 
-  <%= f.input :descripcion, label: 'Nombre del catálogo', disabled: true %>
-  <%= f.input :nivel1, label: 'nivel 1', as: :select, collection: @admin_catalogo.dame_nivel1, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel'}, disabled: true %>
-  <%= f.input :nivel2, label: 'nivel 2', as: :select, collection: @admin_catalogo.dame_nivel2, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel'}, disabled: true %>
-  <%= f.input :nivel3, label: 'nivel 3', as: :select, collection: @admin_catalogo.dame_nivel3, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel'}, disabled: true %>
-  <%= f.input :nivel4, label: 'nivel 4', as: :select, collection: @admin_catalogo.dame_nivel4, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel'}, disabled: true %>
-  <%= f.input :nivel5, label: 'nivel 5', as: :select, collection: @admin_catalogo.dame_nivel5, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel'}, disabled: true %>
+  <%= f.input :descripcion, disabled: true, class: 'form-control' %>
+  <%= f.input :nivel1, as: :select, collection: @admin_catalogo.dame_nivel1, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel form-control'}, disabled: true %>
+  <%= f.input :nivel2, as: :select, collection: @admin_catalogo.dame_nivel2, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel form-control'}, disabled: true %>
+  <%= f.input :nivel3, as: :select, collection: @admin_catalogo.dame_nivel3, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel form-control'}, disabled: true %>
+  <%= f.input :nivel4, as: :select, collection: @admin_catalogo.dame_nivel4, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel form-control'}, disabled: true %>
+  <%= f.input :nivel5, as: :select, collection: @admin_catalogo.dame_nivel5, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel form-control'}, disabled: true %>
 
+  <hr />
   <h3>Especies asociadas</h3>
   <div>
     <% @index = 0 %>
@@ -64,9 +54,9 @@
 
   <hr />
 
-  <div class="col-4">
+  <div class="col">
     <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
-    <%= link_to t('helpers.submit.admin_catalogo.cancel'), @admin_catalogo.new_record? ? admin_catalogos_path : admin_catalogo_path(@admin_catalogo), { :class=>"btn btn-lg btn-block btn-secondary" } %>
+    <%= link_to t('helpers.submit.admin_catalogo.cancel'), admin_catalogos_path, { :class=>"btn btn-lg btn-block btn-secondary" } %>
   </div>
 
 <% end %>
