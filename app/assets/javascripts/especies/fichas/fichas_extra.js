@@ -32,14 +32,14 @@ $(document).ready(function() {
             });
 
             // Si el detalle está vacío, asumimos que siempre aparecerá: Ver menos detalles
-            $("#ficha_" + idFicha).html("<i class='glyphicon glyphicon-minus-sign'></i> Ver menos detalles");
+            $("#ficha_" + idFicha).html("<i class='fa fa-minus'></i> Ver menos detalles");
 
         } else {
 
             if( $('#detalle_' + idFicha).hasClass( "detalle-oculto" ) ) {
-                $("#ficha_" + idFicha).html("<i class='glyphicon glyphicon-minus-sign'></i> Ver menos detalles");
+                $("#ficha_" + idFicha).html("<i class='fa fa-minus'></i> Ver menos detalles");
             } else {
-                $("#ficha_" + idFicha).html("<i class='glyphicon glyphicon-plus-sign'></i> Ver mas detalles");
+                $("#ficha_" + idFicha).html("<i class='fa fa-plus'></i> Ver mas detalles");
             }
             $('#detalle_' + idFicha).toggleClass("detalle-oculto");
         }

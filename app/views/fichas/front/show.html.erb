@@ -1,121 +1,121 @@
 <div id='ficha'>
   <div>
     <!-- Encabezado en el que se muestran los accesos a las secciones informativas -->
-    <%= render partial: 'titulo' %>
+    <%#= render partial: 'titulo' %>
   </div>
 
-  <div class="container-fluid" id="clasiDescEsp">
-    <div class="row xSection">
+  <div class="" id="clasiDescEsp">
+    <div class="xSection row active">
       <div class="col-md-12">
-        <h4 class="text-left text-primary">Clasificación y descripción</h4>
+        <h5 class="text-info">Clasificación y descripción</h5>
       </div>
     </div>
     <%= render partial: 'clasificacion_y_descripcion_de_especie' %>
   </div>
 
-  <div class="container-fluid" id="distribucionEspecie">
-    <div class="row xSection">
+  <div class="" id="distribucionEspecie">
+    <div class="xSection row">
       <div class="col-md-12">
-        <h4 class="text-left text-primary">Distribución</h4>
+        <h5 class="text-info">Distribución</h5>
       </div>
     </div>
     <%= render partial: 'distribucione_de_la_especie' %>
   </div>
 
-  <div class="container-fluid" id="ambienteDeEspecie">
-    <div class="row xSection">
+  <div class="" id="ambienteDeEspecie">
+    <div class="xSection row">
       <div class="col-md-12" >
-        <h4 class="text-left text-primary">Ambiente</h4>
+        <h5 class="text-info">Ambiente</h5>
       </div>
     </div>
     <%= render partial: 'ambiente_de_desarrollo_de_especie' %>
   </div>
 
-  <div class="container-fluid" id="biologiaEspecie">
-    <div class="row xSection">
+  <div class="" id="biologiaEspecie">
+    <div class="xSection row">
       <div class="col-md-12" >
-        <h4 class="text-left text-primary">Biología</h4>
+        <h5 class="text-info">Biología</h5>
       </div>
     </div>
     <%= render partial: 'biologia_de_la_especie' %>
   </div>
 
-  <div class="container-fluid" id="ecologiaDemografiaEspecie">
-    <div class="row xSection">
+  <div class="" id="ecologiaDemografiaEspecie">
+    <div class="xSection row">
       <div class="col-md-12" >
-        <h4 class="text-left text-primary">Ecología</h4>
+        <h5 class="text-info">Ecología</h5>
       </div>
     </div>
     <%= render partial: 'ecologia_y_demografia_especie' %>
   </div>
 
-  <div class="container-fluid" id="geneticaEspecie">
-    <div class="row xSection">
+  <div class="" id="geneticaEspecie">
+    <div class="xSection row">
       <div class="col-md-12" >
-        <h4 class="text-left text-primary">Genética</h4>
+        <h5 class="text-info">Genética</h5>
       </div>
     </div>
     <%= render partial: 'genetica_de_la_especie' %>
   </div>
 
-  <div class="container-fluid" id="importanciaEspecie">
-    <div class="row xSection">
+  <div class="" id="importanciaEspecie">
+    <div class="xSection row">
       <div class="col-md-12" >
-        <h4 class="text-left text-primary">Importancia</h4>
+        <h5 class="text-info">Importancia</h5>
       </div>
     </div>
     <%= render partial: 'importancia_de_la_especie' %>
   </div>
 
-  <div class="container-fluid" id="estadoConservacionEspecie">
+  <div class="" id="estadoConservacionEspecie">
 
-    <div class="row xSection">
+    <div class="xSection row">
       <div class="col-md-12" >
-        <h4 class="text-left text-primary">Conservación</h4>
+        <h5 class="text-info">Conservación</h5>
       </div>
     </div>
     <%= render partial: 'estado_de_conservacion_de_la_especie' %>
   </div>
 
-  <div class="container-fluid" id="especiesPrioritariasConservacion">
+  <div class="" id="especiesPrioritariasConservacion">
 
-    <div class="row xSection">
+    <div class="xSection row">
       <div class="col-md-12" >
-        <h4 class="text-left text-primary">Especies prioritarias para la conservación</h4>
+        <h5 class="text-info">Especies prioritarias para la conservación</h5>
       </div>
     </div>
     <%= render partial: 'especies_prioritarias_para_conservacion' %>
   </div>
 
-  <div class="container-fluid" id="necesidadesDeInformacion">
-    <div class="row xSection">
+  <div class="" id="necesidadesDeInformacion">
+    <div class="xSection row">
       <div class="col-md-12" >
-        <h4 class="text-left text-primary">Necesidades de información</h4>
+        <h5 class="text-info">Necesidades de información</h5>
       </div>
     </div>
     <%= render partial: 'necesidades_de_informacion' %>
   </div>
 
-  <div class="container-fluid" id="metadatos">
-    <div class="row xSection">
+  <div class="" id="metadatos">
+    <div class="xSection row">
       <div class="col-md-12" >
-        <h4 class="text-left text-primary">Metadatos</h4>
+        <h5 class="text-info">Metadatos</h5>
       </div>
     </div>
     <%= render partial: 'metadatos' %>
   </div>
 
-  <div class="container-fluid" id="referencias">
-    <div class="row xSection">
+  <div class="" id="referencias">
+    <div class="xSection row">
       <div class="col-md-12" >
-        <h4 class="text-left text-primary">Referencias</h4>
+        <h5 class="text-info">Referencias</h5>
       </div>
     </div>
     <%= render partial: 'referencias' %>
   </div>
 
   <!-- Agregar el botón de subir -->
-  <%= render partial: 'boton_subir' %>
+  <%#= render partial: 'boton_subir' %>
 
 </div>
 
@@ -127,7 +127,7 @@
     var scrollTimer = 600;
 
     // Inicialmente, todas las secciones deben de estar cerradas
-    $('.showInfo').hide(timer);
+    $('.showInfo:not(:first)').hide(timer);
 
     // Funcionalidad en los botónes del header
     $('.btn-ficha').on('click', function(e){
@@ -143,7 +143,7 @@
             scrollTop: ubicacion - altoHeader
         }, scrollTimer);
 
-        //console.log("header: " + altoHeader)
+        //console.log("header:" + altoHeader)
         showSection(idSection);
     });
 
@@ -158,8 +158,8 @@
         // Cerrar secciones
         $('.showInfo').hide(timer);
 
-        var title = $( "#" + idSection).children()[0];
-        var content = $( "#" + idSection).children()[1];
+        var title = $("#" + idSection).children()[0];
+        var content = $("#" + idSection).children()[1];
 
         if($(title).hasClass('active')) {
             $(title).removeClass('active');
@@ -180,7 +180,7 @@
 
         if (scroll >= stickyOffset) {
             sticky.addClass('headCardFixed');
-            $(".hTituloEsp").css("font-size", "35px");
+            $(".hTituloEsp").css("font-size","35px");
             $(".hSection").show();
         }
         else {

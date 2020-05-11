@@ -23,33 +23,33 @@
 .xSection {
     cursor: pointer;
     width: 100%;
-    border-width: 1px 0 0 0;
+    /*border-width: 1px 0 0 0;
     border-color: rgba(119, 27, 34, .5);
-    border-style: dashed;
+    border-style: dashed;*/
     transition: 0.5s;
 }
 
-.xSection.active:after {
+.xSection.active h5:before {
     content: "\2212"; /* Para mostrar "+" */
 }
 
 
-.xSection:after {
+.xSection h5:before{
     content: '\002B';
     font-weight: bold;
-    float: right;
-    margin-left: 5px;
+    float: left;
+    margin-right: .75em;
 }
 
-#ficha h1, #ficha h2, #ficha h3, #ficha h4, #ficha h5, #ficha h6 {
-    border-bottom: 0;  /* En los H's salía borde */
+/*#ficha h1, #ficha h2, #ficha h3, #ficha h4, #ficha h5, #ficha h6 {
+    border-bottom: 0;
     margin: 10px 0!important;
-}
+}*/
 
 /* Contenido de una sección */
 .showInfo {
-    padding: 0 1px 1px 0;
-    display: block;
+    /*padding: 0 1px 1px 0;*/
+    /*display: block;*/
     transition: max-height 0.2s ease-out;
 }
 
