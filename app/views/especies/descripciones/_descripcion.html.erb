@@ -2,16 +2,14 @@
 <% wikipedia = %w(wikipedia_es wikipedia_en).include?(@api) %>
 <% css_class += " wikipedia_description" if wikipedia %>
 
-<div class="<%= css_class %>" id="taxon_description">
-  <div class="row">
-    <div class="col-xs-2">
-      <h4>Descripción de:</h4>
-    </div>
-    <div class="col-xs-3">
+<div class="<%= css_class %> w-100" id="taxon_description">
+  <div class="form-group row">
+    <label for="from" class="col-12 col-md-3 col-form-label col-form-label-lg">Descripción de:</label>
+    <div class="col-12 col-md-9">
       <% if @descripcion.present? %>
-        <%= select_tag :from, options_for_select(Api::Descripcion.opciones_select, :selected => @api, :class => "form-control"), prompt: '- - Selecciona - -' %>
+        <%= select_tag :from, options_for_select(Api::Descripcion.opciones_select, :selected => @api), prompt: '- - Selecciona - -', :class => "form-control" %>
       <% else %>
-        <%= select_tag :from, options_for_select(Api::Descripcion.opciones_select, :class => "form-control"), prompt: '- - Selecciona - -' %>
+        <%= select_tag :from, options_for_select(Api::Descripcion.opciones_select), prompt: '- - Selecciona - -', :class => "form-control" %>
       <% end %>
     </div>
   </div>
