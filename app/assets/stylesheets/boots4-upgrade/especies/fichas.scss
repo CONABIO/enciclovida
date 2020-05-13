@@ -1,22 +1,22 @@
 /* Estilo de la ficha: contenedor en general */
 #ficha {
-    margin-bottom: 30px;
-    margin-top: 30px;
+  /*margin-bottom: 30px;*/
+  /*margin-top: 30px;*/
     /*background-color: white;*/
 }
 
 /* Color de encabezado con botones a secciones cuando está fijo */
 .headCard {
-    padding: 20px;
-    background-color: #ececec;
+  /*padding: 20px;*/
+  /*background-color: #ececec;*/
 }
 
 /* Color de encabezado con botones a secciones cuando está flotante*/
 .headCardFixed {
-    z-index: 10;
-    position: fixed;
-    top:0; left:0;
-    width: 100%;
+  /*z-index: 10;*/
+  /*position: fixed;*/
+  /*top:0; left:0;*/
+  /*width: 100%;*/
 }
 
 /* Color de las secciones de información */
@@ -68,12 +68,12 @@
 
 /*T1: en las que hay secciones con espacios a los lados*/
 .fichaSeccionApartadosT1 {
-    background-color: #E5E5E5;
-    padding: 20px 30px 30px 15px;
+  /*background-color: #E5E5E5;*/
+  /*padding: 20px 30px 30px 15px;*/
 }
 
 /*T2: en las que hay secciones sin espacios de padding*/
 .fichaSeccionApartadosT2 {
-    background-color: #E5E5E5;
-    padding: 30px;
+  /*background-color: #E5E5E5;*/
+  /*padding: 30px;*/
 }
