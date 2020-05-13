@@ -3,7 +3,7 @@
     <% lengua = hash_nombres.keys.first %>
     <% if i == 0 %>
       <b><%= lengua %>: </b>
-      <small><%= hash_nombres[lengua].sort.join(', ') %></small>
+      <%= hash_nombres[lengua].sort.join(', ') %>
       <button class="btn p-1" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
         <i class="fa fa-plus-square"></i>
       </button>...
@@ -15,7 +15,7 @@
         <b><%= lengua %>: </b>
       </dt>
       <dd class="col-sm-9">
-        <small><%= hash_nombres[lengua].sort.join(', ') %></small>
+        <%= hash_nombres[lengua].sort.join(', ') %>
       </dd>
     <% end %>
 
