@@ -145,18 +145,18 @@ footer .list-group-item {
   width: 10em !important;
   text-decoration: underline;
 }
-.biomex-ev-icon:before, .conabio-ev-icon:before{
+.biomex-ev-icon:before/*, .conabio-ev-icon:before*/{
   width: 2.5em !important;
-  font-size: 2em;
+  /*font-size: 2em;*/
   color: #f7f7f7;
 }
 .enciclo-ev-icon:before, .enciclo-ev-icon:after, .vida-ev-icon:before, .conabio_completo-ev-icon:before{
   margin: 0;
-  font-size: 2.5em;
+  /*font-size: 2.5em;*/
   width: 5em !important;
 }
 
-.media-supplier .glyphicon:before, .media-supplier .conabio_completo-ev-icon:before, .bdi-ev-icon:before{font-size: 3em;min-width: 4em!important;}
+.media-supplier .fa:before, .media-supplier .conabio_completo-ev-icon:before, .bdi-ev-icon:before{/*font-size: 3em*/;min-width: 4em!important;}
 
 div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:before, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after, .macaulay_library-ev-icon:before{font-size: 2em;min-width: 9em!important;}
 

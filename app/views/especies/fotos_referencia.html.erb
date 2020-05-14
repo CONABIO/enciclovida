@@ -1,7 +1,7 @@
 <div id="especies-destacadas">
-  <div class="d-flex" style="overflow: hidden; height: 251px;">
-    <button type="button" class="btn btn-sm btn-dark"><i class="fa fa-angle-double-left"></i></button>
-    <button type="button" class="btn btn-sm btn-dark"><i class="fa fa-angle-double-right"></i></button>
+  <div class="d-flex align-items-center" style="overflow-x: auto;">
+    <button type="button" class="btn rounded-circle btn-light"><i class="fa fa-chevron-left"></i></button>
+    <button type="button" class="btn rounded-circle btn-light"><i class="fa fa-chevron-right"></i></button>
     <% @fotos.each do |f|%>
       <%-
         next unless f.square_url.present?
@@ -10,7 +10,7 @@
         next unless img_normal.present?
       -%>
 
-      <a class="btn-title" href="<%= f.native_page_url %>" title="<%= f.attribution_txt %>">
+      <a class="btn-title px-1" href="<%= f.native_page_url %>" title="<%= f.attribution_txt %>">
         <img src="<%= img_normal %>"  alt="<%= f.attribution_txt %>">
       </a>
     <% end %>

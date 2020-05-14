@@ -1,16 +1,16 @@
 <% if page.nil? %>
-  <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
+  <div class="d-flex flex-column flex-md-row justify-content-between mb-3 h3">
     <% icono = {'photo' => 'camera', 'video' => 'film'} %>
     <i class='fa fa-<%=icono[type]%>'></i>
     <i class ='bdi-ev-icon'></i>
-    <i class ='conabio_completo-ev-icon'></i>
+    <i class ='conabio-ev-icon'></i>
   </div>
-  <div class="paginado-media d-flex">
+  <div class="paginado-media d-flex align-items-center">
 <% end %>
 
 <% if @fotos.any? %>
-  <button type="button" class="btn btn-light"><i class="fa fa-angle-double-left"></i></button>
-  <button type="button" class="btn btn-light"><i class="fa fa-angle-double-right"></i></button>
+  <button type="button" class="btn rounded-circle btn-light"><i class="fa fa-chevron-left"></i></button>
+  <button type="button" class="btn rounded-circle btn-light"><i class="fa fa-chevron-right"></i></button>
   <% @fotos.each do |foto| %>
     <%= imprime_media_bdi(foto, 'photo') %>
   <% end %>

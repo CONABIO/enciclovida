@@ -89,9 +89,9 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   font-size: 10px;
 }
 #contenedor_mapa b{
-  font-family: "opensans", "Helvetica", Arial, "texgyreadventorregular";
-  font-weight: bolder;
-  font-size: 12px;
+  /*font-family: "opensans", "Helvetica", Arial, "texgyreadventorregular";*/
+  /*font-weight: bolder;*/
+  /*font-size: 12px;*/
 }
 #nombres_comunes_todos sub {
   padding: 4px;
@@ -103,7 +103,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 }
 #contenedor_mapa .naturalista-3-ev-icon,#contenedor_mapa .naturalista-4-ev-icon{
   vertical-align: text-bottom;
-  font-size: 1.2em;
+  /*font-size: 1.2em;*/
 }
 #contenedor_mapa .naturalista-4-ev-icon {margin-right: 7px;}
 #contenedor_mapa .naturalista-3-ev-icon {margin-left: 0em;}
@@ -117,11 +117,11 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   z-index: 1;
 }
 #especies-destacadas div img{
-  max-height: 250px;
+  max-height: 25vh;
 }
 
 .f-fuentes{
-  font-size: 2.5em;
+  /*font-size: 2.5em;*/
 }
 
 @media(max-width: 767.98px){
@@ -162,17 +162,18 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   display: grid;
   position: relative;
 }
-.media-tabs .fa{font-size: 1.5em;}
+/*.media-tabs .fa{font-size: 1.5em;}*/
 .paginado-media{overflow-x: auto;}
 .paginado-media img{
-  max-height: 210px;
+  max-height: 25vh;
   width: auto;
   transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
-  vertical-align: middle;
+  /*vertical-align: middle;*/
 }
 .paginado-media button, #especies-destacadas button{
   position: absolute;
-  top: 40%;
+  /*height: 25vh;*/
+  /*top: 40%;*/
   z-index: 1;
 }
 .paginado-media button:first-of-type, #especies-destacadas button:first-of-type{left: -5px;}
