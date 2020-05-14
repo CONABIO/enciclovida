@@ -1,7 +1,7 @@
 <div id="especies-destacadas">
   <div class="d-flex align-items-center" style="overflow-x: auto;">
-    <button type="button" class="btn rounded-circle btn-light"><i class="fa fa-chevron-left"></i></button>
-    <button type="button" class="btn rounded-circle btn-light"><i class="fa fa-chevron-right"></i></button>
+    <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-left"></i></button>
+    <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-right"></i></button>
     <% @fotos.each do |f|%>
       <%-
         next unless f.square_url.present?
