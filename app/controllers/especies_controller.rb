@@ -298,10 +298,11 @@ class EspeciesController < ApplicationController
 
   # REVISADO: Regresa el nombre cientifico con el formato del helper, lo uso mayormente en busquedas por 
   def dame_nombre_con_formato
+    render html: "#{helpers.tituloNombreCientifico(@especie, render: 'link')}".html_safe
   end
 
   # REVISADO: Despliega el arbol identado o nodo
-  def arbol
+  def arbolgit add 
     if I18n.locale.to_s == 'es-cientifico'
       @taxones = Especie.arbol_identado_inicial(@especie)
       render :partial => 'especies/arbol/arbol_identado_inicial'
