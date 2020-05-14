@@ -33,14 +33,12 @@
     <div class="col-12 col-md-5 pl-3 pt-2">
       <%= tituloNombreCientifico(@especie, render: 'header') %>
       <%# if (@datos[:especie_o_inferior]) %>
-      <!--div class="col-12 panel-shadow" id="panelCaracteristicaDistribucionAmbiente"-->
-      <%#= render :partial => 'panelCaracteristicaDistribucionAmbiente' %>
-      <!--/div-->
+      <!--div id="panelCaracteristicaDistribucionAmbiente" class="shadow"--><%#= render :partial => 'panelCaracteristicaDistribucionAmbiente' %><!--/div-->
       <%# end %>
       <div id="nombres_comunes_todos" class="text-secondary"></div>
-      <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %>
-      <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %>
-      <div class="h3"><%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %></div>
+      <div id="sinonimos" class="text-secondary"><%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %></div>
+      <!--div id="homonimos" class="text-secondary"><%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %></div-->
+      <div class="h2"><%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %></div>
     </div>
 
     <div class="col-xs-12 col-md" id="contenedor_fotos">
