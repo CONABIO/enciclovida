@@ -35,6 +35,7 @@ es:
    x_comentario:
     uno: Ver 1 comentario más
     varios: "Ver %{cuantos} comentarios más"
+  conteo_especies: 106 mil especies
   copyright:
     some_rights_reserved_by: (c) %{name}, algunos derechos reservados (%{license_short})
     all_rights_reserved: (c) %{name}, todos los derechos reservados

@@ -12,7 +12,7 @@
   <%= hidden_field_tag :id %>
 
   <div class="form-group text-center">
-    <label class="font-weight-bold text-white" for="nombre">Busca entre más de 106 mil especies</label>
+    <label class="font-weight-bold text-white" for="nombre">Busca entre más de <%= t('conteo_especies') %></label>
     <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control form-control-lg', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
     <div class="dropdown mt-3">
       <%= button_tag "Buscar", data: { disable_with: 'Procesando...' },:class => "btn btn-success btn-lg w-25 ", :title=>'Buscar' %>
