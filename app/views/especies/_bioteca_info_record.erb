@@ -1,0 +1,30 @@
+<% if @status_detalle_ficha_janium == 'ok'   # Si el estatus es OK %>
+  <div class="text-justify my-2">
+    <% if !@etiquetas.empty? %>
+      <dl class="dl-horizontal m-1">
+        <% @etiquetas.each do |etiqueta, valor| %>
+          <dt style="white-space: pre-wrap; margin-bottom: 8px;"><%= etiqueta %></dt>
+          <dd>
+            <% if valor.count > 1 %>
+              <% valor.each do |value| %>
+                <li><%= value %></li>
+              <% end %>
+            <% else %>
+              <%= es_url_valido(valor.last) %>
+            <% end %>
+          </dd>
+
+        <% end %>
+      </dl>
+      <div class="text-center">
+        <p class="h4">Compartir: </p>
+        <a name="tw_share" class="btn btn-secondary" type="button" href="https://twitter.com/intent/tweet?url=<%= @url_detalle_ficha_janium %>&text=<%= @etiquetas['Título'].first %>: " target="_blank"><i class="twitter-1-ev-icon"></i></a>
+        <a name="fb_share" class="btn btn-secondary" type="button" href="https://www.facebook.com/sharer.php?u=<%= @url_detalle_ficha_janium %>&t=<%= @etiquetas['Título'].first %>: " target="_blank"><i class="facebook-1-ev-icon"></i></a>
+      </div>
+    <% else %>
+      <h4>No existen datos para esta consulta</h4>
+    <% end %>
+  </div>
+<% else %>
+  <h4>No existen datos para esta consulta</h4>
+<% end%>
