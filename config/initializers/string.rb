@@ -67,7 +67,8 @@ class String
         #Asegurar que el fragmento html tenga los "< / >"'s cerrados
         x = Nokogiri::HTML.fragment(self)
         x.css("div").each { |div|  div.name= "p";}
-        x.xpath('@style|.//@style').remove.to_html.html_safe
+        x.xpath('@style|.//@style').remove
+        x.to_html.html_safe
       else
         self.to_s
       end
