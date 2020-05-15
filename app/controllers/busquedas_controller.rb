@@ -284,6 +284,8 @@ class BusquedasController < ApplicationController
         else
           @setParams[k] = v.map{ |x| x.parameterize if x.present?}
         end
+        #when 'uso'
+        #puts v.map{ |x| x.parameterize if x.present?}.inspect + '------------'
       else
         next
       end

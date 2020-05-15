@@ -34,7 +34,23 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
   # Para el select de usos
   def uso
     if params[:uso].present? && params[:uso].any?
-      self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)} IN (?)", params[:uso]).left_joins(:catalogos)
+      self.taxones = taxones.left_joins(:catalogos)
+      niveles = []
+
+      params[:uso].each_with_index do |uso, i|
+        uso.split('-').each_with_index do |val,index|
+
+          if val.to_i == 0  # Arma el query con este uso
+            niveles[i] = niveles[i].join(' AND ')
+            break
+          end
+
+          niveles[i] = [] unless niveles[i].present?
+          niveles[i] << "#{Catalogo.table_name}.#{Catalogo.attribute_alias("nivel#{index+1}")}=#{val}"
+        end
+      end
+
+      self.taxones = taxones.where(niveles.join(' OR '))
     end
   end
 
