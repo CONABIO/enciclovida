@@ -318,8 +318,8 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     copyright = "BDI - CONABIO"
     case type
     when 'photo'
-      link_to("<img src='#{item.medium_url}' style='height: 280px; width: auto;'/>".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn-title modal-buttons",
+      link_to("<img src='#{item.medium_url}' class='rounded-sm border-light' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-type" => 'photo',
               "data-copyright" => copyright,
               "data-url" => item.medium_url,
@@ -328,8 +328,8 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
               "data-observation"=> item.native_page_url
       )
     when 'video' # Datos fasos por ahora
-      link_to("<img src='#{item.preview_img}' class='img-fluid img-thumbnail' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn-title modal-buttons",
+      link_to("<img src='#{item.preview_img}' class='rounded-sm border-light' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-type" => 'video',
               "data-copyright" => item.licencia.present? ? "<a href='#{item.licencia}' target='_blank'>#{copyright}</a>" : copyright,
               "data-observation"=> item.href_info,
@@ -346,19 +346,19 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     case type
     when 'photo'
       link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900",
               "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='',
               "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='', "data-copyright" => copyright)
     when 'video'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
               "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
     when 'audio'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal",
-              "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'],
+              "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons", "data-observation"=> item['citationUrl'],
               "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
               "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
@@ -369,7 +369,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     copyright = "Missouri Botanical Garden"
     link_to("<img src='#{item['DetailJpgUrl']}'/>".html_safe, '', "data-toggle" => "modal",
             "data-target" => "#modal_reproduce",
-            :class => "btn btn-link btn-title modal-buttons",
+            :class => "m-1 modal-buttons",
             "data-observation"=> item['DetailUrl'],
             "data-url" => item['DetailJpgUrl'],
             "data-type" => 'photo',
@@ -398,6 +398,10 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
 
   def dejaComentario
     link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie))
+  end
+
+  def cargandoEspera
+    "<p>Cargando... por favor, espera</p><div class='spinner-border text-secondary' role='status'><span class='sr-only'>Cargando...</span></div>".html_safe
   end
 
 end

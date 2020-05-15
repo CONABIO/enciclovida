@@ -1,35 +1,25 @@
-<%#= javascript_include_tag 'especies/media/multimedia', 'data-turbolinks-track' => true %>
-
-<div id="paginado_fotos" class="d-flex" style="overflow-x: auto">
-
-  <% if @pagina.blank? && @fotos.any? %>
-    <!--div class="w-100 text-center paginado_1"></div-->
-  <% end %>
-  <div class="media-supplier">
-    <i class ='conabio_completo-ev-icon'></i> <br />
+<% if page.nil? %>
+  <div class="d-flex flex-column flex-md-row justify-content-between mb-3 h2">
+    <% icono = {'photo' => 'camera', 'video' => 'film'} %>
+    <i class='fa fa-<%=icono[type]%>'></i>
     <i class ='bdi-ev-icon'></i>
-    <i class='fa fa-camera'></i>
+    <i class ='conabio-ev-icon'></i>
   </div>
+  <div class="paginado-media d-flex align-items-center">
+<% end %>
 
-  <% if @fotos.any? %>
-    <% @fotos.each do |foto| %>
-      <!--div class="result-img-container"-->
-      <%= imprime_media_bdi(foto, 'photo') %>
-      <%#= link_to (image_tag foto.medium_url), foto.native_page_url, target: :_blank %>
-      <!--/div-->
-    <% end %>
-  <% else %>
-    <p>Lo sentimos, no contamos con una imágen para esta especie, <a href="https://www.biodiversidad.gob.mx/recursos/bancoimg.html">¿quieres contribuir proporcionando una imágen?</a></p>
+<% if @fotos.any? %>
+  <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-left"></i></button>
+  <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-right"></i></button>
+  <% @fotos.each do |foto| %>
+    <%= imprime_media_bdi(foto, 'photo') %>
   <% end %>
+<% else %>
+  <p>Lo sentimos, no contamos con una imágen para esta especie, <a href="https://www.biodiversidad.gob.mx/recursos/bancoimg.html">¿quieres contribuir proporcionando una imágen?</a></p>
+<% end %>
 
-  <% if @pagina.blank? && @fotos.any? %>
-    <%= javascript_include_tag 'especies/media/bdi', 'data-turbolinks-track' => true %>
-    <div class="text-center paginado_2"></div>
-    <script data-turbolinks-track="true">
-        paginadoFotosBDI(<%= @paginas || 1 %>, 1);
-    </script>
-  <% end %>
+<% if page.nil? %>
+  <!--div class="text-center paginado_2"></div-->
+  </div>
+<% end %>
 
-
-
-</div>

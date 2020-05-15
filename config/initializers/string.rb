@@ -65,7 +65,10 @@ class String
       # Verificar que sea texto lo que se va a analizar
       if self.is_a? String
         #Asegurar que el fragmento html tenga los "< / >"'s cerrados
-        Nokogiri::HTML.fragment(self).to_html.html_safe
+        x = Nokogiri::HTML.fragment(self)
+        x.css("div").each { |div|  div.name= "p";}
+        x.xpath('@style|.//@style').remove
+        x.to_html.html_safe
       else
         self.to_s
       end

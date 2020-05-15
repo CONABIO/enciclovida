@@ -1,33 +1,33 @@
 <div class="row showInfo">
   <div class="col-md-12">
-    <h4>Región </h4>
+    <h6>Región </h6>
     <p class="text-justify"><%=convierte_a_HTML(@distribucion.infoAdicionalMun)%></p>
 
-    <h4>Estado del hábitat con respecto al desarrollo natural del taxón</h4>
+    <h6>Estado del hábitat con respecto al desarrollo natural del taxón</h6>
     <p class="text-justify"><%=convierte_a_HTML(@habitat.estadoHabitat)%></p>
     <br>
 
     <div class="row">
       <div class="col-md-6 ficaBordeSeparador">
-        <h4>Distribución:</h4>
+        <h6>Distribución:</h6>
         <ul>
           <li>
-            <h4>Histórica o potencial</h4>
+            <h6>Histórica o potencial</h6>
             <p class="text-justify"><%=convierte_a_HTML(@distribucion.historicaPotencial)%></p>
           </li>
           <li>
-            <h4>Amplia o restringida</h4>
+            <h6>Amplia o restringida</h6>
             <p class="text-justify"><%=convierte_a_HTML(@distribucion.alcanceDistribucion)%></p>
           </li>
           <li>
-            <h4>Información adicional</h4>
+            <h6>Información adicional</h6>
             <p class="text-justify"><%=convierte_a_HTML(@distribucion.infoAdicionalAlcance)%></p>
           </li>
         </ul>
       </div>
 
       <div class="col-md-6">
-        <h4>Endemismo</h4>
+        <h6>Endemismo</h6>
         <ul>
           <li>
             <%

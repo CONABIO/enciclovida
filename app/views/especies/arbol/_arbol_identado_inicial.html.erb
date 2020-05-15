@@ -1,8 +1,8 @@
 <%#= stylesheet_link_tag 'especies/arbol/arbol_identado' %>
 <%#= javascript_include_tag 'especies/arbol/arbol_identado' %>
 <% if @taxones.present? && @taxones.length > 0 %>
-  <div class="d-flex flex-row flex-lg-column mb-2 shadow-sm bg-white"  style="font-size: .8em;">
-    <p class="d-none d-lg-block p-2 m-0 bg-secondary rounded-pill text-white text-center font-weight-bold">Taxonomía</p>
+  <div class="border d-flex flex-lg-column flex-row mb-2 rounded-sm">
+    <p class="bg-secondary d-lg-block d-none font-weight-bold m-0 p-2 rounded-top text-center text-white">Taxonomía</p>
     <%= dameArbolInicialSinIndentar(@taxones) %>
   </div>
 <% end %>

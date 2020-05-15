@@ -36,7 +36,7 @@ module ApplicationHelper
       when 'link', 'link-inline'
         "<b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon), link_params}</i></b> #{taxon.nombre_autoridad} #{estatus}".html_safe
       when 'header'
-        "<h3>#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico} #{taxon.nombre_autoridad} #{estatus}</h3>".html_safe
+        "<h1 class='font-weight-bold'>#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico} <small> #{taxon.nombre_autoridad} #{estatus}</small></h1>".html_safe
       when 'inline'
         "#{nombre_cientifico} #{taxon.nombre_autoridad}".html_safe
       when 'arreglo-taxonomico'
@@ -47,7 +47,7 @@ module ApplicationHelper
 
     else   #vista general
       nombre_cientifico = nombre_cientifico.limpiar({tipo: 'show'})
-      nombre_comun = "<text class='f-nom-comun'>#{nom_comun}</text>" if nom_comun.present?
+      nombre_comun = "<text>#{nom_comun}</text>" if nom_comun.present?
 
       case params[:render]
       when 'title'
@@ -55,7 +55,11 @@ module ApplicationHelper
       when 'link'
         "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
       when 'header'
-        "<h2><b>#{nombre_comun}</b>#{'<br />' if nombre_comun.present?}#{cat_taxonomica unless taxon.especie_o_inferior?}<small>#{nombre_cientifico}</small></h2>".html_safe
+        if nombre_comun.present?
+          "<h1 class='font-weight-bold'>#{nombre_comun}</h1><h2>#{cat_taxonomica unless taxon.especie_o_inferior?}<small>#{nombre_cientifico}</small></h2>".html_safe
+        else
+          "<h1 class='font-weight-bold'>#{cat_taxonomica unless taxon.especie_o_inferior?}<small>#{nombre_cientifico}</small></h1>".html_safe
+        end
       when 'inline'
         nombre_cientifico.html_safe
       when 'link-inline'

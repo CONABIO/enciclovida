@@ -44,8 +44,8 @@ $(document).ready(function(){
         $(this.getAttribute('href')).load(pestaña, function () {
             switch (idPestaña) {
                 case 'media':
-                    $('#bdi_p').load('/especies/' + opciones.taxon + '/bdi-photos', function () {
-                        $('#bdi_v').load('/especies/' + opciones.taxon + '/bdi-videos', function () {
+                    $('#mediaBDI_p').load('/especies/' + opciones.taxon + '/bdi-photos?type=photo', function () {
+                        $('#mediaBDI_v').load('/especies/' + opciones.taxon + '/bdi-videos?type=video', function () {
                             $('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {
                                 $('#mediaCornell_v').load('/especies/' + opciones.taxon + '/media-cornell?type=video', function () {
                                     $('#mediaCornell_a').load('/especies/' + opciones.taxon + '/media-cornell?type=audio',function () {
@@ -84,5 +84,12 @@ $(document).ready(function(){
     $('#arbol').on('click', '.sub_link_taxon', function(){
         despliegaOcontrae($(this));
         return false;
+    });
+
+    $('#media, #contenedor_fotos').on('click','.paginado-media button:first-of-type, #especies-destacadas button:first-of-type',function(){
+        $(this).parent().animate({scrollLeft: "-=600px"}, 250);
+    });
+    $('#media, #contenedor_fotos').on('click','.paginado-media button:last-of-type, #especies-destacadas button:last-of-type',function(){
+        $(this).parent().animate({scrollLeft: "+=600px"}, 250);
     });
 });

@@ -298,10 +298,11 @@ class EspeciesController < ApplicationController
 
   # REVISADO: Regresa el nombre cientifico con el formato del helper, lo uso mayormente en busquedas por 
   def dame_nombre_con_formato
+    render html: "#{helpers.tituloNombreCientifico(@especie, render: 'link')}".html_safe
   end
 
   # REVISADO: Despliega el arbol identado o nodo
-  def arbol
+  def arbolgit add 
     if I18n.locale.to_s == 'es-cientifico'
       @taxones = Especie.arbol_identado_inicial(@especie)
       render :partial => 'especies/arbol/arbol_identado_inicial'
@@ -362,12 +363,14 @@ class EspeciesController < ApplicationController
 
   # Acción necesaria para la tab media, similar a describe ¬¬
   def media
-    render :partial => 'media'
+    render 'especies/media/media'
   end
 
   # Servicio de lib/bdi_service.rb
   def bdi_photos
     @pagina = params['pagina']
+    type = params['type']
+    page = params['page']
 
     if @pagina.present?
       bdi = @especie.fotos_bdi({pagina: @pagina.to_i})
@@ -396,7 +399,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
-          render 'especies/media/bdi_photos' and return
+          render 'especies/media/bdi_photos', :locals => {type: type, page: page} and return
         end  # End format html
       end  # End respond
 
@@ -408,6 +411,8 @@ class EspeciesController < ApplicationController
   #Videos de BDI
   def bdi_videos
     @pagina = params['pagina']
+    type = params['type']
+    page = params['page']
 
     if @pagina.present?
       bdi = @especie.videos_bdi({pagina: @pagina.to_i})
@@ -436,7 +441,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
-          render 'especies/media/bdi_videos' and return
+          render 'especies/media/bdi_videos', :locals => {type: type, page: page} and return
         end  # End format html
       end  # End respond
 

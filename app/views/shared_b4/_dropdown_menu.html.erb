@@ -1,5 +1,5 @@
 <div class="dropdown">
-  <button id="menuEsqSupDer" type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  <button id="menuEsqSupDer" type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <%= usuario_signed_in? ? current_usuario.nombre : " Más" %>...
     <i class='vista-<%= I18n.locale.to_s == 'es-cientifico' ? 'especialista' : 'general' %>-ev-icon'></i>
   </button>
