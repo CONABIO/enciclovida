@@ -13,6 +13,8 @@ class Catalogo < ActiveRecord::Base
   alias_attribute :nivel3, :Nivel3
   alias_attribute :nivel4, :Nivel4
   alias_attribute :nivel5, :Nivel5
+  alias_attribute :nivel6, :Nivel6
+  alias_attribute :nivel7, :Nivel7
 
   scope :nom, -> { where(nivel1: 4, nivel2: 1).where("#{attribute_alias(:nivel3)} > 0") }
   scope :iucn, -> { where(nivel1: 4, nivel2: 2).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: 'Riesgo bajo (LR): Dependiente de conservación (cd)') }
