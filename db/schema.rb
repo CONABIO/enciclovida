@@ -137,7 +137,6 @@ ActiveRecord::Schema.define(version: 20200214232856) do
     t.datetime "updated_at"
     t.text "geoserver_info"
     t.string "tropico_id"
-    t.integer "eol_id"
   end
 
   create_table "relacionCentralizacion", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

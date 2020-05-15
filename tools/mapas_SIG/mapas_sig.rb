@@ -5,11 +5,11 @@ OPTS = Trollop::options do
   banner <<-EOS
 Marca en la base de proveedores las especies que tienen mapa de distribución, de acuerdo al 
 archivo que envia el SIG, idealmente deberia ser un webservice ...
-Columnas requeridas: id, idcapa, title
+Columnas requeridas: idCAT, styler, boubox, mapa
 
 Usage:
 
-  rails r tools/mapas_SIG/mapas_sig.rb -d /ruta/del/archivo
+  rails r tools/mapas_SIG/mapas_sig_manuel.rb -d /ruta/del/archivo
 
 where [options] are:
   EOS
@@ -18,78 +18,25 @@ end
 
 @row = nil
 
-def actualiza_mapa_sig
-  infraesp = %w(subsp. var.)
+def asigna_mapa_sig
+  return { idCAT: @row['idCAT'], estatus: false, error: 'idCAT está vacío' } unless @row['idCAT'].present?
+  scat = Scat.where(catalogo_id: @row['idCAT']).first
+  return { idCAT: @row['idCAT'], estatus: false, error: 'No existe el idCAT en Scat' } unless scat
+  taxon = scat.especie
+  return { idCAT: @row['idCAT'], estatus: false, error: 'No existe el taxon en especie' } unless taxon
+  return { idCAT: @row['idCAT'], estatus: false, error: 'No es una especie' } unless taxon.especie_o_inferior?
+  taxon_valido = taxon.dame_taxon_valido
+  return { idCAT: @row['idCAT'], estatus: false, error: 'No existe el taxon válido' } unless taxon_valido
 
-  año = @row['title'][-5,4].numeric? ? @row['title'][-5,4] : nil
+  bbox = @row['boubox'].split(' ')
+  bbox_orden = "#{bbox[1].split('=').last},#{bbox[0].split('=').last},#{bbox[3].split('=').last},#{bbox[2].split('=').last}"
 
-  nom = @row['title'].split(' ')
-  nombre_cientifico = nil
-
-  infraesp.each do |infra|
-    if @row['title'].include?(infra)
-      nombre_cientifico = "#{nom[0]} #{nom[1]} #{nom[2]} #{nom[3]}"  # infraespecie
-      break
-    else
-      nombre_cientifico = "#{nom[0]} #{nom[1]}"  # especie
-    end
-  end
-
-  nombre_cientifico = nombre_cientifico.gsub(',','').strip
-
-  if nombre_cientifico[-1,1] == '.'  #Quitando el ultimo caracter que era un punto
-    nombre_cientifico = nombre_cientifico[0..-2]
-  end
-
-  v = Validacion.new
-  v.nombre_cientifico = nombre_cientifico
-  v.encuentra_por_nombre
-  validacion = v.validacion
-
-  if validacion[:estatus] && validacion[:msg].include?('Búsqueda exacta')
-    v.taxon_estatus
-
-    if v.validacion[:estatus]
-      v.validacion[:taxon] = v.validacion[:taxon_valido] if v.validacion[:taxon_valido].present?
-      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},#{v.validacion[:taxon].nombre_cientifico},\"#{v.validacion[:msg]}\",#{año}"
-    else
-      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},,\"#{v.validacion[:msg]}\",#{año}"
-    end
-
-  elsif validacion[:estatus] && validacion[:msg].include?('Búsqueda similar')
-    v.quita_subgeneros
-    v.taxon_estatus
-
-    if v.validacion[:estatus]
-      v.validacion[:taxon] = v.validacion[:taxon_valido] if v.validacion[:taxon_valido].present?
-      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},#{v.validacion[:taxon].nombre_cientifico},\"#{v.validacion[:msg]}\",#{año}"
-    else
-      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},,\"#{v.validacion[:msg]}\",#{año}"
-    end
-
-  elsif validacion[:taxones].present?
-    v.quita_sinonimos_coincidencias
-    v.quita_subgeneros
-    v.taxon_estatus
-
-    if v.validacion[:estatus]
-      v.validacion[:taxon] = v.validacion[:taxon_valido] if v.validacion[:taxon_valido].present?
-      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},#{v.validacion[:taxon].nombre_cientifico},\"#{v.validacion[:msg]}\",#{año}"
-    else
-      @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},\"#{validacion[:taxones].map(&:nombre_cientifico).join(', ')}\",\"#{validacion[:msg]}\",#{año}"
-    end
-
-  else
-    @bitacora.puts "#{@row['id']},#{@row['idcapa']},\"#{@row['title']}\",#{nombre_cientifico},,\"#{validacion[:msg]}\",#{año}"
-  end
-
-  v.validacion.merge({ año: año, idcapa: @row['idcapa'] })
-
+  { taxon: taxon_valido, idCAT: @row['idCAT'], estatus: true, layers: @row['mapa'], styles: @row['styler'], bbox: bbox_orden }
 end
 
 # Guarda en la base lo que resulto de la asignacion de geoserver_info
 def guarda_geoserver_info(v)
-  return unless (v[:estatus] && v[:msg].include?('Búsqueda exacta'))
+  return unless v[:estatus]
   t = v[:taxon]
 
   if p = t.proveedor
@@ -107,40 +54,33 @@ end
 # Asigna el valor y el acomodo de geoserver_info
 def asigna_geoserver_info(v, geoserver_info=nil)
   geo = {}
-  año = v[:año] || 'N/D'
 
   if geoserver_info.present?
     begin
       geo = JSON.parse(geoserver_info)
-      geo[año] = [] if !geo.key?(año)
-      geo[año] << v[:idcapa]
+      geo["Mapa #{geo.count + 1}"] =  { layers: v[:layers], styles: v[:styles], bbox: v[:bbox] }
     rescue
       nil
     end
   else
-    geo[año] = []
-    geo[año] << v[:idcapa]
+    geo['Mapa 1'] =  { layers: v[:layers], styles: v[:styles], bbox: v[:bbox] }
   end
 
-  geo.sort.reverse.to_h.to_json
+  geo.to_json
+end
+
+def limpia_geoserver_info
+  Proveedor.update_all(geoserver_info: nil)
 end
 
 def lee_csv(csv_path)
   CSV.foreach(csv_path, :headers => true) do |r|
     @row = r
     #next unless @row["id"] == "7017"
-    Rails.logger.debug "\tID: #{@row['id']}" if OPTS[:debug]
-    v = actualiza_mapa_sig
+    Rails.logger.debug "\tID: #{@row['idCAT']}" if OPTS[:debug]
+    v = asigna_mapa_sig
     guarda_geoserver_info(v)
   end
-
-  @bitacora.close
-end
-
-def bitacora
-  log_path = Rails.root.join('tools', 'mapas_SIG', Time.now.strftime('%Y-%m-%d_%H%M%S') + '_SIG.csv')
-  @bitacora ||= File.new(log_path, 'a+')
-  @bitacora.puts "id,idcapa,title,nombre científico,nombre científico validado,msg,año"
 end
 
 
@@ -150,7 +90,7 @@ start_time = Time.now
 if ARGV.present? && ARGV.any? && ARGV.length == 1
 
   if File.exist?(ARGV[0])
-    bitacora
+    limpia_geoserver_info
     lee_csv(ARGV[0])
   else
     Rails.logger.debug "\tEl archivo: #{ARGV[0]}, no existe." if OPTS[:debug]
