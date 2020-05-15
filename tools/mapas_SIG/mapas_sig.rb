@@ -5,11 +5,11 @@ OPTS = Trollop::options do
   banner <<-EOS
 Marca en la base de proveedores las especies que tienen mapa de distribución, de acuerdo al 
 archivo que envia el SIG, idealmente deberia ser un webservice ...
-Columnas requeridas: idCAT, styler, boubox, mapa
+Columnas requeridas: idCAT, styler, boubox, mapa, anio, autor
 
 Usage:
 
-  rails r tools/mapas_SIG/mapas_sig_manuel.rb -d /ruta/del/archivo
+  rails r tools/mapas_SIG/mapas_sig.rb -d /ruta/del/archivo
 
 where [options] are:
   EOS
@@ -31,7 +31,7 @@ def asigna_mapa_sig
   bbox = @row['boubox'].split(' ')
   bbox_orden = "#{bbox[1].split('=').last},#{bbox[0].split('=').last},#{bbox[3].split('=').last},#{bbox[2].split('=').last}"
 
-  { taxon: taxon_valido, idCAT: @row['idCAT'], estatus: true, layers: @row['mapa'], styles: @row['styler'], bbox: bbox_orden }
+  { taxon: taxon_valido, idCAT: @row['idCAT'], estatus: true, layers: @row['mapa'], styles: @row['styler'], bbox: bbox_orden, anio: @row['anio'], autor: @row['autor'] }
 end
 
 # Guarda en la base lo que resulto de la asignacion de geoserver_info
@@ -58,12 +58,12 @@ def asigna_geoserver_info(v, geoserver_info=nil)
   if geoserver_info.present?
     begin
       geo = JSON.parse(geoserver_info)
-      geo["Mapa #{geo.count + 1}"] =  { layers: v[:layers], styles: v[:styles], bbox: v[:bbox] }
+      geo["Mapa #{geo.count + 1}"] = { layers: v[:layers], styles: v[:styles], bbox: v[:bbox], anio: v[:anio], autor: v[:autor] }
     rescue
       nil
     end
   else
-    geo['Mapa 1'] =  { layers: v[:layers], styles: v[:styles], bbox: v[:bbox] }
+    geo['Mapa 1'] = { layers: v[:layers], styles: v[:styles], bbox: v[:bbox], anio: v[:anio], autor: v[:autor] }
   end
 
   geo.to_json

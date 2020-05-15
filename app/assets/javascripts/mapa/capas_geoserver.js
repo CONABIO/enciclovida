@@ -50,7 +50,7 @@ var capaDistribucionGeoserver = function (url) {
         }
 
         geoserver_control.addOverlay(window[datos.layers],
-            "<b>" + datos.mapa + "</b>"
+            datos.anio + ", " + datos.autor
         );
     });
 
@@ -63,5 +63,5 @@ var capaDistribucionGeoserver = function (url) {
 var tituloControlLayerGeoserver = function()
 {
     $('.leaflet-control-layers:nth-child(1) a').remove();
-    $('.leaflet-control-layers:nth-child(1)').prepend('<div class="text-center m-2"><span class="font-weight-bold mr-2">Mapas de distribución</span><sub>' +  opciones.geodatos.geoserver_descargas_url.length + '</sub> <br /> (CONABIO)<div>');
+    $('.leaflet-control-layers:nth-child(1)').prepend('<div class="text-center m-2"><span class="font-weight-bold mr-2">Mapas de distribución</span><sub>' +  opciones.geodatos.geoserver_descargas_url.length + '</sub><div>');
 };

@@ -87,7 +87,7 @@ class Proveedor < ActiveRecord::Base
       geodatos[:geoserver_descargas_url] = []
 
       info.each do |mapa, datos|
-        geodatos[:geoserver_descargas_url] << { layers: datos['layers'], styles: datos['styles'], bbox: datos['bbox'], mapa: mapa }
+        geodatos[:geoserver_descargas_url] << { layers: datos['layers'], styles: datos['styles'], bbox: datos['bbox'], mapa: mapa, anio: datos['anio'], autor: datos['autor'] }
       end
     end
 
