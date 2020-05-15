@@ -321,5 +321,5 @@ var geojsonSnib = function(url)
 var tituloControlLayerSnib = function()
 {
     $('.leaflet-control-layers:nth-child(1) a').remove();
-    $('.leaflet-control-layers:nth-child(1)').prepend('<div class="text-center m-2"><span class="font-weight-bold mr-2">SNIB/CONABIO</span><sub>' +  ejemplares_conteo+ '</sub> <br /> (museos, colectas y proyectos)<div>');
+    $('.leaflet-control-layers:nth-child(1)').prepend('<div class="text-center m-2"><span class="font-weight-bold mr-2">Sistema Nacional de Información <br /> sobre Biodiversidad (SNIB)</span><sub>' +  ejemplares_conteo+ '</sub> <br /> (museos, colectas y proyectos)<div>');
 };
