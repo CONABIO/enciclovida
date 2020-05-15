@@ -33,24 +33,24 @@ var capaDistribucionGeoserver = function (url) {
 
     $.each(opciones.geodatos.geoserver_descargas_url, function (index, datos) {
 
-        window[datos.id] = L.tileLayer.wms(url, {
-            layers: datos.id,
+        window[datos.layers] = L.tileLayer.wms(url, {
+            layers: datos.layers,
             format: 'image/png',
             transparent: true,
             opacity: .7,
             zIndex: 4,
         });
 
-        distribucionLayer.addLayer(window[datos.id]);
+        distribucionLayer.addLayer(window[datos.layers]);
 
         if(!primer_layer)
         {
-            map.addLayer(window[datos.id]);
+            map.addLayer(window[datos.layers]);
             primer_layer = true;
         }
 
-        geoserver_control.addOverlay(window[datos.id],
-            "<b>" + datos.anio + "</b>"
+        geoserver_control.addOverlay(window[datos.layers],
+            "<b>" + datos.mapa + "</b>"
         );
     });
 

@@ -86,10 +86,8 @@ class Proveedor < ActiveRecord::Base
       geodatos[:geoserver_url] = CONFIG.geoserver_url.to_s
       geodatos[:geoserver_descargas_url] = []
 
-      info.each do |año, layers|
-        layers.each do |layer|
-          geodatos[:geoserver_descargas_url] << { id: layer, anio: año }
-        end
+      info.each do |mapa, datos|
+        geodatos[:geoserver_descargas_url] << { layers: datos['layers'], styles: datos['styles'], bbox: datos['bbox'], mapa: mapa }
       end
     end
 
