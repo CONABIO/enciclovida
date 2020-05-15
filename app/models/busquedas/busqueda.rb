@@ -38,7 +38,7 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
       niveles = []
 
       params[:uso].each_with_index do |uso, i|
-        uso.split(',').each_with_index do |val,index|
+        uso.split('-').each_with_index do |val,index|
 
           if val.to_i == 0  # Arma el query con este uso
             niveles[i] = niveles[i].join(' AND ')

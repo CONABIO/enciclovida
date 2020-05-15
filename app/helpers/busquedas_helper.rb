@@ -60,8 +60,7 @@ module BusquedasHelper
 
   def selectUsos(opciones={})
     opc = @@opciones.merge(opciones)
-    options = @usos.map{ |u| [u.descripcion, "#{u.nivel1},#{u.nivel2},#{u.nivel3},#{u.nivel4},#{u.nivel5},#{u.nivel6},#{u.nivel7}", { class: "f-fuentes" }] }
-    #options = @usos.map{ |u| [u.descripcion, u.id, { class: "f-fuentes" }] }
+    options = @usos.map{ |u| [u.descripcion, "#{u.nivel1}-#{u.nivel2}-#{u.nivel3}-#{u.nivel4}-#{u.nivel5}-#{u.nivel6}-#{u.nivel7}", { class: "f-fuentes" }] }
     select_tag('uso', options_for_select(options), opc)
   end
 
