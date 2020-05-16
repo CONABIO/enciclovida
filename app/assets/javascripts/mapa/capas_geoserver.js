@@ -50,7 +50,7 @@ var capaDistribucionGeoserver = function (url) {
         }
 
         geoserver_control.addOverlay(window[datos.layers],
-            datos.anio + ", " + datos.autor
+            datos.autor + ' ' + datos.anio
         );
     });
 

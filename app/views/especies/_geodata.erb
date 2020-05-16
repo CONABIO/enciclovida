@@ -52,7 +52,7 @@
       <h6 class="dropdown-header">Mapa de distribución</h6>
 
       <% @datos[:geodatos][:geoserver_descargas_url].each do |geo| %>
-        <%= link_to("#{icono_globo} #{geo[:anio]}, #{geo[:autor]} (KMZ)".html_safe, "#{CONFIG.geoserver_descarga_url}&layers=#{geo[:layers]}&styles=#{geo[:styles]}&bbox=#{geo[:bbox]}", :target => :_blank, :class => 'dropdown-item') %>
+        <%= link_to("#{icono_globo} #{geo[:autor]} #{geo[:anio]} (KMZ)".html_safe, "#{CONFIG.geoserver_descarga_url}&layers=#{geo[:layers]}&styles=#{geo[:styles]}&bbox=#{geo[:bbox]}", :target => :_blank, :class => 'dropdown-item') %>
       <% end %>
     <% end %>
   </div>
