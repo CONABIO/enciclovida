@@ -2,7 +2,7 @@
  * Inicializa el mapa
  * @param id
  */
-var cargaMapa = function (id)
+var cargaMapa = function (id ,callback)
 {
     // El default de leaflet
     var OSM_layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png',{
@@ -61,4 +61,6 @@ var cargaMapa = function (id)
 
     //L.control.layers(baseMaps).addTo(map);
 
+    //Para asegurarnos que siempre se genere el mapa con el mínimo markup posible
+    ponTamaño();
 };

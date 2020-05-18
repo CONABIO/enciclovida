@@ -1,25 +1,26 @@
-<div class="embed-responsive embed-responsive-16by9" id="contenedor_mapa">
-  <% content_for(:extrajs) do %>
-    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" data-turbolinks-track="reload"></script>
-    <script src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup.js" data-turbolinks-track="reload"></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js"></script>
-    <%= javascript_include_tag 'especies/mapa/mapa', 'data-turbolinks-track' => true %>
-  <% end %>
+<% content_for(:extrajs) do %>
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" data-turbolinks-track="reload"></script>
+  <script src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup.js" data-turbolinks-track="reload"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js"></script>
+  <%= javascript_include_tag 'especies/mapa/mapa', 'data-turbolinks-track' => true %>
+<% end %>
 
-  <% content_for(:extracss) do %>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" />
-    <%= stylesheet_link_tag 'especies/mapa/mapa', 'data-turbolinks-track' => true %>
-  <% end %>
+<% content_for(:extracss) do %>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" />
+  <%= stylesheet_link_tag 'especies/mapa/mapa', 'data-turbolinks-track' => true %>
+<% end %>
 
-  <% content_for(:delayedjs) do %>
-    <%= javascript_include_tag 'especies/mapa/mapa_delayed', 'data-turbolinks-track' => true %>
-    <script data-turbolinks-track="true">
-        $('#map').css('height', $('#contenedor_mapa').height());
-        $('#contenedor_mapa').removeClass(); //Esto es para quitar los embed responsive ¬¬
-    </script>
-  <% end %>
+<% content_for(:delayedjs) do %>
+  <%= javascript_include_tag 'especies/mapa/mapa_delayed', 'data-turbolinks-track' => true %>
+  <script data-turbolinks-track="true">
+      //$('#map').css('height', $('#contenedor_mapa').height());
+      //$('#contenedor_mapa').removeClass(); //Esto es para quitar los embed responsive ¬¬
+      //ponTamaño();
+  </script>
+<% end %>
 
+<div id="contenedor_mapa" class="embed-responsive embed-responsive-16by9">
   <div id="map" class="w-100"></div>
 </div>
 

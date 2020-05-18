@@ -13,8 +13,11 @@ var limpiar = function (str)
  * Pone el tamaño inicial al mapa
  */
 var ponTamaño = function () {
+    $('#map').css('height', 0);
+    $('#contenedor_mapa').addClass('embed-responsive embed-responsive-16by9');
     $('#map').css('height', $('#contenedor_mapa').height());
     map.invalidateSize(true);
+    $('#contenedor_mapa').removeClass('embed-responsive embed-responsive-16by9');
 };
 
 /**
