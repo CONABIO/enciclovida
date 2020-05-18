@@ -463,6 +463,8 @@ class EspeciesController < ApplicationController
 
   # Servicio Tropicos
   def media_tropicos
+    type = params['type']
+    page = params['page']
 
     # Crear instancia de servicio trópicos:
     ts_req = Tropicos_Service.new
@@ -511,7 +513,7 @@ class EspeciesController < ApplicationController
     end
 
     @array = [{msg: "Aún no hay imágenes para esta especie :/ "}] if @array[0]["Error"].present?
-    render 'especies/media/media_tropicos'
+    render 'especies/media/media_tropicos', :locals => {type: type, page: page}
   end
 
   def fotos_naturalista
