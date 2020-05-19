@@ -1,61 +1,217 @@
 <div class='nested-fields'>
+  <%= f.input :habitatId, :as => :hidden %>
+  <%= f.input :especieId, :as => :hidden %>
+  <%= f.input :tipoAmbiente, as: :radio_buttons, :collection => Fichas::Habitat::TIPOS_HABITAT, item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHideAmbienteDesarrolloEspecie()' } %>
+  <hr>
 
-  <% # OCUPA: ecorregion de  * habitat %>
-  <%= f.simple_fields_for :ecorregion do |info| %>
-    <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecorregion', locals: { f: info }  %>
-  <% end %>
+  <fieldset class="apartados">
+    <legend class="text-primary"> Ecorregiones </legend>
+    <%= select_multiple_de_catalogos(f, :ecorregion, :descripcion, :ecorregionId) %>
+  </fieldset>
 
-  <hr class="espacio_ficha">
-  <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un ecosistema'.html_safe,
-                              f,
-                              :ecosistema,
-                              partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema',
-                              :class => 'btn btn-info btn-sm',
-                              role: 'tab',
-                              "data-toggle" => 'tab',
-                              "aria-controls" => 'ambiente',
-                              'data-association-insertion-node' => '#ambiente_ecosistema',
-                              'data-association-insertion-method' => 'append',
-                              href: '#ambiente'
-  %>
+  <fieldset class="apartados">
+    <legend class="text-primary"> Ecosistemas </legend>
+    <%= select_multiple_de_catalogos(f, :ecosistema, :tipoecosistema, :ecosistemaid) %>
+  </fieldset>
 
-  <hr />
-  ECOSISTEMAS:
-  <div id="ambiente_ecosistema">
-    <%= f.simple_fields_for :ecosistema do |info| %>
-      <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_ecosistema', locals: { f: info }  %>
-    <% end %>
+  <div id="ambiente-solo-terrestre">
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.t_vegetacion') %></h3>
+    <%= f.association :vegetacion,
+          :as => :grouped_select,
+          collection: Fichas::Vegetacion.all.group_by(&:descripcionVegetacion),
+          :group_method => :last,
+          group_label_method: :first,
+          label_method: :descripcionSubVegetacion,
+          value_method: :vegetacionId,
+          input_html: {
+              :multiple => true,
+              class: 'form-control selectpicker',
+              'data-live-search': 'true',
+              'title': t('general.seleccionar_opciones'),
+              'data-selected-text-format': 'count > 3'
+          }
+    %>
+    <%= f.input :tipoVegetacion %>
+
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :habitatAntropico, t('opciones_multiples.t_habitatAntropico')) %>
+    <div id="destino_de_habitatAntropico"></div>
+
+    <%= f.input :habitatAgropecuario, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
+    <%= f.input :zonaUrbana, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline'  %>
+    <%= f.input :VegetacionSecundaria, as: :radio_buttons, :collection => [ ['Sí', 'Sí'], ['No', 'no'] ], item_wrapper_class: 'radio-inline', input_html: { onclick: 'showOrHide(this, "vegetacion-secundaria")'} %>
+    <div id="vegetacion-secundaria">
+      <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :vegetacionSecundaria, t('opciones_multiples.t_tipoVegetacionSecundaria')) %>
+      <div id="destino_de_vegetacionSecundaria"></div>
+    </div>
+
+    <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
+      <%= parametros = {:acceso => @taxon.ambi_especies_asociadas, :modelo => f_taxon,:association => :ambi_especies_asociadas,:agregar => "Agregar especies asociadas",:titulo => "d) Mencionar las especies asociadas",:el_div => "especies_asociadas",:pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_especies_asociadas]}
+          agrega_info_adicional(parametros)
+      %>
+      <div id="dato_<%= parametros[:el_div] %>">
+        <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+          <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="apartadoFicha ficha-Invasora">
+      <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.vegetacion_mundial') %></h3>
+      <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :tipovegetmundial, t('opciones_multiples.t_tipovegetmundial')) %>
+      <div id="destino_de_tipovegetmundial"></div>
+      <%= parametros = { :acceso => @taxon.ambi_vegetacion_esp_mundo, :modelo => f_taxon, :association => :ambi_vegetacion_esp_mundo, :titulo => "Información adicional", :el_div => "ambi_vegetacion_esp_mundo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_vegetacion_esp_mundo]}
+          agrega_info_adicional(parametros)
+      %>
+      <div id="dato_<%= parametros[:el_div] %>">
+        <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+          <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+        <% end %>
+      </div>
+    </div>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.int_altitudinal') %></h3>
+    <%= f.input :intervaloaltitudinalinicial %>
+    <%= f.input :intervaloaltitudinalfinal, input_html: { onblur: "checkValues(this)" } %>
+    <%= f.input :infoAddintervaloaltitudinal %>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.clima') %></h3>
+    <%#= select_multiple_nivel_2(f_taxon, :opciones_preguntas, :clima, t('opciones_multiples.t_climas')) %>
+    <div id="destino_de_clima"></div>
+    <%= parametros = {:acceso => @taxon.ambi_info_clima, :modelo => f_taxon, :association => :ambi_info_clima, :titulo => "Información adicional", :el_div => "ambi_info_clima", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima]}
+        agrega_info_adicional(parametros)
+    %>
+    <div id="dato_<%= parametros[:el_div] %>">
+      <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+        <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+      <% end %>
+    </div>
+
+    <div class="apartadoFicha ficha-Invasora">
+      <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.clima_exo') %></h3>
+      <%#= select_multiple_nivel_2(f_taxon, :opciones_preguntas, :climaexo, t('opciones_multiples.t_climaexo')) %>
+      <div id="destino_de_climaexo"></div>
+      <%= parametros = {:acceso => @taxon.ambi_info_clima_exotico, :modelo => f_taxon, :association => :ambi_info_clima_exotico, :titulo => "Información adicional", :el_div => "ambi_info_clima_exotico", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_info_clima_exotico]}
+          agrega_info_adicional(parametros)
+      %>
+      <div id="dato_<%= parametros[:el_div] %>">
+        <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+          <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+        <% end %>
+      </div>
+    </div>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.r_temperatura') %></h3>
+    <%= f.input :temperaturainicial %>
+    <%= f.input :temperaturafinal, input_html: { onblur: "checkValues(this)" } %>
+    <%= f.input :infoaddtemperatura %>
+
+    <div class="apartadoFicha ficha-Invasora">
+      <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.rango_temp_exo') %></h3>
+      <%= f.input :temperaturainicialexo%>
+      <%= f.input :temperaturafinalexo, input_html: { onblur: "checkValues(this)" } %>
+      <%= f.input :infoaddtemperaturaexo %>
+    </div>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.r_precipitacion') %></h3>
+    <%= f.input :precipitacioninicial %>
+    <%= f.input :precipitacionfinal, input_html: { onblur: "checkValues(this)" } %>
+    <%= f.input :infoaddprecipitacion %>
+
+    <div class="apartadoFicha ficha-Invasora">
+      <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.rango_hum_exo') %></h3>
+      <%= f.input :precipitacioninicialexo %>
+      <%= f.input :precipitacionfinalexo, input_html: { onblur: "checkValues(this)" } %>
+      <%= f.input :infoaddprecipitacionexo %>
+    </div>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.humedad') %></h3>
+    <%= f.input :humedadinicial %>
+    <%= f.input :humedadfinal, input_html: { onblur: "checkValues(this)" } %>
+    <%= f.input :infoaddhumedad %>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_suelo') %></h3>
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :suelo, t('opciones_multiples.t_suelo')) %>
+    <div id="destino_de_suelo"></div>
+    <% parametros = {:acceso => @taxon.ambi_infotiposuelo, :modelo => f_taxon, :association => :ambi_infotiposuelo, :titulo => "Información adicional", :el_div => "infotiposuelo", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infotiposuelo]}
+       agrega_info_adicional(parametros)
+    %>
+    <div id="dato_<%= parametros[:el_div] %>">
+      <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+        <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+      <% end %>
+    </div>
+
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.geoforma') %></h3>
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :geoforma, t('opciones_multiples.t_geoforma')) %>
+    <div id="destino_de_geoforma"></div>
+    <%
+      parametros = {:acceso => @taxon.ambi_infogeoforma, :modelo => f_taxon, :association => :ambi_infogeoforma, :titulo => "Información adicional", :el_div => "ambi_infogeoforma", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:ambi_infogeoforma]}
+      agrega_info_adicional(parametros)
+    %>
+    <div id="dato_<%= parametros[:el_div] %>">
+      <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+        <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+      <% end %>
+    </div>
   </div>
-  ---- FIN
+  <%# Hasta aquí llega la parte terrestre %>
 
-  <%= f.input :tipoVegetacion %>
-  <%= f.input :habitatAgropecuario %>
-  <%= f.input :zonaUrbana %>
-  <%= f.input :VegetacionSecundaria %>
-  <%= f.input :tipoVegetacionSecundaria %>
-  <%= f.input :intervaloaltitudinalinicial %>
-  <%= f.input :infoAddintervaloaltitudinal %>
-  <%= f.input :tipoClimaId %>
-  <%= f.input :climaAdicional %>
-  <%= f.input :temperaturainicial %>
-  <%= f.input :infoaddtemperatura %>
-  <%= f.input :precipitacioninicial %>
-  <%= f.input :infoaddprecipitacion %>
-  <%= f.input :humedadinicial %>
-  <%= f.input :infoaddhumedad %>
-  <%= f.input :descripcionSuelo %>
+  <%# Aquí inicia la parte marina %>
+  <div id="ambiente-solo-marino">
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.tipo_habitat') %></h3>
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :ecorregionMarinaN1, t('opciones_multiples.t_ecorregionMarinaN1')) %>
+    <div id="destino_de_ecorregionMarinaN1"></div>
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.ecosistemas') %></h4>
 
-  <hr class="espacio_ficha">
-  <%= f.simple_fields_for :suelo do |info| %>
-    <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_suelo', locals: { f: info }  %>
-  <% end %>
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :zonaVida, t('opciones_multiples.t_zonaVida')) %>
+    <div id="destino_de_zonaVida"></div>
+    <%= f.input :biotipos %>
 
-  <hr class="espacio_ficha">
-  <%= f.simple_fields_for :geoforma do |info| %>
-    <%= render partial: 'fichas/taxa/seccion_ambiente/form_ambiente_geoforma', locals: { f: info }  %>
-  <% end %>
+    <%= f.association :vegetacion_acuatica,
+                      :as => :grouped_select,
+                      collection: Fichas::Vegetacionacuatica.all.group_by(&:vegetacion),
+                      :group_method => :last,
+                      group_label_method: :first,
+                      label_method: :subVegetacion,
+                      value_method: :vegetacionAcuaticaid,
+                      input_html: {
+                          :multiple => true,
+                          class: 'form-control selectpicker',
+                          'data-live-search': 'true',
+                          'title': t('general.seleccionar_opciones'),
+                          'data-selected-text-format': 'count > 3'
+                      }
+    %>
 
-  <hr class="espacio_ficha">
-  <%= f.input :descripcionGeoforma
-  %>
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.caracteristicas_agua') %></h3>
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.salinidad') %></h4>
+    <%= f.input :salinidadinicial %>
+    <%= f.input :salinidadfinal, input_html: { onblur: "checkValues(this)" } %>
+    <%= f.input :unidadsalinidad, collection: Fichas::Habitat::UNIDAD_SALINIDAD, :as => :select, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.oxigeno') %></h4>
+    <%= f.input :oxigenoinicial %>
+    <%= f.input :oxigenofinal, input_html: { onblur: "checkValues(this)" } %>
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.ph') %></h4>
+    <%= f.input :phinicial %>
+    <%= f.input :phfinal, input_html: { onblur: "checkValues(this)" } %>
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_ambiente.temperatura') %></h4>
+    <%= f.input :temeperaturainicial %>
+    <%= f.input :temeperaturafinal, input_html: { onblur: "checkValues(this)" } %>
+    <%= f.input :corrientes %>
+    <%= f.input :infoaddcaracagua %>
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.int_altitudinal') %></h3>
+    <%= f.input :intervaloaltitudinalacuainicial %>
+    <%= f.input :intervaloaltitudinalacuafinal, input_html: { onblur: "checkValues(this)" } %>
+    <%= f.input :infoAddintervaloaltitudinalacua %>
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.int_batimetrico') %></h3>
+    <%= f.input :interbatimetricoinicial %>
+    <%= f.input :interbatimetricofinal, input_html: { onblur: "checkValues(this)" } %>
+    <%= f.input :infoaddinterbatimetrico %>
+    <h3 class="titulo_subseccion"><%= t('secciones.s_ambiente.amp_mareas') %></h3>
+    <%= f.input :amplitudmareasinicial %>
+    <%= f.input :amplitudmareasfinal, input_html: { onblur: "checkValues(this)" } %>
+    <%= f.input :infoaddamplitudmareas %>
+  </div>
+
 </div>

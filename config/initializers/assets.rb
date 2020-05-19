@@ -9,7 +9,7 @@ peces/peces.js peces/propiedades_extra.js peces/peces.css peces/propiedades_extr
 especies/mapa/mapa.js especies/mapa/mapa.css especies/mapa/mapa_delayed.js
 comentarios/comentarios.js
 metamares/metamares.js metamares/metamares.css metamares/graficas.js metamares/graficas.css
-fichas/fichas.js fichas.css estadisticas/estadisticas.js estadisticas/estadisticas.css
+fichas/fichas.js fichas_admin.css fichas.css estadisticas/estadisticas.js estadisticas/estadisticas.css
 application_b4.js boots4-upgrade/application_b4.scss boots4-upgrade/busquedas/avanzada/avanzada.scss
 boots4-upgrade/inicio.scss
 admin/admin.js admin/catalogos/catalogos_extra.js

@@ -69,7 +69,11 @@ Buscador::Application.routes.draw do
   end
 
   namespace :fichas do
-    #resources :taxa
+    resources :taxa do
+      collection do
+        get 'cargar_seccion/:seccion(/:id)' =>  'taxa#get_x_seccion'
+      end
+    end
     resources :front do
       collection do
         # I. Clasificación y descripción de la especie
@@ -107,7 +111,6 @@ Buscador::Application.routes.draw do
 
   #get 'estadisticas' => 'estadisticas#show'
   #get 'filtros_estadisticas' => 'estadisticas#filtros_estadisticas'
-  #get '' => ''
 
   get 'peces' => 'pmc/peces#index'
   get 'peces/busqueda' => 'pmc/peces#index'

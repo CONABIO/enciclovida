@@ -1,0 +1,66 @@
+.radio-b-inline{
+  color: red;
+  margin-right: 20px;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  width: 500px;
+}
+.dropdown-menu li a span.text {
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.fichas-apartado {
+  padding: 10px;
+  background-color: #6aa6ed;
+  box-shadow: lightgrey;
+  border-radius: 25px;
+}
+
+.titulo-seccion {
+  padding-bottom: 20px;
+}
+
+.titulo_subseccion {
+  font-weight: 100;
+  font-size: 1.5em;
+  padding: 20px 0 20px 0;
+  color: grey;
+}
+
+.titulo_sub_subseccion {
+  font-weight: 600;
+  font-size: 1.1em;
+  padding: 20px 0 10px 0;
+}
+
+textarea.form-control {
+  min-height: 300px;
+}
+
+.espacio_ficha {
+  border: lightgrey;
+  border-style: dashed;
+  border-width: 1px;
+}
+
+.apartados {
+ /* border: 3px solid rgb(169, 207, 171); */
+ border: 1px solid lightgrey;
+ width: 95%;
+ padding: 10px;
+ margin:  10px auto;
+ -moz-border-radius: 2px;
+ -webkit-border-radius: 2px;
+ border-radius: 2px;
+}
+
+.apartados legend {
+  width: auto;
+  padding: 0 10px 0 10px;
+  font-size: large;
+  text-decoration: none;
+  border: none;
+}

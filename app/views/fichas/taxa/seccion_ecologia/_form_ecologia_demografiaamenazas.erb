@@ -1,20 +1,36 @@
 <div class='nested-fields'>
+  <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.tamanio_poblacional') %></h3>
   <%= f.input :tamanioPoblacional %>
   <%= f.input :abundancia %>
   <%= f.input :densidad %>
-  <%= f.input :patronOcupacion %>
+  <%= f.input :patronOcupacion,
+              collection: Fichas::Demografiaamenazas::PATRON_OCUPACION,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion')
+              }
+  %>
   <%= f.input :descripcionPatron %>
 
+  <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.parametros_poblacionales') %></h3>
   <%= f.input :parametrosPoblacionales %>
+  <h3 class="titulo_sub_subseccion"><%= t('secciones.s_ecologia.poblacion_minima') %></h3>
   <%= f.input :poblacionminviableinicial %>
+  <%= f.input :poblacionminviablefinal, input_html: { onblur: "checkValues(this)" } %>
 
-  <%= # f.input :interacciones
+  <h3 class="titulo_subseccion"><%= t('secciones.s_ecologia.interacciones') %></h3>
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :interacciones, t('opciones_multiples.t_interacciones')) %>
+  <div id="destino_de_interacciones"></div>
+  <%
+    parametros = {:acceso => @taxon.infointer, :modelo => f_taxon, :association => :infointer, :titulo => "Información adicional", :el_div => "infointer", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infointer]}
+    agrega_info_adicional(parametros)
   %>
-  <%= f.input :infoAdicionalInteraccion %>
-
-  <hr class="espacio_ficha">
-  <%= f.simple_fields_for :interaccion do |info| %>
-    <%= render partial: 'fichas/taxa/seccion_ecologia/form_ecologia_interaccion', locals: {f: info }  %>
-  <% end %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
 
 </div>

@@ -1,0 +1,578 @@
+<div class='nested-fields'>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_invasividad.info_poblacion_exo') %></h3>
+
+  <%= f.input :estadoPoblaciones, :as => :select, collection: Fichas::Invasividad::ESTADO_POBLACION, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.edopoblacion, :modelo => f_taxon, :association => :edopoblacion, :titulo => "Información adicional", :el_div => "edopoblacion", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:edopoblacion]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%= f.input :persistenciaPob, :as => :select, collection: Fichas::Invasividad::PERSISTENCIQ_POBLACION, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.persistenciapob, :modelo => f_taxon, :association => :persistenciapob, :titulo => "Información adicional", :el_div => "persistenciapob", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:persistenciapob]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%= f.input :abundanciaPob, :as => :select, collection: Fichas::Invasividad::ABUNDANCIA_POBLACION, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.abundanciapob, :modelo => f_taxon, :association => :abundanciapob, :titulo => "Información adicional", :el_div => "abundanciapob", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:abundanciapob]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_invasividad.antecedentes_intro') %></h3>
+
+  <%
+    parametros = {:acceso => @taxon.historiaintro, :modelo => f_taxon, :association => :historiaintro, :titulo => "Historia de la introducción", :el_div => "historiaintro", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:historiaintro]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.otrossitios, :modelo => f_taxon, :association => :otrossitios, :titulo => "Invasora en otros sitios", :el_div => "otrossitios", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:otrossitios]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.adahabitat, :modelo => f_taxon, :association => :adahabitat, :titulo => "Adaptabilidad a hábitats", :el_div => "adahabitat", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:adahabitat]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.adaclima, :modelo => f_taxon, :association => :adaclima, :titulo => "Adaptabilidad climática", :el_div => "adaclima", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:adaclima]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.congeneres, :modelo => f_taxon, :association => :congeneres, :titulo => "Congéneres/subespecies/razas/variedades invasoras", :el_div => "congeneres", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:congeneres]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :naturalizacionsei, t('opciones_multiples.t_naturalizacionsei')) %>
+  <div id="destino_de_naturalizacionsei"></div>
+
+  <%
+    parametros = {:acceso => @taxon.naturalizacion, :modelo => f_taxon, :association => :naturalizacion, :titulo => "Información adicional", :el_div => "naturalizacion", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:naturalizacion]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_invasividad.ruta_introdu') %></h3>
+  <h4 class="titulo_sub_subseccion">Rutas:</h4>
+  <hr class="espacio_ficha">
+  <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una ruta'.html_safe, f, :rutas, partial: 'fichas/taxa/seccion_invasoras/form_invasoras_invasividad_rutas', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'invasividad-rutas', 'data-association-insertion-node' => '#invasividad-rutas', 'data-association-insertion-method' => 'append', href: '#invasividad-rutas', 'onclick' => 'reload("seccion_invasora")' %>
+  <div id="invasividad-rutas">
+    <%= f.simple_fields_for :rutas do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_invasoras/form_invasoras_invasividad_rutas', locals: {f: info} %>
+    <% end %>
+  </div>
+
+  <hr class="espacio_ficha">
+
+  <%
+    parametros = {:acceso => @taxon.frecintro, :modelo => f_taxon, :association => :frecintro, :titulo => "Frecuencia de introducciónn", :el_div => "frecintro", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:frecintro]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_invasividad.impacto_manejo_mitigacion') %></h3>
+
+  <%
+    parametros = {:acceso => @taxon.impactosei, :modelo => f_taxon, :association => :impactosei, :titulo => "Impacto a Salud (humana, plantas animales)", :el_div => "impactosei", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:impactosei]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.impactobio, :modelo => f_taxon, :association => :impactobio, :titulo => "Impacto a biodiversidad", :el_div => "impactobio", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:impactobio]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.impactoeco, :modelo => f_taxon, :association => :impactoeco, :titulo => "Impacto a ecosistemas", :el_div => "impactoeco", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:impactoeco]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.impactoinfra, :modelo => f_taxon, :association => :impactoinfra, :titulo => "Impacto a economía/infraestructura", :el_div => "impactoinfra", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:impactoinfra]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.impactosocial, :modelo => f_taxon, :association => :impactosocial, :titulo => "Impactos sociales o culturales", :el_div => "impactosocial", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:impactosocial]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.impactootros, :modelo => f_taxon, :association => :impactootros, :titulo => "Otros Impactos", :el_div => "impactootros", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:impactootros]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :mecanismos, t('opciones_multiples.t_mecanismos')) %>
+  <div id="destino_de_mecanismos"></div>
+
+  <%
+    parametros = {:acceso => @taxon.mecanismoimpacto, :modelo => f_taxon, :association => :mecanismoimpacto, :titulo => "Información adicional", :el_div => "mecanismoimpacto", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:mecanismoimpacto]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :efectoimpactosei, t('opciones_multiples.t_efectoimpactosei')) %>
+  <div id="destino_de_efectoimpactosei"></div>
+
+  <%
+    parametros = {:acceso => @taxon.efectoimpacto, :modelo => f_taxon, :association => :efectoimpacto, :titulo => "Información adicional", :el_div => "efectoimpacto", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:efectoimpacto]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :intensidadimpactosei, t('opciones_multiples.t_intensidadimpactosei')) %>
+  <div id="destino_de_intensidadimpactosei"></div>
+
+  <%
+    parametros = {:acceso => @taxon.intensidadimpacto, :modelo => f_taxon, :association => :intensidadimpacto, :titulo => "Información adicional", :el_div => "intensidadimpacto", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:intensidadimpacto]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+
+  <%
+    parametros = {:acceso => @taxon.prevencion, :modelo => f_taxon, :association => :prevencion, :titulo => "Prevención y detección temprana", :el_div => "prevencion", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:prevencion]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.manejocontrol, :modelo => f_taxon, :association => :manejocontrol, :titulo => "Manejo y control", :el_div => "manejocontrol", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:manejocontrol]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.erradicacion, :modelo => f_taxon, :association => :erradicacion, :titulo => "Erradicación", :el_div => "erradicacion", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:erradicacion]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.cuarentena, :modelo => f_taxon, :association => :cuarentena, :titulo => "Cuarentena / Bioseguridad", :el_div => "cuarentena", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:cuarentena]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.susceptibilidad, :modelo => f_taxon, :association => :susceptibilidad, :titulo => "Susceptibilidad a químicos", :el_div => "susceptibilidad", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:susceptibilidad]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.controlbiol, :modelo => f_taxon, :association => :controlbiol, :titulo => "Control biológico", :el_div => "controlbiol", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:controlbiol]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%= f.input :regulacion, :as => :select, collection: Fichas::Invasividad::REGULACIONES, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.regulacion, :modelo => f_taxon, :association => :regulacion, :titulo => "Información adicional", :el_div => "regulacion", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:regulacion]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.benecologicos, :modelo => f_taxon, :association => :benecologicos, :titulo => "Beneficios ecológicos", :el_div => "benecologicos", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:benecologicos]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.beneconomicos, :modelo => f_taxon, :association => :beneconomicos, :titulo => "Beneficios económicos", :el_div => "beneconomicos", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:beneconomicos]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.bensociales, :modelo => f_taxon, :association => :bensociales, :titulo => "Beneficios sociales", :el_div => "bensociales", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:bensociales]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_invasividad.compatibilidad_zona_origen') %></h3>
+
+  <%
+    parametros = {:acceso => @taxon.conclimatica, :modelo => f_taxon, :association => :conclimatica, :titulo => "Coincidencia climática", :el_div => "conclimatica", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:conclimatica]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.conecologica, :modelo => f_taxon, :association => :conecologica, :titulo => "Coincidencia ecológica", :el_div => "conecologica", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:conecologica]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_invasividad.invasividad') %></h3>
+
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :especiesasociadassei, t('opciones_multiples.t_especiesasociadassei')) %>
+  <div id="destino_de_especiesasociadassei"></div>
+
+  <%
+    parametros = {:acceso => @taxon.especiesasociadas, :modelo => f_taxon, :association => :especiesasociadas, :titulo => "Información adicional", :el_div => "especiesasociadas", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:especiesasociadas]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :plasticidadsei, t('opciones_multiples.t_plasticidadsei')) %>
+  <div id="destino_de_plasticidadsei"></div>
+
+  <%
+    parametros = {:acceso => @taxon.plasticidad, :modelo => f_taxon, :association => :plasticidad, :titulo => "Información adicional", :el_div => "plasticidad", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:plasticidad]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.plasconductual, :modelo => f_taxon, :association => :plasconductual, :titulo => "Plasticidad conductual", :el_div => "plasconductual", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:plasconductual]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.plasrepro, :modelo => f_taxon, :association => :plasrepro, :titulo => "Plasticidad reproductiva", :el_div => "plasrepro", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:plasrepro]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.hibridacion, :modelo => f_taxon, :association => :hibridacion, :titulo => "Potencial de hibridación", :el_div => "hibridacion", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:hibridacion]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :platenciasei, t('opciones_multiples.t_platenciasei')) %>
+  <div id="destino_de_platenciasei"></div>
+
+  <%
+    parametros = {:acceso => @taxon.platencia, :modelo => f_taxon, :association => :platencia, :titulo => "Información adicional", :el_div => "platencia", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:platencia]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :seguridadsei, t('opciones_multiples.t_seguridadsei')) %>
+  <div id="destino_de_seguridadsei"></div>
+
+  <%
+    parametros = {:acceso => @taxon.seguridad, :modelo => f_taxon, :association => :seguridad, :titulo => "Información adicional", :el_div => "seguridad", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:seguridad]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.crecimientosei, :modelo => f_taxon, :association => :crecimientosei, :titulo => "Condiciones óptimas para su crecimiento", :el_div => "crecimientosei", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:crecimientosei]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :enfermedadessei, t('opciones_multiples.t_enfermedadessei')) %>
+  <div id="destino_de_enfermedadessei"></div>
+
+  <%
+    parametros = {:acceso => @taxon.enfermedadesei, :modelo => f_taxon, :association => :enfermedadesei, :titulo => "Información adicional", :el_div => "enfermedadesei", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:enfermedadesei]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.spequivalentes, :modelo => f_taxon, :association => :spequivalentes, :titulo => "Especies nativas equivalentes", :el_div => "spequivalentes", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:spequivalentes]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <h3 class="titulo_subseccion"><%= t('secciones.s_invasividad.result_anali_riesgo_esp') %></h3>
+
+  <%= f.input :CCA, :as => :select, collection: Fichas::Invasividad::CCA, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.cca, :modelo => f_taxon, :association => :cca, :titulo => "Información adicional", :el_div => "cca", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:cca]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%= f.input :FISK, :as => :select, collection: Fichas::Invasividad::OTROS_RIESGOS, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.fisk, :modelo => f_taxon, :association => :fisk, :titulo => "Información adicional", :el_div => "fisk", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:fisk]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%= f.input :FIISK, :as => :select, collection: Fichas::Invasividad::OTROS_RIESGOS, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.fiisk, :modelo => f_taxon, :association => :fiisk, :titulo => "Información adicional", :el_div => "fiisk", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:fiisk]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%= f.input :MFISK, :as => :select, collection: Fichas::Invasividad::OTROS_RIESGOS, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.mfisk, :modelo => f_taxon, :association => :mfisk, :titulo => "Información adicional", :el_div => "mfisk", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:mfisk]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%= f.input :MIISK, :as => :select, collection: Fichas::Invasividad::OTROS_RIESGOS, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.miisk, :modelo => f_taxon, :association => :miisk, :titulo => "Información adicional", :el_div => "miisk", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:miisk]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%= f.input :amphISK, :as => :select, collection: Fichas::Invasividad::OTROS_RIESGOS, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.aisk, :modelo => f_taxon, :association => :aisk, :titulo => "Información adicional", :el_div => "aisk", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:aisk]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%= f.input :TIISK, :as => :select, collection: Fichas::Invasividad::OTROS_RIESGOS, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.tiisk, :modelo => f_taxon, :association => :tiisk, :titulo => "Información adicional", :el_div => "tiisk", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:tiisk]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%= f.input :PierHear, :as => :select, collection: Fichas::Invasividad::OTROS_RIESGOS, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.pier, :modelo => f_taxon, :association => :pier, :titulo => "Información adicional", :el_div => "pier", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:pier]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%= f.input :MERI, :as => :select, collection: Fichas::Invasividad::MERI, include_blank: false, input_html: {class: 'form-control selectpicker', 'title': t('general.seleccionar_opcion')} %>
+  <%
+    parametros = {:acceso => @taxon.meri, :modelo => f_taxon, :association => :meri, :titulo => "Información adicional", :el_div => "meri", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:meri]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <%
+    parametros = {:acceso => @taxon.otroar, :modelo => f_taxon, :association => :otroar, :titulo => "Otro AR", :el_div => "otroar", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:otroar]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f_taxon.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+</div>

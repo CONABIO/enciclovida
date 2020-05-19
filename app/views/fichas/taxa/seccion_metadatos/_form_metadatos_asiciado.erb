@@ -1,0 +1,52 @@
+<div class='nested-fields'>
+
+  <%= f.input :responsableId,
+              :as => :select,
+              collection: Fichas::Responsable.all,
+              label_method:  ->(obj){
+                "#{obj.nombre} #{obj.apellido}"
+              },
+              value_method: :responsableId,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion')
+              }
+  %>
+
+  <%= f.input :organizacionId,
+              :as => :select,
+              collection: Fichas::Organizacion.all,
+              label_method: :nombre,
+              value_method: :organizacionId,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion')
+              }
+  %>
+
+  <%= f.input :puestoId,
+              :as => :select,
+              collection: Fichas::Puesto.all,
+              label_method: :nombrePuesto,
+              value_method: :puestoId,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion')
+              }
+  %>
+
+  <%= f.input :rol %>
+  <%= f.input :tipoAsociacion %>
+
+  <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar un contacto'.html_safe, f, :contacto, partial: 'fichas/taxa/seccion_metadatos/form_metadatos_contacto', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'descripcion-contacto', 'data-association-insertion-node' => '#descripcion-contacto', 'data-association-insertion-method' => 'append', href: '#descripcion-contacto' %>
+  <div id="descripcion-contacto">
+    <%= f.simple_fields_for :contacto do |info| %>
+      <%= render partial: 'fichas/taxa/seccion_metadatos/form_metadatos_contacto', locals: {f: info} %>
+    <% end %>
+  </div>
+
+
+</div>

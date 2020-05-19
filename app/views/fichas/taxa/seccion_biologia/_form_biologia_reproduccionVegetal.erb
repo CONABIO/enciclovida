@@ -1,43 +1,202 @@
-<div class='nested-fields'>
+<div class='nested-fields reproduccionVegetal_add' id="reproduccionVegetal_add">
+  <h3 class="titulo_subseccion"><%= t('secciones.s_biologia.reprod_vegetal') %></h3>
+
   <%= f.input :descripcion %>
-  <%= f.input :arregloEspacial %>
 
-  <%= f.input :descripcionArregloespacial %>
-  <%= f.input :aislamientoOrganos %>
+  <div class="apartadoFicha ficha-Invasora">
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacial, t('opciones_multiples.t_arregloespacial'), 'seccion_reprod_vegetal') %>
+    <div id="destino_de_arregloespacial"></div>
+  </div>
+
+  <div class="apartadoFicha ficha-Prioritaria ficha-CITES ficha-Silvestre">
+
+    <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.exp_sexual') %></h4>
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacialflores, t('opciones_multiples.t_arregloespacialflores'), 'seccion_reprod_vegetal') %>
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacialindividuos, t('opciones_multiples.t_arregloespacialindividuos'), 'seccion_reprod_vegetal') %>
+    <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :arregloespacialpoblaciones, t('opciones_multiples.t_arregloespacialpoblaciones'), 'seccion_reprod_vegetal') %>
+    <div id="destino_de_arregloespacialflores"></div>
+    <div id="destino_de_arregloespacialindividuos"></div>
+    <div id="destino_de_arregloespacialpoblaciones"></div>
+    <%
+      parametros = {:acceso => @taxon.infoarresp, :modelo => f_taxon, :association => :infoarresp, :titulo => "Información adicional", :el_div => "infoarresp", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoarresp]}
+      agrega_info_adicional(parametros)
+    %>
+    <div id="dato_<%= parametros[:el_div] %>">
+      <%= f.simple_fields_for parametros[:association] do |info| %>
+        <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+      <% end %>
+    </div>
+  </div>
+
+
+  <%= f.input :aislamientoOrganos,
+              collection: Fichas::Reproduccionvegetal::AISLAMIENTO_ORGANOS_REPROD,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion')
+              }
+  %>
   <%= f.input :descAislaOrganos %>
-  <%= f.input :sistReproAsexuales %>
-  <%= f.input :DescsistReproAsexuales %>
-  <%= f.input :fecuandacion %>
-  <%= f.input :descFecundacion %>
-  <%= f.input :agentesPolinizacion %>
-  <%= f.input :descAgentesPol %>
 
-  <%= f.input :aperturaFlor %>
+  <%= f.input :sistReproAsexuales,
+              collection: Fichas::Reproduccionvegetal::SISTEMAS_REPROD_ASEXUALES,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion')
+              }
+  %>
+  <%= f.input :DescsistReproAsexuales %>
+
+  <%= f.input :fecuandacion,
+              collection: Fichas::Reproduccionvegetal::TIPO_FECUNDACION,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion')
+              }
+  %>
+  <%= f.input :descFecundacion %>
+
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :vectorespolinizacion, t('opciones_multiples.t_vectorespolinizacion'), 'seccion_reprod_vegetal') %>
+  <%#= select_multiple_nivel_1(f_taxon, :opciones_preguntas, :agentespolinizacion, t('opciones_multiples.t_agentespolinizacion'), 'seccion_reprod_vegetal') %>
+  <div id="destino_de_vectorespolinizacion"></div>
+  <div id="destino_de_agentespolinizacion"></div>
+  <%
+    parametros = {:acceso => @taxon.infoAP, :modelo => f_taxon, :association => :infoAP, :titulo => "Información adicional", :el_div => "infoAP", :pregunta => Fichas::Observacionescarac::PREGUNTAS[:infoAP]}
+    agrega_info_adicional(parametros)
+  %>
+  <div id="dato_<%= parametros[:el_div] %>">
+    <%= f.simple_fields_for parametros[:association] do |info| %>
+      <%= render partial: 'fichas/taxa/caracteristicas_especie/observaciones_especie_x', locals: {f: info, titulo: parametros[:titulo], id_pregunta: parametros[:pregunta]} %>
+    <% end %>
+  </div>
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.floracion') %></h4>
+  <%= f.input :aperturaFlor,
+              collection: Fichas::Reproduccionvegetal::FLORACION_HORARIO_APERTURA,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion')
+              }
+  %>
   <%= f.input :descApertura %>
+
   <%= f.input :tiempoFloracion %>
   <%= f.input :addinfolongevidadflor %>
-  <%= f.input :mesInicio %>
-  <%= f.input :mesFinal %>
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.epoca_floracion') %></h4>
+  <%= f.input :mesInicio,
+              collection: Fichas::Cat_Mes.all.map { |r| [r.Mes, r.IdMes] },
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion'),
+              }
+  %>
+  <%= f.input :mesFinal,
+              collection: Fichas::Cat_Mes.all.map { |r| [r.Mes, r.IdMes] },
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion'),
+              }
+  %>
   <%= f.input :addinfotiempoflora %>
+
+  <div class="apartadoFicha ficha-Invasora">
+    <%= f.input :patronesFloracion %>
+  </div>
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.cantidad_nectar') %></h4>
   <%= f.input :cantidadnectarinicial %>
+  <%= f.input :cantidadnectarfinal, input_html: { onblur: "checkValues(this)" } %>
   <%= f.input :addinfocantidadnectar %>
+
   <%= f.input :cantidadpolen %>
 
-  <%= f.input :mesInicialFructi %>
-  <%= f.input :mesFinalFructi %>
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.epoca_fructificacion') %></h4>
+  <%= f.input :mesInicialFructi,
+              collection: Fichas::Cat_Mes.all.map { |r| [r.Mes, r.IdMes] },
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion'),
+              }
+  %>
+  <%= f.input :mesFinalFructi,
+              collection: Fichas::Cat_Mes.all.map { |r| [r.Mes, r.IdMes] },
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion'),
+              }
+  %>
   <%= f.input :addinfotiempofructi %>
+
+  <div class="apartadoFicha ficha-Invasora">
+    <%= f.input :patronesFructificacion %>
+  </div>
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.numero_frutos') %></h4>
   <%= f.input :nofrutosinicial %>
-  <%= f.input :caracFruto %>
+  <%= f.input :nofrutosfinal, input_html: { onblur: "checkValues(this)" } %>
+  <%= f.input :caracFruto,
+              collection: Fichas::Cat_Caracfruto.all.map { |r| [r.descripcion, r.IdFruto] },
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion'),
+              }
+  %>
   <%= f.input :descCaracFruto %>
-  <%= f.input :noEventos %>
+
+  <%= f.input :noEventos,
+              collection: Fichas::Reproduccionvegetal::EVENTOS_REPROD,
+              :as => :select,
+              input_html: {
+                  class: 'form-control selectpicker',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion')
+              }
+  %>
   <%= f.input :descNoEventos %>
 
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.semillas_fruto') %></h4>
   <%= f.input :nosemillasinicial %>
+  <%= f.input :nosemillasfinal, input_html: { onblur: "checkValues(this)" } %>
   <%= f.input :tamanioSemilla %>
   <%= f.input :caracToxica %>
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.porcentaje_germinacion') %></h4>
   <%= f.input :germinacioninicial %>
+  <%= f.input :germinacionfinal, input_html: { onblur: "checkValues(this)" } %>
   <%= f.input :infoaddgerminacion %>
+
+  <h4 class="titulo_sub_subseccion"><%= t('secciones.s_biologia.porcentaje_plantulas') %></h4>
   <%= f.input :plantulasinicial %>
+  <%= f.input :plantulasfinal, input_html: { onblur: "checkValues(this)" } %>
   <%= f.input :infoaddplantulas %>
+
+  <div style="display: none">
+    <!-- Preguntas ocultas -->
+    <%= f.input :arregloEspacial %>
+    <%= f.input :descripcionArregloespacial %>
+    <%= f.input :agentesPolinizacion %>
+    <%= f.input :descAgentesPol %>
+  </div>
+
+  <%= link_to_remove_association 'Borrar información', f, :class => 'btn btn-danger btn-sm' %><hr>
 
 </div>

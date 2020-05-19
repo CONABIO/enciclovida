@@ -1,8 +1,7 @@
 class Fichas::Endemica < Ficha
 
 	self.table_name = "#{CONFIG.bases.fichasespecies}.endemica"
-	self.primary_keys = :endemicaId,  :especieId
+	self.primary_keys = :endemicaId, :especieId
 
-	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
-
+	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId', :primary_key => :especieId
 end

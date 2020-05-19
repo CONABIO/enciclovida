@@ -1,0 +1,22 @@
+<div class='nested-fields'>
+  <%= f.input :nacionalinternacional, as: :hidden, input_html: {value: tipo_producto} %>
+  <%= f.input :tipoproducto,
+              collection: Fichas::Cat_Preguntas.where(idpregunta: pregunta_tipo_producto),
+              :as => :select,
+              label_method: :descn1,
+              value_method: :idopcion,
+              input_html: {
+                  class: 'form-control selectpicker productocomercio',
+                  'data-live-search': 'true',
+                  'title': t('general.seleccionar_opcion'),
+              }
+  %>
+  <%= f.input :unidadcomerciada,
+              collection: Fichas::Cat_Preguntas.where(idpregunta: pregunta_tipo_unidad),
+              :as => :select,
+              label_method: :descn1,
+              value_method: :idopcion, input_html: { class: 'form-control selectpicker productocomercio',  'data-live-search': 'true',  'title': t('general.seleccionar_opcion') }
+  %>
+  <%= f.input :cantidadcomerciada %>
+  <%= link_to_remove_association 'Borrar producto', f, :class => 'btn btn-danger btn-sm' %><hr>
+</div>
