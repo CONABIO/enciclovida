@@ -71,3 +71,6 @@ public/IUCN
 public/assets/
 tools/naturalista/log/
 log
+
+vendor/SNIBappRest_old/controller/config.js
+vendor/SNIBappRest_old/node_modules
