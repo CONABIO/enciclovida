@@ -3,7 +3,7 @@ class ValidacionesController < ApplicationController
   skip_before_action  :verify_authenticity_token, :set_locale, only: [:update, :insert, :delete]
   before_action :authenticate_request!, only: [:update, :insert, :delete]
   before_action :tipo_validacion, only: [:simple, :avanzada]
-  layout false, only: [:update, :insert, :delete]
+  layout Proc.new{['update', 'insert', 'delete'].include?(action_name) ? false : 'application_b3'}
 
   def update
     if params[:tabla] == 'especies'

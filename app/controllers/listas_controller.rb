@@ -31,7 +31,7 @@ class ListasController < ApplicationController
     end
   end
 
-  layout false, :only => [:dame_listas, :aniade_taxones_seleccionados]
+  layout Proc.new{['dame_listas', 'aniade_taxones_seleccionados'].include?(action_name) ? false : 'application_b3'}
 
   # GET /listas
   # GET /listas.json
