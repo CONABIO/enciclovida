@@ -10,14 +10,10 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-// require jquery
 
-// require lib/jquery-ui
-//= require boots4-upgrade/jquery-3.4.1.min
-//= require jquery_ujs
-//= require boots4-upgrade/jquery-ui.min
-//= require boots4-upgrade/bootstrap.bundle
-// require lib/scrolling
+//= require jquery3
+//= require popper
+//= require bootstrap-sprockets
 //= require lib/jquery.soulmate
 //= require lib/jquery.bootpag.min
 //= require turbolinks

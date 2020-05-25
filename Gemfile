@@ -5,7 +5,7 @@ gem 'activerecord-session_store'  # Pasa los request con POST a traves de la bas
 gem 'ancestry', git: 'https://github.com/calonsot/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
 gem 'caxlsx'#, git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'caxlsx_rails'  # Gema para exportar en excel
-gem 'bootstrap-sass', '~> 3.4.1'
+gem 'bootstrap', '~> 4.5.0'
 gem 'carrierwave'  # Form file upload
 gem 'cocoon'  # Anida las formas de diferentes o del mismo modelo
 gem 'coffee-rails', '~> 4.2'
@@ -16,7 +16,7 @@ gem 'delayed_job_mongoid'
 gem 'delayed-web'
 gem 'devise', '>= 4.7.1'
 gem 'exifr'
-gem 'font-awesome-rails', '~> 4.7'
+gem 'font-awesome-rails'
 gem 'fontello_rails_converter'
 gem 'formtastic'
 gem 'haml'
