@@ -28,24 +28,28 @@
 
 /*Brandbar es la plequita negra al inicio de cada página*/
 #brandBar {
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background-position: bottom !important;
   background-color: rgba(51, 51, 51, 0.75);
+  padding: 30px;
 }
-#contenedor-titulo-busquedas{
-  background-color: rgba(131, 154, 78, .95);
-  font-family: "acumin-pro-extra-condensed";
-}
-
-#brandBar > .dropdown {
+#brandBar .dropdown {
   position: fixed;
-  right: -3px;
-  top: -3px;
+  right: 0;
+  top: 0;
   z-index: 1001;
 }
-/*.vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.25rem!important;}*/
+#menuEsqSupDer{/*Esto es para hacer redondito el icono de "Más..."*/
+  border-bottom-left-radius: 2px;
+  font-weight: bold;
+}
+.vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.5em!important; color: #555555;}
 
 #brandBar .form-group{margin: 4px 0;}
 #brandBar .btn-group{min-width: 100%;}
-#brandBar a.btn-busquedas, #brandBar  > .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
+#brandBar a.btn-busquedas, #brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
   padding: 5px 5%;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
@@ -69,28 +73,47 @@
   text-shadow: 1px 1px 1px #a0a0a0;
   color: #423434 !important;
 }
-
-.soulmate-type-suggestions li{
-  padding: 1em 0;
-  min-height: 125px;
+.contenedor-titulo-busquedas{
+  height: 104px;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8));
+  background: #544a22;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background-position: bottom !important;
 }
-
 .titulo-busquedas{
-  -webkit-text-shadow: 1px 1px 1px #003300;
-  -moz-text-shadow: 1px 1px 1px #003300;
-  -ms-text-shadow: 1px 1px 1px #003300;
-  -o-text-shadow: 1px 1px 1px #003300;
-  text-shadow: 1px 1px 1px #003300;
-  color: #ececec;
+  width: 1032px;
+  margin: 8px auto;
+  font-size: 40px;
+  font-family: "acumin-pro-extra-condensed";
+  -webkit-text-shadow: 2px 2px 2px #000;
+  -moz-text-shadow: 2px 2px 2px #000;
+  -ms-text-shadow: 2px 2px 2px #000;
+  -o-text-shadow: 2px 2px 2px #000;
+  text-shadow: 2px 2px 2px #000;
+  color: #ffffff;
 }
-.social {
+.contenedor-titulo-busquedas .liner {
+  width: 50px;
+  height: 5px;
+  margin: 15px 0;
+  border: none;
+  background: #fafafa;
+  position: absolute;
+}
+footer {
+  padding: 25px 0;
+  text-align: center;
+}
+footer.social {
   background-color:#104C5B;
 }
-.legal {
+footer.legal {
   background-color:#3D3D3D;
 }
-footer .list-group-item {
-  background: transparent!important;
+footer.legal p {
+  font-size:12px;
 }
 
 /*Para que los títulos de los buscadores en el inicio y del brandbar, salgan orientados hacia el otro lado*/
@@ -126,7 +149,7 @@ footer .list-group-item {
   background-image: -o-linear-gradient(top, #eeeeee, #fafafa);
 }
 /*para los iconitos de la busqueda básica*/
-#brandBar .btn-title[tooltip-title]:hover:after {
+#brandBar .btn-title[tooltip-title]:hover:after, .caracteristica-distribucion-ambiente-taxon.btn-title[tooltip-title]:hover:after {
   left: initial;
   right: 50%;
   top: 95%;
@@ -144,18 +167,18 @@ footer .list-group-item {
   width: 10em !important;
   text-decoration: underline;
 }
-.biomex-ev-icon:before/*, .conabio-ev-icon:before*/{
+.biomex-ev-icon:before, .conabio-ev-icon:before{
   width: 2.5em !important;
-  /*font-size: 2em;*/
+  font-size: 3em;
   color: #f7f7f7;
 }
-.enciclo-ev-icon:before, .enciclo-ev-icon:after, .vida-ev-icon:before, .conabio_completo-ev-icon:before{
+.enciclo-ev-icon:before, .vida-ev-icon:before, .conabio_completo-ev-icon:before{
   margin: 0;
-  /*font-size: 2.5em;*/
-  width: 3em !important;
+  font-size: 4em;
+  width: 2em !important;
 }
 
-.media-supplier .fa:before, .media-supplier .conabio_completo-ev-icon:before, .bdi-ev-icon:before{/*font-size: 3em*/;min-width: 4em!important;}
+.media-supplier .glyphicon:before, .media-supplier .conabio_completo-ev-icon:before, .bdi-ev-icon:before{font-size: 3em;min-width: 4em!important;}
 
 div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:before, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after, .macaulay_library-ev-icon:before{font-size: 2em;min-width: 9em!important;}
 
@@ -166,8 +189,7 @@ div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:
 
 .ev1-ev-icon:after { margin-left: -1.2em; content: '\e861'; }
 .enciclo-ev-icon:before, header .conabio_completo-ev-icon:before, footer .conabio_completo-ev-icon:before{color: #fdfdfd;}
-.enciclo-ev-icon:after{color: #889b45; margin-left: -3em;}
-/*.vida-ev-icon:before{color: #889b45; margin-left: -2em;}*/
+.vida-ev-icon:before{color: #889b45; margin-left: -2em;}
 .ev2-ev-icon:before{margin-left: -1.25em;}
 
 ul.social-buttons li a {
@@ -203,9 +225,14 @@ ul.social-buttons li a:active {
   border-right: 1px solid #d3d3d3;
   border-top: 1px solid #d3d3d3;
   border-bottom: 1px solid transparent;
+  color: #777777;
 }
 .panel .nav-stacked > li.active > a, .panel .nav-tabs > li.active > a  {
+  color: #800000;
   background-color: #ffffff;
+}
+.panel .nav-stacked > li.active, .panel .nav-tabs > li.active{
+  /*filter: drop-shadow(5px -5px 4px #cecece)*/
 }
 #pestañas div.panel-body{
   background-color: #ffffff;
@@ -273,16 +300,14 @@ ul.social-buttons li a:active {
 /* Termina ambiente */
 
 .ev1-ev-icon:before { content: '\e84f'; }
-.enciclo-ev-icon:before { content: '\e860'; }
-.enciclo-ev-icon:after { content: '\e850'; }
-/*.vida-ev-icon:before { content: '\e850'; }*/
+.vida-ev-icon:before { content: '\e850'; }
 .naturalista-3-ev-icon:before { content: '\e853'; }
 .naturalista-4-ev-icon:before { content: '\e854'; }
 .enciclo-ev-icon:before { content: '\e860'; }
 
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 
-.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after, .ev1-ev-icon:after, .enciclo-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
+.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after, .ev1-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
   font-family: "enciclovida_font_icons";
   font-style: normal;
   font-weight: normal;
@@ -300,6 +325,33 @@ ul.social-buttons li a:active {
 }
 
 /*TODO tengo entendido esto debería estar en especies.scss*/
+.media-tabs{
+    text-align: center;
+}
+.media-tabs div.result-img-container{
+  display: inline-block;
+  overflow: hidden;
+  max-width: 100%;
+  margin: 0px;
+  position: relative;
+}
+.media-tabs div.result-img-container img{
+  max-height: 210px;
+  margin: -20px;
+  transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
+  vertical-align: middle;
+}
+.media-tabs div.result-img-container.cornell-audios img{max-height: 180px;}
+.media-tabs div.result-img-container img:hover{
+  transform:scale(.75);
+  -ms-transform:scale(.75); /* IE 9 */
+  -moz-transform:scale(.75); /* Firefox */
+  -webkit-transform:scale(.75); /* Safari and Chrome */
+  -o-transform:scale(.75); /* Opera */
+}
+.media-tabs div.result-img-container a{
+  cursor: pointer;
+}
 #map .glyphicon, #map span[class$="-ev-icon"]{
   text-shadow: 2px 1px 1px rgba(255, 255, 255, 0.85);
 }
@@ -320,79 +372,27 @@ sub{
   font-weight: bold;
 }
 // El tamaño de las fuentes de los iconos en general
-.f-fuentes{position: relative}
-.f-fuentes:before{
-  left: 0px;
-  position: relative;
-  top: 0px;
-  font-size: 1.5em;
-  margin: 0px!important;
-}
-.f-fuentes:after{
-  left: 25px;
-  position: absolute;
-  top: 4px;
-  font-size: 1.5em;
-  margin: 0px!important;
-}
-.f-fuentes span.text{
-  position: relative;
-  left: 40px;
-}
-.f-fuentes.opt{
-  padding-left: 1.5rem!important;
+.f-fuentes
+{
+  font-size: 1.8em;
 }
 // Formato general para el nombre cientifico y comun, no importa la vista
-.f-nom-cientifico{
-  /*font-size: 1em;*/
-  /*font-style: italic;*/
-  /*color: #828b87;*/
-  /*margin-top: 20px;*/
-  /*background-color: #f8f9fa;*/
+.f-nom-cientifico
+{
+  font-size: 1em;
+  font-style: italic;
+  color: #828b87;
+  margin-top: 20px;
 }
-.f-nom-comun{
-  /*font-size: 1em;*/
-  /*font-weight: bold;*/
-  /*background-color: #f8f9fa;*/
-  color: #444444;
-}
-
-
-.autocomplete-suggestions { border: 1px solid #999; background: #FFF; cursor: default; overflow: auto; -webkit-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); -moz-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); }
-.autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
-.autocomplete-selected { background: #F0F0F0; }
-.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
-#nombre_cientifico2 { font-size: 14px; padding: 3px; border: 1px solid #CCC; display: block; margin: 20px 0; }
-
-input.gsc-input {border-color: #666666;}
-input.gsc-search-button {border-color: #666666; background-color: #c0c0c0;}
-
-.not-active {
-  pointer-events: none;
-  cursor: default;
+.f-nom-comun
+{
+  font-size: 1.2em;
+  font-weight: bold;
 }
 
-.imagen_resultados {
-  background-repeat: no-repeat;
-  background-size: cover;
-  display: block;
-  height: 175px;
-  margin: 5px -5px;
-  background-position: 50% 20%;
-  border: 1px solid #e7e7e7;
-  text-align: center;
+.f-cat-tax
+{
+  font-size: 1em;
+  color: #828b87;
+  margin-top: 20px;
 }
-.imagen_resultados h5{
-  background-color: rgba(234, 234, 234, 0.8);
-  margin: 0;
-}
-.imagen_resultados .ev1-ev-icon {
-  font-size: 5em;
-  color: #D4E4D7;
-  position: absolute;
-  bottom: 10px;
-  right: 35%;
-}
-
-#brandBar .dropdown-menu{z-index: 20001;}
-
