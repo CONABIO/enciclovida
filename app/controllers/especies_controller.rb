@@ -101,7 +101,7 @@ class EspeciesController < ApplicationController
         # Para las variables restantes
         @datos[:cuantos_comentarios] = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
         @datos[:taxon] = @especie.id
-        @datos[:bdi_api] = "/especies/#{@especie.id}/fotos-bdi.json"
+        @datos[:bdi_api] = "/especies/#{@especie.id}/bdi-photos.json"
         @datos[:cual_ficha] = ''
         @datos[:slug_url] = "/especies/#{@especie.id}-#{@especie.nombre_cientifico.estandariza}"
       end
@@ -130,7 +130,7 @@ class EspeciesController < ApplicationController
         @especie.e_tipo_distribucion = @especie.tipos_distribuciones.uniq
         @especie.e_caracteristicas = @especie.catalogos
         @especie.e_bibliografia = @especie.bibliografias
-        @especie.e_fotos = ["#{CONFIG.site_url}especies/#{@especie.id}/fotos-bdi.json", "#{CONFIG.site_url}especies/#{@especie.id}/fotos-naturalista.json"]  # TODO: poner las fotos de referencia, actaulmente es un metodo post
+        @especie.e_fotos = ["#{CONFIG.site_url}especies/#{@especie.id}/bdi-photos.json", "#{CONFIG.site_url}especies/#{@especie.id}/fotos-naturalista.json"]  # TODO: poner las fotos de referencia, actaulmente es un metodo post
 
         render json: @especie.to_json(methods: [:e_geodata, :e_nombre_comun_principal, :e_foto_principal,
                                                 :e_nombres_comunes, :e_categoria_taxonomica, :e_tipo_distribucion,
