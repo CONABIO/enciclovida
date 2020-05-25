@@ -85,61 +85,23 @@ function taxonEdo(req) {
             })
     })
 }
-//funcion para db0.conabio.gob.mx con el cluster
-function taxonEdoTotal2(req) {
-    let ent = req.params['idedo']
-    //console.log(`idedo:${ent}`);
+
+function taxonEdoTotal(req) {
+    let ent = req.params['idedo'];
+
     return new Promise((resolve, reject) => {
-        knex
-            .with('anfibios', knex.raw(`select count(*) from ( SELECT COUNT (*) AS COUNT FROM snibanfigw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and munid = snibanfigw.munid /*and snibanfigw.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid) a`))
-            .with('aves', knex.raw(`select count(*) from (SELECT COUNT (*) AS COUNT FROM snibavesgw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and munid = snibavesgw.munid /*and snibavesgw.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid) a`))
-            .with('bacterias', knex.raw(`select count(*) from (SELECT COUNT (*) AS COUNT FROM snibbactgw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and munid = snibbactgw.munid /*and snibbactgw.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid) a`))
-            .with('hongos', knex.raw(`select count(*) from (SELECT COUNT (*) AS COUNT FROM snibhonggw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and munid = snibhonggw.munid /*and snibhonggw.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid) a`))
-            .with('invertebrados', knex.raw(`select count(*) from (SELECT COUNT (*) AS COUNT FROM snibinvegw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and munid = snibinvegw.munid /*and snibinvegw.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid) a`))
-            .with('mamiferos', knex.raw(`select count(*) from (SELECT COUNT (*) AS COUNT FROM snibmamigw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and munid = snibmamigw.munid /*and snibmamigw.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid) a`))
-            .with('peces', knex.raw(`select count(*) from (SELECT COUNT (*) AS COUNT FROM snibpecegw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and munid = snibpecegw.munid /*and snibpecegw.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid) a`))
-            .with('plantas', knex.raw(`select count(*) from (SELECT COUNT (*) AS COUNT FROM snibplangw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and munid = snibplangw.munid /*and snibplangw.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid) a`))
-            .with('protoctistas', knex.raw(`select count(*) from (SELECT COUNT (*) AS COUNT FROM snibprotgw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and munid = snibprotgw.munid /*and snibprotgw.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid) a`))
-            .with('reptiles', knex.raw(`select count(*) from (SELECT COUNT (*) AS COUNT FROM snibreptgw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and munid = snibreptgw.munid /*and snibreptgw.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid) a`))
-            .with('total', knex.raw(
-                `
-        select 'Anfibios'::VARCHAR as grupo,COUNT as total from anfibios
-        union select 'Aves'::VARCHAR as grupo, COUNT as total from aves
-        union select 'Bacterias'::VARCHAR as grupo, COUNT as total from bacterias
-        union select 'Hongos'::VARCHAR as grupo, COUNT as total from hongos
-        union select 'Invertebrados'::VARCHAR as grupo, COUNT as total from invertebrados
-        union select 'Mamíferos'::VARCHAR as grupo, COUNT as total from mamiferos
-        union select 'Peces'::VARCHAR as grupo, COUNT as total from peces
-        union select 'Plantas'::VARCHAR as grupo, COUNT as total from plantas
-        union select 'Protoctistas'::VARCHAR as grupo, COUNT as total from protoctistas
-        union select 'Reptiles'::VARCHAR as grupo, COUNT as total from reptiles
-        `))
-            .select(knex.raw('*'))
-            .from('total')
-            .orderByRaw('grupo')
-            .then(dato => {
-                //console.log(JSON.parse(JSON.stringify(dato)));
+        let query=knex
+            .select(knex.raw('grupobio AS grupo,total'))
+            .from('conteos.estados')
+            .whereRaw(`entid='${ent}'`)
+            .orderByRaw('grupo');
+
+            query.then(dato => {
                 resolve(dato);
             })
     })
 }
 
-function taxonEdoTotal(req) {
-    let ent = req.params['idedo']
-    console.log(`idedo:${ent}`);
-    return new Promise((resolve, reject) => {
-        let query=knex
-            .select(knex.raw('grupo,total'))
-            .from('conteos.estados')
-            .whereRaw(`idedo='${ent}'`)
-            .orderByRaw('grupo')
-            console.log(query.toSQL()['sql'])
-            query.then(dato => {
-                console.log(JSON.parse(JSON.stringify(dato)));
-                resolve(dato);
-            })
-    })
-}
 function taxonMunTotal(req) {
     let ent = req.params['idedo']
     let mun = req.params['idmun']

@@ -4,6 +4,9 @@ OPTS = Trollop::options do
 *** Guarda debajo de public los topojson generados de todas las regiones del SNIB, esto solo lo hará una vez,
 ya que despues los consultará bajo demanda
 
+Instalar: 
+npm install -g topojson y añadir al PATH la ruta
+npm install -g topojson-simplify y añadir al PATH la ruta
 Usage:
 
   rails r tools/regiones_mapas/genera_topojson.rb -d
@@ -17,8 +20,8 @@ end
 def topojson_por_region
   Rails.logger.debug 'Generando los topojson por region' if OPTS[:debug]
 
-  #regiones = %w(estado municipio anp ecorregion)
-  regiones = %w(anp)
+  regiones = %w(estado)
+  #regiones = %w(anp)
   ruta = Rails.root.join('public', 'topojson')
   Dir.mkdir(ruta) unless File.exists?(ruta)
 
@@ -37,7 +40,8 @@ def topojson_por_region
         when 'estado'
           feature[:properties][:nombre_region] = I18n.t("estados.#{reg.nombre_region.estandariza}")
         when 'municipio'
-          estado_id = Estado::CORRESPONDENCIA.index(reg.parent_id)
+          #estado_id = Estado::CORRESPONDENCIA.index(reg.parent_id)
+          estado_id = reg.parent_id
           estado_nombre = I18n.t("estados.#{Estado.find(estado_id).entidad.estandariza}")
           feature[:properties][:nombre_region] = "#{reg.nombre_region}, #{estado_nombre}"
           feature[:properties][:parent_id] = reg.parent_id
@@ -97,7 +101,8 @@ def topojson_municipios_por_estado
   Estado.campos_min.all.each do |e|
     Rails.logger.debug "Generando con estado: #{e.nombre_region}" if OPTS[:debug]
     geojson = {type: 'FeatureCollection', features: []}  # Para todos loes estados o municipios juntos
-    estado_id = Estado::CORRESPONDENCIA[e.region_id]
+    #estado_id = Estado::CORRESPONDENCIA[e.region_id]
+    estado_id = e.region_id
     estado_nombre = I18n.t("estados.#{e.nombre_region.estandariza}")
 
     Municipio.campos_min.campos_geom.where(cve_ent: estado_id).each do |m|
@@ -128,6 +133,6 @@ end
 start_time = Time.now
 
 topojson_por_region
-topojson_municipios_por_estado
+#topojson_municipios_por_estado
 
 Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
