@@ -34,7 +34,8 @@ def topojson_por_region
       Rails.logger.debug "\t\tGenerando la región: #{reg.nombre_region}" if OPTS[:debug]
 
       geojson = {type: 'FeatureCollection', features: []}
-      feature = {type: 'Feature', properties:{region_id: reg.region_id, centroide: [reg.lat, reg.long]}, geometry: JSON.parse(reg.geojson)}
+      bounds = reg.bounds.gsub(/[BBOX()]/,'').split(',').map{ |a| a.split(' ').reverse.map{ |s|  s.to_f } }
+      feature = {type: 'Feature', properties:{region_id: reg.region_id, centroide: [reg.lat, reg.long], bounds: bounds}, geometry: JSON.parse(reg.geojson)}
 
       case region
         when 'estado'

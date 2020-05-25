@@ -28,9 +28,6 @@ var cargaDivisionEstatal = function()
                 opciones.datos[d.properties.region_id].properties.layer = $(this);
                 opciones.datos[d.properties.region_id].properties.tipo_region = 'estado';
 
-                var bounds = d3.geo.bounds(d)
-                opciones.datos[d.properties.region_id].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
-
                 completaSelect(opciones.datos[d.properties.region_id].properties);
             });
 
