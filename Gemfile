@@ -28,6 +28,7 @@ gem 'jquery-ui-rails'
 gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'mail'
 gem 'mime-types'
+gem 'mini_racer', platforms: :ruby
 gem 'mysql2'
 gem 'nokogiri', '>= 1.10.8'  # Hacer un parse con xml
 gem 'pg'
@@ -48,7 +49,6 @@ gem 'savon'  # Para consumir webservices con SOAP y WSDL
 gem 'seed_dump'  # Extrae las tuplas de un modelo o de toda la base
 gem 'simple_form', '>= 5.0.0'
 gem 'soulmate', :require => 'soulmate/server'
-gem 'therubyracer', platforms: :ruby
 gem 'turbolinks', '~> 5'  # Hace mas rapidos los links
 gem 'trollop'
 gem 'uglifier'
