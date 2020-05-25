@@ -61,7 +61,7 @@ var fotosBDI = function(){
             }else{
                 $.ajax({
                     url: '/especies/' + opciones.taxon + '/fotos-referencia',
-                    type: 'POST',
+                    type: 'GET',
                     data: {fotos: JSON.stringify(json.fotos.slice(0, 5))}
                 }).done(function (fotos) {
                     if (jQuery.isEmptyObject(opciones.geodatos)){}
