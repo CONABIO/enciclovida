@@ -157,10 +157,10 @@ footer .list-group-item {
 
 .media-supplier .fa:before, .media-supplier .conabio_completo-ev-icon:before, .bdi-ev-icon:before{/*font-size: 3em*/;min-width: 4em!important;}
 
-div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:before, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after, .macaulay_library-ev-icon:before{font-size: 2em;min-width: 9em!important;}
+div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:before, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after, .macaulay_library-ev-icon:before{min-width: 9em!important;}
 
-.cornell_lab_colors-ev-icon:before{margin-left: -9.25em; color: #E60000; content: '\e86e';}
-.cornell_lab_colors-ev-icon:after{margin-left: -9.25em; color: #F5E614; content: '\e86f';}
+.cornell_lab_colors-ev-icon:before{margin-left: -9.5em; color: #E60000; content: '\e86e';}
+.cornell_lab_colors-ev-icon:after{margin-left: -8.7em; color: #F5E614; content: '\e86f';}
 
 .media-supplier div{margin-bottom: 10px;}
 
