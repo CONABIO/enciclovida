@@ -1122,7 +1122,7 @@ class EspeciesController < ApplicationController
 
   # Este método es necesario para ver params antes de que se inicialice dicha variable (caches_action corre antes q eso)
   def params_from_conabio_present?
-    Rails.env.production? && params.present? && params[:from].present? && params[:from] != 'conabio'
+    Rails.env.production? && params.present? && params[:from].present? && !params[:from].include?('conabio')
   end
 
 end
