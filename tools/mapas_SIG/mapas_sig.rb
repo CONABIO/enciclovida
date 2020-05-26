@@ -5,7 +5,7 @@ OPTS = Trollop::options do
   banner <<-EOS
 Marca en la base de proveedores las especies que tienen mapa de distribución, de acuerdo al 
 archivo que envia el SIG, idealmente deberia ser un webservice ...
-Columnas requeridas: idCAT, styler, boubox, mapa, anio, autor
+Columnas requeridas: idCAT, styler, boubox, mapa, anio, autor, urlgeoportal
 
 Usage:
 
@@ -31,7 +31,7 @@ def asigna_mapa_sig
   bbox = @row['boubox'].split(' ')
   bbox_orden = "#{bbox[1].split('=').last},#{bbox[0].split('=').last},#{bbox[3].split('=').last},#{bbox[2].split('=').last}"
 
-  { taxon: taxon_valido, idCAT: @row['idCAT'], estatus: true, layers: @row['mapa'], styles: @row['styler'], bbox: bbox_orden, anio: @row['anio'], autor: @row['autor'] }
+  { taxon: taxon_valido, idCAT: @row['idCAT'], estatus: true, layers: @row['mapa'], styles: @row['styler'], bbox: bbox_orden, anio: @row['anio'], autor: @row['autor'], geoportal_url: @row['urlgeoportal'] }
 end
 
 # Guarda en la base lo que resulto de la asignacion de geoserver_info
@@ -58,12 +58,12 @@ def asigna_geoserver_info(v, geoserver_info=nil)
   if geoserver_info.present?
     begin
       geo = JSON.parse(geoserver_info)
-      geo["Mapa #{geo.count + 1}"] = { layers: v[:layers], styles: v[:styles], bbox: v[:bbox], anio: v[:anio], autor: v[:autor] }
+      geo["Mapa #{geo.count + 1}"] = { layers: v[:layers], styles: v[:styles], bbox: v[:bbox], anio: v[:anio], autor: v[:autor], geoportal_url: v[:geoportal_url] }
     rescue
       nil
     end
   else
-    geo['Mapa 1'] = { layers: v[:layers], styles: v[:styles], bbox: v[:bbox], anio: v[:anio], autor: v[:autor] }
+    geo['Mapa 1'] = { layers: v[:layers], styles: v[:styles], bbox: v[:bbox], anio: v[:anio], autor: v[:autor], geoportal_url: v[:geoportal_url] }
   end
 
   geo.to_json
@@ -76,7 +76,7 @@ end
 def lee_csv(csv_path)
   CSV.foreach(csv_path, :headers => true) do |r|
     @row = r
-    #next unless @row["id"] == "7017"
+
     Rails.logger.debug "\tID: #{@row['idCAT']}" if OPTS[:debug]
     v = asigna_mapa_sig
     guarda_geoserver_info(v)
