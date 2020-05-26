@@ -5,7 +5,8 @@ const querySnib = require('./controller/querySnib.js')
 
 var server = new Hapi.Server()
 server.connection({
-    port: 8000,
+    host: '127.0.0.1',
+    port: 8080,
     labels: ['api']
 })
 

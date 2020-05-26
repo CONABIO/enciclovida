@@ -88,8 +88,10 @@ class BusquedaRegion < Busqueda
 
   # REVISADO: Consulta el conteo por especie en el servicio de Abraham
   def respuesta_conteo_por_grupo(url)
+    puts "#{url}----"
     begin
       rest = RestClient.get(url)
+      puts rest.inspect + '&&&&&'
       conteo = JSON.parse(rest)
 
       if conteo.kind_of?(Hash) && conteo['error'].present?

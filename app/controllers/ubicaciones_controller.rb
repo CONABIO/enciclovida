@@ -21,6 +21,8 @@ class UbicacionesController < ApplicationController
     br.params = params
     br.cache_conteo_por_grupo
 
+    puts "#{br.resp.inspect}@@@"
+
     render json: br.resp
   end
 
