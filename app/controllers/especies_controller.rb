@@ -546,9 +546,9 @@ class EspeciesController < ApplicationController
 
   # Regresa el resumen de wikipedia en español o ingles
   def resumen_wikipedia
-    resumen = Api::Wikipedia.new(taxon: @especie).dame_descripcion
-
-    render json: { estatus: (reumen.present? ? true : false), resumen: resumen }
+    opc = { taxon: @especie, locale: params[:locale] }
+    resumen = Api::Wikipedia.new(opc).resumen
+    render json: { estatus: (resumen.present? ? true : false), summary: resumen }
   end
 
   # Viene de la pestaña de la ficha
