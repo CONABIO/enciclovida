@@ -8,15 +8,13 @@
   <title><%= yield :title %></title>
   <%= favicon_link_tag '/favicon.ico' %>
 
-
-
   <script type="text/javascript" data-turbolinks-track="true">
       TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
       IP = "<%= IP %>";
       PORT = "<%= PORT %>";
   </script>
 
-  <%= javascript_include_tag 'application_b4', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
@@ -24,7 +22,7 @@
       I18n.fallbacks = true;
   </script>
 
-  <%= stylesheet_link_tag 'boots4-upgrade/application_b4', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
 
   <%= csrf_meta_tags %>
   <%= yield :extrahead %>

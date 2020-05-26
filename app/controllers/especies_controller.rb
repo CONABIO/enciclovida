@@ -21,8 +21,6 @@ class EspeciesController < ApplicationController
     tiene_permiso?('Administrador')  # Minimo administrador
   end
 
-  layout 'application_b4'
-
   layout false, :only => [:media, :descripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
                           :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
@@ -103,7 +101,7 @@ class EspeciesController < ApplicationController
         # Para las variables restantes
         @datos[:cuantos_comentarios] = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
         @datos[:taxon] = @especie.id
-        @datos[:bdi_api] = "/especies/#{@especie.id}/fotos-bdi.json"
+        @datos[:bdi_api] = "/especies/#{@especie.id}/bdi-photos.json"
         @datos[:cual_ficha] = ''
         @datos[:slug_url] = "/especies/#{@especie.id}-#{@especie.nombre_cientifico.estandariza}"
       end
@@ -132,7 +130,7 @@ class EspeciesController < ApplicationController
         @especie.e_tipo_distribucion = @especie.tipos_distribuciones.uniq
         @especie.e_caracteristicas = @especie.catalogos
         @especie.e_bibliografia = @especie.bibliografias
-        @especie.e_fotos = ["#{CONFIG.site_url}especies/#{@especie.id}/fotos-bdi.json", "#{CONFIG.site_url}especies/#{@especie.id}/fotos-naturalista.json"]  # TODO: poner las fotos de referencia, actaulmente es un metodo post
+        @especie.e_fotos = ["#{CONFIG.site_url}especies/#{@especie.id}/bdi-photos.json", "#{CONFIG.site_url}especies/#{@especie.id}/fotos-naturalista.json"]  # TODO: poner las fotos de referencia, actaulmente es un metodo post
 
         render json: @especie.to_json(methods: [:e_geodata, :e_nombre_comun_principal, :e_foto_principal,
                                                 :e_nombres_comunes, :e_categoria_taxonomica, :e_tipo_distribucion,
@@ -463,6 +461,8 @@ class EspeciesController < ApplicationController
 
   # Servicio Tropicos
   def media_tropicos
+    type = params['type']
+    page = params['page']
 
     # Crear instancia de servicio trópicos:
     ts_req = Tropicos_Service.new
@@ -511,7 +511,7 @@ class EspeciesController < ApplicationController
     end
 
     @array = [{msg: "Aún no hay imágenes para esta especie :/ "}] if @array[0]["Error"].present?
-    render 'especies/media/media_tropicos'
+    render 'especies/media/media_tropicos', :locals => {type: type, page: page}
   end
 
   def fotos_naturalista

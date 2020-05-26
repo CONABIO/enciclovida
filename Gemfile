@@ -5,7 +5,7 @@ gem 'activerecord-session_store'  # Pasa los request con POST a traves de la bas
 gem 'ancestry', git: 'https://github.com/calonsot/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
 gem 'caxlsx'#, git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'caxlsx_rails'  # Gema para exportar en excel
-gem 'bootstrap-sass', '~> 3.4.1'
+gem 'bootstrap', '~> 4.5.0'
 gem 'carrierwave'  # Form file upload
 gem 'cocoon'  # Anida las formas de diferentes o del mismo modelo
 gem 'coffee-rails', '~> 4.2'
@@ -16,7 +16,7 @@ gem 'delayed_job_mongoid'
 gem 'delayed-web'
 gem 'devise', '>= 4.7.1'
 gem 'exifr'
-gem 'font-awesome-rails', '~> 4.7'
+gem 'font-awesome-rails'
 gem 'fontello_rails_converter'
 gem 'formtastic'
 gem 'haml'
@@ -28,6 +28,7 @@ gem 'jquery-ui-rails'
 gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'mail'
 gem 'mime-types'
+gem 'mini_racer', platforms: :ruby
 gem 'mysql2'
 gem 'nokogiri', '>= 1.10.8'  # Hacer un parse con xml
 gem 'pg'
@@ -48,7 +49,6 @@ gem 'savon'  # Para consumir webservices con SOAP y WSDL
 gem 'seed_dump'  # Extrae las tuplas de un modelo o de toda la base
 gem 'simple_form', '>= 5.0.0'
 gem 'soulmate', :require => 'soulmate/server'
-gem 'therubyracer', platforms: :ruby
 gem 'turbolinks', '~> 5'  # Hace mas rapidos los links
 gem 'trollop'
 gem 'uglifier'

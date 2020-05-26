@@ -2,10 +2,11 @@
  * Inicializa el mapa
  * @param id
  */
-var cargaMapa = function (id)
+var cargaMapa = function (id ,callback)
 {
     // El default de leaflet
     var OSM_layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png',{
+        subdomains:['a','b','c'],
         zIndex: 1,
         noWrap: true
     });
@@ -22,6 +23,11 @@ var cargaMapa = function (id)
         zIndex: 1,
         noWrap: true
     });
+    // Wikimedia Maps
+    var WM_layer = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png',{
+        zIndex: 1,
+        noWrap: true
+    });
 
     var place = [23.79162789, -102.04376221];
 
@@ -31,6 +37,7 @@ var cargaMapa = function (id)
         layers: [     // Existe un bug poniendo primero los layes de google
             //OSM_layer,
             GHM_layer,
+            //WM_layer,
             //GTM_layer,
         ]
     });
@@ -53,12 +60,16 @@ var cargaMapa = function (id)
     map.setView(place, 4);  // Default place and zoom
 
     // Para poner las capas iniciales de los mapas
+    /*
     var baseMaps = {
         "Vista Híbrida": GHM_layer,
-        //"Open Street Maps": OSM_layer,
-        //"Vista de terreno": GTM_layer,
+        "Open Street Maps": OSM_layer,
+        "Vista de terreno": GTM_layer,
+        "Mapas de Wikipedia": WM_layer
     };
 
-    //L.control.layers(baseMaps).addTo(map);
-
+    L.control.layers(baseMaps).addTo(map);
+    */
+    //Para asegurarnos que siempre se genere el mapa con el mínimo markup posible
+    ponTamaño();
 };
