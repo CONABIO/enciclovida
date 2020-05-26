@@ -101,7 +101,7 @@ var seleccionaEstado = function(region_id)
         opciones.estado_seleccionado = null;
         opciones.tipo_region_seleccionado = null;
     } else {
-        var region_id = parseInt(region_id);
+        //var region_id = parseInt(region_id);
         $('#region_estado').val(region_id);
         $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
         $('#region_municipio').prop('disabled', false).attr('parent_id', region_id);

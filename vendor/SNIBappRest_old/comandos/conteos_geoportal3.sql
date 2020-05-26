@@ -30,3 +30,7 @@ CREATE TABLE conteos.estados
 
 -- SELECT entid,claveestadomapa,idestadomapa,estadomapa,munid,clavemunicipiomapa,idmunicipiomapa,municipiomapa,anpid,idanpfederal1,idanpfederal2,anp,region FROM snib WHERE entid=20 ORDER BY entid ASC LIMIT 10;
 -- SELECT entid,claveestadomapa,idestadomapa,estadomapa,munid,clavemunicipiomapa,idmunicipiomapa,municipiomapa,anpid,idanpfederal1,idanpfederal2,anp,region,latitud,longitud FROM snib WHERE entid=18 AND entid !=idestadomapa ORDER BY entid ASC LIMIT 10;
+
+-- SELECT ST_Extent(geom) as bbox FROM estados WHERE entid=1;
+
+SELECT entid AS region_id, nom_ent AS nombre_region, st_x(st_centroid(geom)) AS long, st_y(st_centroid(geom)) AS lat, ST_AsGeoJSON(geom) AS geojson, ST_Extent(geom) AS bbox FROM "estados" GROUP BY entid;
