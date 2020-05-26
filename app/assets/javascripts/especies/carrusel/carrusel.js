@@ -18,7 +18,7 @@ var fotosNaturalista = function(){
             }else{
                 $.ajax({
                     url: '/especies/' + opciones.taxon + '/fotos-referencia',
-                    type: 'GET',
+                    type: 'POST',
                     data: {
                         fotos: JSON.stringify(json.results[0].taxon_photos.slice(0, 5))
                     }
@@ -61,7 +61,7 @@ var fotosBDI = function(){
             }else{
                 $.ajax({
                     url: '/especies/' + opciones.taxon + '/fotos-referencia',
-                    type: 'GET',
+                    type: 'POST',
                     data: {fotos: JSON.stringify(json.fotos.slice(0, 5))}
                 }).done(function (fotos) {
                     if (jQuery.isEmptyObject(opciones.geodatos)){}
