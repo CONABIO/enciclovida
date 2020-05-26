@@ -57,7 +57,7 @@ var cargaMapa = function (id ,callback)
     map.addControl(zoom);
     map.addControl(fullscreen);
 
-    map.setView(place, 4);  // Default place and zoom
+    map.setView(place, 5);  // Default place and zoom
 
     // Para poner las capas iniciales de los mapas
     /*
