@@ -9,21 +9,23 @@ class BusquedaRegion < Busqueda
   # REVISADO: Cache para obtener el conteo de especies por grupo
   def cache_conteo_por_grupo
     if params[:tipo_region].present?
-      correspondencia_estado
-      return unless resp[:estatus]
+      #correspondencia_estado
+      #return unless resp[:estatus]
 
       if params[:estado_id].present? && params[:municipio_id].present?
         key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}_#{params[:municipio_id]}"
         url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:estado_id]}/#{params[:municipio_id].rjust(3,'0')}?apiKey=enciclovida"
       elsif params[:estado_id].present?
         key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}"
-        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:estado_id]}?apiKey=enciclovida"
+        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:estado_id]}"
       else
         return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
       end
 
+      puts "#{url}-1"
+
       self.resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.conteo_grupo)) do
-        respuesta_conteo_por_grupo(url)
+        self.resp = respuesta_conteo_por_grupo(url)
       end
 
     else
@@ -88,10 +90,8 @@ class BusquedaRegion < Busqueda
 
   # REVISADO: Consulta el conteo por especie en el servicio de Abraham
   def respuesta_conteo_por_grupo(url)
-    puts "#{url}----"
     begin
-      rest = RestClient.get(url)
-      puts rest.inspect + '&&&&&'
+      rest = RestClient.get(url.to_s)
       conteo = JSON.parse(rest)
 
       if conteo.kind_of?(Hash) && conteo['error'].present?
@@ -163,26 +163,26 @@ class BusquedaRegion < Busqueda
     grupos.each do |g|
 
       case g['grupo']
-        when 'Anfibios'
-          g.merge!({'icono' => 'amphibia-ev-icon', 'reino' => 'animalia'})
-        when 'Aves'
-          g.merge!({'icono' => 'aves-ev-icon', 'reino' => 'animalia'})
-        when 'Bacterias'
-          g.merge!({'icono' => 'prokaryotae-ev-icon', 'reino' => 'prokaryotae'})
-        when 'Hongos'
-          g.merge!({'icono' => 'fungi-ev-icon', 'reino' => 'fungi'})
-        when 'Invertebrados'
-          g.merge!({'icono' => 'invertebrados-ev-icon', 'reino' => 'animalia'})
-        when 'Mamíferos'
-          g.merge!({'icono' => 'mammalia-ev-icon', 'reino' => 'animalia'})
-        when 'Peces'
-          g.merge!({'icono' => 'actinopterygii-ev-icon', 'reino' => 'animalia'})
-        when 'Plantas'
-          g.merge!({'icono' => 'plantae-ev-icon', 'reino' => 'plantae'})
-        when 'Protoctistas'
-          g.merge!({'icono' => 'protoctista-ev-icon', 'reino' => 'protoctista'})
-        when 'Reptiles'
-          g.merge!({'icono' => 'reptilia-ev-icon', 'reino' => 'animalia'})
+      when 'Anfibios'
+        g.merge!({'icono' => 'amphibia-ev-icon', 'reino' => 'animalia'})
+      when 'Aves'
+        g.merge!({'icono' => 'aves-ev-icon', 'reino' => 'animalia'})
+      when 'Bacterias'
+        g.merge!({'icono' => 'prokaryotae-ev-icon', 'reino' => 'prokaryotae'})
+      when 'Hongos'
+        g.merge!({'icono' => 'fungi-ev-icon', 'reino' => 'fungi'})
+      when 'Invertebrados'
+        g.merge!({'icono' => 'invertebrados-ev-icon', 'reino' => 'animalia'})
+      when 'Mamíferos'
+        g.merge!({'icono' => 'mammalia-ev-icon', 'reino' => 'animalia'})
+      when 'Peces'
+        g.merge!({'icono' => 'actinopterygii-ev-icon', 'reino' => 'animalia'})
+      when 'Plantas'
+        g.merge!({'icono' => 'plantae-ev-icon', 'reino' => 'plantae'})
+      when 'Protoctistas'
+        g.merge!({'icono' => 'protoctista-ev-icon', 'reino' => 'protoctista'})
+      when 'Reptiles'
+        g.merge!({'icono' => 'reptilia-ev-icon', 'reino' => 'animalia'})
       end
     end
 
