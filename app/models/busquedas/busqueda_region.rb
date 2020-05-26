@@ -14,15 +14,13 @@ class BusquedaRegion < Busqueda
 
       if params[:estado_id].present? && params[:municipio_id].present?
         key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}_#{params[:municipio_id]}"
-        url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:estado_id]}/#{params[:municipio_id].rjust(3,'0')}?apiKey=enciclovida"
+        url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:estado_id]}/#{params[:municipio_id].rjust(3,'0')}"
       elsif params[:estado_id].present?
         key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}"
         url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:estado_id]}"
       else
         return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
       end
-
-      puts "#{url}-1"
 
       self.resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.conteo_grupo)) do
         self.resp = respuesta_conteo_por_grupo(url)
@@ -125,10 +123,10 @@ class BusquedaRegion < Busqueda
 
       if params[:estado_id].present? && params[:municipio_id].present?
         self.key_especies = "especies_grupo_#{params[:tipo_region]}_#{params[:grupo].estandariza}_#{params[:estado_id]}_#{params[:municipio_id]}"
-        self.url_especies = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:estado_id]}/#{params[:municipio_id].rjust(3, '0')}/edomun/#{params[:grupo].estandariza}?apiKey=enciclovida"
+        self.url_especies = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:estado_id]}/#{params[:municipio_id].rjust(3, '0')}/edomun/#{params[:grupo].estandariza}"
       elsif params[:estado_id].present?
         self.key_especies = "especies_grupo_#{params[:tipo_region]}_#{params[:grupo].estandariza}_#{params[:estado_id]}"
-        self.url_especies = "#{CONFIG.ssig_api}/taxonEdo/conteo/#{params[:estado_id]}/edomun/#{params[:grupo].estandariza}?apiKey=enciclovida"
+        self.url_especies = "#{CONFIG.ssig_api}/taxonEdo/conteo/#{params[:estado_id]}/edomun/#{params[:grupo].estandariza}"
       else
         return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
       end

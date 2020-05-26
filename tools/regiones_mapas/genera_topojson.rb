@@ -102,18 +102,19 @@ def topojson_municipios_por_estado
   Estado.campos_min.all.each do |e|
     Rails.logger.debug "Generando con estado: #{e.nombre_region}" if OPTS[:debug]
     geojson = {type: 'FeatureCollection', features: []}  # Para todos loes estados o municipios juntos
-    #estado_id = Estado::CORRESPONDENCIA[e.region_id]
-    estado_id = e.region_id
     estado_nombre = I18n.t("estados.#{e.nombre_region.estandariza}")
 
-    Municipio.campos_min.campos_geom.where(cve_ent: estado_id).each do |m|
+    Municipio.campos_min.campos_geom.where(nom_ent: e.nombre_region).each do |m|
       Rails.logger.debug "\tGenerando con municipio: #{m.nombre_region}" if OPTS[:debug]
       feature = {type: 'Feature', properties:{}}
       feature[:properties][:region_id] = m.region_id
       feature[:properties][:nombre_region] = "#{m.nombre_region}, #{estado_nombre}"
-      feature[:properties][:parent_id] = m.parent_id
+      feature[:properties][:parent_id] = e.region_id
       feature[:properties][:centroide] = [m.lat, m.long]
-      feature[:properties][:region_id_se] = m.region_id_se
+
+      bounds = m.bounds.gsub(/[BBOX()]/,'').split(',').map{ |a| a.split(' ').reverse.map{ |s|  s.to_f } }
+      feature[:properties][:bounds] = bounds
+
       feature[:geometry] = JSON.parse(m.geojson)
       geojson[:features] << feature
     end
@@ -134,6 +135,6 @@ end
 start_time = Time.now
 
 topojson_por_region
-#topojson_municipios_por_estado
+topojson_municipios_por_estado
 
 Rails.logger.debug "Termino en #{Time.now - start_time} seg" if OPTS[:debug]
