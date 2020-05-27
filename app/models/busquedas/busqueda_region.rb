@@ -9,9 +9,6 @@ class BusquedaRegion < Busqueda
   # REVISADO: Cache para obtener el conteo de especies por grupo
   def cache_conteo_por_grupo
     if params[:tipo_region].present?
-      #correspondencia_estado
-      #return unless resp[:estatus]
-
       if params[:estado_id].present? && params[:municipio_id].present?
         key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}_#{params[:municipio_id]}"
         url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:estado_id]}/#{params[:municipio_id].rjust(3,'0')}"
