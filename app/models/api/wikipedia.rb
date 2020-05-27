@@ -71,7 +71,11 @@ class Api::Wikipedia < Api::Descripcion
   def solicita
     begin
       uri = valida_uri
-      resp = JSON.parse(open(uri).read)["parse"]["text"]["*"]
+      begin
+        resp = JSON.parse(open(uri).read)["parse"]["text"]["*"]
+      rescue
+        return
+      end
       return if resp.nil?
     rescue Timeout::Error
       raise Timeout::Error, "#{nombre} no respondio en los primeros #{timeout} segundos."
