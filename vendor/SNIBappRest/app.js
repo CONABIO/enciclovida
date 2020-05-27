@@ -421,11 +421,11 @@ server.register([
                     id: Joi.number().description('ID de la especie')
                 },
                 query: {
-                    from: Joi.string().valid(['WikipediaEs','Wikipedia']).description('El lenguaje del resumen, si se deja vacio trata de encontrar el que tenga información en ese orden')
+                    locale: Joi.string().valid(['es','en']).description('El lenguaje del resumen, si se deja vacio trata de encontrar el que tenga información en ese orden')
                 }
             },
             handler: function (request, reply) {
-                var url = "http://enciclovida.mx/especies/" + request.params.id + '/wikipedia-summary?from=' + request.query.from;
+                var url = "http://enciclovida.mx/especies/" + request.params.id + '/resumen-wikipedia?locale=' + request.query.locale;
                 query.ajaxRequest(url, reply);
             }
         }
