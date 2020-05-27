@@ -27,34 +27,36 @@
 
 <div class="dropdown">
   <button class="btn btn-link btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Descarga de registros <i><%= icono_descarga %></i>
+    Descarga de datos <i><%= icono_descarga %></i>
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
     <% if @datos[:geodatos][:cuales].include?('naturalista') %>
-      <h6 class="dropdown-header"><%= imagotipo_naturalista_nombre %></h6>
-      <%= link_to("#{icono_globo} KML".html_safe, @datos[:geodatos][:naturalista_kml], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_kml].present? %>
-      <%= link_to("#{icono_globo} KMZ".html_safe, @datos[:geodatos][:naturalista_kmz], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_kmz].present? %>
-      <%= link_to("#{icono_globo} JSON".html_safe, @datos[:geodatos][:naturalista_json], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_json].present? %>
+      <h6 class="dropdown-header font-weight-bolder">Observaciones de <%= imagotipo_naturalista_nombre %></h6>
+      <%= link_to(" KML #{icono_descarga}".html_safe, @datos[:geodatos][:naturalista_kml], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_kml].present? %>
+      <%= link_to(" KMZ #{icono_descarga}".html_safe, @datos[:geodatos][:naturalista_kmz], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_kmz].present? %>
+      <%= link_to(" JSON #{icono_descarga}".html_safe, @datos[:geodatos][:naturalista_json], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_json].present? %>
     <% end %>
 
     <% if @datos[:geodatos][:cuales].include?('snib') %>
-      <li role="separator" class="divider"></li>
       <div class="dropdown-divider"></div>
-      <h6 class="dropdown-header">SNIB</h6>
-      <%= link_to("#{icono_globo} KML".html_safe, @datos[:geodatos][:snib_kml], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:snib_kml].present? %>
-      <%= link_to("#{icono_globo} KMZ".html_safe, @datos[:geodatos][:snib_kmz], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:snib_kmz].present? %>
-      <%= link_to("#{icono_globo} JSON".html_safe, @datos[:geodatos][:snib_json], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:snib_json].present? %>
+      <h6 class="dropdown-header font-weight-bolder">Ejemplares del SNIB</h6>
+      <%= link_to(" KML #{icono_descarga}".html_safe, @datos[:geodatos][:snib_kml], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:snib_kml].present? %>
+      <%= link_to(" KMZ #{icono_descarga}".html_safe, @datos[:geodatos][:snib_kmz], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:snib_kmz].present? %>
+      <%= link_to(" JSON #{icono_descarga}".html_safe, @datos[:geodatos][:snib_json], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:snib_json].present? %>
       <%= link_to("Diccionario de datos <i class='fa fa-external-link-square'></i>".html_safe, 'http://www.snib.mx/ejemplares/docs/CONABIO-SNIB-DiccionarioDatosEjemplaresGeoportal-201906.pdf', :target => :_blank, :class => 'dropdown-item') %>
     <% end %>
 
     <% if @datos[:geodatos][:cuales].include?('geoserver') %>
-      <li role="separator" class="divider"></li>
       <div class="dropdown-divider"></div>
-      <h6 class="dropdown-header">Mapa de distribución</h6>
+      <h6 class="dropdown-header font-weight-bolder">Mapas de distribución:</h6>
 
       <% @datos[:geodatos][:geoserver_descargas_url].each do |geo| %>
-        <%= link_to("#{icono_globo} #{geo[:autor]} #{geo[:anio]} (KMZ)".html_safe, "#{CONFIG.geoserver_descarga_url}&layers=#{geo[:layers]}&styles=#{geo[:styles]}&bbox=#{geo[:bbox]}", :target => :_blank, :class => 'dropdown-item') %>
-        <%= link_to("Ver en el geoportal <i class='fa fa-external-link-square'></i>".html_safe, geo[:geoportal_url], :target => :_blank, :class => 'dropdown-item') %>
+        <p class="ml-3">
+          <small class="font-weight-bold"><%= geo[:autor] %></small><br />
+          <%= link_to("(KMZ #{geo[:anio]}) #{icono_descarga}".html_safe, "#{CONFIG.geoserver_descarga_url}&layers=#{geo[:layers]}&styles=#{geo[:styles]}&bbox=#{geo[:bbox]}", :target => :_blank, :class => 'dropdown-item', :style => 'width: auto!important;') %>
+          <%= link_to("Ver en el geoportal <i class='fa fa-external-link-square'></i>".html_safe, geo[:geoportal_url], :target => :_blank, :class => 'dropdown-item', :style => 'width: auto!important;') %>
+        </p>
+        <div class="dropdown-divider"></div>
       <% end %>
     <% end %>
   </div>
