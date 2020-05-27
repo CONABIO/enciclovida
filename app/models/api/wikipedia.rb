@@ -24,7 +24,12 @@ class Api::Wikipedia < Api::Descripcion
   end
 
   def dame_descripcion
-    buscar
+    begin
+      buscar
+    rescue => e
+      Rails.logger.info "[INFO] Wikipedia API falló a intentar consutar el resumen: #{e.message}"
+      return
+    end
   end
 
   def resumen_cualquiera
@@ -40,6 +45,7 @@ class Api::Wikipedia < Api::Descripcion
   def resumen
     begin
       resp = solicita
+      return unless resp
 
       hxml = Nokogiri::HTML(HTMLEntities.new.decode(resp))
       hxml.search('table').remove
@@ -49,8 +55,8 @@ class Api::Wikipedia < Api::Descripcion
       res.gsub! /\[.*?\]/, ''
       res
 
-    rescue Timeout::Error => e
-      Rails.logger.info "[INFO] Wikipedia API falló a intentar consutar el resumen: #{e.message}"
+    rescue => e
+      Rails.logger.info "[INFO] Wikipedia API falló a intentar consutar el resumen: #{e.message}" if debug
       return
     end
   end
@@ -58,27 +64,19 @@ class Api::Wikipedia < Api::Descripcion
   private
 
   def buscar
-    begin
-      resp = solicita
-      html = limpia_html(resp)
-    rescue Timeout::Error => e
-      Rails.logger.debug "[INFO] Wikipedia API call failed: #{e.message}" if debug
-    end
-
-    html
+    resp = solicita
+    return unless resp
+    limpia_html(resp)
   end
 
   def solicita
     begin
       uri = valida_uri
-      begin
-        resp = JSON.parse(open(uri).read)["parse"]["text"]["*"]
-      rescue
-        return
-      end
+      resp = JSON.parse(open(uri).read)["parse"]["text"]["*"]
       return if resp.nil?
-    rescue Timeout::Error
-      raise Timeout::Error, "#{nombre} no respondio en los primeros #{timeout} segundos."
+    rescue Timeout::Error => e
+      Rails.logger.info "[INFO] Wikipedia API falló a intentar consutar el resumen: #{e.message}"
+      return
     end
 
     resp
