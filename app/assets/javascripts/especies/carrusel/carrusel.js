@@ -18,7 +18,7 @@ var fotosNaturalista = function(){
             }else{
                 $.ajax({
                     url: '/especies/' + opciones.taxon + '/fotos-referencia',
-                    type: 'POST',
+                    type: 'GET',
                     data: {
                         fotos: JSON.stringify(json.results[0].taxon_photos.slice(0, 5))
                     }
