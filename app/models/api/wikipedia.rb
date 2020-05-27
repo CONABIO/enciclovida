@@ -64,6 +64,7 @@ class Api::Wikipedia < Api::Descripcion
 
   def buscar
     resp = solicita
+    return unless resp
     limpia_html(resp)
   end
 
