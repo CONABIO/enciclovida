@@ -115,8 +115,8 @@ class BusquedaRegion < Busqueda
   # Para saber si la peticion con la region y los filtros ya existe y consultar directo cache especies_por_grupo
   def existe_cache_especies_por_grupo_con_filtros?
     if params[:grupo].present? && params[:tipo_region].present?
-      correspondencia_estado
-      return unless resp[:estatus]
+      #correspondencia_estado
+      #return unless resp[:estatus]
 
       if params[:estado_id].present? && params[:municipio_id].present?
         self.key_especies = "especies_grupo_#{params[:tipo_region]}_#{params[:grupo].estandariza}_#{params[:estado_id]}_#{params[:municipio_id]}"
