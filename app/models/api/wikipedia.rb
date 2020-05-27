@@ -1,6 +1,7 @@
 class Api::Wikipedia < Api::Descripcion
 
   attr_accessor :locale
+  DESCRIPCIONES = %w(wikipedia_es wikipedia_en)
 
   def initialize(opc = {})
     super(opc)
@@ -12,8 +13,28 @@ class Api::Wikipedia < Api::Descripcion
     "Wikipedia (#{locale.try(:upcase)})"
   end
 
+  def dame_descripcion_cualquiera
+    DESCRIPCIONES.each do |descripcion|
+      desc = eval("Api::#{descripcion.camelize}")
+      resp = desc.new(taxon: taxon).buscar
+      return resp if resp
+    end
+
+    nil
+  end
+
   def dame_descripcion
     buscar
+  end
+
+  def resumen_cualquiera
+    DESCRIPCIONES.each do |descripcion|
+      desc = eval("Api::#{descripcion.camelize}")
+      resp = desc.new(taxon: taxon).resumen
+      return resp if resp
+    end
+
+    nil
   end
 
   def resumen

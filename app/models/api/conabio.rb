@@ -16,6 +16,8 @@ class Api::Conabio < Api::Descripcion
       resp = desc.new(taxon: taxon).dame_descripcion
       return resp if resp
     end
+
+    nil
   end
 
 end

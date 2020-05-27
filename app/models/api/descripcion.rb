@@ -22,6 +22,8 @@ class Api::Descripcion
       resp = desc.new(taxon: taxon).dame_descripcion
       return { api: descripcion, descripcion: resp } if resp
     end
+
+    nil
   end
 
   def self.opciones_select
