@@ -14,11 +14,13 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
 
   # GET /admin/especies_catalogos/new
   def new
+    @form_params = { url: '/admin/especies_catalogos', method: 'post' }
     @admin_especie_catalogo = Admin::EspecieCatalogo.new
   end
 
   # GET /admin/especies_catalogos/1/edit
   def edit
+    @form_params = {}
   end
 
   # POST /admin/especies_catalogos

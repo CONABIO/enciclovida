@@ -1,15 +1,16 @@
 class EspeciesController < ApplicationController
 
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
-                                         :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
+                                         :fotos_naturalista, :bdi_photos, :bdi_videos, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
-                                         :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :wikipedia_summary]
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
+                                         :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :resumen_wikipedia]
+
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :comentarios, :fotos_bdi, :videos_bdi,
+                                     :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
-                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :wikipedia_summary]
+                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :resumen_wikipedia]
   before_action :only => [:arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas] do
     set_especie(true)
   end
@@ -20,14 +21,14 @@ class EspeciesController < ApplicationController
     tiene_permiso?('Administrador')  # Minimo administrador
   end
 
-  layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
+  layout false, :only => [:media, :descripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :videos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
-                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :wikipedia_summary]
+                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :resumen_wikipedia]
 
   # Pone en cache el webservice que carga por default
-  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
+  caches_action :descripcion, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
 
   # GET /especies
   # GET /especies.json
@@ -39,6 +40,9 @@ class EspeciesController < ApplicationController
   # GET /especies/1.json
   def show
     render 'especies/noPublicos' and return unless @especie.scat.Publico
+    ## Para mostrar la taxonomia en la página inicial del show
+    @taxones = Especie.arbol_nodo_inicial(@especie)
+
     respond_to do |format|
       format.html do
 
@@ -48,7 +52,7 @@ class EspeciesController < ApplicationController
           @datos[:nombres_comunes] =  adicional.nombres_comunes
         end
 
-        @datos[:especie_o_inferior] = @especie.especie_o_inferior?
+        @datos[:especie_o_inferior] = @especie
 
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if proveedor = @especie.proveedor
@@ -97,7 +101,7 @@ class EspeciesController < ApplicationController
         # Para las variables restantes
         @datos[:cuantos_comentarios] = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
         @datos[:taxon] = @especie.id
-        @datos[:bdi_api] = "/especies/#{@especie.id}/fotos-bdi.json"
+        @datos[:bdi_api] = "/especies/#{@especie.id}/bdi-photos.json"
         @datos[:cual_ficha] = ''
         @datos[:slug_url] = "/especies/#{@especie.id}-#{@especie.nombre_cientifico.estandariza}"
       end
@@ -126,7 +130,7 @@ class EspeciesController < ApplicationController
         @especie.e_tipo_distribucion = @especie.tipos_distribuciones.uniq
         @especie.e_caracteristicas = @especie.catalogos
         @especie.e_bibliografia = @especie.bibliografias
-        @especie.e_fotos = ["#{CONFIG.site_url}especies/#{@especie.id}/fotos-bdi.json", "#{CONFIG.site_url}especies/#{@especie.id}/fotos-naturalista.json"]  # TODO: poner las fotos de referencia, actaulmente es un metodo post
+        @especie.e_fotos = ["#{CONFIG.site_url}especies/#{@especie.id}/bdi-photos.json", "#{CONFIG.site_url}especies/#{@especie.id}/fotos-naturalista.json"]  # TODO: poner las fotos de referencia, actaulmente es un metodo post
 
         render json: @especie.to_json(methods: [:e_geodata, :e_nombre_comun_principal, :e_foto_principal,
                                                 :e_nombres_comunes, :e_categoria_taxonomica, :e_tipo_distribucion,
@@ -162,31 +166,8 @@ class EspeciesController < ApplicationController
           @fotos = fotos[:fotos] if fotos[:estatus] && fotos[:fotos].any?
         end
 
-        # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
-        @describers = if CONFIG.taxon_describers
-                        CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                      elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
-                        [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
-                      else
-                        [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
-                      end
-
-        if params[:from].present? && CONFIG.taxon_describers.include?(params[:from].downcase)
-          # Especifico una descripcion y esta dentro de los permitidos
-          d = TaxonDescribers.get_describer(params[:from])
-          @description = d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-
-        else  # No especifico una descripcion y mandara a llamar el que encuentre
-          @describers.each do |d|
-            @describer = d
-            @description = begin
-                             d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-                           rescue OpenURI::HTTPError, Timeout::Error => e
-                             nil
-                           end
-            break unless @description.blank?
-          end
-        end
+        # Ya tiene la descripcion asignada
+        asigna_variables_descripcion
 
         ruta = Rails.root.join('public', 'pdfs').to_s
         fecha = Time.now.strftime("%Y%m%d%H%M%S")
@@ -315,10 +296,11 @@ class EspeciesController < ApplicationController
 
   # REVISADO: Regresa el nombre cientifico con el formato del helper, lo uso mayormente en busquedas por 
   def dame_nombre_con_formato
+    render html: "#{helpers.tituloNombreCientifico(@especie, render: 'link')}".html_safe
   end
 
   # REVISADO: Despliega el arbol identado o nodo
-  def arbol
+  def arbolgit add 
     if I18n.locale.to_s == 'es-cientifico'
       @taxones = Especie.arbol_identado_inicial(@especie)
       render :partial => 'especies/arbol/arbol_identado_inicial'
@@ -377,9 +359,16 @@ class EspeciesController < ApplicationController
     @foto_default = @fotos.first
   end
 
+  # Acción necesaria para la tab media, similar a describe ¬¬
+  def media
+    render 'especies/media/media'
+  end
+
   # Servicio de lib/bdi_service.rb
-  def fotos_bdi
+  def bdi_photos
     @pagina = params['pagina']
+    type = params['type']
+    page = params['page']
 
     if @pagina.present?
       bdi = @especie.fotos_bdi({pagina: @pagina.to_i})
@@ -408,6 +397,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
+          render 'especies/media/bdi_photos', :locals => {type: type, page: page} and return
         end  # End format html
       end  # End respond
 
@@ -417,8 +407,10 @@ class EspeciesController < ApplicationController
   end
 
   #Videos de BDI
-  def videos_bdi
+  def bdi_videos
     @pagina = params['pagina']
+    type = params['type']
+    page = params['page']
 
     if @pagina.present?
       bdi = @especie.videos_bdi({pagina: @pagina.to_i})
@@ -447,6 +439,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
+          render 'especies/media/bdi_videos', :locals => {type: type, page: page} and return
         end  # End format html
       end  # End respond
 
@@ -463,11 +456,13 @@ class EspeciesController < ApplicationController
     mc = MacaulayService.new
     @array = mc.dameMedia_nc(taxonNC, type, page)
 
-    render :locals => {type: type, page: page}
+    render 'especies/media/media_cornell', :locals => {type: type, page: page}
   end
 
   # Servicio Tropicos
   def media_tropicos
+    type = params['type']
+    page = params['page']
 
     # Crear instancia de servicio trópicos:
     ts_req = Tropicos_Service.new
@@ -516,6 +511,7 @@ class EspeciesController < ApplicationController
     end
 
     @array = [{msg: "Aún no hay imágenes para esta especie :/ "}] if @array[0]["Error"].present?
+    render 'especies/media/media_tropicos', :locals => {type: type, page: page}
   end
 
   def fotos_naturalista
@@ -542,60 +538,22 @@ class EspeciesController < ApplicationController
     @nombres_comunes = @especie.dame_nombres_comunes_todos
   end
 
-  # Viene de la pestaña de la ficha
-  def describe
-    @describers = if CONFIG.taxon_describers
-                    CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                  elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
-                    [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
-                  else
-                    [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
-                  end
-
-    if @describer = TaxonDescribers.get_describer(params[:from])
-      @description = @describer.equal?(TaxonDescribers::EolEs) ? @describer.describe(@especie, :language => 'es') : @describer.describe(@especie)
-    else
-      @describers.each do |d|
-        @describer = d
-        @description = begin
-                         d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-                       rescue OpenURI::HTTPError, Timeout::Error => e
-                         nil
-                       end
-        break unless @description.blank?
-      end
-    end
-
-    @describer_url = @describer.page_url(@especie)
-    respond_to do |format|
-      format.html { render :partial => 'description' }
-    end
+  # Viene de la pestaña "Acerca de " de la ficha
+  def descripcion
+    asigna_variables_descripcion
+    render 'especies/descripciones/descripcion'
   end
 
   # Regresa el resumen de wikipedia en español o ingles
-  def wikipedia_summary
-    describers = [TaxonDescribers::WikipediaEs, TaxonDescribers::Wikipedia]
-
-    if describer = TaxonDescribers.get_describer(params[:from])
-      sumamry = describer.get_summary(@especie)
-    else
-      describers.each do |describer|
-
-        sumamry = begin
-                    describer.get_summary(@especie)
-                  rescue OpenURI::HTTPError, Timeout::Error => e
-                    nil
-                  end
-
-        break unless sumamry.blank?
-      end
-    end
-
-    render json: { estatus: (sumamry.present? ? true : false), sumamry: sumamry }
+  def resumen_wikipedia
+    opc = { taxon: @especie, locale: params[:locale] }
+    resumen = Api::Wikipedia.new(opc).resumen
+    render json: { estatus: (resumen.present? ? true : false), summary: resumen }
   end
 
   # Viene de la pestaña de la ficha
   def descripcion_catalogos
+    render 'especies/descripciones/descripcion_catalogos'
   end
 
   # Devuelve las observaciones de naturalista en diferentes formatos
@@ -992,6 +950,24 @@ class EspeciesController < ApplicationController
     )
   end
 
+  def asigna_variables_descripcion
+    if params[:from].present?
+      begin
+        desc = eval("Api::#{params[:from].camelize}")
+        @descripcion = desc.new(taxon: @especie).dame_descripcion
+        @api = params[:from]
+      rescue
+      end
+    else
+      begin
+        desc = Api::Descripcion.new(taxon: @especie).dame_descripcion
+        @descripcion = desc[:descripcion]
+        @api = desc[:api]
+      rescue
+      end
+    end
+  end
+
   def guardaRelaciones(tipoRelacion)
     contadorRelacion=0;
     nombreRelacion=tipoRelacion.to_s.tableize.pluralize
@@ -1146,7 +1122,7 @@ class EspeciesController < ApplicationController
 
   # Este método es necesario para ver params antes de que se inicialice dicha variable (caches_action corre antes q eso)
   def params_from_conabio_present?
-    Rails.env.production? && params.present? && params[:from].present? && params[:from] != 'Conabio'
+    Rails.env.production? && params.present? && params[:from].present? && !params[:from].include?('conabio')
   end
 
 end

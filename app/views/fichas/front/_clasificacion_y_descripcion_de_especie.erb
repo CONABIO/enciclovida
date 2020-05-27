@@ -1,24 +1,23 @@
 <div class="row showInfo">
-  <div class="col-md-8" style="padding: 0px 30px 30px 15px;">
-
+  <div class="col-md-8">
     <% if @ficha[:taxon].resumenEspecie.present? %>
-      <h4>Resumen de la especie</h4> <p class="text-justify"><%= @ficha[:taxon].resumenEspecie.a_HTML %></p>
+      <h6>Resumen de la especie</h6> <p class="text-justify"><%= @ficha[:taxon].resumenEspecie.a_HTML %></p>
       <br />
     <% end %>
 
     <% if @taxon.descEspecie.present? %>
-      <h4>Descripción de la especie</h4> <p class="text-justify"><%= @ficha[:taxon].descEspecie.a_HTML %></p>
+      <h6>Descripción de la especie</h6> <p class="text-justify"><%= @ficha[:taxon].descEspecie.a_HTML %></p>
       <br />
     <% end %>
 
     <% if @ficha[:taxon].especiesSmilares.present? %>
-      <h4>Especies similares</h4>
+      <h6>Especies similares</h6>
       <p class="text-justify"><%= @ficha[:taxon].especiesSmilares.a_HTML %></p>
       <br />
     <% end %>
 
     <% if @ficha[:edad_peso_largo][:estatus] %>
-      <h4>Información adicional</h4>
+      <h6>Información adicional</h6>
       <table class="table table-striped table-bordered">
 
         <thead>
@@ -62,17 +61,17 @@
 
   </div>
 
-  <div class="col-md-4 fichaSeccionApartadosT2">
-    <h4 class="text-center text-primary">Taxonomía</h4>
-    <p><strong>reino: </strong><%= @ficha[:especie].x_reino %></p>
-    <p><strong><%= @ficha[:especie].x_reino == 'Animalia' ? 'phylum' : 'división' %>: </strong><%= @ficha[:especie].x_division %></p>
-    <p><strong>clase: </strong><%= @ficha[:especie].x_clase %></p>
-    <p><strong>orden: </strong><%= @ficha[:especie].x_orden %></p>
-    <p><strong>familia: </strong><%= @ficha[:especie].x_familia %></p>
-    <p><strong>género: </strong><%= @ficha[:especie].x_genero %></p>
-    <p><strong>especie: </strong><%= @ficha[:especie].x_especie %></p>
+  <div class="col-md-4 p-3 shadow-lg bg-white">
+    <h6 class="text-center text-info">Taxonomía</h6>
+    <p><strong>Reino: </strong><%= @ficha[:especie].x_reino %></p>
+    <p><strong><%= @ficha[:especie].x_reino == 'Animalia' ? 'Phylum' : 'División' %>: </strong><%= @ficha[:especie].x_division %></p>
+    <p><strong>Clase: </strong><%= @ficha[:especie].x_clase %></p>
+    <p><strong>Orden: </strong><%= @ficha[:especie].x_orden %></p>
+    <p><strong>Familia: </strong><%= @ficha[:especie].x_familia %></p>
+    <p><strong>Género: </strong><%= @ficha[:especie].x_genero %></p>
+    <p><strong>Especie: </strong><%= @ficha[:especie].x_especie %></p>
     <br>
-    <h4 class="text-center text-primary">Nombre científico</h4>
+    <h6 class="text-center text-info">Nombre científico</h6>
     <p><i><%= @ficha[:especie].nombre_cientifico %></i> <%= @ficha[:especie].nombre_autoridad %></p>
     <br>
 
