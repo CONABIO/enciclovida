@@ -45,6 +45,7 @@ class Api::Wikipedia < Api::Descripcion
   def resumen
     begin
       resp = solicita
+      return unless resp
 
       hxml = Nokogiri::HTML(HTMLEntities.new.decode(resp))
       hxml.search('table').remove
