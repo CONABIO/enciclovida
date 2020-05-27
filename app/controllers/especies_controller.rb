@@ -554,7 +554,7 @@ class EspeciesController < ApplicationController
       resumen = Api::Wikipedia.new(opc).resumen_cualquiera
     end
 
-    render json: { estatus: (resumen.present? ? true : false), summary: resumen }
+    render json: { estatus: (resumen.present? ? true : false), sumamry: resumen }
   end
 
   # Viene de la pestaña de la ficha
