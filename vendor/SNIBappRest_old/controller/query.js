@@ -96,9 +96,9 @@ function taxonEdoTotal(req) {
             .whereRaw(`entid='${ent}'`)
             .orderByRaw('grupo');
 
-            query.then(dato => {
-                resolve(dato);
-            })
+        query.then(dato => {
+            resolve(dato);
+        })
     })
 }
 
@@ -122,7 +122,7 @@ function taxonMunTotal(req) {
             .with('protoctistas', knex.raw(`SELECT COUNT (*) AS COUNT FROM snibprotgw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and cve_mun = '${mun}' and munid = snibprotgw.munid /*and snibprotgw.comentarioscat=''*/  ) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid`))
             .with('reptiles', knex.raw(`SELECT COUNT (*) AS COUNT FROM snibreptgw WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${ent}' and cve_mun = '${mun}' and munid = snibreptgw.munid /*and snibreptgw.comentarioscat=''*/  ) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid`))
             .with('total', knex.raw(
-                `
+                    `
         select 'Anfibios'::VARCHAR as grupo, count(*) as total from anfibios
         union select 'Aves'::VARCHAR as grupo, count(*) as total from aves
         union select 'Bacterias'::VARCHAR as grupo, count(*) as total from bacterias
@@ -143,6 +143,65 @@ function taxonMunTotal(req) {
             })
     })
 }
+
+/*function getSnib(req) {
+    let qtype = req.params['qtype']
+    let rd = req.params['rd']
+    let id = req.params['id']
+    let enciclofields = "idejemplar,longitud,latitud,especievalidabusqueda,ejemplarfosil,region,localidad,paismapa,estadomapa,municipiomapa,coleccion,institucion,paiscoleccion,determinador,colector,fechacolecta,proyecto,urlproyecto,urlejemplar,probablelocnodecampo"
+    return new Promise((resolve, reject) => {
+        knex
+            .select(knex.raw(`st_asgeojson(the_geom) AS json_geom,${enciclofields}`))
+            .from(`public.${rd}`)
+            .whereRaw(`idnombrecatvalido = '${id}' AND coleccion != 'Naturalista Naturalista'`)
+            .then(dato => {
+                resolve(dato)
+            })
+    })
+}*/
+
+function getSnibEdo(req) {
+    let idcat = req.params['idcat'];
+    let entid = req.params['entid'];
+    let enciclofields = `
+        idejemplar,longitud,latitud,especievalidabusqueda,ejemplarfosil,
+        region,localidad,paismapa,estadomapa,municipiomapa,coleccion,institucion,paiscoleccion,determinador,
+        colector,fechacolecta,proyecto,urlproyecto,urlejemplar,probablelocnodecampo 
+    `;
+    return new Promise((resolve, reject) => {
+        let query=knex
+            .select(knex.raw(`${enciclofields}`))
+            .from('snib')
+            .whereRaw(`idnombrecatvalido = '${idcat}' AND comentarioscatvalido LIKE 'Validado completamente con CAT.%' AND entid='${entid}'`);
+
+        query.then(dato => {
+            resolve(dato)
+        })
+    })
+}
+
+/*function getSnibMun(req) {
+    let qtype = req.params['qtype']
+    let rd = req.params['rd']
+    let id = req.params['id']
+    let idedo = req.params['idedo']
+    let idmun = req.params['idmun']
+    let enciclofields = `
+        idejemplar,longitud,latitud,especievalidabusqueda,ejemplarfosil,
+        region,localidad,paismapa,estadomapa,municipiomapa,coleccion,institucion,paiscoleccion,determinador,
+        colector,fechacolecta,proyecto,urlproyecto,urlejemplar,probablelocnodecampo 
+    `
+    return new Promise((resolve, reject) => {
+        knex
+            .select(knex.raw(`st_asgeojson(the_geom) AS json_geom,${enciclofields}`))
+            .from(`public.${rd}`)
+            .whereRaw(`idnombrecatvalido = '${id}'  and exists(select 1 from municipios where cve_ent = '${idedo}' and cve_mun = '${idmun}' and munid = ${rd}.munid)`)
+            .then(dato => {
+                resolve(dato)
+            })
+    })
+}*/
+
 module.exports = {
     getedo,
     getmun,
@@ -150,5 +209,8 @@ module.exports = {
     taxonMuni,
     taxonEdo,
     taxonEdoTotal,
-    taxonMunTotal
+    taxonMunTotal,
+    //getSnib,
+    getSnibEdo,
+    //getSnibMun
 }

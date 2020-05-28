@@ -59,7 +59,7 @@ var cargaEspecies = function()
 
             $.each(resp.resultados, function(index, taxon){
                 var url = dameUrlServicioSnibPorRegion({catalogo_id: taxon.catalogo_id, estado_id: opciones.estado_seleccionado,
-                    municipio_id: opciones.municipio_seleccionado, snib_url: opciones.snib_url, reino: opciones.reino_seleccionado});
+                    municipio_id: opciones.municipio_seleccionado, snib_url: opciones.snib_url});
                 if (url == undefined) return;
 
                 // Las que no tiene imagen se le pega la fuente
@@ -158,9 +158,7 @@ var completaSelect = function(prop)
  */
 var dameUrlServicioSnibPorRegion = function(prop)
 {
-    prop.estado_id = opciones.correspondencia[prop.estado_id];
-
-    var snib_url = prop.snib_url + '/' + prop.reino + '/' + prop.catalogo_id + '/' + prop.estado_id;
+    var snib_url = "http://api.enciclovida.mx:8080/snib/" + prop.catalogo_id + '/' + prop.estado_id;
 
     if (prop.municipio_id != null && prop.municipio_id != '')
     {
@@ -168,7 +166,6 @@ var dameUrlServicioSnibPorRegion = function(prop)
         snib_url+= '/' + prop.municipio_id;
     }
 
-    snib_url+= '?apiKey=enciclovida';
     return snib_url;
 };
 
