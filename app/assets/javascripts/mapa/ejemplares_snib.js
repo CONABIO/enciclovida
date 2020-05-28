@@ -295,7 +295,8 @@ var geojsonSnib = function(url)
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
                         "properties": {d: d[i]},
-                        "geometry"  : JSON.parse(d[i].json_geom)
+                        "geometry"  : {"type": "Point", "coordinates":[d[i].longitud,d[i].latitud]}
+                        //"geometry"  : JSON.parse(d[i].json_geom)
                     });
                 }
             }
