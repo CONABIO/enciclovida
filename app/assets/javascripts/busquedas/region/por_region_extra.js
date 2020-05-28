@@ -182,6 +182,7 @@ $(document).ready(function(){
         opciones.pagina_especies = 1;
         opciones.reino_seleccionado = $(this).attr('reino');
         cargaEspecies();
+        return false;
     });
 
     /**
