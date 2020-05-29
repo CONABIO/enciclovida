@@ -1,12 +1,12 @@
-var Hapi = require('hapi')
+var Hapi = require('hapi');
 const Joi = require('joi');
-const query = require('./controller/query.js')
+const query = require('./controller/query.js');
 
-var server = new Hapi.Server()
+var server = new Hapi.Server();
 server.connection({
     port: 8080,
     labels: ['api']
-})
+});
 
 server.register([
     require('inert'),
@@ -53,23 +53,8 @@ server.register([
         handler: function (request, reply) {
             reply.redirect('/docs')
         }
-    })
-    server.route({
-        path: '/ejemplo/07/059/aves',
-        method: 'GET',
-        config: {
-            tags: ['api'],
-            description: 'Ejemplo',
-            notes: 'Prueba del conteo de especies por estado y municipio podriamos realizarlas con el estado de "Chiapas" y el municipio de "Ocosingo"',
-            handler: function (request, reply) {
-                query
-                    .conteo()
-                    .then(dato => {
-                        reply(dato)
-                    })
-            }
-        }
-    })
+    });
+
     server.route({
         path: '/estados',
         method: 'GET',
@@ -106,7 +91,8 @@ server.register([
                     })
             }
         }
-    })
+    });
+
     server.route({
         path: '/taxonEdo/conteo/{idedo}',
         method: 'GET',
@@ -131,7 +117,7 @@ server.register([
     });
 
     server.route({
-        path: '/taxonEdo/conteo/{idedo}/{tipo}/{grupo}',
+        path: '/taxonEdo/listado/{idedo}/{grupo}',
         method: 'GET',
         config: {
             tags: ['api'],
@@ -140,8 +126,7 @@ server.register([
 
             validate: {
                 params: {
-                    idedo: Joi.string().required().valid(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']).description('Identificador del estado'),
-                    tipo: Joi.string().required().valid(['edomun', 'anp', 'ecoregion']).description('Tipo de region (estado, muunicipio, ANP o ecoregión)'),
+                    idedo: Joi.string().required().valid(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']).description('Identificador del estado'),
                     grupo: Joi.string().required().valid(['anfibios', 'aves', 'bacterias', 'hongos', 'invertebrados', 'mamiferos', 'peces', 'plantas', 'protoctistas', 'reptiles']).description('Grupo taxonómico'),
                 }
             },

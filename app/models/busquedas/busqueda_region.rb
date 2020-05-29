@@ -120,7 +120,7 @@ class BusquedaRegion < Busqueda
         self.url_especies = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:estado_id]}/#{params[:municipio_id].rjust(3, '0')}/edomun/#{params[:grupo].estandariza}"
       elsif params[:estado_id].present?
         self.key_especies = "especies_grupo_#{params[:tipo_region]}_#{params[:grupo].estandariza}_#{params[:estado_id]}"
-        self.url_especies = "#{CONFIG.ssig_api}/taxonEdo/conteo/#{params[:estado_id]}/edomun/#{params[:grupo].estandariza}"
+        self.url_especies = "#{CONFIG.ssig_api}/taxonEdo/listado/#{params[:estado_id]}/#{params[:grupo].estandariza}"
       else
         return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
       end

@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 require('./config.js');
 const http = require('http');
@@ -14,7 +14,8 @@ var tablas = {
     'plantas': 'snibplangw',
     'protoctistas': 'snibprotgw',
     'reptiles': 'snibreptgw'
-}
+};
+
 function getedo() {
     return new Promise((resolve, reject) => {
         knex
@@ -70,19 +71,21 @@ function taxonMuni(req) {
     })
 }
 function taxonEdo(req) {
-    let idedo = req.params['idedo']
-    let grupo = req.params['grupo']
+    let idedo = req.params['idedo'];
+    let grupo = req.params['grupo'];
     let tabla = tablas[grupo];
-    // console.log(`taxonEdo-> seleccion del grupo: ${grupo} y la tabla ${tablas[grupo]}`)
+
     return new Promise((resolve, reject) => {
-        knex
+        let query=knex
+            //.with('cuenta', knex.raw(`SELECT spid,idnombrecatvalido, COUNT (*) AS COUNT FROM ${tabla} WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${idedo}' and munid = ${tabla}.munid /*and ${tabla}.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid,idnombrecatvalido,especievalidabusqueda`))
             .with('cuenta', knex.raw(`SELECT spid,idnombrecatvalido, COUNT (*) AS COUNT FROM ${tabla} WHERE EXISTS ( SELECT 1 FROM municipios WHERE cve_ent = '${idedo}' and munid = ${tabla}.munid /*and ${tabla}.comentarioscat=''*/) AND especievalidabusqueda <> '' AND munid IS NOT NULL GROUP BY spid,idnombrecatvalido,especievalidabusqueda`))
             .select(knex.raw(`sp_${tabla}.especievalidabusqueda,cuenta.idnombrecatvalido,cuenta.count AS nregistros`))
             .from(`sp_${tabla}`)
             .innerJoin('cuenta', `sp_${tabla}.spid`, 'cuenta.spid')
-            .then(dato => {
-                resolve(dato);
-            })
+
+        query.then(dato => {
+            resolve(dato);
+        })
     })
 }
 
