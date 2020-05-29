@@ -11,10 +11,10 @@ class BusquedaRegion < Busqueda
     if params[:tipo_region].present?
       if params[:estado_id].present? && params[:municipio_id].present?
         key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}_#{params[:municipio_id]}"
-        url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:estado_id]}/#{params[:municipio_id].rjust(3,'0')}"
+        url = "#{CONFIG.ssig_api}/taxonMuni/conteo/#{params[:municipio_id]}"
       elsif params[:estado_id].present?
         key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}"
-        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:estado_id]}"
+        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/#{params[:estado_id]}"
       else
         return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
       end

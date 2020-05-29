@@ -296,7 +296,6 @@ var geojsonSnib = function(url)
                         "type"      : "Feature",
                         "properties": {d: d[i]},
                         "geometry"  : {"type": "Point", "coordinates":[d[i].longitud,d[i].latitud]}
-                        //"geometry"  : JSON.parse(d[i].json_geom)
                     });
                 }
             }

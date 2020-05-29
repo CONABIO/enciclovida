@@ -125,7 +125,6 @@ var seleccionaMunicipio = function(region_id)
         opciones.tipo_region_seleccionado = 'estado';
 
     } else {
-        var region_id = parseInt(region_id);
         $('#region_municipio').val(region_id);
         opciones.municipio_seleccionado = region_id;
         opciones.tipo_region_seleccionado = 'municipio';

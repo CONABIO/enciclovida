@@ -108,7 +108,7 @@ server.register([
         }
     })
     server.route({
-        path: '/taxonEdo/conteo/total/{idedo}',
+        path: '/taxonEdo/conteo/{idedo}',
         method: 'GET',
         config: {
             tags: ['api'],
@@ -128,7 +128,8 @@ server.register([
                     })
             }
         }
-    })
+    });
+
     server.route({
         path: '/taxonEdo/conteo/{idedo}/{tipo}/{grupo}',
         method: 'GET',
@@ -152,7 +153,30 @@ server.register([
                     })
             }
         }
-    })
+    });
+
+    server.route({
+        path: '/taxonMuni/conteo/{idmun}',
+        method: 'GET',
+        config: {
+            tags: ['api'],
+            description: 'Contiene el conteo (especies) por municipio y por los 10 grupos taxonomicos del SNIB',
+            notes: '----',
+            validate: {
+                params: {
+                    idmun: Joi.string().required().default('250').description('Identificador del municipio (ejemplo:"250")')
+                }
+            },
+            handler: function (request, reply) {
+                query
+                    .taxonMunTotal(request)
+                    .then(dato => {
+                        reply(dato)
+                    })
+            }
+        }
+    });
+
     server.route({
         path: '/taxonMuni/listado/{idedo}/{idmun}/{tipo}/{grupo}',
         method: 'GET',
@@ -176,30 +200,7 @@ server.register([
                     })
             }
         }
-    })
-    server.route({
-        path: '/taxonMuni/listado/total/{idedo}/{idmun}',
-        method: 'GET',
-        config: {
-            tags: ['api'],
-            description: 'Contiene el listado de especies con el "idnombrecatvalido"',
-            notes: '----',
-            validate: {
-                params: {
-                    idedo: Joi.string().required().valid(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']).description('Identificador del estado'),
-                    idmun: Joi.string().required().default('001').description('Identificador del municipio (ejemplo:"001")')
-                }
-            },
-            handler: function (request, reply) {
-                query
-                    .taxonMunTotal(request)
-                    .then(dato => {
-                        reply(dato)
-                    })
-                //reply([{}])
-            }
-        }
-    })
+    });
 
     /*server.route({
         path: '/snib/{qtype}/{rd}/{id}',

@@ -9,6 +9,115 @@ CREATE INDEX idx_snib_comentarioscatvalido
   USING btree
   (comentarioscatvalido COLLATE pg_catalog."default");
 
+CREATE INDEX idx_snib_idnombrecatvalido
+  ON public.snib
+  USING btree
+  (idnombrecatvalido COLLATE pg_catalog."default");  
+
+-- Index de idnombrecat valido en los 10 grupos
+
+CREATE INDEX idx_snibanfigw_idnombrecatvalido
+  ON public.snibanfigw
+  USING btree
+  (idnombrecatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibavesgw_idnombrecatvalido
+  ON public.snibavesgw
+  USING btree
+  (idnombrecatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibbactgw_idnombrecatvalido
+  ON public.snibbactgw
+  USING btree
+  (idnombrecatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibhonggw_idnombrecatvalido
+  ON public.snibanfigw
+  USING btree
+  (idnombrecatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibinvegw_idnombrecatvalido
+  ON public.snibinvegw
+  USING btree
+  (idnombrecatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibmamigw_idnombrecatvalido
+  ON public.snibmamigw
+  USING btree
+  (idnombrecatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibpecegw_idnombrecatvalido
+  ON public.snibpecegw
+  USING btree
+  (idnombrecatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibplangw_idnombrecatvalido
+  ON public.snibplangw
+  USING btree
+  (idnombrecatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibprotgw_idnombrecatvalido
+  ON public.snibprotgw
+  USING btree
+  (idnombrecatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibreptgw_idnombrecatvalido
+  ON public.snibreptgw
+  USING btree
+  (idnombrecatvalido COLLATE pg_catalog."default");  
+
+-- Index de comentarioscatvalido valido en los 10 grupos
+ CREATE INDEX idx_snibanfigw_comentarioscatvalido
+  ON public.snibanfigw
+  USING btree
+  (comentarioscatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibavesgw_comentarioscatvalido
+  ON public.snibavesgw
+  USING btree
+  (comentarioscatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibbactgw_comentarioscatvalido
+  ON public.snibbactgw
+  USING btree
+  (comentarioscatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibhonggw_comentarioscatvalido
+  ON public.snibanfigw
+  USING btree
+  (comentarioscatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibinvegw_comentarioscatvalido
+  ON public.snibinvegw
+  USING btree
+  (comentarioscatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibmamigw_comentarioscatvalido
+  ON public.snibmamigw
+  USING btree
+  (comentarioscatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibpecegw_comentarioscatvalido
+  ON public.snibpecegw
+  USING btree
+  (comentarioscatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibplangw_comentarioscatvalido
+  ON public.snibplangw
+  USING btree
+  (comentarioscatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibprotgw_comentarioscatvalido
+  ON public.snibprotgw
+  USING btree
+  (comentarioscatvalido COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibreptgw_comentarioscatvalido
+  ON public.snibreptgw
+  USING btree
+  (comentarioscatvalido COLLATE pg_catalog."default");
+    
+-- Esquema de conteos
   CREATE SCHEMA conteos
   AUTHORIZATION postgres;
 
@@ -33,4 +142,4 @@ CREATE TABLE conteos.estados
 
 -- SELECT ST_Extent(geom) as bbox FROM estados WHERE entid=1;
 
-SELECT entid AS region_id, nom_ent AS nombre_region, st_x(st_centroid(geom)) AS long, st_y(st_centroid(geom)) AS lat, ST_AsGeoJSON(geom) AS geojson, ST_Extent(geom) AS bbox FROM "estados" GROUP BY entid;
+-- SELECT entid AS region_id, nom_ent AS nombre_region, st_x(st_centroid(geom)) AS long, st_y(st_centroid(geom)) AS lat, ST_AsGeoJSON(geom) AS geojson, ST_Extent(geom) AS bbox FROM "estados" GROUP BY entid;
