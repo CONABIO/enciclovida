@@ -626,8 +626,7 @@ class Proveedor < ActiveRecord::Base
   # REVISADO: Valida los ejemplares del SNIB
   def valida_ejemplares_snib
     begin
-      Rails.logger.debug "[DEBUG] - #{CONFIG.geoportal_url}/#{especie.root.nombre_cientifico.downcase}/#{especie.scat.catalogo_id}?apiKey=enciclovida"
-      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}/#{especie.root.nombre_cientifico.estandariza}/#{especie.scat.catalogo_id}?apiKey=enciclovida", timeout: 3)
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}/#{especie.root.nombre_cientifico.estandariza}/#{especie.scat.catalogo_id}", timeout: 3)
       resultados = JSON.parse(rest_client)
     rescue => e
       return {estatus: false, msg: e}
