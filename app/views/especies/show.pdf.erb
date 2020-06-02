@@ -6,8 +6,10 @@
   <title><%= @titulo = tituloNombreCientifico(@especie, render: 'title') %></title>
 
   <%= wicked_pdf_stylesheet_link_tag 'application' %>
-  <%= wicked_pdf_javascript_include_tag 'jquery-1.11.1.min.js' %>
-  <%= wicked_pdf_javascript_include_tag 'jquery-ui-1.10.4.custom.min.js' %>
+  <%= wicked_pdf_javascript_include_tag  'application' %>
+  <%= wicked_pdf_javascript_include_tag  'especies' %>
+  <%#= wicked_pdf_javascript_include_tag 'jquery-1.11.1.min.js' %>
+  <%#= wicked_pdf_javascript_include_tag 'jquery-ui-1.10.4.custom.min.js' %>
 
   <script>
       var TAXON = <%=raw @especie.to_json %>;
@@ -45,8 +47,11 @@
 </div>
 
 <div id="description" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
-  <% render partial: 'especies/descripciones/descripcion.html.erb' %>
+  <%= render partial: 'especies/descripciones/descripcion' %>
 </div>
-
+<style>
+  #ficha div{display: block!important;}
+</style>
 </body>
+
 </html>
