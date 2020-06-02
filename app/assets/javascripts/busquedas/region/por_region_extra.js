@@ -157,15 +157,11 @@ var completaSelect = function(prop)
  */
 var dameUrlServicioSnibPorRegion = function(prop)
 {
-    var snib_url = "http://api.enciclovida.mx:8080/snib/" + prop.catalogo_id + '/' + prop.estado_id;
-
     if (prop.municipio_id != null && prop.municipio_id != '')
-    {
-        prop.municipio_id = ('00'+prop.municipio_id).slice(-3);
-        snib_url+= '/' + prop.municipio_id;
-    }
+        return prop.snib_url + '/municipio/' + prop.catalogo_id + '/' + prop.municipio_id;
 
-    return snib_url;
+    if (prop.estado_id != null && prop.estado_id != '')
+        return prop.snib_url + '/estado/' + prop.catalogo_id + '/' + prop.estado_id;
 };
 
 $(document).ready(function(){

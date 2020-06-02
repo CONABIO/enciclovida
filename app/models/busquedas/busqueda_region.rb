@@ -61,7 +61,6 @@ class BusquedaRegion < Busqueda
         resp[:resultados].each do |r|
           especies_hash[r['idnombrecatvalido']] = r['nregistros'].to_i
         end
-        especies_hash = especies_hash.sort_by {|key, value| value}.reverse.to_h
 
         filtros_default(especies_hash.keys)  # Hace el query con los filtros default
         resultados = taxones.map{|taxon| {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal}}
@@ -117,7 +116,7 @@ class BusquedaRegion < Busqueda
     if params[:grupo].present? && params[:tipo_region].present?
       if params[:estado_id].present? && params[:municipio_id].present?
         self.key_especies = "especies_grupo_#{params[:tipo_region]}_#{params[:grupo].estandariza}_#{params[:estado_id]}_#{params[:municipio_id]}"
-        self.url_especies = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:estado_id]}/#{params[:municipio_id].rjust(3, '0')}/edomun/#{params[:grupo].estandariza}"
+        self.url_especies = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:municipio_id]}/#{params[:grupo].estandariza}"
       elsif params[:estado_id].present?
         self.key_especies = "especies_grupo_#{params[:tipo_region]}_#{params[:grupo].estandariza}_#{params[:estado_id]}"
         self.url_especies = "#{CONFIG.ssig_api}/taxonEdo/listado/#{params[:estado_id]}/#{params[:grupo].estandariza}"

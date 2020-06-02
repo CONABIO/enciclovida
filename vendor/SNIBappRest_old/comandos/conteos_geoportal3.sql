@@ -116,7 +116,58 @@ CREATE INDEX idx_snibanfigw_idnombrecatvalido
   ON public.snibreptgw
   USING btree
   (comentarioscatvalido COLLATE pg_catalog."default");
-    
+
+-- Index de idnombrecatvalido en los 10 grupos
+ CREATE INDEX idx_snibanfigw_especievalidabusqueda
+  ON public.snibanfigw
+  USING btree
+  (especievalidabusqueda COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibavesgw_especievalidabusqueda
+  ON public.snibavesgw
+  USING btree
+  (especievalidabusqueda COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibbactgw_especievalidabusqueda
+  ON public.snibbactgw
+  USING btree
+  (especievalidabusqueda COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibhonggw_especievalidabusqueda
+  ON public.snibanfigw
+  USING btree
+  (especievalidabusqueda COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibinvegw_especievalidabusqueda
+  ON public.snibinvegw
+  USING btree
+  (especievalidabusqueda COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibmamigw_especievalidabusqueda
+  ON public.snibmamigw
+  USING btree
+  (especievalidabusqueda COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibpecegw_especievalidabusqueda
+  ON public.snibpecegw
+  USING btree
+  (especievalidabusqueda COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibplangw_especievalidabusqueda
+  ON public.snibplangw
+  USING btree
+  (especievalidabusqueda COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibprotgw_especievalidabusqueda
+  ON public.snibprotgw
+  USING btree
+  (especievalidabusqueda COLLATE pg_catalog."default"); 
+
+  CREATE INDEX idx_snibreptgw_especievalidabusqueda
+  ON public.snibreptgw
+  USING btree
+  (especievalidabusqueda COLLATE pg_catalog."default");
+      
 -- Esquema de conteos
   CREATE SCHEMA conteos
   AUTHORIZATION postgres;
@@ -143,3 +194,14 @@ CREATE TABLE conteos.estados
 -- SELECT ST_Extent(geom) as bbox FROM estados WHERE entid=1;
 
 -- SELECT entid AS region_id, nom_ent AS nombre_region, st_x(st_centroid(geom)) AS long, st_y(st_centroid(geom)) AS lat, ST_AsGeoJSON(geom) AS geojson, ST_Extent(geom) AS bbox FROM "estados" GROUP BY entid;
+
+
+
+/*select a.spid
+from snibanfigw as a
+join municipios as b
+on ST_WITHIN(a.the_geom, b.geom)*/
+
+SELECT COUNT (*) AS COUNT FROM snib WHERE munid=36 AND idnombrecatvalido <> '' GROUP BY idnombrecatvalido
+
+

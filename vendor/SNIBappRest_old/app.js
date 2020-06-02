@@ -102,7 +102,7 @@ server.register([
             notes: 'Contiene el conteo (especies) por los 10 grupos taxonomicos del SNIB',
             validate: {
                 params: {
-                    idedo: Joi.string().required().valid(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']).description('Identificador del estado'),
+                    idedo: Joi.string().required().valid(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']).description('Identificador del estado'),
                 }
             },
             handler: function (request, reply) {
@@ -163,17 +163,15 @@ server.register([
     });
 
     server.route({
-        path: '/taxonMuni/listado/{idedo}/{idmun}/{tipo}/{grupo}',
+        path: '/taxonMuni/listado/{idmun}/{grupo}',
         method: 'GET',
         config: {
             tags: ['api'],
-            description: 'Contiene el listado de especies con el "idnombrecatvalido"',
+            description: 'Contiene el listado de especies con el municipio y grupo correspndiente',
             notes: '----',
             validate: {
                 params: {
-                    idedo: Joi.string().required().valid(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']).description('Identificador del estado'),
                     idmun: Joi.string().required().default('001').description('Identificador del municipio "001"'),
-                    tipo: Joi.string().required().valid(['edomun', 'anp', 'ecoregion']).description('Tipo de region (estado, muunicipio, ANP o ecoregión)'),
                     grupo: Joi.string().required().valid(['anfibios', 'aves', 'bacterias', 'hongos', 'invertebrados', 'mamiferos', 'peces', 'plantas', 'protoctistas', 'reptiles']).description('Grupo taxonómico'),
                 }
             },
@@ -187,33 +185,33 @@ server.register([
         }
     });
 
-    /*server.route({
-        path: '/snib/{qtype}/{rd}/{id}',
+    server.route({
+        path: '/snib/{idcat}',
         method: 'GET',
         config: {
             tags: ['api'],
-            description: 'Contiene el listado de especies por reino y idnombrecatvalido',
-            notes: 'Servicios de enclovida Ver 2018',
+            description: 'Contiene el listado de especies por idCAT',
+            notes: 'Servicios de enclovida ver. 2020',
             validate: {
                 params: {
-                    qtype: Joi.string().required().valid(['getSpecies']).description('Identificador del tipo de consulta'),
-                    rd: Joi.string().required().valid(['animalia','plantae','fungi','protoctista','prokaryotae']).description('Identificador del reino'),
-                    id: Joi.string().required().default('13083ANFIB').description('Identificador del idnombrecatvalido  (ejemplo:"13083ANFIB")')
+                    idcat: Joi.string().required().default('13083ANFIB').description('Identificador del idnombrecatvalido  (ejemplo:"13083ANFIB")'),
                 }
             },
+            cors: {
+                origin: ['*'],
+            },
             handler: function (request, reply) {
-                querySnib
+                query
                     .getSnib(request)
                     .then(dato => {
                         reply(dato)
                     })
-                //reply([{}])
             }
         }
-    })*/
+    });
 
     server.route({
-        path: '/snib/{idcat}/{entid}',
+        path: '/snib/estado/{idcat}/{entid}',
         method: 'GET',
         config: {
             tags: ['api'],
@@ -227,7 +225,6 @@ server.register([
             },
             cors: {
                 origin: ['*'],
-                //additionalHeaders: ['cache-control', 'x-requested-with']
             },
             handler: function (request, reply) {
                 query
@@ -239,32 +236,31 @@ server.register([
         }
     });
 
-    /*server.route({
-        path: '/snib/{qtype}/{rd}/{id}/{idedo}/{idmun}',
+    server.route({
+        path: '/snib/municipio/{idcat}/{munid}',
         method: 'GET',
         config: {
             tags: ['api'],
-            description: 'Contiene el listado de especies por reino, nombrecatvalido, estado y municipio',
-            notes: 'Servicios de enclovida Ver 2018',
+            description: 'Contiene el listado de especies por idCAT y municipio',
+            notes: 'Servicios de enclovida ver. 2020',
             validate: {
                 params: {
-                    qtype: Joi.string().required().valid(['getSpecies']).description('Identificador del tipo de consulta'),
-                    rd: Joi.string().required().valid(['animalia','plantae','fungi','protoctista','prokaryotae']).description('Identificador del reino'),
-                    id: Joi.string().required().default('13083ANFIB').description('Identificador del idnombrecatvalido  (ejemplo:"13083ANFIB")'),
-                    idedo: Joi.string().required().valid(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']).description('Identificador del estado'),
-                    idmun: Joi.string().required().default('001').description('Identificador del municipio (ejemplo:"001")')
+                    idcat: Joi.string().required().default('13083ANFIB').description('Identificador del idnombrecatvalido  (ejemplo:"13083ANFIB")'),
+                    munid: Joi.string().required().default('320').description('Identificador del municipio')
                 }
             },
+            cors: {
+                origin: ['*'],
+            },
             handler: function (request, reply) {
-                querySnib
+                query
                     .getSnibMun(request)
                     .then(dato => {
                         reply(dato)
                     })
-                //reply([{}])
             }
         }
-    })*/
+    });
 
     server.start(function () {
         console.log('started on http://localhost:8000')
