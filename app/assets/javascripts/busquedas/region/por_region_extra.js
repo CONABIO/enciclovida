@@ -294,8 +294,8 @@ $(document).ready(function(){
     /**
      * Para que aparezca la barra del scroll en las especies
      */
-    $(window).load(function()
+    /*$(window).load(function()
     {
         $("html,body").animate({scrollTop: 122}, 1000);
-    });
+    });*/
 });
