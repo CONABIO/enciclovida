@@ -1,0 +1,24 @@
+<% if page.nil? %>
+  <div class="d-flex flex-column flex-md-row mb-3 h1">
+    <% icono = {'photo' => 'camera', 'video' => 'film'} %>
+    <i class='fa fa-<%=icono[type]%>'></i>
+    <i class ='bdi-ev-icon'></i>
+    <i class ='conabio_completo-ev-icon'></i>
+  </div>
+  <div class="paginado-media d-flex align-items-center">
+<% end %>
+
+<% if @videos.any? %>
+  <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-left"></i></button>
+  <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-right"></i></button>
+  <% @videos.each do |video| %>
+    <%= imprime_media_bdi(video, 'video') %>
+  <% end %>
+<% else %>
+  <p>Lo sentimos, no contamos con un video para esta especie</p>
+<% end %>
+
+<% if page.nil? %>
+  <!--div class="text-center paginado_2"></div-->
+  </div>
+<% end %>

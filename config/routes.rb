@@ -68,6 +68,14 @@ Buscador::Application.routes.draw do
     end
   end
 
+  namespace :api do
+    resources :descripciones do
+      collection do
+
+      end
+    end
+  end
+
   namespace :fichas do
     #resources :taxa
     resources :front do
@@ -210,17 +218,20 @@ Buscador::Application.routes.draw do
       get ':id/arbol_nodo_inicial' => 'especies#arbol_nodo_inicial'
       get ':id/arbol_nodo_hojas' => 'especies#arbol_nodo_hojas'
       get ':id/arbol_identado_hojas' => 'especies#arbol_identado_hojas'
+      get ':id/fotos-referencia' => 'especies#fotos_referencia'
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
-      get ':id/fotos-bdi' => 'especies#fotos_bdi'
-      get ':id/videos-bdi' => 'especies#videos_bdi'
+      get ':id/media' => 'especies#media'
+      get ':id/bdi-photos' => 'especies#bdi_photos'
+      get ':id/bdi-videos' => 'especies#bdi_videos'
       get ':id/media-cornell' => 'especies#media_cornell'
-      get ':id/media_tropicos' => 'especies#media_tropicos'
+      get ':id/media-tropicos' => 'especies#media_tropicos'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
       get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
-      get ':id/wikipedia-summary' => 'especies#wikipedia_summary'
+      get ':id/resumen-wikipedia' => 'especies#resumen_wikipedia'
+      get ':id/descripcion' => 'especies#descripcion'
     end
   end
 
@@ -250,14 +261,6 @@ Buscador::Application.routes.draw do
 
   match 'adicionales/:especie_id/edita_nom_comun' => 'adicionales#edita_nom_comun', :as => :edita_nombre_comun_principal, :via => :get
 
-  match 'flickr/photo_fields' => 'flickr#photo_fields', :via => :get
-  match '/conabio/photo_fields' => 'conabio#photo_fields', :via => :get
-  match '/eol/photo_fields' => 'eol#photo_fields', :via => :get
-  match '/wikimedia_commons/photo_fields' => 'wikimedia_commons#photo_fields', :via => :get
-  #match 'photos/local_photo_fields' => 'photos#local_photo_fields', :as => :local_photo_fields
-  match '/photos/:id/repair' => 'photos#repair', :as => :photo_repair, :via => :put
-  match 'flickr/photos.:format' => 'flickr#photos', :via => :get
-  match '/especies/:id/describe' => 'especies#describe', :as => :descripcion, :via => :get
   get '/especies/:id/descripcion_catalogos' => 'especies#descripcion_catalogos'
   get '/especies/:id/comentario' => 'especies#comentarios'
   get '/especies/:id/noticias' => 'especies#noticias'

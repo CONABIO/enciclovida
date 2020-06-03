@@ -1,7 +1,8 @@
 # Este controlador tiene la finalidad de hacer contenido por paginas, ej la lista de invasoras
 class PaginasController < ApplicationController
   skip_before_action :set_locale
-  layout false, :only => [:exoticas_invasoras_paginado]
+
+  layout Proc.new{['exoticas_invasoras_paginado'].include?(action_name) ? false : 'application_b3'}
 
   # La pagina cuando entran por get
   def exoticas_invasoras

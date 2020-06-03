@@ -6,9 +6,9 @@
 
   <% if @index_reg_biblio > -1 %>
     <% bibliografia = @admin_catalogo.especies_catalogo[@index].regiones[@index_reg].bibliografias[@index_reg_biblio].bibliografia.cita_completa %>
-    <%= f.input :biblio, as: :text, input_html: { value: bibliografia, disabled: '' } %>
+    <%= f.input :biblio, label: 'Bibliografía por región', as: :text, input_html: { value: bibliografia, disabled: '' } %>
   <% else %>
-    <%= f.input :biblio, as: :text, input_html: { class: 'biblio-autocomplete' } %>
+    <%= f.input :biblio, label: 'Bibliografía por región', as: :text, input_html: { class: 'biblio-autocomplete' } %>
   <% end %>
 
   <%= link_to_remove_association 'Desvincula la bibliografía de la región', f, { class: 'float-right' } %>

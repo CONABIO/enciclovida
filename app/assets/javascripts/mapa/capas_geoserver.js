@@ -23,32 +23,45 @@ var borraCapasAnterioresGeoserver = function()
 };
 
 /**
- * La simbologia dentro del mapa
- */
-var leyendaGeoserver = function()
-{
-    geoserver_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
-
-    geoserver_control.addOverlay(distribucionLayer,
-        "<b>Distribución potencial<br /> (Geoserver CONABIO)</b>"
-    );
-};
-
-/**
  * Crear y carga la capa de distribucion
  * @param url
  */
 var capaDistribucionGeoserver = function (url) {
-    distribucionLayer = L.tileLayer.wms(url, {
-        layers: opciones.geodatos.geoserver_layer,
-        format: 'image/png',
-        transparent: true,
-        opacity:.5,
-        zIndex: 4
+    var primer_layer = false;
+    distribucionLayer = L.layerGroup([], { zIndex: 100 });
+    geoserver_control = L.control.layers({}, {}, {collapsed: true, position: 'bottomleft'}).addTo(map);
+
+    $.each(opciones.geodatos.geoserver_descargas_url, function (index, datos) {
+
+        window[datos.layers] = L.tileLayer.wms(url, {
+            layers: datos.layers,
+            format: 'image/png',
+            transparent: true,
+            opacity: .7,
+            zIndex: 4,
+        });
+
+        distribucionLayer.addLayer(window[datos.layers]);
+
+        if(!primer_layer)
+        {
+            map.addLayer(window[datos.layers]);
+            primer_layer = true;
+        }
+
+        geoserver_control.addOverlay(window[datos.layers],
+            datos.autor + ' ' + datos.anio
+        );
     });
 
-    map.addLayer(distribucionLayer);
-    leyendaGeoserver();
+    tituloControlLayerGeoserver();
+};
 
-    distribucionLayer.bringToFront();  // Para desde un inicio que se muestre el mapa de distribucion
+/**
+ * Pone el titulo en el control del layer, esto para darle formato y quede visible sin pasarle el mouse
+ */
+var tituloControlLayerGeoserver = function()
+{
+    $('.leaflet-control-layers:nth-child(1) a').remove();
+    $('.leaflet-control-layers:nth-child(1)').prepend('<div class="text-center m-2"><span class="font-weight-bold mr-2">Mapas de distribución</span><sub>' +  opciones.geodatos.geoserver_descargas_url.length + '</sub><div>');
 };

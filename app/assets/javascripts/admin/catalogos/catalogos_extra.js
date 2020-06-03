@@ -23,6 +23,9 @@ $('form').on('focus', '.biblio-autocomplete', function () {
             $(bibliografia_id).val(ui.item.value);
             $(biblio_id).val(ui.item.label);
             return false;
+        },
+        classes: {
+            "ui-autocomplete": "color-opciones"
         }
     });
 });
@@ -45,6 +48,9 @@ $('form').on('focus', '.reg-autocomplete', function () {
             $(region_id).val(ui.item.value);
             $(reg_id).val(ui.item.label);
             return false;
+        },
+        classes: {
+            "ui-autocomplete": "color-opciones"
         }
     });
 });

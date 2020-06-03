@@ -1,0 +1,63 @@
+<% content_for(:extrajs) do %>
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" data-turbolinks-track="reload"></script>
+  <script src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup.js" data-turbolinks-track="reload"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js"></script>
+  <%= javascript_include_tag 'especies/mapa/mapa', 'data-turbolinks-track' => true %>
+<% end %>
+
+<% content_for(:extracss) do %>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" />
+  <%= stylesheet_link_tag 'especies/mapa/mapa', 'data-turbolinks-track' => true %>
+<% end %>
+
+<% content_for(:delayedjs) do %>
+  <%= javascript_include_tag 'especies/mapa/mapa_delayed', 'data-turbolinks-track' => true %>
+  <script data-turbolinks-track="true">
+      //$('#map').css('height', $('#contenedor_mapa').height());
+      //$('#contenedor_mapa').removeClass(); //Esto es para quitar los embed responsive ¬¬
+      //ponTamaño();
+  </script>
+<% end %>
+
+<div id="contenedor_mapa" class="embed-responsive embed-responsive-16by9">
+  <div id="map" class="w-100"></div>
+</div>
+
+
+<div class="dropdown">
+  <button class="btn btn-link btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Descarga de datos <i><%= icono_descarga %></i>
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <% if @datos[:geodatos][:cuales].include?('naturalista') %>
+      <h6 class="dropdown-header font-weight-bolder">Observaciones de <%= imagotipo_naturalista_nombre %></h6>
+      <%= link_to(" KML #{icono_descarga}".html_safe, @datos[:geodatos][:naturalista_kml], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_kml].present? %>
+      <%= link_to(" KMZ #{icono_descarga}".html_safe, @datos[:geodatos][:naturalista_kmz], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_kmz].present? %>
+      <%= link_to(" JSON #{icono_descarga}".html_safe, @datos[:geodatos][:naturalista_json], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_json].present? %>
+    <% end %>
+
+    <% if @datos[:geodatos][:cuales].include?('snib') %>
+      <div class="dropdown-divider"></div>
+      <h6 class="dropdown-header font-weight-bolder">Ejemplares del SNIB</h6>
+      <%= link_to(" KML #{icono_descarga}".html_safe, @datos[:geodatos][:snib_kml], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:snib_kml].present? %>
+      <%= link_to(" KMZ #{icono_descarga}".html_safe, @datos[:geodatos][:snib_kmz], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:snib_kmz].present? %>
+      <%= link_to(" JSON #{icono_descarga}".html_safe, @datos[:geodatos][:snib_json], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:snib_json].present? %>
+      <%= link_to("Diccionario de datos <i class='fa fa-external-link-square'></i>".html_safe, 'http://www.snib.mx/ejemplares/docs/CONABIO-SNIB-DiccionarioDatosEjemplaresGeoportal-201906.pdf', :target => :_blank, :class => 'dropdown-item') %>
+    <% end %>
+
+    <% if @datos[:geodatos][:cuales].include?('geoserver') %>
+      <div class="dropdown-divider"></div>
+      <h6 class="dropdown-header font-weight-bolder">Mapas de distribución:</h6>
+
+      <% @datos[:geodatos][:geoserver_descargas_url].each do |geo| %>
+        <p class="ml-3">
+          <small class="font-weight-bold"><%= geo[:autor] %></small><br />
+          <%= link_to("(KMZ #{geo[:anio]}) #{icono_descarga}".html_safe, "#{CONFIG.geoserver_descarga_url}&layers=#{geo[:layers]}&styles=#{geo[:styles]}&bbox=#{geo[:bbox]}", :target => :_blank, :class => 'dropdown-item', :style => 'width: auto!important;') %>
+          <%= link_to("Ver en el geoportal <i class='fa fa-external-link-square'></i>".html_safe, geo[:geoportal_url], :target => :_blank, :class => 'dropdown-item', :style => 'width: auto!important;') %>
+        </p>
+        <div class="dropdown-divider"></div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

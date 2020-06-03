@@ -1,7 +1,7 @@
 
-<h4 class="text-center">Tipo de reproducción: <strong class="text-primary">Vegetal</strong></h4>
+<h6 class="text-center">Tipo de reproducción: <strong class="text-info">Vegetal</strong></h6>
 <br>
-<h4>Generalidades: </h4><p class="text-justify"><%=convierte_a_HTML(@infoReproduccion.descripcion)%></p>
+<h6>Generalidades: </h6><p class="text-justify"><%=convierte_a_HTML(@infoReproduccion.descripcion)%></p>
 <br>
 <div class="row">
   <div class="col-md-6 ficaBordeSeparador">
@@ -48,11 +48,11 @@
 <div class="row">
   <div class="col-md-12">
     <br>
-    <h4 class="text-center"><strong>Floración, frutificación y semillas</strong> </h4>
+    <h6 class="text-center"><strong>Floración, frutificación y semillas</strong> </h6>
     <br>
   </div>
   <div class="col-md-4 ficaBordeSeparador">
-    <h4 class="text-primary text-center">Floración</h4><br>
+    <h6 class="text-info text-center">Floración</h6><br>
     <ol type="A">
       <li><strong>Horario de apertura de la flor:</strong> <p><%=convierte_a_HTML(@infoReproduccion.aperturaFlor)%></p>
         <br>Información adicional: <p><%=convierte_a_HTML(@infoReproduccion.descApertura)%></p></li>
@@ -66,7 +66,7 @@
     </ol>
   </div>
   <div class="col-md-4 ficaBordeSeparador">
-    <h4 class="text-primary text-center">Frutificación</h4><br>
+    <h6 class="text-info text-center">Frutificación</h6><br>
     <ol type="A">
       <li><strong>Época de fructificación (mes de inicio y término):</strong> <p><%=convierte_a_HTML(@infoReproduccion.mesInicialFructi) + " - " + convierte_a_HTML(@infoReproduccion.mesFinalFructi)%></p>
         <br>Información adicional: <p><%=convierte_a_HTML(@infoReproduccion.addinfotiempofructi)%></p></li>
@@ -77,7 +77,7 @@
 
   </div>
   <div class="col-md-4">
-    <h4 class="text-primary text-center">Semillas</h4>
+    <h6 class="text-info text-center">Semillas</h6>
     <br>
     <ol type="A">
       <li><strong>Número de semillas por fruto:</strong> <p><%=convierte_a_HTML(@infoReproduccion.nosemillasinicial)%></p></li>

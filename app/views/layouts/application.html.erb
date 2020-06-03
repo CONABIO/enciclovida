@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es"
-      xmlns:fb="http://www.facebook.com/2008/fbml"
-      xmlns:og="http://ogp.me/ns#">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es-MX" lang="es-MX">
 <head>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
   <meta name="keywords" content="<%= yield :meta_keywords %>">
   <title><%= yield :title %></title>
   <%= favicon_link_tag '/favicon.ico' %>
 
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+
+
   <script type="text/javascript" data-turbolinks-track="true">
       TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
       IP = "<%= IP %>";
       PORT = "<%= PORT %>";
   </script>
-
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
@@ -34,27 +33,19 @@
 <%= yield :ribbon %>
 
 <header class="container-fluid">
-  <%= render :partial => 'shared/brandBar' %>
-</header>
-
-<header class="container-fluid">
+  <%= render :partial => 'shared_b4/brandBar' %>
   <%= yield :extra_title_header %>
 </header>
 
 <section id="content" class="container-fluid">
   <div class="row main">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-      <%= yield %>
-    </div>
+    <%= yield %>
   </div>
 </section>
 
-<footer class="social">
-  <%= render :partial => 'shared/footer_social' %>
-</footer>
-
-<footer class="legal">
-  <%= render :partial => 'shared/footer_legal' %>
+<footer class="container-fluid">
+  <%= render :partial => 'shared_b4/footer_social' %>
+  <%= render :partial => 'shared_b4/footer_legal' %>
 </footer>
 
 <%= yield :extrajs_carrusel %>

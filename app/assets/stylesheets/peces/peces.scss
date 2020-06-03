@@ -1,5 +1,5 @@
-@import 'boots4-upgrade/bootstrap-variable-overrides';
-@import 'boots4-upgrade/boots4/bootstrap';
+@import 'bootstrap-variable-overrides';
+@import 'bootstrap';
 
 @import 'jquery-ui';
 @import 'jquery-ui/core';
@@ -7,13 +7,13 @@
 @import 'jquery-ui/accordion';
 
 @import 'font-awesome';
-@import 'soulmate';
-@import 'scrolling';
+@import 'boots3-downgrade/soulmate';
+@import 'boots3-downgrade/scrolling';
 
 @import 'enciclovida_font_icons';
 @import 'animation';
 
-@import 'boots4-upgrade/general';
-@import 'boots4-upgrade/busquedas/avanzada/avanzada';
+@import 'general';
+@import 'busquedas/avanzada/avanzada';
 @import 'formtastic';
 @import 'peces_extra';

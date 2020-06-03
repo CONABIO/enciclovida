@@ -35,6 +35,7 @@ es:
    x_comentario:
     uno: Ver 1 comentario más
     varios: "Ver %{cuantos} comentarios más"
+  conteo_especies: 106 mil especies
   copyright:
     some_rights_reserved_by: (c) %{name}, algunos derechos reservados (%{license_short})
     all_rights_reserved: (c) %{name}, todos los derechos reservados
@@ -611,6 +612,8 @@ es:
     ecorregiones-marinas: Ecorregiones marinas
   short_description: EncicloVida es una plataforma de consulta creada por la Comisión Nacional para el Conocimiento y Uso de la Biodiversidad (CONABIO), sobre las especies que viven en México.
   sinonimo: inactivos
+  sin_descripcion_en_x_para_y: No existe ninguna descripción en %{x} para %{y}
+  sin_descripcion_para_y: No existe ninguna descripción para %{y}
   solo_taxones: Solo especies o grupos
   support:
     array:

@@ -45,6 +45,7 @@ class Proveedor < ActiveRecord::Base
   end
 
   # REVISADO: Consulta la ficha de naturalista por medio de su API nodejs
+  # TODO se requiere un boton de borrar cache
   def ficha_naturalista_api_nodejs
     self.jres = Rails.cache.fetch("ficha_naturalista_#{especie_id}", expires_in: eval(CONFIG.cache.ficha_naturalista)) do
 
@@ -83,8 +84,11 @@ class Proveedor < ActiveRecord::Base
 
       geodatos[:cuales] << 'geoserver'
       geodatos[:geoserver_url] = CONFIG.geoserver_url.to_s
-      geodatos[:geoserver_descarga_url] = "#{CONFIG.geoserver_descarga_url}&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
-      geodatos[:geoserver_layer] = info['layers']
+      geodatos[:geoserver_descargas_url] = []
+
+      info.each do |mapa, datos|
+        geodatos[:geoserver_descargas_url] << { layers: datos['layers'], styles: datos['styles'], bbox: datos['bbox'], mapa: mapa, anio: datos['anio'], autor: datos['autor'], geoportal_url: datos['geoportal_url'] }
+      end
     end
 
     # Para las descargas del SNIB

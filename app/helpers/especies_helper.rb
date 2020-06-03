@@ -24,7 +24,7 @@ module EspeciesHelper
     html = ''
 
     def creaLista(taxon, lista=nil)
-      link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
+      link = "#{link_to("<i class='fa fa-plus' id='span_#{taxon.id}'></i>".html_safe, '',
                         :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
       nombre = tituloNombreCientifico(taxon, render: 'arreglo-taxonomico')
       "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}#{lista.present? ? lista : ''}</li></ul>"
@@ -36,6 +36,16 @@ module EspeciesHelper
       else
         html = creaLista(taxon)
       end
+    end
+
+    html.html_safe
+  end
+
+  def dameArbolInicialSinIndentar(taxones)
+    html = ''
+    taxones.each do |taxon|
+      nombre = tituloNombreCientifico(taxon, render: 'link')
+      html << "<div class='d-flex flex-column-reverse flex-lg-row flex-fill align-items-center border-bottom'><div class='text-capitalize p-2'>#{taxon.nombre_categoria_taxonomica}</div><div class='flex-fill text-center p-1' id='td_#{taxon.id}' >#{nombre}</div></div><div class='d-flex flex-fill d-lg-none align-items-center px-1 border-bottom'><i class='fa fa-chevron-right'></i></div>"
     end
 
     html.html_safe
@@ -236,7 +246,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
         tiene_valor = true
       end
 
-      response << "&nbsp;"*5 if tiene_valor  # Espacios para seprar las categorias
+      response << "&nbsp;"*2 if tiene_valor  # Espacios para seprar las categorias
     end
 
     response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600,
@@ -308,8 +318,8 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     copyright = "BDI - CONABIO"
     case type
     when 'photo'
-      link_to("<img src='#{item.medium_url}' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+      link_to("<img src='#{item.medium_url}' class='rounded-sm border-light' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-type" => 'photo',
               "data-copyright" => copyright,
               "data-url" => item.medium_url,
@@ -318,15 +328,16 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
               "data-observation"=> item.native_page_url
       )
     when 'video' # Datos fasos por ahora
-      link_to("<img src='#{item.preview_img}' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+      link_to("<img src='#{item.preview_img}' class='rounded-sm border-light' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-type" => 'video',
               "data-copyright" => item.licencia.present? ? "<a href='#{item.licencia}' target='_blank'>#{copyright}</a>" : copyright,
               "data-observation"=> item.href_info,
               "data-url" => item.url_acces,
               "data-author" => item.autor,
               "data-locality" =>  item.localidad.present? ? item.localidad : "No disponible",
-              "data-state" =>  item.municipio.present? ? item.municipio : nil)
+              "data-state" =>  item.municipio.present? ? item.municipio : nil
+      )
     end
   end
 
@@ -335,19 +346,19 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     case type
     when 'photo'
       link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900",
               "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='',
               "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='', "data-copyright" => copyright)
     when 'video'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
               "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
     when 'audio'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal",
-              "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'],
+              "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons", "data-observation"=> item['citationUrl'],
               "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
               "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
@@ -358,7 +369,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     copyright = "Missouri Botanical Garden"
     link_to("<img src='#{item['DetailJpgUrl']}'/>".html_safe, '', "data-toggle" => "modal",
             "data-target" => "#modal_reproduce",
-            :class => "btn btn-link btn-title modal-buttons",
+            :class => "m-1 modal-buttons",
             "data-observation"=> item['DetailUrl'],
             "data-url" => item['DetailJpgUrl'],
             "data-type" => 'photo',
@@ -387,6 +398,10 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
 
   def dejaComentario
     link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie))
+  end
+
+  def cargandoEspera
+    "<p>Cargando... por favor, espera</p><div class='spinner-border text-secondary' role='status'><span class='sr-only'>Cargando...</span></div>".html_safe
   end
 
 end
