@@ -19,7 +19,6 @@
         opciones.grupo_seleccionado = null;
         opciones.reino_seleccionado = null;
         opciones.pagina_especies = 1;
-        opciones.correspondencia = eval(<%=raw BusquedaRegion::CORRESPONDENCIA.to_json %>);
         opciones.snib_url = "<%= CONFIG.ssig_api %>/snib";
 
         cargaMapa('map');
