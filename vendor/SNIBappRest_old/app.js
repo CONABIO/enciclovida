@@ -2,9 +2,19 @@ var Hapi = require('hapi');
 const Joi = require('joi');
 const query = require('./controller/query.js');
 
-var server = new Hapi.Server();
+var server = new Hapi.Server({
+    connections: {
+        routes: {
+            timeout: {
+                server: 1000*60*10,
+                socket: false,
+            }
+        }
+    }
+});
+
 server.connection({
-    port: 8080,
+    port: 8000,
     labels: ['api']
 });
 
