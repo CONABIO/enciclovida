@@ -197,9 +197,6 @@ server.register([
                     idcat: Joi.string().required().default('13083ANFIB').description('Identificador del idnombrecatvalido  (ejemplo:"13083ANFIB")'),
                 }
             },
-            cors: {
-                origin: ['*'],
-            },
             handler: function (request, reply) {
                 query
                     .getSnib(request)
@@ -223,9 +220,6 @@ server.register([
                     entid: Joi.string().required().valid(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32']).description('Identificador del estado')
                 }
             },
-            cors: {
-                origin: ['*'],
-            },
             handler: function (request, reply) {
                 query
                     .getSnibEdo(request)
@@ -248,9 +242,6 @@ server.register([
                     idcat: Joi.string().required().default('13083ANFIB').description('Identificador del idnombrecatvalido  (ejemplo:"13083ANFIB")'),
                     munid: Joi.string().required().default('320').description('Identificador del municipio')
                 }
-            },
-            cors: {
-                origin: ['*'],
             },
             handler: function (request, reply) {
                 query

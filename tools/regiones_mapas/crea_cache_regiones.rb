@@ -16,8 +16,8 @@ def especies_por_grupo_estados
   grupos = %w(Mamíferos Aves Reptiles Anfibios Peces Invertebrados Plantas Hongos Bacterias Protoctistas)
 
   # estados
-  #Estado.select(:entid, :nom_ent).each do |estado|
-  Estado.select(:entid, :nom_ent).where(entid: 1).each do |estado|
+  Estado.select(:entid, :nom_ent).each do |estado|
+  #Estado.select(:entid, :nom_ent).where(entid: 1).each do |estado|
     grupos.each do |grupo|
       params = { tipo_region: 'estado', grupo: grupo, estado_id: estado.entid }
       Rails.logger.debug "Opcion: #{params}" if OPTS[:debug]
