@@ -41,7 +41,7 @@ end
 def especies_por_grupo_municipios(params)
   grupos = %w(Mamíferos Aves Reptiles Anfibios Peces Invertebrados Plantas Hongos Bacterias Protoctistas)
 
-  Municipio.select(:munid,:nom_mun).each do |municipio|
+  Municipio.select(:munid,:nom_mun).where(nom_ent: params[:nom_ent]).each do |municipio|
     conteo_por_municipio(params.merge({ municipio_id: municipio.munid }))
 
     grupos.each do |grupo|
