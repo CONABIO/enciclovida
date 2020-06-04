@@ -59,7 +59,7 @@ var cargaEspecies = function()
 
             $.each(resp.resultados, function(index, taxon){
                 var url = dameUrlServicioSnibPorRegion({catalogo_id: taxon.catalogo_id, estado_id: opciones.estado_seleccionado,
-                    municipio_id: opciones.municipio_seleccionado, snib_url: opciones.snib_url, reino: opciones.reino_seleccionado});
+                    municipio_id: opciones.municipio_seleccionado, snib_url: opciones.snib_url});
                 if (url == undefined) return;
 
                 // Las que no tiene imagen se le pega la fuente
@@ -101,7 +101,7 @@ var seleccionaEstado = function(region_id)
         opciones.estado_seleccionado = null;
         opciones.tipo_region_seleccionado = null;
     } else {
-        var region_id = parseInt(region_id);
+        //var region_id = parseInt(region_id);
         $('#region_estado').val(region_id);
         $('#region_municipio').empty().append('<option value>- - - Escoge un municipio - - -</option>');
         $('#region_municipio').prop('disabled', false).attr('parent_id', region_id);
@@ -125,7 +125,6 @@ var seleccionaMunicipio = function(region_id)
         opciones.tipo_region_seleccionado = 'estado';
 
     } else {
-        var region_id = parseInt(region_id);
         $('#region_municipio').val(region_id);
         opciones.municipio_seleccionado = region_id;
         opciones.tipo_region_seleccionado = 'municipio';
@@ -158,18 +157,11 @@ var completaSelect = function(prop)
  */
 var dameUrlServicioSnibPorRegion = function(prop)
 {
-    prop.estado_id = opciones.correspondencia[prop.estado_id];
-
-    var snib_url = prop.snib_url + '/' + prop.reino + '/' + prop.catalogo_id + '/' + prop.estado_id;
-
     if (prop.municipio_id != null && prop.municipio_id != '')
-    {
-        prop.municipio_id = ('00'+prop.municipio_id).slice(-3);
-        snib_url+= '/' + prop.municipio_id;
-    }
+        return prop.snib_url + '/municipio/' + prop.catalogo_id + '/' + prop.municipio_id;
 
-    snib_url+= '?apiKey=enciclovida';
-    return snib_url;
+    if (prop.estado_id != null && prop.estado_id != '')
+        return prop.snib_url + '/estado/' + prop.catalogo_id + '/' + prop.estado_id;
 };
 
 $(document).ready(function(){
@@ -182,6 +174,7 @@ $(document).ready(function(){
         opciones.pagina_especies = 1;
         opciones.reino_seleccionado = $(this).attr('reino');
         cargaEspecies();
+        return false;
     });
 
     /**

@@ -19,8 +19,7 @@
         opciones.grupo_seleccionado = null;
         opciones.reino_seleccionado = null;
         opciones.pagina_especies = 1;
-        opciones.correspondencia = eval(<%=raw BusquedaRegion::CORRESPONDENCIA.to_json %>);
-        opciones.snib_url = "<%= CONFIG.ssig_api %>/snib/getSpecies";
+        opciones.snib_url = "<%= CONFIG.ssig_api %>/snib";
 
         cargaMapa('map');
         cargaDivisionEstatal();
@@ -46,9 +45,9 @@
 </div>
 
 <div id="contenedor_mapa" class="col-xs-12 col-sm-12 col-md-6 col-lg-7"><!-- 4 -->
-  <div id="busqueda_avanzada" class="col-md-12">
-    <%= render partial: 'filtros_busqueda_avanzada_bis' %>
-  </div>
+  <!--div id="busqueda_avanzada" class="col-md-12">
+    <%#= render partial: 'filtros_busqueda_avanzada_bis' %>
+  </div-->
 
   <div id="map"></div>
 </div>

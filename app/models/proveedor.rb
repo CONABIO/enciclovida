@@ -47,8 +47,12 @@ class Proveedor < ActiveRecord::Base
   # REVISADO: Consulta la ficha de naturalista por medio de su API nodejs
   # TODO se requiere un boton de borrar cache
   def ficha_naturalista_api_nodejs
-    self.jres = Rails.cache.fetch("ficha_naturalista_#{especie_id}", expires_in: eval(CONFIG.cache.ficha_naturalista)) do
+    if Rails.cache.exist?("ficha_naturalista_#{especie_id}")
+      self.jres = Rails.cache.fetch("ficha_naturalista_#{especie_id}")
+      return
+    end
 
+    Rails.cache.fetch("ficha_naturalista_#{especie_id}", expires_in: eval(CONFIG.cache.ficha_naturalista)) do
       if naturalista_id.blank?
         t = especie
         t.ficha_naturalista_por_nombre
@@ -70,8 +74,13 @@ class Proveedor < ActiveRecord::Base
       rescue => e
         { estatus: false, msg: e }
       end
-
     end  # End cache.fetch
+
+    if Rails.cache.exist?("ficha_naturalista_#{especie_id}")
+      self.jres = Rails.cache.fetch("ficha_naturalista_#{especie_id}")
+    else
+      self.res = { estatus: false, msg: 'Error en el cache' }
+    end
   end
 
   # REVISADO: Devuelve una lista de todas las URLS asociadas a los geodatos
@@ -630,8 +639,7 @@ class Proveedor < ActiveRecord::Base
   # REVISADO: Valida los ejemplares del SNIB
   def valida_ejemplares_snib
     begin
-      Rails.logger.debug "[DEBUG] - #{CONFIG.geoportal_url}/#{especie.root.nombre_cientifico.downcase}/#{especie.scat.catalogo_id}?apiKey=enciclovida"
-      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}/#{especie.root.nombre_cientifico.estandariza}/#{especie.scat.catalogo_id}?apiKey=enciclovida", timeout: 3)
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}/#{especie.root.nombre_cientifico.estandariza}/#{especie.scat.catalogo_id}", timeout: 3)
       resultados = JSON.parse(rest_client)
     rescue => e
       return {estatus: false, msg: e}
