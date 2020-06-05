@@ -77,6 +77,7 @@ end
 
 def actualiza_ejemplares_snib
   Proveedor.all.each do |proveedor|
+    next unless proveedor.especie.apta_con_geodatos?
     Rails.logger.info "\tGuardando ejemplares con: #{proveedor.especie_id}" if OPTS[:debug]
 
     begin
