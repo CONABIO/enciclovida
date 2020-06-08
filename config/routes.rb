@@ -239,7 +239,7 @@ Buscador::Application.routes.draw do
   resources :usuarios_roles
 
   # explora por clasificacion
-  get 'explora_por_clasificacion' => 'busquedas#arbol_inicial'
+  get 'explora-por-clasificacion' => 'busquedas#por_clasificacion'
 
   match 'adicionales/:especie_id/edita_nom_comun' => 'adicionales#edita_nom_comun', :as => :edita_nombre_comun_principal, :via => :get
 
