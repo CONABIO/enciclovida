@@ -1,3 +1,19 @@
-<% if @taxones.present? && @taxones.length > 0 %>
-    <%= dameArbolInicial %>
+<% content_for(:extracss) do %>
+  <%#= stylesheet_link_tag 'boots3-downgrade/busquedas', 'data-turbolinks-track' => true %>
+  <%#= stylesheet_link_tag 'boots3-downgrade/busquedas/avanzada/checklist', 'data-turbolinks-track' => true %>
 <% end %>
+
+<% content_for(:title) do %>
+  <%= @titulo='Explora por clasificación' %>
+<% end %>
+
+<div id="dvLoading"><i></i></div>
+
+<div class="col-12 d-flex justify-content-end">
+    <% if @taxones.present? && @taxones.length > 0 %>
+        <div class="col-12" id="contenido-checklist">
+            <%= dameArbolInicial %>
+        </div>
+    <% end %>
+</div>
+
