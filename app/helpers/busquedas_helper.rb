@@ -360,11 +360,11 @@ module BusquedasHelper
     return unless (@taxones.present? && @taxones.any?)
     html = ''
 
-    @taxones.each do |taxon|
-      link = "#{link_to("<i class='fa fa-plus' id='span_#{taxon.id}'></i>".html_safe, '',
-                        :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, render: 'link-inline')
-      html << "<div class="clasificacion-nivel-<%= taxon.nivel1 %> %>">#{link} #{nombre}</div>"
+    @taxones.reverse.each do |taxon|
+      link = "#{link_to("<i class='fa fa-plus clas-plus' id='span_#{taxon.id}'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
+      nombre = tituloNombreCientifico(taxon, render: 'link-inline-clasificacion')
+      especies = taxon.conteo
+      html << "<div class='clas-fila clas-fila-#{taxon.nivel1} mb-2'> #{link} #{nombre} <text class='text-right'>#{especies}</text></div>"
     end  
 
     html.html_safe

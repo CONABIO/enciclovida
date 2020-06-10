@@ -1,24 +1,44 @@
-.nodo_mayor ul{
-    /*padding-left: 15px;*/
-    list-style: none;
-}
-
-.links_arbol {
-  list-style-type: none;
-  list-style: none;
-}
-
-
-
-/* Formato para el checklist del nombre cientifico y categoria taxonómica, no importa la vista */
-.f-nom-cientifico-checklist
+/* Formato para la busqueda por clasificacion */
+.f-nom-clasificacion
 {
-    font-size: 1em;
-    font-style: italic;
-    font-weight: bold;
-    /*color: #828b87;
-    margin-top: 20px;*/
+    font-size: 1.3em;
 }
+.f-cat-clasificacion
+{
+    font-size: 1.3em;
+}
+.clas-plus{
+    font-size: 2.5em;
+}
+.clas-fila{
+    background-color:#104C5B;
+    color: white;
+    border-radius: 8px;
+}
+.clas-fila a{
+    color: #A0C11F;
+}
+.clas-fila-1{} 
+.clas-fila-2{
+    margin-left: 2em;
+}
+.clas-fila-3{
+    margin-left: 4em;
+}
+.clas-fila-4{
+    margin-left: 6em;
+}
+.clas-fila-5{
+    margin-left: 8em;
+}
+.clas-fila-6{
+    margin-left: 10em;
+}
+.clas-fila-7{
+    margin-left: 12em;
+}
+
+
 .f-sinonimo-basonimo-checklist
 {
     font-size: 1em;
@@ -66,20 +86,8 @@
 .clasificacion-nivel-6
 {
     margin-left: 12em;
-    margin-top: 1em;
-    margin-bottom: 1em;
 }
 .clasificacion-nivel-7
 {
     margin-left: 15.5em;
-    margin-bottom: 1em;
-}
-.checklist-nivel-7 div
-{
-    margin-left: 3em;
-
-}
-.etiqueta-checklist
-{
-    font-weight: bold;
 }
