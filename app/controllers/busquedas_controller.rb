@@ -69,9 +69,18 @@ class BusquedasController < ApplicationController
   # Duvuelve la clasificacion taxonomica en forma de arbol
   def por_clasificacion
     if I18n.locale.to_s == 'es-cientifico'
-      @taxones = Especie.arbol_inicial(@especie, 3)  
+      if @especie
+        @taxones = Especie.arbol_inicial(@especie, 3)  
+      else
+        @taxones = Especie.arbol_reinos(3)  
+      end  
+
     else
-      @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)  
+      if @especie
+        @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)  
+      else
+        @taxones = Especie.arbol_reinos(22)  
+      end 
     end
 
     render 'busquedas/clasificacion/por_clasificacion'
@@ -316,8 +325,6 @@ class BusquedasController < ApplicationController
       rescue
         render 'shared_b4/error' and return
       end
-    else
-      render 'shared_b4/error' and return
     end
   end
 
