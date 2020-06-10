@@ -362,7 +362,7 @@ module BusquedasHelper
 
     @taxones.reverse.each do |taxon|
       link = "#{link_to("<i class='fa fa-plus clas-plus' id='span_#{taxon.id}'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, render: 'link-inline-clasificacion')
+      nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
       especies = taxon.conteo
       html << "<div class='clas-fila clas-fila-#{taxon.nivel1} mb-2'> #{link} #{nombre} <text class='text-right'>#{especies}</text></div>"
     end  
@@ -387,7 +387,7 @@ module BusquedasHelper
     taxones.each do |taxon|
       link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
                         :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, render: 'arreglo-taxonomico')
+      nombre = tituloNombreCientifico(taxon, { render: 'arreglo-taxonomico' }, { target: '_blank' })
       html << "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}</li></ul>"
     end
 
