@@ -333,34 +333,12 @@ module BusquedasHelper
 
     checkBoxes.html_safe
   end
-
-  # REVISADO: Regresa el arbol identado inicial en la ficha de especie
-  def dameArbolIdentadoInicial(taxones)
-    html = ''
-
-    def creaLista(taxon, lista=nil)
-      link = "#{link_to("<i class='fa fa-plus' id='span_#{taxon.id}'></i>".html_safe, '',
-                        :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, render: 'arreglo-taxonomico')
-      "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}#{lista.present? ? lista : ''}</li></ul>"
-    end
-
-    taxones.each do |taxon|
-      if html.present?
-        html = creaLista(taxon, html)
-      else
-        html = creaLista(taxon)
-      end
-    end
-
-    html.html_safe
-  end
   
   def dameArbolInicial
     return unless (@taxones.present? && @taxones.any?)
     html = ''
 
-    @taxones.reverse.each do |taxon|
+    @taxones.each do |taxon|
       link = "#{link_to("<i class='fa fa-plus clas-plus' id='span_#{taxon.id}'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
       nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
       especies = taxon.conteo
@@ -381,14 +359,15 @@ module BusquedasHelper
   end
 
   # REVISADO: Regresa los taxones hijos del taxon en cuestion
-  def dameArbolIdentadoHojas(taxones)
+  def dameArbolHojas
     html = ''
+    return html unless @taxones
 
-    taxones.each do |taxon|
-      link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
-                        :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, { render: 'arreglo-taxonomico' }, { target: '_blank' })
-      html << "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}</li></ul>"
+    @taxones.each do |taxon|
+      link = "#{link_to("<i class='fa fa-plus clas-plus' id='span_#{taxon.id}'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
+      nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
+      especies = taxon.conteo
+      html << "<div class='clas-fila clas-fila-#{taxon.nivel1} mb-2'> #{link} #{nombre} <text class='text-right'>#{especies}</text></div>"
     end
 
     html.html_safe

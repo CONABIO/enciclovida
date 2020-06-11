@@ -138,15 +138,14 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Scope para cargar el arbol identado en la ficha de la espcie
   scope :arbol_select, -> { Especie.select_basico(['conteo']).select_nivel_categoria.left_joins(:adicional, :categoria_taxonomica, :especie_estadisticas, :scat) }
   # Scope para cargar el arbol identado inical en la ficha de la especie
-  scope :arbol_inicial, ->(taxon, estadistica_id) { arbol_select.where(id: taxon.path_ids).order('nivel_categoria DESC').where("estadistica_id=? AND #{Scat.attribute_alias(:publico)}=?",estadistica_id,true) }
+  scope :arbol_inicial, ->(taxon, estadistica_id) { arbol_select.where(id: taxon.path_ids).order('nivel_categoria ASC').where("estadistica_id=? AND #{Scat.attribute_alias(:publico)}=?",estadistica_id,true) }
   # Scope para cargar el arbol identado inical en la ficha de la especie, solo las categorias obligatorias
   scope :arbol_inicial_obligatorias, ->(taxon, estadistica_id) { arbol_inicial(taxon, estadistica_id).where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}>0 AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=0 AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=0") }
   # Scope para los reinos iniciales en la busqueda por clasificacion
-  scope :arbol_reinos, ->(estadistica_id) { arbol_select.where("estadistica_id=? AND #{Scat.attribute_alias(:publico)}=?",estadistica_id,true).where(id: [1..5]) }
-
-
-  # Scope para cargar las hojas del arbol identado inical en la ficha de la especie
-  scope :arbol_identado_hojas, ->(taxon) { arbol_identado_select.where(id_nombre_ascendente: taxon.id).where.not(id: taxon.id).order(nombre_cientifico: :asc) }
+  scope :arbol_reinos, ->(estadistica_id) { arbol_select.where("estadistica_id=? AND #{Scat.attribute_alias(:publico)}=?",estadistica_id,true).where(id: [1..5]).order('nivel_categoria ASC') }
+  # Scope para cargar las hojas del arbol
+  scope :arbol_hojas, ->(taxon) { arbol_select.where(id_nombre_ascendente: taxon.id).where.not(id: taxon.id).order(nombre_cientifico: :asc) }
+  scope :arbol_hojas_obligatorias, ->(taxon, estadistica_id) { arbol_select.where(id_nombre_ascendente: taxon.id).where.not(id: taxon.id).where("estadistica_id=? AND #{Scat.attribute_alias(:publico)}=?",estadistica_id,true).order(nombre_cientifico: :asc) }
 
   CON_REGION = [19, 50]
 

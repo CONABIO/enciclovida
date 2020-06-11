@@ -240,6 +240,8 @@ Buscador::Application.routes.draw do
 
   # explora por clasificacion
   get 'explora-por-clasificacion' => 'busquedas#por_clasificacion'
+  get 'explora-por-clasificacion/hojas' => 'busquedas#por_clasificacion_hojas'
+
 
   match 'adicionales/:especie_id/edita_nom_comun' => 'adicionales#edita_nom_comun', :as => :edita_nombre_comun_principal, :via => :get
 

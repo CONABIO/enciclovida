@@ -10,6 +10,7 @@ class BusquedasController < ApplicationController
 
   before_action :set_especie, only: [:por_clasificacion, :por_clasificacion_hojas]
   skip_before_action :set_locale, only: [:cat_tax_asociadas]
+  layout false, only: [:por_clasificacion_hojas]
 
   # REVISADO: Los filtros de la busqueda avanzada
   def avanzada
@@ -75,7 +76,7 @@ class BusquedasController < ApplicationController
         @taxones = Especie.arbol_reinos(3)  
       end  
 
-    else
+    else  # Vista general
       if @especie
         @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)  
       else
@@ -88,11 +89,20 @@ class BusquedasController < ApplicationController
 
   # Devuelve las hojas de la categoria taxonomica con el nivel siguiente en cuestion
   def por_clasificacion_hojas
-    @taxones = Especie.arbol_identado_hojas(@especie)
-    @hojas = true
+    if I18n.locale.to_s == 'es-cientifico'
+      if @especie
+        @taxones = Especie.arbol_hojas(@especie, 3)  
+      end  
 
-    render :partial => 'busquedas/clasificacion/hojas'
-  end  
+    else  # Vista general
+      if @especie
+        @taxones = Especie.arbol_hojas_obligatorias(@especie, 22)
+      end 
+    end
+
+    render 'busquedas/clasificacion/por_clasificacion_hojas'
+  end
+
 
   private
 
