@@ -16,7 +16,7 @@
 //= require lib/jquery.soulmate
 //= require lib/jquery.bootpag.min
 //= require turbolinks
-//= require bootstrap-sprockets
+//= require boots3-downgrade/bootstrap-sprockets
 //= require i18n
 //= require i18n/translations
 //= require shared/general
