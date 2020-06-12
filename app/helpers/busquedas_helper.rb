@@ -339,14 +339,18 @@ module BusquedasHelper
     html = ''
 
     @taxones.each do |taxon|
-      link = "#{link_to("<i class='fa fa-plus clas-plus' id='span_#{taxon.id}'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
-      especies = taxon.conteo
-      html << "<div class='clas-fila clas-fila-#{taxon.nivel1} mb-2'> #{link} #{nombre} <text class='text-right'>#{especies}</text></div>"
+      html << iteraArbol(taxon)
     end  
 
     html.html_safe
   end 
+
+  def iteraArbol(taxon)
+    link = "#{link_to("<i class='fa fa-plus f-clas-plus'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link clas-plus')}"
+    nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
+    especies = taxon.conteo
+    "<div id='clas-div-#{taxon.id}' class='clas-fila clas-fila-#{taxon.nivel1} mt-1 mb-1'> #{link} #{nombre} <text class='text-right'>#{especies}</text></div>"
+  end
 
   def dameArbolInicialSinIndentar(taxones)
     html = ''
@@ -364,10 +368,7 @@ module BusquedasHelper
     return html unless @taxones
 
     @taxones.each do |taxon|
-      link = "#{link_to("<i class='fa fa-plus clas-plus' id='span_#{taxon.id}'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
-      especies = taxon.conteo
-      html << "<div class='clas-fila clas-fila-#{taxon.nivel1} mb-2'> #{link} #{nombre} <text class='text-right'>#{especies}</text></div>"
+      html << iteraArbol(taxon)
     end
 
     html.html_safe

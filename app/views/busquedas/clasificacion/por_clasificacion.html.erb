@@ -2,8 +2,8 @@
 <%= stylesheet_link_tag 'busquedas/clasificacion/por_clasificacion', 'data-turbolinks-track' => true %>
 <% end %>
 
-<% content_for(:title) do %>
-<%= @titulo='Explora por clasificación' %>
+<% content_for(:extrajs) do %>
+<%= javascript_include_tag 'busquedas/clasificacion/por_clasificacion_extra', 'data-turbolinks-track' => true %>
 <% end %>
 
 <% content_for(:delayedjs) do %>
@@ -13,6 +13,10 @@
         soulmateAsigna('busquedas/explora-por-clasificacion', 'clasificacion-nombre');
     });
 </script>
+<% end %>
+
+<% content_for(:title) do %>
+<%= @titulo='Explora por clasificación' %>
 <% end %>
 
 <div id="dvLoading"><i></i></div>
@@ -26,7 +30,7 @@
 
 <div class="col-12 d-flex justify-content-end">
     <% if @taxones.present? && @taxones.length > 0 %>
-    <div class="col-12" id="contenido-checklist">
+    <div class="col-12" id="clas-contenido">
         <%= dameArbolInicial %>
     </div>
     <% end %>

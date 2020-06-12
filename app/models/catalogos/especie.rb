@@ -144,8 +144,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Scope para los reinos iniciales en la busqueda por clasificacion
   scope :arbol_reinos, ->(estadistica_id) { arbol_select.where("estadistica_id=? AND #{Scat.attribute_alias(:publico)}=?",estadistica_id,true).where(id: [1..5]).order('nivel_categoria ASC') }
   # Scope para cargar las hojas del arbol
-  scope :arbol_hojas, ->(taxon) { arbol_select.where(id_nombre_ascendente: taxon.id).where.not(id: taxon.id).order(nombre_cientifico: :asc) }
-  scope :arbol_hojas_obligatorias, ->(taxon, estadistica_id) { arbol_select.where(id_nombre_ascendente: taxon.id).where.not(id: taxon.id).where("estadistica_id=? AND #{Scat.attribute_alias(:publico)}=?",estadistica_id,true).order(nombre_cientifico: :asc) }
+  scope :arbol_hojas, ->(taxon, estadistica_id) { arbol_select.where(id_nombre_ascendente: taxon.id).where.not(id: taxon.id).where("estadistica_id=? AND #{Scat.attribute_alias(:publico)}=?",estadistica_id,true).order(nombre_cientifico: :asc) }
+  scope :arbol_hojas_obligatorias, ->(taxon, estadistica_id) { arbol_hojas(taxon, estadistica_id).where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=0") }
 
   CON_REGION = [19, 50]
 
