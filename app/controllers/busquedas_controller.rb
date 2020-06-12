@@ -4,11 +4,13 @@ class BusquedasController < ApplicationController
     @no_render_busqueda_basica = true
   end
 
-  before_action only: :avanzada do
+  before_action only: [:avanzada, :por_clasificacion, :por_clasificacion_hojas] do
     @no_render_busqueda_basica = true
   end
 
+  before_action :set_especie, only: [:por_clasificacion, :por_clasificacion_hojas]
   skip_before_action :set_locale, only: [:cat_tax_asociadas]
+  layout false, only: [:por_clasificacion_hojas]
 
   # REVISADO: Los filtros de la busqueda avanzada
   def avanzada
@@ -63,6 +65,45 @@ class BusquedasController < ApplicationController
   end
 
   def tabs
+  end
+
+  # Duvuelve la clasificacion taxonomica en forma de arbol
+  def por_clasificacion
+    if I18n.locale.to_s == 'es-cientifico'
+      if @especie
+        @taxones = Especie.arbol_inicial(@especie, 3)  
+      else
+        @reinos = true
+        @taxones = Especie.arbol_reinos(3)  
+      end  
+
+    else  # Vista general
+      if @especie
+        @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)  
+      else
+        @reinos = true
+        @taxones = Especie.arbol_reinos(22)  
+      end 
+    end
+
+    render 'busquedas/clasificacion/por_clasificacion'
+  end
+
+  # Devuelve las hojas de la categoria taxonomica con el nivel siguiente en cuestion
+  def por_clasificacion_hojas
+    if I18n.locale.to_s == 'es-cientifico'
+      if @especie
+        @taxones = Especie.arbol_hojas(@especie, 3, 'id_nombre_ascendente')  
+      end  
+
+    else  # Vista general
+      if @especie
+        @taxones = Especie.arbol_hojas_obligatorias(@especie, 22, 'id_ascend_obligatorio')
+      end 
+    end
+
+    @ancestros = params[:ancestros].map(&:to_i) || []
+    render 'busquedas/clasificacion/por_clasificacion_hojas'
   end
 
 
@@ -289,4 +330,15 @@ class BusquedasController < ApplicationController
       end
     end
   end
+
+  def set_especie
+    if params[:especie_id].present?
+      begin
+        @especie = Especie.find(params[:especie_id])
+      rescue
+        render 'shared_b4/error' and return
+      end
+    end
+  end
+
 end
