@@ -91,15 +91,16 @@ class BusquedasController < ApplicationController
   def por_clasificacion_hojas
     if I18n.locale.to_s == 'es-cientifico'
       if @especie
-        @taxones = Especie.arbol_hojas(@especie, 3)  
+        @taxones = Especie.arbol_hojas(@especie, 3, 'id_nombre_ascendente')  
       end  
 
     else  # Vista general
       if @especie
-        @taxones = Especie.arbol_hojas_obligatorias(@especie, 22)
+        @taxones = Especie.arbol_hojas_obligatorias(@especie, 22, 'id_ascend_obligatorio')
       end 
     end
 
+    @ancestros = params[:ancestros].map(&:to_i) || []
     render 'busquedas/clasificacion/por_clasificacion_hojas'
   end
 

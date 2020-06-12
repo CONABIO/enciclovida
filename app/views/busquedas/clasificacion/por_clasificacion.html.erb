@@ -30,6 +30,11 @@
 
 <div class="col-12 d-flex justify-content-end">
     <% if @taxones.present? && @taxones.length > 0 %>
+
+    <script>
+        taxones = <%=raw @taxones.map(&:id) %>
+    </script>
+
     <div class="col-12" id="clas-contenido">
         <%= dameArbolInicial %>
     </div>

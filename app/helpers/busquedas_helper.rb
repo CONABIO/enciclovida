@@ -339,17 +339,32 @@ module BusquedasHelper
     html = ''
 
     @taxones.each do |taxon|
-      html << iteraArbol(taxon)
+      html << iteraArbol(taxon, false, 'fa-minus')
     end  
 
+    html = "#{html}#{'</div>'*@taxones.length}"
     html.html_safe
   end 
 
-  def iteraArbol(taxon)
-    link = "#{link_to("<i class='fa fa-plus f-clas-plus'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link clas-plus')}"
+  def iteraArbol(taxon, hojas, icono_fuente)
+    icono_fuente = 'fa-circle' if taxon.conteo == 0
+    
+    if @ancestros.present?
+      busqueda_orig = @ancestros.include?(taxon.id) ? 'clas-fila-busqueda-orig' : ''
+    end
+    
+    link = "#{link_to("<i class='fa #{icono_fuente} f-clas-plus'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link clas-plus')}"
     nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
-    especies = taxon.conteo
-    "<div id='clas-div-#{taxon.id}' class='clas-fila clas-fila-#{taxon.nivel1} mt-1 mb-1'> #{link} #{nombre} <text class='text-right'>#{especies}</text></div>"
+    especies = "<text class='text-right'>#{taxon.conteo}</text>" if taxon.conteo > 0
+    span = "<div class='clas-fila mt-2 mb-2 #{busqueda_orig}'>#{link} #{nombre} #{especies}</div>"
+    html = "<div id='clas-div-#{taxon.id}' class='ml-3'>#{span}"
+
+    if hojas
+      html << '</div>'
+    else
+      html
+    end
+
   end
 
   def dameArbolInicialSinIndentar(taxones)
@@ -368,7 +383,7 @@ module BusquedasHelper
     return html unless @taxones
 
     @taxones.each do |taxon|
-      html << iteraArbol(taxon)
+      html << iteraArbol(taxon, hojas=true, 'fa-plus')
     end
 
     html.html_safe
