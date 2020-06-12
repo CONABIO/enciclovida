@@ -73,6 +73,7 @@ class BusquedasController < ApplicationController
       if @especie
         @taxones = Especie.arbol_inicial(@especie, 3)  
       else
+        @reinos = true
         @taxones = Especie.arbol_reinos(3)  
       end  
 
@@ -80,6 +81,7 @@ class BusquedasController < ApplicationController
       if @especie
         @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)  
       else
+        @reinos = true
         @taxones = Especie.arbol_reinos(22)  
       end 
     end

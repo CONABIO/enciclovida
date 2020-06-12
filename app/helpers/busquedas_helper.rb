@@ -339,23 +339,25 @@ module BusquedasHelper
     html = ''
 
     @taxones.each do |taxon|
-      html << iteraArbol(taxon, false, 'fa-minus')
+      html << iteraArbol(taxon, false, 'fa-minus', true)
     end  
 
     html = "#{html}#{'</div>'*@taxones.length}"
     html.html_safe
   end 
 
-  def iteraArbol(taxon, hojas, icono_fuente)
+  def iteraArbol(taxon, hojas, icono_fuente, inicial=false)
     icono_fuente = 'fa-circle' if taxon.conteo == 0
     
     if @ancestros.present?
       busqueda_orig = @ancestros.include?(taxon.id) ? 'clas-fila-busqueda-orig' : ''
     end
+    busqueda_orig = 'clas-fila-busqueda-orig' if inicial
     
     link = "#{link_to("<i class='fa #{icono_fuente} f-clas-plus'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link clas-plus')}"
     nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
-    especies = "<text class='text-right'>#{taxon.conteo}</text>" if taxon.conteo > 0
+    especies_url = "/busquedas/resultados?nivel=%3D&cat=7100&busqueda=avanzada&id=#{taxon.id}&por_pagina=50"
+    especies = "<sup>" + link_to(taxon.conteo, especies_url, target: :_blank) + "</sup>" if taxon.conteo > 0
     span = "<div class='clas-fila mt-2 mb-2 #{busqueda_orig}'>#{link} #{nombre} #{especies}</div>"
     html = "<div id='clas-div-#{taxon.id}' class='ml-3'>#{span}"
 

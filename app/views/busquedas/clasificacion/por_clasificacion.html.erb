@@ -23,7 +23,7 @@
 
 <div class="input-group">
     <div class="w-50 text-center mb-3 mx-auto">
-        <h4>Busca por nombre común o científico</h4>
+        <h4>Busca un nombre o explora por clasificación</h4>
         <%= text_field_tag :nombre, nil, :maxlength => 100, :placeholder => 'ej: Ajolote', :autocomplete => :off, :class => 'form-control', id: 'clasificacion-nombre', :value => params[:q].present? ? params[:q] : '' %>
     </div>
 </div>
@@ -36,7 +36,7 @@
     </script>
 
     <div class="col-12" id="clas-contenido">
-        <%= dameArbolInicial %>
+        <%= @reinos ? dameArbolHojas : dameArbolInicial %>
     </div>
     <% end %>
 </div>
