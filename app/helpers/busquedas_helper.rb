@@ -353,12 +353,19 @@ module BusquedasHelper
       busqueda_orig = @ancestros.include?(taxon.id) ? 'clas-fila-busqueda-orig' : ''
     end
     busqueda_orig = 'clas-fila-busqueda-orig' if inicial
+
+    if taxon.jres
+      iconos_fuentes = ''
+      taxon.jres["cons_amb_dist"].each do |fuente, titulo|
+        iconos_fuentes << "<span class='btn-title caracteristica-distribucion-ambiente-taxon' tooltip-title='#{titulo}'><i class='#{fuente}-ev-icon'></i></span>"
+      end  
+    end
     
     link = "#{link_to("<i class='fa #{icono_fuente} f-clas-plus'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link clas-plus')}"
     nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
     especies_url = "/busquedas/resultados?nivel=%3D&cat=7100&busqueda=avanzada&id=#{taxon.id}&por_pagina=50"
     especies = "<sup>" + link_to(taxon.conteo, especies_url, target: :_blank) + "</sup>" if taxon.conteo > 0
-    span = "<div class='clas-fila mt-2 mb-2 #{busqueda_orig}'>#{link} #{nombre} #{especies}</div>"
+    span = "<div class='clas-fila mt-2 mb-2 #{busqueda_orig}'>#{link} #{nombre} #{especies} #{iconos_fuentes}</div>"
     html = "<div id='clas-div-#{taxon.id}' class='ml-3'>#{span}"
 
     if hojas

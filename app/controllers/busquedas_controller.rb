@@ -80,6 +80,7 @@ class BusquedasController < ApplicationController
     else  # Vista general
       if @especie
         @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)  
+        consulta_redis
       else
         @reinos = true
         @taxones = Especie.arbol_reinos(22)  
@@ -99,6 +100,7 @@ class BusquedasController < ApplicationController
     else  # Vista general
       if @especie
         @taxones = Especie.arbol_hojas_obligatorias(@especie, 22, 'id_ascend_obligatorio')
+        consulta_redis
       end 
     end
 
@@ -108,6 +110,28 @@ class BusquedasController < ApplicationController
 
 
   private
+
+  # Consulta el redis para desplegar los datos
+  def consulta_redis
+    @taxones.each do |taxon|
+      if taxon.nivel1 == 7 && taxon.nivel3 == 0
+        begin
+          redis_url = "#{CONFIG.site_url}/sm/search?term=#{taxon.nombre_cientifico}&types%5B%5D=especie&limit=5"
+          resp = RestClient.get redis_url
+          json_redis = JSON.parse(resp)
+
+          json_redis["results"]["especie"].each do |especie|
+            if especie["data"]["id"] == taxon.id
+              taxon.jres = especie["data"]
+            end  
+          end  
+  
+        rescue => e
+          next
+        end
+      end  
+    end   
+  end
 
   # REVISADO: Los filtros de la busqueda avanzada y de los resultados
   def filtros_iniciales
