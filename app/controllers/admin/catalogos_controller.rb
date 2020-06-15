@@ -15,6 +15,7 @@ class Admin::CatalogosController < Admin::AdminController
   # GET /admin/catalogos
   # GET /admin/catalogos.json
   def index
+    params[:admin_catalogo][:nivel1] = 11
     @admin_catalogo = Admin::Catalogo.new(admin_catalogo_index)
     @admin_catalogos = @admin_catalogo.query_index
   end

@@ -1,6 +1,6 @@
 <%= simple_form_for @admin_catalogo, url: admin_catalogos_path, method: 'get', wrapper: :horizontal_form do |f| %>
 
-  <%= f.input :nivel1, label: 'Catálogo', as: :select, collection: @admin_catalogo.dame_nivel1, include_blank: '- - Filtra por catálogo - -' %>
+  <%#= f.input :nivel1, label: 'Catálogo', as: :select, collection: @admin_catalogo.dame_nivel1, include_blank: '- - Filtra por catálogo - -' %>
   <%= f.input :nombre_cientifico, label: 'Nombre común o científico' %>
   <%= f.input :especie_id, as: :hidden %>
 
