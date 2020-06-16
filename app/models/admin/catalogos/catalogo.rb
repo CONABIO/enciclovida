@@ -7,8 +7,10 @@ class Admin::Catalogo < Catalogo
 
   before_save :verifica_niveles
 
-  scope :select_index, -> { select(:id, :descripcion, :nivel1, :nivel2, :nivel3, :nivel4, :nivel5).select("CONCAT(LPAD(#{attribute_alias(:nivel1)},2,'*'),LPAD(#{attribute_alias(:nivel2)},2,'*'),LPAD(#{attribute_alias(:nivel3)},2,'*'),LPAD(#{attribute_alias(:nivel4)},2,'*'),LPAD(#{attribute_alias(:nivel5)},2,'*')) AS niveles, COUNT(#{Admin::EspecieCatalogo.table_name}.#{Admin::EspecieCatalogo.attribute_alias(:especie_id)}) AS totales") }
+  scope :select_concat_niveles, -> { select(:id, :descripcion, :nivel1, :nivel2, :nivel3, :nivel4, :nivel5).select("CONCAT(LPAD(#{attribute_alias(:nivel1)},2,'*'),LPAD(#{attribute_alias(:nivel2)},2,'*'),LPAD(#{attribute_alias(:nivel3)},2,'*'),LPAD(#{attribute_alias(:nivel4)},2,'*'),LPAD(#{attribute_alias(:nivel5)},2,'*')) AS niveles") }
+  scope :select_index, -> { select("COUNT(#{Admin::EspecieCatalogo.table_name}.#{Admin::EspecieCatalogo.attribute_alias(:especie_id)}) AS totales").select_concat_niveles }
   scope :usos, -> { where(nivel1: 11) }
+  scope :catalogos_ordenados, -> { select(:id, :descripcion).select_concat_niveles.usos.order("niveles ASC") }
 
   # Para hacer el query con o sin filtros
   def query_index
@@ -49,6 +51,24 @@ class Admin::Catalogo < Catalogo
   def dame_nivel5
     return [] unless (nivel5.present? || ajax.present?)
     Admin::Catalogo.where(nivel1: nivel1, nivel2: nivel2, nivel3: nivel3, nivel4: nivel4).where("#{Catalogo.attribute_alias(:nivel5)} > ?", 0).order(:descripcion).map{ |c| [c.descripcion, c.nivel5] }
+  end
+
+  def self.dame_todos_ordenados
+    catalogos = []
+
+    self.catalogos_ordenados.each do |catalogo|
+      index_catalogos = -1
+
+      if catalogo.nivel2 == 0  # Catalogo principal
+        index_catalogos+= 1
+        catalogos[index_catalogos] = [catalogo.descripcion, []]
+      else  # Se añaden a la cateoria principal en cuestion y a la posicion de las opciones
+        guiones = '-'*(catalogo.nivel2 + catalogo.nivel3 + catalogo.nivel4 + catalogo.nivel5)
+        catalogos[index_catalogos][1] << [guiones << catalogo.descripcion, catalogo.id]
+      end  
+    end
+
+    catalogos
   end
 
   accepts_nested_attributes_for :especies_catalogo, reject_if: :all_blank, allow_destroy: true

@@ -37,7 +37,7 @@
 <div class="form-inputs">
     <%= f.input :especie_id, as: :hidden %>
     <%= f.input :nombre_cientifico %>
-    <%= f.input :catalogo_id %>
+    <%= f.input :catalogo_id, as: :grouped_select, collection: Admin::Catalogo.dame_todos_ordenados, include_blank: '- - Filtra por catálogo - -', :group_method => :last %>
     <%= f.input :observaciones, as: :hidden %>
 </div>
 
