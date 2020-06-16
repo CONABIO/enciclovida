@@ -20,6 +20,7 @@ es:
         nivel4: Nivel 4
         nivel5: Nivel 5
         especies_catalogo:
+          especie_id: Nombre científico
           nombre_cientifico: Nombre científico
           bibliografias:
             biblio: Biliografía
@@ -67,3 +68,12 @@ es:
     # prompts:
     #   defaults:
     #     age: 'Select your age'
+  activerecord:
+    errors:
+      models:
+        admin/especie_catalogo:
+          attributes:
+            especie:
+              required: 'El nombre científico no puede ser vacío. Selecciona uno autocompletando'
+            catalogo:
+              required: 'El catálogo no puede ser vacío. Selecciona uno'

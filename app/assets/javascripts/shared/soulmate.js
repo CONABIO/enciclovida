@@ -84,6 +84,10 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 $('#admin_catalogo_especie_id').val(data.id);
                 $('#admin_catalogo_nombre_cientifico').val(data.nombre_cientifico);
                 break;
+            case 'admin/especie_catalogo':
+                $('#admin_especie_catalogo_especie_id').val(data.id);
+                $(elemento).val(data.nombre_cientifico);
+                break;                
             case 'busquedas/explora-por-clasificacion':
                 window.location.replace('/explora-por-clasificacion?especie_id='  + data.id + '&q=' + data.nombre_cientifico);
                 break;

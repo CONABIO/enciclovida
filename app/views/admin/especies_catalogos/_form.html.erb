@@ -18,11 +18,20 @@
 <% end %>
 <% end %>
 
+<% content_for(:delayedjs) do %>
+<script data-turbolinks-track="true">
+    // Asigna el soulmate a la caja
+    $(document).ready(function() {
+        soulmateAsigna('admin/especie_catalogo', 'admin_especie_catalogo_nombre_cientifico');
+    });
+</script>
+<% end %>
+
 <%= simple_form_for @admin_especie_catalogo, **@form_params, wrapper: :horizontal_form do |f| %>
 
 <% if @admin_especie_catalogo.errors.any? %>
 <div id="error_explanation">
-    <h2><%= pluralize(@admin_especie_catalogo.errors.count, 'error') %> prohibieron que el uso se guardara:</h2>
+    <h2><%= pluralize(@admin_especie_catalogo.errors.count, 'error') %> prohibieron que el catálogo se guardara:</h2>
 
     <ul>
         <% @admin_especie_catalogo.errors.full_messages.each do |msg| %>
@@ -40,6 +49,18 @@
     <%= f.input :catalogo_id, as: :grouped_select, collection: Admin::Catalogo.dame_todos_ordenados, include_blank: '- - Filtra por catálogo - -', :group_method => :last %>
     <%= f.input :observaciones, as: :hidden %>
 </div>
+
+<%= f.simple_fields_for :bibliografias do |biblio| %>
+<%= render partial: 'especies_bibliografias_fields', locals: { f: biblio } %>
+<% end %>
+
+<%= f.simple_fields_for :regiones do |region| %>
+<%= render partial: 'especies_regiones_fields', locals: { f: region } %>
+<% end %>
+
+<%= link_to_add_association('Asocia una bibliografía', f, :bibliografias, partial: 'especies_bibliografias_fields', force_non_association_create: true) %>
+<br />
+<%= link_to_add_association('Asocia una región', f, :regiones, partial: 'especies_regiones_fields', force_non_association_create: true) %>
 
 <hr />
 

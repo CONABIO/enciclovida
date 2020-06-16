@@ -63,7 +63,7 @@ class Admin::Catalogo < Catalogo
         index_catalogos+= 1
         catalogos[index_catalogos] = [catalogo.descripcion, []]
       else  # Se añaden a la cateoria principal en cuestion y a la posicion de las opciones
-        guiones = '-'*(catalogo.nivel2 + catalogo.nivel3 + catalogo.nivel4 + catalogo.nivel5)
+        guiones = '-'*(catalogo.nivel3 + catalogo.nivel4 + catalogo.nivel5)
         catalogos[index_catalogos][1] << [guiones << catalogo.descripcion, catalogo.id]
       end  
     end
