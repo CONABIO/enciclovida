@@ -1,5 +1,17 @@
-<h1>New Admin Especie Catalogo</h1>
+<div class="col-auto container">
 
-<%= render 'form', admin_especie_catalogo: @admin_especie_catalogo %>
+  <div class="justify-content-end row mb-4">
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Acciones
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <%#= link_to('Más detalles', admin_catalogo_path(@admin_catalogo), class: 'dropdown-item') %>
+        <%= link_to('Lista de catálogos', admin_catalogos_path, class: 'dropdown-item') %>
+        <%#= link_to('Eliminar', admin_catalogo_path(@admin_catalogo), class: 'dropdown-item', method: :delete, data: { confirm: '¿Estas seguro?' }) %>
+      </div>
+    </div>
+  </div>
 
-<%= link_to 'Back', admin_especies_catalogos_path %>
+  <%= render 'form' %>
+</div>

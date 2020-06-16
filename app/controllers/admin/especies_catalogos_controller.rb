@@ -1,6 +1,10 @@
 class Admin::EspeciesCatalogosController < Admin::AdminController
   before_action :set_admin_especie_catalogo, only: [:show, :edit, :update, :destroy]
 
+  before_action do
+    @no_render_busqueda_basica = true
+  end
+
   # GET /admin/especies_catalogos
   # GET /admin/especies_catalogos.json
   def index
@@ -15,7 +19,19 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
   # GET /admin/especies_catalogos/new
   def new
     @form_params = { url: '/admin/especies_catalogos', method: 'post' }
-    @admin_especie_catalogo = Admin::EspecieCatalogo.new
+    if params.present? && params[:admin_especie_catalogo].present?
+      @admin_especie_catalogo = Admin::EspecieCatalogo.new(admin_especie_catalogo_params)
+
+      especie_id = params[:admin_especie_catalogo][:especie_id]
+      if especie_id.present?
+        @admin_especie_catalogo.nombre_cientifico = Especie.find(especie_id).nombre_cientifico
+      end
+
+    else
+      @admin_especie_catalogo = Admin::EspecieCatalogo.new
+    end
+
+    @admin_especie_catalogo.observaciones = 'Enciclovida - usos'
   end
 
   # GET /admin/especies_catalogos/1/edit
@@ -33,7 +49,10 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
         format.html { redirect_to @admin_especie_catalogo, notice: 'Especie catalogo was successfully created.' }
         format.json { render :show, status: :created, location: @admin_especie_catalogo }
       else
-        format.html { render :new }
+        format.html do 
+          @form_params = { url: '/admin/especies_catalogos', method: 'post' }
+          render :new 
+        end
         format.json { render json: @admin_especie_catalogo.errors, status: :unprocessable_entity }
       end
     end
@@ -71,6 +90,6 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def admin_especie_catalogo_params
-      params.require(:admin_especie_catalogo).permit(:especie_id, :catalogo_id, :observaciones)
+      params.require(:admin_especie_catalogo).permit(:especie_id, :catalogo_id, :observaciones, :nombre_cientifico)
     end
 end

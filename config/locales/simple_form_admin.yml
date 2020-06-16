@@ -5,6 +5,10 @@ es:
         create: Guardar
         update: Actualizar
         cancel: Cancelar
+      admin_especie_catalogo:
+        create: Guardar
+        update: Actualizar
+        cancel: Cancelar        
   simple_form:
     hints:
     labels:
@@ -23,6 +27,15 @@ es:
             reg: Región
             bibliografias:
               biblio: Biliografía por región
+      admin_especie_catalogo:
+        nombre_cientifico: Nombre científico
+        catalogo_id: Catálogo
+        bibliografias:
+          biblio: Biliografía
+        regiones:
+          reg: Región
+          bibliografias:
+            biblio: Biliografía por región
     placeholders:
 
     "yes": 'Yes'

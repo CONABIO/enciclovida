@@ -1,14 +1,51 @@
-<%= simple_form_for @admin_especie_catalogo, **@form_params, wrapper: :horizontal_form  do |f| %>
-  <%= f.error_notification %>
-  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+<% content_for(:delayedjs) do %>
+<%= javascript_include_tag 'admin/catalogos/catalogos_extra', 'data-turbolinks-track' => true %>
+<% end %>
 
-  <div class="form-inputs">
-    <%= f.input :especie_id %>
+<% content_for(:extracss) do %>
+<% if I18n.locale.to_s != 'es-cientifico' %>
+<style type="text/css" data-turbolinks-track="true">
+    .soulmate-type-suggestions li {
+        padding: 1em 0;
+        min-height: 125px;
+    }
+
+    .color-opciones {
+        background-color: white;
+        pointer-events: visible;
+    }
+</style>
+<% end %>
+<% end %>
+
+<%= simple_form_for @admin_especie_catalogo, **@form_params, wrapper: :horizontal_form do |f| %>
+
+<% if @admin_especie_catalogo.errors.any? %>
+<div id="error_explanation">
+    <h2><%= pluralize(@admin_especie_catalogo.errors.count, 'error') %> prohibieron que el uso se guardara:</h2>
+
+    <ul>
+        <% @admin_especie_catalogo.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+        <% end %>
+    </ul>
+</div>
+<% end %>
+
+<hr />
+
+<div class="form-inputs">
+    <%= f.input :especie_id, as: :hidden %>
+    <%= f.input :nombre_cientifico %>
     <%= f.input :catalogo_id %>
-    <%= f.input :observaciones %>
-  </div>
+    <%= f.input :observaciones, as: :hidden %>
+</div>
 
-  <div class="form-actions">
-    <%= f.button :submit %>
-  </div>
+<hr />
+
+<div class="col">
+    <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
+    <%= link_to t('helpers.submit.admin_especie_catalogo.cancel'), admin_catalogos_path, { :class=>"btn btn-lg btn-block btn-secondary" } %>
+</div>
+
 <% end %>
