@@ -19,6 +19,8 @@ class Admin::CatalogosController < Admin::AdminController
     params[:admin_catalogo][:nivel1] = 11
     @admin_catalogo = Admin::Catalogo.new(admin_catalogo_index)
     @admin_catalogos = @admin_catalogo.query_index
+
+    render action: 'index', locals: { message: @admin_catalogos.any? ? '': 'Tu búsqueda no dio resultados con esos filtros' }
   end
 
   # GET /admin/catalogos/1
@@ -45,7 +47,7 @@ class Admin::CatalogosController < Admin::AdminController
 
     respond_to do |format|
       if @admin_catalogo.save
-        format.html { redirect_to admin_catalogos_path"El catálogo \"#{@admin_catalogo.descripcion}\" fue creado correcamente." }
+        format.html { redirect_to admin_catalogos_path, notice: "El catálogo \"#{@admin_catalogo.descripcion}\" fue creado correcamente." }
         format.json { render action: 'show', status: :created, location: @admin_catalogo }
       else
         format.html { render action: 'new' }
@@ -73,7 +75,7 @@ class Admin::CatalogosController < Admin::AdminController
   def destroy
     @admin_catalogo.destroy
     respond_to do |format|
-      format.html { redirect_to admin_catalogos_url, "El catálogo fue borrado correcamente." }
+      format.html { redirect_to admin_catalogos_url, notice: "El catálogo fue borrado correcamente." }
       format.json { head :no_content }
     end
   end
@@ -169,7 +171,7 @@ class Admin::CatalogosController < Admin::AdminController
   # La lista blanca para los filtros de especie y nivel1
   def admin_catalogo_index
     begin
-      params.require(:admin_catalogo).permit(:especie_id, :nivel1)
+      params.require(:admin_catalogo).permit(:especie_id, :nivel1, :nombre_cientifico)
     rescue
       {}
     end
