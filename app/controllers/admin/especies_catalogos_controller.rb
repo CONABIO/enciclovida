@@ -36,6 +36,7 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
 
   # GET /admin/especies_catalogos/1/edit
   def edit
+    @admin_especie_catalogo.nombre_cientifico = Especie.find(@admin_especie_catalogo.especie_id).nombre_cientifico
     @form_params = {}
   end
 
@@ -46,12 +47,12 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
 
     respond_to do |format|
       if @admin_especie_catalogo.save
-        format.html { redirect_to @admin_especie_catalogo, notice: 'Especie catalogo was successfully created.' }
+        format.html { redirect_to admin_catalogos_path, notice: 'La asociación fue creada correctamente' }
         format.json { render :show, status: :created, location: @admin_especie_catalogo }
       else
         format.html do 
-          @form_params = { url: '/admin/especies_catalogos', method: 'post' }
-          render :new 
+          @form_params = {}
+          render :new
         end
         format.json { render json: @admin_especie_catalogo.errors, status: :unprocessable_entity }
       end
@@ -63,7 +64,7 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
   def update
     respond_to do |format|
       if @admin_especie_catalogo.update(admin_especie_catalogo_params)
-        format.html { redirect_to @admin_especie_catalogo, notice: 'Especie catalogo was successfully updated.' }
+        format.html { redirect_to admin_catalogos_path, notice: 'La asociación fue actualizada correctamente' }
         format.json { render :show, status: :ok, location: @admin_especie_catalogo }
       else
         format.html { render :edit }

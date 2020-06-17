@@ -13,15 +13,16 @@ es:
     hints:
     labels:
       admin_catalogo:
-        descripcion: Nombre del catálogo
+        nombre_cientifico: Nombre común o científico
+        descripcion: Catálogo
         nivel1: Nivel 1
         nivel2: Nivel 2
         nivel3: Nivel 3
         nivel4: Nivel 4
         nivel5: Nivel 5
         especies_catalogo:
-          especie_id: Nombre científico
-          nombre_cientifico: Nombre científico
+          especie_id: Nombre
+          nombre_cientifico: Nombre
           bibliografias:
             biblio: Biliografía
           regiones:
@@ -29,7 +30,7 @@ es:
             bibliografias:
               biblio: Biliografía por región
       admin_especie_catalogo:
-        nombre_cientifico: Nombre científico
+        nombre_cientifico: Nombre
         catalogo_id: Catálogo
         bibliografias:
           biblio: Biliografía
