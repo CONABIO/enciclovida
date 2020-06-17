@@ -81,7 +81,7 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
   def destroy
     @admin_especie_catalogo.destroy
     respond_to do |format|
-      format.html { redirect_to admin_especies_catalogos_url, notice: 'Especie catalogo was successfully destroyed.' }
+      format.html { redirect_to admin_catalogos_path, notice: 'La asociación fue eliminada correctamente' }
       format.json { head :no_content }
     end
   end
