@@ -55,7 +55,8 @@
     <%= render partial: 'especies_bibliografias_fields', locals: { f: biblio } %>
     <% end %>
 
-    <%= link_to_add_association('Asocia una bibliografía', f, :bibliografias, partial: 'especies_bibliografias_fields', force_non_association_create: true, 'data-association-insertion-method': :after, class: 'btn btn-info', role: 'button') %>
+    <div id="sf-bibliografias"></div>
+    <%= link_to_add_association('Asocia una bibliografía', f, :bibliografias, partial: 'especies_bibliografias_fields', force_non_association_create: true, 'data-association-insertion-node': '#sf-bibliografias', class: 'btn btn-info', role: 'button') %>
 </div>
 
 <div>
@@ -63,8 +64,8 @@
     <%= render partial: 'especies_regiones_fields', locals: { f: region } %>
     <% end %>
 
-    <br />
-    <%= link_to_add_association('Asocia una región', f, :regiones, partial: 'especies_regiones_fields') %>
+    <div id="sf-regiones"></div>
+    <%= link_to_add_association('Asocia una región', f, :regiones, partial: 'especies_regiones_fields', 'data-association-insertion-node': '#sf-regiones', class: 'btn btn-info', role: 'button') %>
 </div>
 
 <hr />

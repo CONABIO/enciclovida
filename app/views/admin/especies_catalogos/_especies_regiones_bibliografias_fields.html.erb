@@ -3,8 +3,19 @@
     <%= f.input :catalogo_id, as: :hidden, required: true %>
     <%= f.input :region_id, as: :hidden, required: true %>
     <%= f.input :bibliografia_id, as: :hidden, required: true %>
-    <%= f.input :biblio, label: 'Bibliografía por región', as: :text, input_html: { class: 'biblio-autocomplete' } %>
 
-    <%= link_to_remove_association 'Desvincula la bibliografía de la región', f, { class: 'float-right' } %>
-    <br />
+    <div class="d-flex">
+        <div class="mr-auto p-0">
+            <% if f.object.new_record? %>
+            <%= f.input :biblio, as: :text, input_html: { class: 'biblio-autocomplete', size: '60x5' } %>
+            <% else %>
+            <% puts biblio = f.object.bibliografia.cita_completa %>
+            <%= f.input :biblio, as: :text, input_html: { class: 'biblio-autocomplete', value: biblio, disabled: true, size: '60x5' } %>
+            <% end %>
+        </div>
+
+        <div class="p-2">
+            <%= link_to_remove_association "Eliminar <i class='fa fa-trash'></i>".html_safe, f %>
+        </div>
+    </div>
 </div>
