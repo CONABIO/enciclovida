@@ -67,7 +67,10 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
         format.html { redirect_to admin_catalogos_path, notice: 'La asociación fue actualizada correctamente' }
         format.json { render :show, status: :ok, location: @admin_especie_catalogo }
       else
-        format.html { render :edit }
+        format.html do
+          @form_params = {}
+          render :edit
+        end
         format.json { render json: @admin_especie_catalogo.errors, status: :unprocessable_entity }
       end
     end
@@ -91,6 +94,50 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def admin_especie_catalogo_params
-      params.require(:admin_especie_catalogo).permit(:especie_id, :catalogo_id, :observaciones, :nombre_cientifico)
+      p = params.require(:admin_especie_catalogo).permit(:especie_id, :catalogo_id, :observaciones, :nombre_cientifico, bibliografias_attributes: [:id, :especie_id, :catalogo_id, :bibliografia_id, :biblio, :_destroy], regiones_attributes: [:id, :especie_id, :catalogo_id, :region_id, :reg, :_destroy, bibliografias_attributes: [:id, :especie_id, :catalogo_id, :region_id, :bibliografia_id, :biblio, :_destroy]])
+
+      separa_multiples_llaves_foraneas(p)
     end
+
+    # Para que pueda seguir guardando con el comportamiento de cocoon con multiples llaves foráneas
+  def separa_multiples_llaves_foraneas(p)
+
+    if p["bibliografias_attributes"].present?
+      p["bibliografias_attributes"].each do |kbiblio, biblio|
+        next unless biblio.present?
+        next unless biblio["id"].present?
+        next unless biblio["catalogo_id"].present?
+        next unless biblio["especie_id"].present?
+        next unless biblio["bibliografia_id"].present?
+        biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["bibliografia_id"]]
+      end
+    end
+
+    # Iterando cada elemento especie_catalogo_region
+    if p["regiones_attributes"].present?
+      p["regiones_attributes"].each do |kregion, region|
+        next unless region.present?
+        next unless region["id"].present?
+        next unless region["catalogo_id"].present?
+        next unless region["especie_id"].present?
+        next unless region["region_id"].present?
+        region["id"] = [region["catalogo_id"], region["especie_id"], region["region_id"]]
+
+        # Iterando cada elemento especie_catalogo_region_bibliografia
+        if region["bibliografias_attributes"].present?
+          region["bibliografias_attributes"].each do |kbiblio, biblio|
+            next unless biblio.present?
+            next unless biblio["id"].present?
+            next unless biblio["catalogo_id"].present?
+            next unless biblio["especie_id"].present?
+            next unless biblio["region_id"].present?
+            next unless biblio["bibliografia_id"].present?
+            biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["region_id"], biblio["bibliografia_id"]]
+          end
+        end
+      end
+    end
+    p
+  end
+
 end
