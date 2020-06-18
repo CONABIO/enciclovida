@@ -28,7 +28,7 @@ es:
           regiones:
             reg: Región
             bibliografias:
-              biblio: Biliografía por región
+              biblio: Biliografía de región
       admin_especie_catalogo:
         nombre_cientifico: Nombre
         catalogo_id: Catálogo
@@ -37,7 +37,7 @@ es:
         regiones:
           reg: Región
           bibliografias:
-            biblio: Biliografía por región
+            biblio: Biliografía de región
     placeholders:
 
     "yes": 'Yes'

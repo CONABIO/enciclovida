@@ -27,7 +27,7 @@
         <% end %>
 
         <div id="sf-regiones-bibliografias"></div>
-        <%= link_to_add_association('Asocia una bibliografía por región', f, :bibliografias, partial: 'especies_regiones_bibliografias_fields', 'data-association-insertion-node': '#sf-regiones-bibliografias', class: 'btn btn-info', role: 'button') %>
+        <%= link_to_add_association('Asocia una bibliografía por región', f, :bibliografias, partial: 'especies_regiones_bibliografias_fields', 'data-association-insertion-method': :before, class: 'btn btn-info', role: 'button') %>
 
         <hr />
     </div>

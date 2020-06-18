@@ -1,13 +1,30 @@
-<h3><%= @admin_catalogo.descripcion %></h3>
-<p id="notice"><%= notice %></p>
+<h3>Especies de "<%= @admin_catalogo.descripcion %>"</h3>
 
-<ol>
-  <% @admin_catalogo.especies.select_basico.left_joins(:adicional, :categoria_taxonomica).order(:nombre_cientifico).each do |especie| %>
-    <li><%= tituloNombreCientifico(especie, {render: 'link-inline'},{target: :_blank}) %></li>
-  <% end %>
-</ol>
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Especie</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
 
-<%= link_to 'Edit', edit_admin_catalogo_path(@admin_catalogo) %> |
-<%= link_to 'Back', admin_catalogos_path %>
+    <tbody>
 
+        <% @admin_catalogos.each do |especie| %>
+        <tr>
+            <td>
+                <%= tituloNombreCientifico(especie, {render: 'link-inline'},{target: :_blank}) %>
+            </td>
 
+            <td>
+                <%= link_to("Nueva asociación en este catálogo", new_admin_especie_catalogo_path(admin_especie_catalogo: { catalogo_id: params[:id] })) %>
+
+                | <%= link_to("Nueva asociación con esta especie", new_admin_especie_catalogo_path(admin_especie_catalogo: { especie_id: especie.id })) %>
+
+                | <%= link_to("Editar", edit_admin_especie_catalogo_path(["#{params[:id]},#{especie.id}"])) %>
+            </td>
+        </tr>
+        <% end %>
+
+    </tbody>
+</table>

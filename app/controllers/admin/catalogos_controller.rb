@@ -20,6 +20,7 @@ class Admin::CatalogosController < Admin::AdminController
   # GET /admin/catalogos/1
   # GET /admin/catalogos/1.json
   def show
+    @admin_catalogos = @admin_catalogo.especies.select_basico.left_joins(:adicional, :categoria_taxonomica).order(:nombre_cientifico)
   end
 
   # GET /admin/catalogos/new
