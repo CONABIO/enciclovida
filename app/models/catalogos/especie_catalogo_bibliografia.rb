@@ -8,6 +8,8 @@ class EspecieCatalogoBibliografia < ActiveRecord::Base
   alias_attribute :catalogo_id, :IdCatNombre
   alias_attribute :bibliografia_id, :IdBibliografia
 
+  validates_uniqueness_of :IdCatNombre, :scope => [:IdNombre, :IdBibliografia]
+
   belongs_to :especie, foreign_key: attribute_alias(:especie_id)
   belongs_to :catalogo, foreign_key: attribute_alias(:catalogo_id)
   belongs_to :bibliografia, foreign_key: attribute_alias(:bibliografia_id)

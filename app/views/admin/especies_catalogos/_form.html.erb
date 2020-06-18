@@ -59,6 +59,8 @@
     <%= link_to_add_association('Asocia una bibliografía', f, :bibliografias, partial: 'especies_bibliografias_fields', force_non_association_create: true, 'data-association-insertion-node': '#sf-bibliografias', class: 'btn btn-info', role: 'button') %>
 </div>
 
+<hr />
+
 <div>
     <%= f.simple_fields_for :regiones do |region| %>
     <%= render partial: 'especies_regiones_fields', locals: { f: region } %>

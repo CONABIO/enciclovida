@@ -1,5 +1,7 @@
 <div class="container">
 
+    <h3 class="text-center">Administración de catálogos</h3>
+
     <div class="row">
         <div class="col"></div>
 
@@ -15,12 +17,12 @@
     </div>
 
 
-    <div class="row">
+    <div class="row justify-content-center">
 
         <div class="col"></div>
 
-        <div class="col-12">
-            <table>
+        <div class="col-auto">
+            <table class="table table-responsive">
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -38,7 +40,7 @@
                     <tr>
                         <td class="<%= 'bg-secondary text-white border-top border-dark' if catalogo.nivel2 == 0 %>"><%= ("&nbsp;"*5*niveles.length).html_safe %><%= catalogo.descripcion %>
                         </td>
-                        
+
                         <td class="<%= 'bg-secondary text-white border-top border-dark' if catalogo.nivel2 == 0 %>"><%= catalogo.totales %>
                         </td>
 
@@ -49,6 +51,18 @@
                             | <%= link_to("Nueva asociación con esta especie", new_admin_especie_catalogo_path(admin_especie_catalogo: { especie_id: @admin_catalogo.especie_id })) %>
 
                             | <%= link_to("Editar", edit_admin_especie_catalogo_path(["#{catalogo.id},#{@admin_catalogo.especie_id}"])) %>
+                            <% end %>
+                        </td>
+                    </tr>
+                    <% end %>
+
+                    <% if @admin_catalogos.length == 0 %>
+                    <tr>
+                        <td>Sin coincidencias</td>
+                        <td>Sin coincidencias</td>
+                        <td>
+                            <% if @admin_catalogo.especie_id %>
+                            <%= link_to("Nueva asociación con esta especie", new_admin_especie_catalogo_path(admin_especie_catalogo: { especie_id: @admin_catalogo.especie_id })) %>
                             <% end %>
                         </td>
                     </tr>

@@ -10,6 +10,8 @@ class EspecieCatalogoRegionBibliografia < ActiveRecord::Base
   alias_attribute :tipo_distribucion_id, :IdTipoDistribucion
   alias_attribute :observaciones, :Observaciones
 
+  validates_uniqueness_of :IdCatNombre, :scope => [:IdNombre, :IdRegion, :IdBibliografia]
+
   belongs_to :especie, foreign_key: attribute_alias(:especie_id)
   belongs_to :catalogo, foreign_key: attribute_alias(:catalogo_id)
   belongs_to :region, foreign_key: attribute_alias(:region_id)
