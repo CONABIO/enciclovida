@@ -7,6 +7,7 @@ class EspecieCatalogoBibliografia < ActiveRecord::Base
   alias_attribute :especie_id, :IdNombre
   alias_attribute :catalogo_id, :IdCatNombre
   alias_attribute :bibliografia_id, :IdBibliografia
+  alias_attribute :observaciones, :Observaciones
 
   validates_uniqueness_of :IdCatNombre, :scope => [:IdNombre, :IdBibliografia]
 

@@ -47,7 +47,7 @@
     <%= f.input :especie_id, as: :hidden %>
     <%= f.input :nombre_cientifico, input_html: { :autocomplete => :off, maxlength: 80, disabled: @admin_especie_catalogo.new_record? ? false : true } %>
     <%= f.input :catalogo_id, as: :grouped_select, collection: Admin::Catalogo.dame_todos_ordenados, include_blank: '- - Filtra por catálogo - -', :group_method => :last, input_html: { disabled: @admin_especie_catalogo.new_record? ? false : true } %>
-    <%= f.input :observaciones, as: :hidden %>
+    <%= f.input :observaciones, as: :text %>
 </div>
 
 <div>

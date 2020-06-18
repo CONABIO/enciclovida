@@ -31,8 +31,6 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
     else
       @admin_especie_catalogo = Admin::EspecieCatalogo.new
     end
-
-    @admin_especie_catalogo.observaciones = 'Enciclovida - usos'
   end
 
   # GET /admin/especies_catalogos/1/edit
@@ -95,7 +93,7 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def admin_especie_catalogo_params
-      p = params.require(:admin_especie_catalogo).permit(:especie_id, :catalogo_id, :observaciones, :nombre_cientifico, bibliografias_attributes: [:id, :especie_id, :catalogo_id, :bibliografia_id, :biblio, :_destroy], regiones_attributes: [:id, :especie_id, :catalogo_id, :region_id, :reg, :_destroy, bibliografias_attributes: [:id, :especie_id, :catalogo_id, :region_id, :bibliografia_id, :biblio, :_destroy]])
+      p = params.require(:admin_especie_catalogo).permit(:especie_id, :catalogo_id, :observaciones, :nombre_cientifico, bibliografias_attributes: [:id, :especie_id, :catalogo_id, :bibliografia_id, :observaciones, :biblio, :_destroy], regiones_attributes: [:id, :especie_id, :catalogo_id, :region_id, :observaciones, :reg, :_destroy, bibliografias_attributes: [:id, :especie_id, :catalogo_id, :region_id, :bibliografia_id, :observaciones, :biblio, :_destroy]])
 
       separa_multiples_llaves_foraneas(p)
     end
