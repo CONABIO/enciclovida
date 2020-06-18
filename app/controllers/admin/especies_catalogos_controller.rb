@@ -45,6 +45,8 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
     @admin_especie_catalogo = Admin::EspecieCatalogo.new(admin_especie_catalogo_params)
 
     respond_to do |format|
+
+      @admin_especie_catalogo.usuario = current_usuario.email
       if @admin_especie_catalogo.save
         format.html do
           case params[:commit]
@@ -72,6 +74,8 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
   # PATCH/PUT /admin/especies_catalogos/1.json
   def update
     respond_to do |format|
+
+      @admin_especie_catalogo.usuario = current_usuario.email
       if @admin_especie_catalogo.update(admin_especie_catalogo_params)
         format.html do
           case params[:commit]
@@ -83,7 +87,7 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
               redirect_to edit_admin_especie_catalogo_path(@admin_especie_catalogo), notice: 'La asociación fue actualizada correctamente' 
           end
         end
-        
+
         format.json { render :show, status: :ok, location: @admin_especie_catalogo }
       else
         format.html do
@@ -120,6 +124,7 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
 
     # Para que pueda seguir guardando con el comportamiento de cocoon con multiples llaves foráneas
   def separa_multiples_llaves_foraneas(p)
+    usuario = current_usuario.email
 
     if p["bibliografias_attributes"].present?
       p["bibliografias_attributes"].each do |kbiblio, biblio|
@@ -129,6 +134,7 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
         next unless biblio["especie_id"].present?
         next unless biblio["bibliografia_id"].present?
         biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["bibliografia_id"]]
+        biblio["usuario"] = usuario
       end
     end
 
@@ -141,6 +147,7 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
         next unless region["especie_id"].present?
         next unless region["region_id"].present?
         region["id"] = [region["catalogo_id"], region["especie_id"], region["region_id"]]
+        region["usuario"] = usuario
 
         # Iterando cada elemento especie_catalogo_region_bibliografia
         if region["bibliografias_attributes"].present?
@@ -152,6 +159,7 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
             next unless biblio["region_id"].present?
             next unless biblio["bibliografia_id"].present?
             biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["region_id"], biblio["bibliografia_id"]]
+            biblio["usuario"] = usuario
           end
         end
       end
