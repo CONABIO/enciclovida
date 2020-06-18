@@ -46,7 +46,17 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
 
     respond_to do |format|
       if @admin_especie_catalogo.save
-        format.html { redirect_to admin_catalogos_path, notice: 'La asociación fue creada correctamente' }
+        format.html do
+          case params[:commit]
+            when 'Guardar'   
+              redirect_to admin_catalogos_path, notice: 'La asociación fue creada correctamente' 
+            when 'Guardar y crear otra'
+              redirect_to new_admin_especie_catalogo_path, notice: 'La asociación fue creada correctamente' 
+            when 'Guardar y seguir editando'
+              redirect_to edit_admin_especie_catalogo_path(@admin_especie_catalogo), notice: 'La asociación fue creada correctamente' 
+          end
+        end
+
         format.json { render :show, status: :created, location: @admin_especie_catalogo }
       else
         format.html do 
@@ -63,7 +73,17 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
   def update
     respond_to do |format|
       if @admin_especie_catalogo.update(admin_especie_catalogo_params)
-        format.html { redirect_to admin_catalogos_path, notice: 'La asociación fue actualizada correctamente' }
+        format.html do
+          case params[:commit]
+            when 'Actualizar'   
+              redirect_to admin_catalogos_path, notice: 'La asociación fue actualizada correctamente' 
+            when 'Actualizar y crear otra'
+              redirect_to new_admin_especie_catalogo_path, notice: 'La asociación fue actualizada correctamente' 
+            when 'Actualizar y seguir editando'
+              redirect_to edit_admin_especie_catalogo_path(@admin_especie_catalogo), notice: 'La asociación fue actualizada correctamente' 
+          end
+        end
+        
         format.json { render :show, status: :ok, location: @admin_especie_catalogo }
       else
         format.html do

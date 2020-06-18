@@ -74,6 +74,15 @@
 
 <div class="col">
     <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
+
+    <% if @admin_especie_catalogo.new_record? %>
+    <%= f.submit class: 'btn btn-lg btn-block btn-success', value: 'Guardar y crear otra' %>
+    <%= f.submit class: 'btn btn-lg btn-block btn-success', value: 'Guardar y seguir editando' %>
+    <% else %>
+    <%= f.submit class: 'btn btn-lg btn-block btn-success', value: 'Actualizar y crear otra' %>
+    <%= f.submit class: 'btn btn-lg btn-block btn-success', value: 'Actualizar y seguir editando' %>
+    <% end %>
+
     <%= link_to t('helpers.submit.admin_especie_catalogo.cancel'), admin_catalogos_path, { :class=>"btn btn-lg btn-block btn-secondary" } %>
 </div>
 
