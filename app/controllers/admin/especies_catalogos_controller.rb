@@ -1,4 +1,5 @@
 class Admin::EspeciesCatalogosController < Admin::AdminController
+
   before_action :set_admin_especie_catalogo, only: [:show, :edit, :update, :destroy]
 
   before_action do
