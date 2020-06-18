@@ -77,4 +77,8 @@ es:
             especie:
               required: 'El nombre científico no puede ser vacío. Selecciona uno autocompletando'
             catalogo:
-              required: 'El catálogo no puede ser vacío. Selecciona uno'
+              required: 'El catálogo no puede ser vacío, selecciona uno de la lista'
+        admin/especie_catalogo_bibliografia:
+          attributes:
+            bibliografia:
+              required: 'La bibliografía debe escogerse del autocompletado'
