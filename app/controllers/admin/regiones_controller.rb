@@ -1,4 +1,5 @@
 class Admin::RegionesController < Admin::AdminController
+
   before_action :set_admin_region, only: [:show, :edit, :update, :destroy]
 
   # GET /admin/regiones

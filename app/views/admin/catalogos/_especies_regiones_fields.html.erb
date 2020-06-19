@@ -18,7 +18,7 @@
   <% end %>
 
   <% @index_reg_biblio = -1 %>
-  <%= link_to_add_association('Asocia una bibliografía por región', f, :bibliografias, partial: 'especies_regiones_bibliografias_fields') %>
+  <%= link_to_add_association('Asocia una bibliografía por región', f, :bibliografias, partial: 'especies_regiones_bibliografias_fields', force_non_association_create: true) %>
   <%= link_to_remove_association 'Desvincula la región', f, { class: 'float-right' } %>
 
   <br />

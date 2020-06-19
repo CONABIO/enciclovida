@@ -24,9 +24,9 @@
 
   <% @index_biblio = -1 %>
   <% @index_reg = -1 %>
-  <%= link_to_add_association('Asocia una bibliografía', f, :bibliografias, partial: 'especies_bibliografias_fields') %>
+  <%= link_to_add_association('Asocia una bibliografía', f, :bibliografias, partial: 'especies_bibliografias_fields', force_non_association_create: true) %>
   <br />
-  <%= link_to_add_association('Asocia una región', f, :regiones, partial: 'especies_regiones_fields') %>
+  <%= link_to_add_association('Asocia una región', f, :regiones, partial: 'especies_regiones_fields', force_non_association_create: true) %>
   <%= link_to_remove_association 'Desvincula la especie', f, { class: 'float-right' } %>
 
   <hr />

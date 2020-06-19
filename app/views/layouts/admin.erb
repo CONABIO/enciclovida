@@ -39,8 +39,14 @@
 
 <section id="content" class="container-fluid">
   <div class="row main">
-    <%= yield %>
+
+    <div class="container col-auto">
+      <div class="text-success text-center mb-3"><%= notice %></div>
+      <%= render partial: 'admin/shared/menu_acciones' %>      
+      <%= yield %>
+    </div>
   </div>
+
 </section>
 
 <footer class="container-fluid">

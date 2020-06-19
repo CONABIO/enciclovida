@@ -100,6 +100,7 @@
       <div class="row">
         <div class="col-12 d-block d-lg-inline-block col-lg-3" id="arbol">
           <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
+          <div class="mt-3"><%= link_to('Explora por clasificación', "/explora-por-clasificacion?especie_id=#{@especie.id}", { target: :_self }) %></div>
         </div>
         <div class="col-12 col-lg-9">
           <% if @datos[:geodatos].present? %>
