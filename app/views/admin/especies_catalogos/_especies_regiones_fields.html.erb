@@ -1,0 +1,36 @@
+<div class='nested-fields'>
+    <%= f.input :especie_id, as: :hidden, required: true %>
+    <%= f.input :catalogo_id, as: :hidden, required: true %>
+    <%= f.input :region_id, as: :hidden, required: true %>
+
+    <div class="d-flex">
+        <div class="mr-auto p-0">
+            <% if f.object.new_record? %>
+            <%= f.input :reg, as: :text, input_html: { class: 'reg-autocomplete', size: '60x2' } %>
+            <% 
+            else 
+            region = f.object.region
+    reg = "#{region.nombre_region}, #{region.tipo_region.descripcion}"
+    %>
+            <%= f.input :reg, as: :text, input_html: { class: 'reg-autocomplete', value: reg, disabled: true, size: '60x2' } %>
+            <% end %>
+        </div>
+
+        <div class="p-2">
+            <%= link_to_remove_association "Eliminar <i class='fa fa-trash'></i>".html_safe, f %>
+        </div>
+    </div>
+
+    <%= f.input :observaciones, as: :text %>
+
+    <div class="ml-5">
+        <%= f.simple_fields_for :bibliografias do |biblio| %>
+        <%= render partial: 'especies_regiones_bibliografias_fields', locals: { f: biblio } %>
+        <% end %>
+
+        <div id="sf-regiones-bibliografias"></div>
+        <%= link_to_add_association('Asocia una bibliografía por región', f, :bibliografias, partial: 'especies_regiones_bibliografias_fields', 'data-association-insertion-method': :before, class: 'btn btn-info', role: 'button') %>
+
+        <hr />
+    </div>
+</div>

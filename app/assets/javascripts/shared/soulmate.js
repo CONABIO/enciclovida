@@ -16,6 +16,8 @@ var soulmateAsigna = function(tipo_busqueda, elem)
             var nombres = '<h5> ' + data.nombre_comun + '</h5>' + '<h5><a href="" class="not-active">' + data.nombre_cientifico + ' </a><i>' + data.autoridad + '</i></h5><h5>&nbsp;</h5>';
             return nombres;
         }else{
+            data.nombre_cientifico = limpiar(data.nombre_cientifico);
+            
             if(data.nombre_comun == null) {
                 var nombres = '<a href="" class="not-active">' + data.nombre_cientifico + '</a>';
             }else {
@@ -38,11 +40,11 @@ var soulmateAsigna = function(tipo_busqueda, elem)
             });
 
             if(data.geodatos != undefined && data.geodatos.length > 0){
-                iconos = iconos + "<span class='btn-title' tooltip-title='Tiene datos geográficos'><i class='glyphicon glyphicon-globe'></i></span>";
+                iconos = iconos + "<span class='btn-title' tooltip-title='Tiene datos geográficos'><i class='fa fa-globe'></i></span>";
             }
 
             if(data.fotos > 0) {
-                iconos = iconos + "<span class='btn-title' tooltip-title='Tiene imágenes'><i class='picture-ev-icon'></i><sub>" + data.fotos + "</sub></span>";
+                iconos = iconos + "<span class='btn-title' tooltip-title='Tiene imágenes'><i class='fa fa-photo'></i><sub>" + data.fotos + "</sub></span>";
             }
 
             return foto + " " + nombres + "<h5 class='soulmate-icons'>" + iconos + "</h5>";
@@ -77,6 +79,21 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 break;
             case 'metamares_proy_esp':
                 $('#'+elemento.replace('nombre_cientifico','especie_id')).attr('value', data.id);
+                break;
+            case 'admin/catalogos':
+                $('#'+elemento.replace('nombre_cientifico','especie_id')).attr('value', data.id);
+                break;
+            case 'admin/catalogos/index':
+                $('#admin_catalogo_especie_id').val(data.id);
+                $('#admin_catalogo_nombre_cientifico').val(data.nombre_cientifico);
+                $('#new_admin_catalogo').submit();
+                break;
+            case 'admin/especie_catalogo':
+                $('#admin_especie_catalogo_especie_id').val(data.id);
+                $(elemento).val(data.nombre_cientifico);
+                break;                
+            case 'busquedas/explora-por-clasificacion':
+                window.location.replace('/explora-por-clasificacion?especie_id='  + data.id + '&q=' + data.nombre_cientifico);
                 break;
             default:
                 // Para no pasar por el controlador de busquedas, ir directo a la especie, solo busqueda basica

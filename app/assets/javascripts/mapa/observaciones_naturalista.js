@@ -38,18 +38,14 @@ var borraObservacionesAnterioresNaturalista = function()
  */
 var leyendaNaturalista = function()
 {
-    naturalista_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomleft'}).addTo(map);
-
-    naturalista_control.addOverlay(naturalistaLayer,
-        '<b>Observaciones de <span aria-hidden="true" class="naturalista-3-ev-icon"></span><span aria-hidden="true" class="naturalista-4-ev-icon"></span></b><br />(ciencia ciudadana) <sub>' + observaciones_conteo + '</sub>'
-    );
+    naturalista_control = L.control.layers({}, {}, {collapsed: true, position: 'bottomleft'}).addTo(map);
 
     naturalista_control.addOverlay(investigacionLayer,
-        '<span aria-hidden="true" class="glyphicon glyphicon-map-marker div-icon-naturalista"></span>Grado de investigación <sub>' + investigacion_conteo + '</sub>'
+        '<i class="fa fa-map-marker div-icon-naturalista"></i>Grado de investigación <sub>' + investigacion_conteo + '</sub>'
     );
 
     naturalista_control.addOverlay(casualLayer,
-        '<span aria-hidden="true" class="glyphicon glyphicon-flag div-icon-naturalista"></span>Grado casual <sub>' + casual_conteo + '</sub>'
+        '<i class="fa fa-flag div-icon-naturalista"></i>Grado casual <sub>' + casual_conteo + '</sub>'
     );
 };
 
@@ -68,13 +64,13 @@ var aniadePuntosNaturaLista = function()
                 if (feature.properties.d[1] == 1)  // Este campos quiere decir que es de grado de investigacion
                 {
                     investigacion_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<i class="fa fa-map-marker"></i>'})});
                 }
             } else {
                 if (feature.properties.d.quality_grade.toLowerCase() == 'investigación')
                 {
                     investigacion_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<i class="fa fa-flag"></i>'})});
                 }
             }
         },
@@ -98,13 +94,13 @@ var aniadePuntosNaturaLista = function()
                 if (feature.properties.d[1] == 2)  // Este campos quiere decir que es de grado casual
                 {
                     casual_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<span aria-hidden="true" class="glyphicon glyphicon-flag"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<i class="fa fa-flag"></i>'})});
                 }
             } else {
                 if (feature.properties.d.quality_grade.toLowerCase() == 'casual')
                 {
                     casual_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<span aria-hidden="true" class="glyphicon glyphicon-flag"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-naturalista', html: '<i class="fa fa-flag"></i>'})});
                 }
             }
         },
@@ -127,7 +123,9 @@ var aniadePuntosNaturaLista = function()
 
     map.addLayer(naturalistaLayer);
     map.addLayer(investigacionLayer);
+
     leyendaNaturalista();
+    tituloControlLayerNaturalista();
 };
 
 /**
@@ -169,18 +167,18 @@ var observacionNaturalista = function(prop)
 
     if (prop.thumb_url != undefined)
     {
-        contenido += "<div><img style='margin: 10px auto!important;' class='img-responsive' src='" + prop.thumb_url + "'/></div>";
-        contenido += "<dt>Atribución: </dt><dd>" + prop.attribution + "</dd>";
+        contenido += "<div><img class='img-responsive mx-auto d-block' src='" + prop.thumb_url + "'/></div>";
+        contenido += "<strong>Atribución: </strong>" + prop.attribution + "<br />";
     }
 
-    contenido += "<dt>Fecha: </dt><dd>" + prop.observed_on + "</dd>";
-    contenido += "<dt>¿Silvestre / Naturalizado?: </dt><dd>" + (prop.captive == true ? 'sí' : 'no') + "</dd>";
-    contenido += "<dt>Grado de calidad: </dt><dd>" + prop.quality_grade + "</dd>";
-    contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ prop.uri +"' target='_blank'>ver la observación</a></dd>";
+    contenido += "<strong>Fecha: </strong>" + prop.observed_on + "<br />";
+    contenido += "<strong>¿Silvestre / Naturalizado?: </strong>" + (prop.captive == true ? 'sí' : 'no') + "<br />";
+    contenido += "<strong>Grado de calidad: </strong>" + prop.quality_grade + "<br />";
+    contenido += "<strong>URL NaturaLista: </strong><a href='"+ prop.uri +"' target='_blank'>ver la observación</a><br />";
 
     // Para enviar un comentario acerca de un registro en particular
-    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" + prop.id + "&tipo_proveedor=7' target='_blank'>redactar</a></dd>";
-
+    contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" + prop.id + "&tipo_proveedor=7' target='_blank'>redactar</a><br />";
+    
     return "<dl class='dl-horizontal'>" + contenido + "</dl>";
 };
 
@@ -228,4 +226,13 @@ var geojsonNaturalista = function(url)
             console.log(jqXHR.responseText);
         }
     });
+};
+
+/**
+ * Pone el titulo en el control del layer, esto para darle formato y quede visible sin pasarle el mouse
+ */
+var tituloControlLayerNaturalista = function()
+{
+    $('.leaflet-control-layers:nth-child(1) a').remove();
+    $('.leaflet-control-layers:nth-child(1)').prepend('<div class="text-center m-2"><span class=" font-weight-bold mr-2">Naturalista </span> <sub>' + observaciones_conteo + '</sub><br /> (ciencia ciudadana)<div>');
 };

@@ -1,0 +1,47 @@
+#por_gi input, .porGrupo input, .porSemaforo input, .porSustentable input, .porZonas label, #porCriterios .nom input, #porCriterios .iucn input{display: none;}
+
+#por_gi span, .porSemaforo span, .porSustentable span, .porGrupo span, #porCriterios .nom span, #porCriterios .iucn span{
+  font-size: 2rem;
+  cursor: pointer;
+  border-radius: 35%;
+  -webkit-transition: border-radius .3s ease-in-out;
+  -moz-transition: border-radius .3s ease-in-out;
+  transition: border-radius .3s ease-in-out;
+}
+
+#por_gi input + span, .porSemaforo input + span, .porSustentable input + span, .porGrupo input + span, #porCriterios .nom input + span, #porCriterios .iucn input + span{
+  border: 2px solid transparent;
+  padding: 2px;
+    -webkit-transition: border-radius .3s ease-in-out;
+  -moz-transition: border-radius .3s ease-in-out;
+  transition: border-radius .3s ease-in-out;
+}
+
+#por_gi input:checked + span, .porSemaforo input:checked + span, .porSustentable input:checked + span, .porGrupo input:checked + span, #porCriterios .nom input:checked + span , #porCriterios .iucn input:checked + span{
+  border-radius: 50% !important;
+  border: 2px solid #991705!important;
+}
+#por_gi input + span:hover, .porSemaforo input + span:hover, .porSustentable input + span:hover, .porGrupo input + span:hover, #porCriterios .nom input + span:hover, #porCriterios .iucn input + span:hover{
+  border: 2px solid rgba(153, 23, 5, .4);
+}
+
+
+
+#por_gi input + span > span, .porSemaforo input + span > span, .porSustentable input + span > span, .porGrupo input + span > span, #porCriterios .nom input + span > span, #porCriterios .iucn input + span > span{
+  border: 1px solid transparent;
+}
+
+#por_gi input:checked + span > span, .porSemaforo input:checked + span > span, .porSustentable input:checked + span > span, .porGrupo input:checked + span > span, #porCriterios .nom input:checked + span > span, #porCriterios .iucn input:checked + span > span{
+  border-radius: 50% !important;
+  border: 1px solid #991705!important;
+}
+#por_gi input + span:hover > span, .porSemaforo input + span:hover > span, .porSustentable input + span:hover > span, .porGrupo input + span:hover > span, #porCriterios .nom input + span:hover > span, #porCriterios .iucn input + span:hover > span{
+  border: 1px solid rgba(153, 23, 5, .4);
+}
+.bloque-color{
+  background-color: #ececec;
+}
+.bloque{
+  border: 1px solid #adadad;
+  border-radius: 25px;
+}

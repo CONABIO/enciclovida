@@ -13,6 +13,7 @@ class Pmc::Pez < ActiveRecord::Base
   belongs_to :especie
   has_one :adicional, :through => :especie, :source => :adicional
   has_one :categoria_taxonomica, through: :especie, source: :categoria_taxonomica
+  has_many :especies_catalogos, through: :especie
 
   attr_accessor :x_nombre_comun_principal
 
@@ -38,6 +39,7 @@ class Pmc::Pez < ActiveRecord::Base
   accepts_nested_attributes_for :peces_propiedades, reject_if: :all_blank, allow_destroy: true
 
   GRUPOS_PECES_MARISCOS = %w(Actinopterygii Chondrichthyes Crustacea Mollusca Echinodermata)
+  CONSUMO_HUMANO = 1217.freeze
 
   # Sobre escribiendo este metodo para las rutas mas legibles
   def to_param
@@ -240,6 +242,25 @@ class Pmc::Pez < ActiveRecord::Base
         p.guardar_manual = true
         p.actualiza_pez_valido
       end
+    end
+  end
+
+  # REVISADO: Asocia el pez al uso comsumo humano
+  def asocia_uso
+    return unless t = especie
+    return if t.catalogos.where(id: CONSUMO_HUMANO).any?
+
+    asociacion = t.especies_catalogos.new({ catalogo_id: CONSUMO_HUMANO, observaciones: 'Peces y mariscos comerciales - Enciclovida' })
+
+    unless asociacion.save
+      Rails.logger.debug "[DEBUG] - La especie #{t.id} no pudo asociarse con el catálogo #{CONSUMO_HUMANO}"
+    end
+  end
+
+  # Corre el proceso para que todos los peces tengan el uso conumo humano
+  def self.asocia_todos_uso
+    all.each do |p|
+      p.asocia_uso
     end
   end
 

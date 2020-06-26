@@ -1,8 +1,10 @@
 class UsuariosController < ApplicationController
   skip_before_action :set_locale, only: [:create, :update, :destroy, :cambia_locale]
+  skip_before_action :verify_authenticity_token, only: [:cambia_locale]
   before_action :authenticate_usuario!, :only => [:index, :show, :edit, :update, :destroy, :conabio]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
-  layout :false, :only => [:cambia_locale]
+
+  layout Proc.new{['cambia_locale'].include?(action_name) ? false : 'application_b3'}
 
   before_action :only => [:index] do
     tiene_permiso?('Administrador') # Minimo administrador

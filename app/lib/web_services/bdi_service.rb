@@ -86,7 +86,7 @@ class BDIService
   end
 
   def arma_y_consulta_url(opts)
-    nombre = opts[:nombre].limpia_ws(true)
+    nombre = opts[:nombre].limpiar(tipo: 'ssp')
     url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{opts[:album]}/?#{opts[:campo]}='#{nombre}'"
     url << "&#{opts[:autor_campo]}=#{opts[:autor]}" if opts[:autor_campo].present? && opts[:autor].present?
     url << "&p=#{opts[:pagina]-1}" if opts[:pagina]
@@ -127,7 +127,7 @@ class BDIService
 
     case reino
       when 'Animalia'
-        (ALBUM_ANIMALES.keys & ancestros).each do |taxon_id|
+        (ALBUM_ANIMALES.keys & ancestros).reverse.each do |taxon_id|
           opts.merge!({album: ALBUM_ANIMALES[taxon_id], nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)
           return jres if jres['data'].any?
@@ -149,7 +149,7 @@ class BDIService
 
         return {'data' => []}
       else
-        (ALBUM_PLANTAS.keys & ancestros).each do |taxon_id|
+        (ALBUM_PLANTAS.keys & ancestros).reverse.each do |taxon_id|
           opts.merge!({album: ALBUM_PLANTAS[taxon_id], nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)
           return jres if jres['data'].present? && jres['data'].any?

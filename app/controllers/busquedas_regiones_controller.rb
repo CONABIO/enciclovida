@@ -10,9 +10,9 @@ class BusquedasRegionesController < ApplicationController
   # /explora-por-region
   def por_region
     @no_render_busqueda_basica = true
-    @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
-    @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
-    @prioritarias = Catalogo.prioritarias
+    #@nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
+    #@distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
+    #@prioritarias = Catalogo.prioritarias
   end
 
   # Servicio para consultar las especies pr region, contempla filtros y cache

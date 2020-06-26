@@ -37,14 +37,17 @@ var borraEjemplaresAnterioresSnib = function()
  */
 var leyendaSnib = function()
 {
-    snib_control = L.control.layers({}, {}, {collapsed: false, position: 'bottomright'}).addTo(map);
+    snib_control = L.control.layers({}, {}, {collapsed: true, position: 'bottomleft'}).addTo(map);
 
-    snib_control.addOverlay(snibLayer,
-        '<b>Ejemplares del SNIB</b><br />(museos, colectas y proyectos) <sub>' + ejemplares_conteo + '</sub>'
-    );
+    if (opciones.geodatos === undefined)
+    {
+        snib_control.addOverlay(snibLayer,
+            '<b>Ejemplares del SNIB</b><br />(museos, colectas y proyectos) <sub>' + ejemplares_conteo + '</sub>'
+        );
+    }
 
     snib_control.addOverlay(coleccionesLayer,
-        '<span aria-hidden="true" class="glyphicon glyphicon-map-marker div-icon-snib"></span>Especímenes en colecciones <sub>' + colecciones_conteo + '</sub>'
+        '<i class="fa fa-map-marker div-icon-snib"></i>Especímenes en colecciones <sub>' + colecciones_conteo + '</sub>'
     );
 
     snib_control.addOverlay(observacionesLayer,
@@ -56,7 +59,7 @@ var leyendaSnib = function()
     );
 
     snib_control.addOverlay(noCampoLayer,
-        '<span aria-hidden="true" class="glyphicon glyphicon-flag div-icon-snib"></span>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
+        '<i class="fa fa-map-flag div-icon-snib"></i>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
     );
 };
 
@@ -75,14 +78,14 @@ var aniadePuntosSnib = function()
                 if (feature.properties.d[1] == 1)  // Este campos quiere decir que es el deafult de la coleccion
                 {
                     colecciones_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="fa fa-map-marker"></i>'})});
                 }
             } else {
                 if (!feature.properties.d.coleccion.toLowerCase().includes('averaves') && !feature.properties.d.coleccion.toLowerCase().includes('ebird')
                     && feature.properties.d.ejemplarfosil.toLowerCase() != 'si' && feature.properties.d.probablelocnodecampo.toLowerCase() != 'si')
                 {
                     colecciones_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="fa fa-map-marker"></i>'})});
                 }
             }
         },
@@ -166,13 +169,13 @@ var aniadePuntosSnib = function()
                 if (feature.properties.d[1] == 4)  // Este campos quiere decir que es de locacion no de campo
                 {
                     no_campo_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="glyphicon glyphicon-flag"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="fa fa-flag"></i>'})});
                 }
             } else {
                 if (feature.properties.d.probablelocnodecampo.toLowerCase() == 'si')
                 {
                     no_campo_conteo++;
-                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<span aria-hidden="true" class="glyphicon glyphicon-flag"></span>'})});
+                    return L.marker(latlng, {icon: L.divIcon({className: 'div-icon-snib', html: '<i class="fa fa-flag"></i>'})});
                 }
             }
         },
@@ -202,6 +205,8 @@ var aniadePuntosSnib = function()
     map.addLayer(observacionesLayer);
     map.addLayer(fosilesLayer);
     leyendaSnib();
+
+    if (opciones.geodatos !== undefined) tituloControlLayerSnib();
 };
 
 /**
@@ -239,26 +244,25 @@ var ejemplarSnib = function(prop)
     if (opciones.nombre_comun !== undefined) var nombre_comun = '<h4 class="text-center">' + opciones.nombre_comun + '</h4>';
     var nombre = nombre_comun + '<h4 class="text-center"><a href="/especies/' + opciones.especie_id + '"><i>' + opciones.nombre_cientifico + '</i></a></h4>';
 
-    var contenido = "";
-    contenido += "" + nombre + "";
-    contenido += "<dt>Localidad: </dt><dd>" + prop.localidad + "</dd>";
-    contenido += "<dt>Municipio: </dt><dd>" + prop.municipiomapa + "</dd>";
-    contenido += "<dt>Estado: </dt><dd>" + prop.estadomapa + "</dd>";
-    contenido += "<dt>País: </dt><dd>" + prop.paismapa + "</dd>";
-    contenido += "<dt>Fecha: </dt><dd>" + prop.fechacolecta + "</dd>";
-    contenido += "<dt>Colector: </dt><dd>" + prop.colector + "</dd>";
-    contenido += "<dt>Colección: </dt><dd>" + prop.coleccion + "</dd>";
-    contenido += "<dt>Institución: </dt><dd>" + prop.institucion + "</dd>";
-    contenido += "<dt>País de la colección: </dt><dd>" + prop.paiscoleccion + "</dd>";
+    contenido += "" + nombre + "<br />";
+    contenido += "<strong>Localidad:</strong> " + prop.localidad + "<br />";
+    contenido += "<strong>Municipio: </strong>" + prop.municipiomapa + "<br />";
+    contenido += "<strong>Estado: </strong>" + prop.estadomapa + "<br />";
+    contenido += "<strong>País: </strong>" + prop.paismapa + "<br />";
+    contenido += "<strong>Fecha: </strong>" + prop.fechacolecta + "<br />";
+    contenido += "<strong>Colector: </strong>" + prop.colector + "<br />";
+    contenido += "<strong>Colección: </strong>" + prop.coleccion + "<br />";
+    contenido += "<strong>Institución: </strong>" + prop.institucion + "<br />";
+    contenido += "<strong>País de la colección: </strong>" + prop.paiscoleccion + "<br />";
 
     if (prop.proyecto.length > 0 && prop.urlproyecto.length > 0)
-        contenido += "<dt>Proyecto: </dt><dd><a href='" + prop.urlproyecto + "' target='_blank'>" + prop.proyecto + "</a></dd>";
+        contenido += "<strong>Proyecto: </strong><a href='" + prop.urlproyecto + "' target='_blank'>" + prop.proyecto + "</a><br />";
 
-    contenido += "<dt>Más información: </dt><dd><a href='" + prop.urlejemplar + "' target='_blank'>consultar</a></dd>";
+    contenido += "<strong>Más información: </strong><a href='" + prop.urlejemplar + "' target='_blank'>consultar</a><br />";
 
     //Para enviar un comentario acerca de un ejemplar en particular
-    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" +
-        prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
+    contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" +
+        prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a><br />";
 
     return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID SNIB: </strong>" + prop.idejemplar;
 };
@@ -298,7 +302,7 @@ var geojsonSnib = function(url)
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
                         "properties": {d: d[i]},
-                        "geometry"  : JSON.parse(d[i].json_geom)
+                        "geometry"  : {"type": "Point", "coordinates":[d[i].longitud,d[i].latitud]}
                     });
                 }
             }
@@ -311,4 +315,13 @@ var geojsonSnib = function(url)
             console.log(jqXHR.responseText);
         }
     });
+};
+
+/**
+ * Pone el titulo en el control del layer, esto para darle formato y quede visible sin pasarle el mouse
+ */
+var tituloControlLayerSnib = function()
+{
+    $('.leaflet-control-layers:nth-child(1) a').remove();
+    $('.leaflet-control-layers:nth-child(1)').prepend('<div class="text-center m-2"><span class="font-weight-bold mr-2">Sistema Nacional de Información <br /> sobre Biodiversidad (SNIB)</span><sub>' +  ejemplares_conteo+ '</sub> <br /> (museos, colectas y proyectos)<div>');
 };

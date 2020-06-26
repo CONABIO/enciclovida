@@ -10,6 +10,7 @@ var cargaMapa = function (id, overlay, opc)
 
     // El default de leaflet
     var OSM_layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png',{
+        subdomains:['a','b','c'],
         zIndex: 1,
         noWrap: true
     });
@@ -17,13 +18,18 @@ var cargaMapa = function (id, overlay, opc)
     // Google terrain map layer
     var GTM_layer = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
         subdomains:['mt0','mt1','mt2','mt3'],
-        zIndex: 2,
+        zIndex: 1,
         noWrap: true
     });
     // Google Hybrid
     var GHM_layer = L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{
         subdomains:['mt0','mt1','mt2','mt3'],
-        zIndex: 3,
+        zIndex: 1,
+        noWrap: true
+    });
+    // Wikimedia Maps
+    var WM_layer = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png',{
+        zIndex: 1,
         noWrap: true
     });
 
@@ -34,9 +40,10 @@ var cargaMapa = function (id, overlay, opc)
         doubleClickZoom: false,
         minZoom: 4,
         layers: [     // Existe un bug poniendo primero los layes de google
-            OSM_layer,
-            GTM_layer,
-            GHM_layer
+            //OSM_layer,
+            GHM_layer,
+            //WM_layer,
+            //GTM_layer,
         ]
     });
 
@@ -56,10 +63,12 @@ var cargaMapa = function (id, overlay, opc)
     map.setView(place, 5);  // Default place and zoom
 
     // Para poner las capas iniciales de los mapas
+    /*
     var baseMaps = {
+        "Vista Híbrida": GHM_layer,
         "Open Street Maps": OSM_layer,
         "Vista de terreno": GTM_layer,
-        "Vista Híbrida": GHM_layer
+        "Mapas de Wikipedia": WM_layer
     };
 
     if (opc.collapsed === undefined) opc.collasped = true;
@@ -68,4 +77,9 @@ var cargaMapa = function (id, overlay, opc)
     if (opc.pantalla_comp) map.addControl(fullscreen);
 
     map.addControl(zoom);
+
+    */
+    //Para asegurarnos que siempre se genere el mapa con el mínimo markup posible
+    ponTamaño();
+
 };

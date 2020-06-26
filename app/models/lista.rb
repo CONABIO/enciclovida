@@ -240,7 +240,7 @@ class Lista < ActiveRecord::Base
         end
       when 'x_bdi_fotos'
         next unless adicional = taxon.adicional
-        self.taxon.x_bdi_fotos = "#{CONFIG.site_url}especies/#{taxon.id}/fotos-bdi" if adicional.foto_principal.present?
+        self.taxon.x_bdi_fotos = "#{CONFIG.site_url}especies/#{taxon.id}/bdi-photos" if adicional.foto_principal.present?
       else
         next
       end  # End switch

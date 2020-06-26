@@ -3,12 +3,12 @@ $(document).ready(function() {
         opciones.cual_ficha = $(this).val();
 
         $.ajax({
-            url: "/especies/" + opciones.especie_id + "/describe?from=" + opciones.cual_ficha,
+            url: "/especies/" + opciones.taxon + "/descripcion?from=" + opciones.cual_ficha,
             method: 'get',
             success: function (data, status) {
                 $('.taxon_description').replaceWith(data);
             },
-            error: function (request, status, error) {
+            fail: function (request, status, error) {
                 $('.taxon_description').loadingShades('close');
             }
         });
@@ -32,14 +32,14 @@ $(document).ready(function() {
             });
 
             // Si el detalle está vacío, asumimos que siempre aparecerá: Ver menos detalles
-            $("#ficha_" + idFicha).html("<i class='glyphicon glyphicon-minus-sign'></i> Ver menos detalles");
+            $("#ficha_" + idFicha).html("<i class='fa fa-minus'></i> Ver menos detalles");
 
         } else {
 
             if( $('#detalle_' + idFicha).hasClass( "detalle-oculto" ) ) {
-                $("#ficha_" + idFicha).html("<i class='glyphicon glyphicon-minus-sign'></i> Ver menos detalles");
+                $("#ficha_" + idFicha).html("<i class='fa fa-minus'></i> Ver menos detalles");
             } else {
-                $("#ficha_" + idFicha).html("<i class='glyphicon glyphicon-plus-sign'></i> Ver mas detalles");
+                $("#ficha_" + idFicha).html("<i class='fa fa-plus'></i> Ver mas detalles");
             }
             $('#detalle_' + idFicha).toggleClass("detalle-oculto");
         }

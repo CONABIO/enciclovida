@@ -3,6 +3,30 @@ Buscador::Application.routes.draw do
 
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
+  # Administracion de los catalogos
+  namespace :admin do
+    resources :catalogos do
+      collection do
+        get :dame_nivel
+      end
+    end
+
+    resources :especies_catalogos, except: [:index, :show]
+    
+    resources :regiones do
+      collection do
+        get :autocompleta
+      end
+    end
+    
+    resources :bibliografias do
+      collection do
+        get :autocompleta
+      end
+    end
+  end
+
+  # metamares, alias infoceanos
   if Rails.env.development?
     namespace :metamares do
       root 'metamares#index'
@@ -36,6 +60,7 @@ Buscador::Application.routes.draw do
     resources :peces, :as => :pez do
       collection do
         get :dameNombre
+        get :busqueda
       end
     end
 
@@ -46,6 +71,15 @@ Buscador::Application.routes.draw do
     end
   end
 
+  namespace :api do
+    resources :descripciones do
+      collection do
+
+      end
+    end
+  end
+
+  # Admin y front end de fichas
   namespace :fichas do
     #resources :taxa
     resources :front do
@@ -97,16 +131,11 @@ Buscador::Application.routes.draw do
     end
   end
 
-  get 'usuarios/conabio'
+  # Pagina de exoticas, mal quitar en eun futuro
   get 'exoticas-invasoras' => 'paginas#exoticas_invasoras'
   get 'exoticas-invasoras-paginado' => 'paginas#exoticas_invasoras_paginado'
 
-  resources :roles_categorias_contenido
-
-  resources :usuarios_especie
-
-  resources :usuarios_roles
-
+  # Busquedas por region
   get 'explora-por-ubicacion' => 'busquedas_regiones#ubicacion'
   get 'explora-por-region' => 'busquedas_regiones#por_region'
   get 'explora-por-region/especies' => 'busquedas_regiones#especies'
@@ -114,25 +143,26 @@ Buscador::Application.routes.draw do
   get 'explora-por-region/descarga-taxa' => 'busquedas_regiones#descarga_taxa'
   get 'explora-por-region/conteo-por-grupo' => 'busquedas_regiones#conteo_por_grupo'
 
-  get "busquedas/basica"
-  get "busquedas/avanzada"
-  get "busquedas/resultados"
-  get "busquedas/nombres_comunes"
-
+  # Paginas del inicio
   get "inicio/comentarios"
   get "inicio/index"
   get "inicio/acerca"
   get "inicio/error"
 
+  # rutas de bsuquedas
   get 'avanzada', to: "busquedas#avanzada", as: :avanzada
   get 'resultados', to: "busquedas#resultados", as: :resultados
   get 'checklist', to: "busquedas#checklist", as: :checklist
   get 'cat_tax_asociadas', to: "busquedas#cat_tax_asociadas", as: :cat_tax_asociadas
+  get "busquedas/basica"
+  get "busquedas/avanzada"
+  get "busquedas/resultados"
+  get "busquedas/nombres_comunes"
 
+  # Rutas de comentarios
   get 'comentarios/administracion' => 'comentarios#admin', as: :admin
   post 'comentarios/:id/update_admin' => 'comentarios#update_admin'
   get 'especies/:especie_id/comentarios/:id/respuesta_externa' => 'comentarios#respuesta_externa'
-
   get 'comentarios/generales' => 'comentarios#extrae_comentarios_generales'
   get 'comentarios/correoId' => 'comentarios#show_correo'
 
@@ -142,12 +172,10 @@ Buscador::Application.routes.draw do
     end
   end
 
-  resources :metadatos
-
+  # Usuarios
   devise_for :usuarios
   devise_for :metausuarios, :controllers => {:confirmations => "metamares/metausuarios/confirmations", :passwords => "metamares/metausuarios/passwords", :registrations => "metamares/metausuarios/registrations", :unlocks => "metamares/metausuarios/unlocks", :sessions => "metamares/metausuarios/sessions"}
-
-  resources :bitacoras
+  get 'usuarios/conabio'
 
   resources :listas do
     collection do
@@ -156,108 +184,74 @@ Buscador::Application.routes.draw do
     end
   end
 
-  resources :roles
-
-  resources :catalogos
-
-  resources :categorias_taxonomica
-
   resources :usuarios do
     collection do
       post :cambia_locale
     end
   end
 
-  resources :estatuses
-
-  resources :especies_catalogo
-
+  # La vista mas importante, especies
   resources :especies, :except => :show, as: :especie do
     resources :comentarios  # Anida este resource para que la URL y el controlador sean mas coherentes
 
     collection do
       get '/:id', action: 'show', constraints: { id: /\d{1,8}[\-A-Za-z]*/ }
-      post :update_photos, :as => :update_photos_for
-      get ':id/arbol' => 'especies#arbol'
       get :error
       get ':id/observaciones-naturalista' => 'especies#observaciones_naturalista'
       get ':id/observacion-naturalista/:observacion_id' => 'especies#observacion_naturalista'
       get ':id/ejemplares-snib' => 'especies#ejemplares_snib'
       get ':id/ejemplar-snib/:ejemplar_id' => 'especies#ejemplar_snib'
-      get ':id/arbol_nodo_inicial' => 'especies#arbol_nodo_inicial'
-      get ':id/arbol_nodo_hojas' => 'especies#arbol_nodo_hojas'
-      get ':id/arbol_identado_hojas' => 'especies#arbol_identado_hojas'
+      get ':id/fotos-referencia' => 'especies#fotos_referencia'
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
-      get ':id/fotos-bdi' => 'especies#fotos_bdi'
-      get ':id/videos-bdi' => 'especies#videos_bdi'
+      get ':id/media' => 'especies#media'
+      get ':id/bdi-photos' => 'especies#bdi_photos'
+      get ':id/bdi-videos' => 'especies#bdi_videos'
       get ':id/media-cornell' => 'especies#media_cornell'
-      get ':id/media_tropicos' => 'especies#media_tropicos'
+      get ':id/media-tropicos' => 'especies#media_tropicos'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
       get ':id/nombres-comunes-todos' => 'especies#nombres_comunes_todos'
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
       get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
-      get ':id/wikipedia-summary' => 'especies#wikipedia_summary'
+      get ':id/resumen-wikipedia' => 'especies#resumen_wikipedia'
+      get ':id/descripcion' => 'especies#descripcion'
     end
   end
 
+  # TODO: quitar estos scaffold, no se ocupan
   resources :especies_bibliografia
-
   resources :especies_estatus
-
   resources :tipos_regiones
-
   resources :regiones
-
   resources :especies_regiones
-
   resources :tipos_distribuciones
-
   resources :especies_estatus_bibliografia
-
   resources :nombres_comunes
-
   resources :nombres_regiones
-
   resources :nombre_regiones_bibliografias
+  resources :estatuses
+  resources :especies_catalogo
+  resources :roles
+  resources :catalogos
+  resources :categorias_taxonomica
+  resources :bitacoras
+  resources :roles_categorias_contenido
+  resources :usuarios_especie
+  resources :usuarios_roles
 
-  resources :bibliografias
+  # explora por clasificacion
+  get 'explora-por-clasificacion' => 'busquedas#por_clasificacion'
+  get 'explora-por-clasificacion/hojas' => 'busquedas#por_clasificacion_hojas'
 
-  match 'especies/:id/edit_photos' => 'especies#edit_photos', :as => :edit_taxon_photos, :via => :get
-  match 'especies/:id/photos' => 'especies#photos', :as => :taxon_photos, :via => :get
-  get 'explora_por_clasificacion' => 'especies#arbol_inicial'
 
   match 'adicionales/:especie_id/edita_nom_comun' => 'adicionales#edita_nom_comun', :as => :edita_nombre_comun_principal, :via => :get
 
-  match 'flickr/photo_fields' => 'flickr#photo_fields', :via => :get
-  match '/conabio/photo_fields' => 'conabio#photo_fields', :via => :get
-  match '/eol/photo_fields' => 'eol#photo_fields', :via => :get
-  match '/wikimedia_commons/photo_fields' => 'wikimedia_commons#photo_fields', :via => :get
-  #match 'photos/local_photo_fields' => 'photos#local_photo_fields', :as => :local_photo_fields
-  match '/photos/:id/repair' => 'photos#repair', :as => :photo_repair, :via => :put
-  match 'flickr/photos.:format' => 'flickr#photos', :via => :get
-  match '/especies/:id/describe' => 'especies#describe', :as => :descripcion, :via => :get
   get '/especies/:id/descripcion_catalogos' => 'especies#descripcion_catalogos'
   get '/especies/:id/comentario' => 'especies#comentarios'
   get '/especies/:id/noticias' => 'especies#noticias'
 
-  # Path's para acceder a servicio de Janium
-  get '/registros_bioteca/:id(/find_by=:t_name)(/page=:n_page)' => 'especies#show_bioteca_records'
-  get '/registro_bioteca/:id' => 'especies#show_bioteca_record_info'
-
-
-  resources :photos, :only => [:show, :update, :destroy] do
-    member do
-      put :rotate
-    end
-  end
-
   # I. Clasificación y descripción de la especie
   get 'media_tropicos/:id' => 'tropicos#tropico_especie'
-
-
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
   root 'inicio#index'

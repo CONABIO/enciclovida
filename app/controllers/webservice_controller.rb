@@ -1,7 +1,7 @@
 class WebserviceController < ApplicationController
   skip_before_action :set_locale
   protect_from_forgery with: :null_session
-  layout false, :only => [:geojson_a_topojson]
+  layout Proc.new{['geojson_a_topojson'].include?(action_name) ? false : 'application_b3'}
 
   def bdi_nombre_cientifico
     @nombre = params['nombre']

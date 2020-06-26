@@ -13,7 +13,13 @@ class EspecieRegion < ActiveRecord::Base
 
   belongs_to :region, :foreign_key => Region.attribute_alias(:id)
   belongs_to :especie
-  belongs_to :tipo_distribucion, :foreign_key => TipoDistribucion.attribute_alias(:id)
+  belongs_to :tipo_distribucion, -> {
+    if I18n.locale.present?
+      I18n.locale.to_s == 'es-cientifico' ? distribuciones_vista_especialistas : distribuciones_vista_general
+    else
+      all
+    end
+  }, foreign_key: TipoDistribucion.attribute_alias(:id)
   has_many :nombres_regiones, :class_name => 'NombreRegion', :foreign_key => 'especie_id', :dependent => :destroy
 
 end

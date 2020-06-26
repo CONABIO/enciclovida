@@ -104,7 +104,7 @@ var cargaDivisionMunicipal = function()
             .append('path')
             .attr('class', 'region leaflet-clickable')
             .on('mouseover', function(d){
-                nombreRegion(opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties);
+                nombreRegion(opciones.datos[opciones.estado_seleccionado].municipios[d.properties.region_id].properties);
             })
             .on('dblclick', function(d){
                 seleccionaMunicipio(d.properties.region_id);
@@ -113,15 +113,12 @@ var cargaDivisionMunicipal = function()
                 if (opciones.datos[opciones.estado_seleccionado].municipios == undefined)
                     opciones.datos[opciones.estado_seleccionado].municipios = [];
 
-                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)] = {};
-                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties = d.properties;
-                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.layer = $(this);
-                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.tipo_region = 'municipio';
+                opciones.datos[opciones.estado_seleccionado].municipios[d.properties.region_id] = {};
+                opciones.datos[opciones.estado_seleccionado].municipios[d.properties.region_id].properties = d.properties;
+                opciones.datos[opciones.estado_seleccionado].municipios[d.properties.region_id].properties.layer = $(this);
+                opciones.datos[opciones.estado_seleccionado].municipios[d.properties.region_id].properties.tipo_region = 'municipio';
 
-                var bounds = d3.geo.bounds(d)
-                opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties.bounds = [bounds[0].reverse(), bounds[1].reverse()];
-
-                completaSelect(opciones.datos[opciones.estado_seleccionado].municipios[parseInt(d.properties.region_id)].properties);
+                completaSelect(opciones.datos[opciones.estado_seleccionado].municipios[d.properties.region_id].properties);
             });
 
         map.on('zoomend', reinicia);

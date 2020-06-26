@@ -21,7 +21,7 @@ var paginadoFotosBDI = function(paginas, pagina)
         else {
             $.ajax(
                 {
-                    url: '/especies/' + opciones.especie_id + '/fotos-bdi.html',
+                    url: '/especies/' + opciones.taxon + '/bdi-photos.html',
                     type: 'GET',
                     data: {
                         pagina: pag

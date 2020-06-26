@@ -5,71 +5,103 @@ class Pmc::PecesController < Pmc::PmcController
   end
 
   before_action :set_pez, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_usuario!, :except => [:show, :index, :dameNombre]
+  before_action :authenticate_usuario!, :except => [:show, :busqueda, :dameNombre, :index]
   before_action :only => [:new, :update, :edit, :create, :destroy] do
     tiene_permiso?('AdminPeces', true)  # Minimo administrador... de peces duh!
   end
 
-  # Busqueda por pez y marisco
   def index
-    if params[:commit].present?
-      @filtros =  Pmc::Criterio.dame_filtros
-      @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS).order("FIELD(`#{CONFIG.bases.cat}`.`Nombre`.`NombreCompleto`, '#{Pmc::Pez::GRUPOS_PECES_MARISCOS.join("','")}')")
-      @peces = Pmc::Pez.filtros_peces
+    #render layout: false
+    @doc = Nokogiri::HTML(open("http://www2.biodiversidad.gob.mx/usos/alimentacion/peces/")).css('#introenciclovida2')
+    #@doc.css('#pagetitle').remove
+    #@doc.css('#sectionmenu').remove
+    #@doc.css('#pageima').remove
+    @doc.xpath('//comment()').remove
 
-      if params[:id].present?  # Busqueda cuando selecciono un nombre en redis
-        @peces = @peces.where(especie_id: params[:id])
-      elsif params[:nombre].present? # Busqueda por nombre científico o comunes
-        @peces = @peces.where("LOWER(nombres_comunes) REGEXP ? OR LOWER(#{Especie.attribute_alias(:nombre_cientifico)}) REGEXP ?", params[:nombre].downcase, params[:nombre].downcase)
-      end
-
-      # Busqueda con pesquerias
-      @peces = @peces.where(especie_id: params[:pesquerias]) if params[:pesquerias].present?
-
-      # Filtros globales
-      @peces = @peces.where("peces_propiedades.propiedad_id = ?", params[:grupos]) if params[:grupos].present?
-      @peces = @peces.where("criterios.id IN (#{params[:tipo_capturas].join(',')})") if params[:tipo_capturas].present?
-      @peces = @peces.where("criterios.id IN (#{params[:tipo_vedas].join(',')})") if params[:tipo_vedas].present?
-      @peces = @peces.where("criterios.id IN (#{params[:procedencias].join(',')})") if params[:procedencias].present?
-      @peces = @peces.where("criterios.id IN (#{params[:nom].join(',')})") if params[:nom].present?
-      @peces = @peces.where("criterios.id IN (#{params[:iucn].join(',')})") if params[:iucn].present?
-      @peces = @peces.where("criterios.id IN (#{params[:cnp].join(',')})") if params[:cnp].present?
-
-      # Filtro de grupo iconico
-      if params[:grupos_iconicos].present? && params[:grupos_iconicos].any?
-        ids = params[:grupos_iconicos].map{ |id| ",#{id}," }
-        @peces = @peces.where("#{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} REGEXP '#{ids.join('|')}'")
-      end
-
-      # La asigno aqui para que se encuentre más abajo
-      recomendacion = params[:semaforo_recomendacion]
-
-      # Busqueda con estrella
-      if params[:semaforo_recomendacion].present? && params[:semaforo_recomendacion].include?('star')
-        @peces = @peces.where(con_estrella: 1)
-        recomendacion = params[:semaforo_recomendacion]-['star']  # Quito este valor, para que no busque con expresiones regualres "star"
-      end
-
-      # Filtros del SEMAFORO de RECOMENDACIÓN
-      if recomendacion.present? && params[:zonas].present?
-        regexp = dame_regexp_zonas(zonas: params[:zonas], color_seleccionado: "[#{recomendacion.join('')}]")
-        @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
-      elsif recomendacion.present?
-        # Selecciono el valor de sin datos
-        if recomendacion.include?('sn')
-          rec = "[#{recomendacion.join('')}]{6}"
-        else # Cualquier otra combinacion
-          rec = recomendacion.map{ |r| r.split('') }.join('|')
+    @doc.each do |el|
+      el.traverse do |n|
+        next if n.key?('id') && %w(accordion collapse1 collapse2 collapse3 collapse4).include?(n.attribute('id').value)
+        #n.remove_attribute('id')
+        #n.remove_class('contenidoGRALima')
+        #n.remove_class('project')
+        if n.matches?('img')
+          n.attribute('src').value = n.attribute('src').value.gsub('../../../', 'https://www.biodiversidad.gob.mx/')
         end
-        @peces = @peces.where("valor_zonas REGEXP '#{rec}'")
-      elsif params[:zonas].present?
-        regexp = dame_regexp_zonas(zonas: params[:zonas])
-        @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
       end
+    end
 
-      render 'resultados'
-    else
-      redirect_to '/pmc/peces?semaforo_recomendacion%5B%5D=star&commit=Buscar'
+    @doc = @doc.to_html.force_encoding('UTF-8').gsub('Ã¡','á').gsub('Ã©','é').gsub('Ã','í').gsub('í³','ó').gsub('íº','ú').gsub('í','Á')
+  end
+
+  # Busqueda por pez y marisco
+  def busqueda
+    @filtros = Pmc::Criterio.dame_filtros
+    @nom_cites_iucn_todos = @filtros[:edo_cons]
+    @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS)
+    @peces = Pmc::Pez.filtros_peces
+
+    if params[:id].present?  # Busqueda cuando selecciono un nombre en redis
+      @peces = @peces.where(especie_id: params[:id])
+    elsif params[:nombre].present? # Busqueda por nombre científico o comunes
+      @peces = @peces.where("LOWER(nombres_comunes) REGEXP ? OR LOWER(#{Especie.table_name}.#{Especie.attribute_alias(:nombre_cientifico)}) REGEXP ?", params[:nombre].downcase, params[:nombre].downcase)
+    end
+
+    # Busqueda con pesquerias
+    @peces = @peces.where(especie_id: params[:pesquerias]) if params[:pesquerias].present?
+
+    # Filtros globales
+    @peces = @peces.where("peces_propiedades.propiedad_id = ?", params[:grupos]) if params[:grupos].present?
+    @peces = @peces.where("criterios.id IN (#{params[:tipo_capturas].join(',')})") if params[:tipo_capturas].present?
+    @peces = @peces.where("criterios.id IN (#{params[:tipo_vedas].join(',')})") if params[:tipo_vedas].present?
+    @peces = @peces.where("criterios.id IN (#{params[:procedencias].join(',')})") if params[:procedencias].present?
+    @peces = @peces.where("criterios.id IN (#{params[:cnp].join(',')})") if params[:cnp].present?
+
+    # Para tomar las categorias de riesgo de catalogos
+    @peces = @peces.left_joins(:especies_catalogos).where("#{EspecieCatalogo.table_name}.#{EspecieCatalogo.attribute_alias(:catalogo_id)} IN (?)", params[:edo_cons]) if params[:edo_cons].present?
+
+    # Filtro de grupo iconico
+    if params[:grupos_iconicos].present? && params[:grupos_iconicos].any?
+      ids = params[:grupos_iconicos].map{ |id| ",#{id}," }
+      @peces = @peces.where("#{Especie.table_name}.#{Especie.attribute_alias(:ancestry_ascendente_directo)} REGEXP '#{ids.join('|')}'")
+    end
+
+    # La asigno aqui para que se encuentre más abajo
+    recomendacion = params[:semaforo_recomendacion]
+
+    # Busqueda con estrella
+    if (params[:semaforo_recomendacion].present? && params[:semaforo_recomendacion].include?('star')) || params[:commit].blank?
+      @peces = @peces.where(con_estrella: 1)
+      recomendacion = params[:semaforo_recomendacion]-['star'] if params[:commit].present?  # Quito este valor, para que no busque con expresiones regualres "star"
+    end
+
+    # Filtros del SEMAFORO de RECOMENDACIÓN
+    if recomendacion.present? && params[:zonas].present?
+      regexp = dame_regexp_zonas(zonas: params[:zonas], color_seleccionado: "[#{recomendacion.join('')}]")
+      @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
+    elsif recomendacion.present?
+      # Selecciono el valor de sin datos
+      if recomendacion.include?('sn')
+        rec = "[#{recomendacion.join('')}]{6}"
+      else # Cualquier otra combinacion
+        rec = recomendacion.map{ |r| r.split('') }.join('|')
+      end
+      @peces = @peces.where("valor_zonas REGEXP '#{rec}'")
+    elsif params[:zonas].present?
+      regexp = dame_regexp_zonas(zonas: params[:zonas])
+      @peces = @peces.where("valor_zonas REGEXP '#{regexp}'")
+    end
+
+    respond_to do |format|
+      format.html {}
+      format.json do
+        @peces_json = @peces.map do |t|
+          { id: t.id, nombre_comun: t.nombre_comun_principal, nombre_cientifico: t.nombre_cientifico,
+            foto: t.imagen, categoria_taxonomica: t.nombre_categoria_taxonomica,
+            grupo: t.propiedades.where(tipo_propiedad: 'Grupo CONABIO').map(&:nombre_propiedad).first }
+        end
+
+        render json: @peces_json
+      end
     end
   end
 

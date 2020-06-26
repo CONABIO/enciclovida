@@ -1,18 +1,16 @@
 class EspeciesController < ApplicationController
 
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
-                                         :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
+                                         :fotos_naturalista, :bdi_photos, :bdi_videos, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
-                                         :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :wikipedia_summary]
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
+                                         :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :resumen_wikipedia]
+
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :comentarios, :fotos_bdi, :videos_bdi,
+                                     :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
-                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :wikipedia_summary]
-  before_action :only => [:arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas] do
-    set_especie(true)
-  end
+                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :resumen_wikipedia]
 
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista]
 
@@ -20,14 +18,14 @@ class EspeciesController < ApplicationController
     tiene_permiso?('Administrador')  # Minimo administrador
   end
 
-  layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :videos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
+  layout false, :only => [:media, :descripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
+                          :comentarios,
+                          :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
-                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :wikipedia_summary]
+                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :resumen_wikipedia]
 
   # Pone en cache el webservice que carga por default
-  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
+  caches_action :descripcion, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
 
   # GET /especies
   # GET /especies.json
@@ -39,6 +37,10 @@ class EspeciesController < ApplicationController
   # GET /especies/1.json
   def show
     render 'especies/noPublicos' and return unless @especie.scat.Publico
+    
+    # Para mostrar la taxonomia en la página inicial del show
+    @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)
+
     respond_to do |format|
       format.html do
 
@@ -50,7 +52,7 @@ class EspeciesController < ApplicationController
           @datos[:nombres_comunes] =  adicional.nombres_comunes
         end
 
-        @datos[:especie_o_inferior] = @especie.especie_o_inferior?
+        @datos[:especie_o_inferior] = @especie
 
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if proveedor = @especie.proveedor
@@ -98,8 +100,8 @@ class EspeciesController < ApplicationController
 
         # Para las variables restantes
         @datos[:cuantos_comentarios] = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
-        @datos[:especie_id] = @especie.id
-        @datos[:bdi_api] = "/especies/#{@especie.id}/fotos-bdi.json"
+        @datos[:taxon] = @especie.id
+        @datos[:bdi_api] = "/especies/#{@especie.id}/bdi-photos.json"
         @datos[:cual_ficha] = ''
         @datos[:slug_url] = "/especies/#{@especie.id}-#{@especie.nombre_cientifico.estandariza}"
       end
@@ -128,7 +130,7 @@ class EspeciesController < ApplicationController
         @especie.e_tipo_distribucion = @especie.tipos_distribuciones.uniq
         @especie.e_caracteristicas = @especie.catalogos
         @especie.e_bibliografia = @especie.bibliografias
-        @especie.e_fotos = ["#{CONFIG.site_url}especies/#{@especie.id}/fotos-bdi.json", "#{CONFIG.site_url}especies/#{@especie.id}/fotos-naturalista.json"]  # TODO: poner las fotos de referencia, actaulmente es un metodo post
+        @especie.e_fotos = ["#{CONFIG.site_url}especies/#{@especie.id}/bdi-photos.json", "#{CONFIG.site_url}especies/#{@especie.id}/fotos-naturalista.json"]  # TODO: poner las fotos de referencia, actaulmente es un metodo post
 
         render json: @especie.to_json(methods: [:e_geodata, :e_nombre_comun_principal, :e_foto_principal,
                                                 :e_nombres_comunes, :e_categoria_taxonomica, :e_tipo_distribucion,
@@ -164,31 +166,8 @@ class EspeciesController < ApplicationController
           @fotos = fotos[:fotos] if fotos[:estatus] && fotos[:fotos].any?
         end
 
-        # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
-        @describers = if CONFIG.taxon_describers
-                        CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                      elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
-                        [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
-                      else
-                        [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
-                      end
-
-        if params[:from].present? && CONFIG.taxon_describers.include?(params[:from].downcase)
-          # Especifico una descripcion y esta dentro de los permitidos
-          d = TaxonDescribers.get_describer(params[:from])
-          @description = d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-
-        else  # No especifico una descripcion y mandara a llamar el que encuentre
-          @describers.each do |d|
-            @describer = d
-            @description = begin
-              d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-            rescue OpenURI::HTTPError, Timeout::Error => e
-              nil
-            end
-            break unless @description.blank?
-          end
-        end
+        # Ya tiene la descripcion asignada
+        asigna_variables_descripcion
 
         ruta = Rails.root.join('public', 'pdfs').to_s
         fecha = Time.now.strftime("%Y%m%d%H%M%S")
@@ -317,48 +296,7 @@ class EspeciesController < ApplicationController
 
   # REVISADO: Regresa el nombre cientifico con el formato del helper, lo uso mayormente en busquedas por 
   def dame_nombre_con_formato
-  end
-
-  # REVISADO: Despliega el arbol identado o nodo
-  def arbol
-    if I18n.locale.to_s == 'es-cientifico'
-      @taxones = Especie.arbol_identado_inicial(@especie)
-      render :partial => 'especies/arbol/arbol_identado_inicial'
-    else
-      render :partial => 'especies/arbol/arbol_nodo_inicial'
-    end
-  end
-
-  # REVISADO: JSON que se ocupara para desplegar el arbol nodo incial en D3
-  def arbol_nodo_inicial
-    hash_d3 = {}
-    taxones = Especie.arbol_nodo_inicial(@especie)
-
-    taxones.reverse.each do |taxon|
-      if hash_d3.empty?
-        hash_d3 = taxon.arbol_nodo_hash
-      else  # El taxon anterior la pone como hija del taxon actual
-        parent = taxon.arbol_nodo_hash
-        parent[:children] = [hash_d3]
-        hash_d3 = parent
-      end
-    end
-
-    render :json => hash_d3
-  end
-
-  # REVISADO: JSON que despliega los hijosen el arbol nodo, en la ficha de la especie
-  def arbol_nodo_hojas
-    taxones = Especie.arbol_nodo_hojas(@especie)
-    render :json => taxones.map{|t| t.arbol_nodo_hash}
-  end
-
-  # REVISADO: JSON que despliega los hijos en el arbol identado, en la ficha de la especie
-  def arbol_identado_hojas
-    @taxones = Especie.arbol_identado_hojas(@especie)
-    @hojas = true
-
-    render :partial => 'especies/arbol/arbol_identado_hojas'
+    render html: "#{helpers.tituloNombreCientifico(@especie, render: 'link')}".html_safe
   end
 
   # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista o de bdi
@@ -379,9 +317,16 @@ class EspeciesController < ApplicationController
     @foto_default = @fotos.first
   end
 
+  # Acción necesaria para la tab media, similar a describe ¬¬
+  def media
+    render 'especies/media/media'
+  end
+
   # Servicio de lib/bdi_service.rb
-  def fotos_bdi
+  def bdi_photos
     @pagina = params['pagina']
+    type = params['type']
+    page = params['page']
 
     if @pagina.present?
       bdi = @especie.fotos_bdi({pagina: @pagina.to_i})
@@ -410,6 +355,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
+          render 'especies/media/bdi_photos', :locals => {type: type, page: page} and return
         end  # End format html
       end  # End respond
 
@@ -419,8 +365,10 @@ class EspeciesController < ApplicationController
   end
 
   #Videos de BDI
-  def videos_bdi
+  def bdi_videos
     @pagina = params['pagina']
+    type = params['type']
+    page = params['page']
 
     if @pagina.present?
       bdi = @especie.videos_bdi({pagina: @pagina.to_i})
@@ -449,6 +397,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
+          render 'especies/media/bdi_videos', :locals => {type: type, page: page} and return
         end  # End format html
       end  # End respond
 
@@ -465,11 +414,13 @@ class EspeciesController < ApplicationController
     mc = MacaulayService.new
     @array = mc.dameMedia_nc(taxonNC, type, page)
 
-    render :locals => {type: type, page: page}
+    render 'especies/media/media_cornell', :locals => {type: type, page: page}
   end
 
   # Servicio Tropicos
   def media_tropicos
+    type = params['type']
+    page = params['page']
 
     # Crear instancia de servicio trópicos:
     ts_req = Tropicos_Service.new
@@ -518,6 +469,7 @@ class EspeciesController < ApplicationController
     end
 
     @array = [{msg: "Aún no hay imágenes para esta especie :/ "}] if @array[0]["Error"].present?
+    render 'especies/media/media_tropicos', :locals => {type: type, page: page}
   end
 
   def fotos_naturalista
@@ -544,60 +496,28 @@ class EspeciesController < ApplicationController
     @nombres_comunes = @especie.dame_nombres_comunes_todos
   end
 
-  # Viene de la pestaña de la ficha
-  def describe
-    @describers = if CONFIG.taxon_describers
-                    CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                  elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
-                    [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
-                  else
-                    [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
-                  end
-
-    if @describer = TaxonDescribers.get_describer(params[:from])
-      @description = @describer.equal?(TaxonDescribers::EolEs) ? @describer.describe(@especie, :language => 'es') : @describer.describe(@especie)
-    else
-      @describers.each do |d|
-        @describer = d
-        @description = begin
-          d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-        rescue OpenURI::HTTPError, Timeout::Error => e
-          nil
-        end
-        break unless @description.blank?
-      end
-    end
-
-    @describer_url = @describer.page_url(@especie)
-    respond_to do |format|
-      format.html { render :partial => 'description' }
-    end
+  # Viene de la pestaña "Acerca de " de la ficha
+  def descripcion
+    asigna_variables_descripcion
+    render 'especies/descripciones/descripcion'
   end
 
   # Regresa el resumen de wikipedia en español o ingles
-  def wikipedia_summary
-    describers = [TaxonDescribers::WikipediaEs, TaxonDescribers::Wikipedia]
+  def resumen_wikipedia
+    opc = { taxon: @especie, locale: params[:locale] }
 
-    if describer = TaxonDescribers.get_describer(params[:from])
-      sumamry = describer.get_summary(@especie)
+    if params[:locale].present?
+      resumen = Api::Wikipedia.new(opc).resumen
     else
-      describers.each do |describer|
-
-        sumamry = begin
-          describer.get_summary(@especie)
-        rescue OpenURI::HTTPError, Timeout::Error => e
-          nil
-        end
-
-        break unless sumamry.blank?
-      end
+      resumen = Api::Wikipedia.new(opc).resumen_cualquiera
     end
 
-    render json: { estatus: (sumamry.present? ? true : false), sumamry: sumamry }
+    render json: { estatus: (resumen.present? ? true : false), sumamry: resumen }
   end
 
   # Viene de la pestaña de la ficha
   def descripcion_catalogos
+    render 'especies/descripciones/descripcion_catalogos'
   end
 
   # Devuelve las observaciones de naturalista en diferentes formatos
@@ -766,7 +686,7 @@ class EspeciesController < ApplicationController
       p.naturalista_id = new_id
     else
       # NO existe proveedor
-      p = @especie.proveedor.new({naturalista_id: new_id})
+      p = Proveedor.new({especie_id: @especie.id,naturalista_id: new_id})
     end
 
     if p.changed? && p.save
@@ -872,7 +792,7 @@ class EspeciesController < ApplicationController
           :id => especie.id,
           :nombre => {
               "comun" => especie.adicional.nombre_comun_principal,
-              "cientifico" => especie.NombreCompleto
+              "cientifico" => especie.nombre_cientifico
           },
           :tipo_busqueda_actual => params[:t_name].present? ? params[:t_name] : "cientifico" # Por default, buscará por nombre científico
       }
@@ -944,32 +864,39 @@ class EspeciesController < ApplicationController
 
   private
 
-  def set_especie(arbol = false)
-    begin  # Coincidio y es el ID de la centralizacion
-      @especie = Especie.find(params[:id])
-    rescue   #si no encontro el taxon, puede ser el ID viejo de millones
-      if id_millon = Adicional.where(idMillon: params[:id]).first
-        @especie = Especie.find(id_millon.especie_id)
-      else  # Tampoco era el ID de millon
-        if params[:action] == 'show' && params[:format] == 'json'
-          render json: {} and return
-        else
-          render :_error and return
-        end
+  def set_especie
+    id = params[:id].split('-').first
+
+    if id.numeric?  # Quiere decir que es un ID de la centralizacion o del antiguo de millones
+      begin
+        @especie = Especie.find(id)  # Coincidio y es el ID de la centralizacion
+      rescue
+        id_millon = Adicional.where(idMillon: id).first
+        @especie = Especie.find(id_millon.especie_id) if id_millon  # Es el ID viejo de millones
+      end
+
+    elsif idCAT = Scat.where(catalogo_id: id).first
+      @especie = idCAT.especie  # Es el IdCAT de la tabla SCAT
+    end
+
+    unless @especie.present?
+      if params[:action] == 'show' && params[:format] == 'json'
+        render json: {} and return
+      else
+        render :_error and return
       end
     end
+    
+    # seteo pedir el taxon valido ANTES de correr los servicios debido a que debo actualizar el valido en vez del sinonimo
+    @especie = @especie.dame_taxon_valido
 
     # Si llego aqui quiere decir que encontro un id en la centralizacion valido
     @especie.servicios if params[:action] == 'show' && params[:format].blank?
 
-    # Por si no viene del arbol, ya que no necesito encontrar el valido
-    if !arbol
-      @especie = @especie.dame_taxon_valido
-      render :_error and return unless @especie
+    render :_error and return unless @especie
 
-      if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
-        redirect_to especie_path(@especie) and return
-      end
+    if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
+      redirect_to especie_path(@especie) and return
     end
   end
 
@@ -982,6 +909,24 @@ class EspeciesController < ApplicationController
                                     nombres_regiones_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :_destroy],
                                     nombres_regiones_bibliografias_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :bibliografia_id, :_destroy]
     )
+  end
+
+  def asigna_variables_descripcion
+    if params[:from].present?
+      begin
+        desc = eval("Api::#{params[:from].camelize}")
+        @descripcion = desc.new(taxon: @especie).dame_descripcion
+        @api = params[:from]
+      rescue
+      end
+    else
+      begin
+        desc = Api::Descripcion.new(taxon: @especie).dame_descripcion
+        @descripcion = desc[:descripcion]
+        @api = desc[:api]
+      rescue
+      end
+    end
   end
 
   def guardaRelaciones(tipoRelacion)
@@ -1138,7 +1083,7 @@ class EspeciesController < ApplicationController
 
   # Este método es necesario para ver params antes de que se inicialice dicha variable (caches_action corre antes q eso)
   def params_from_conabio_present?
-    Rails.env.production? && params.present? && params[:from].present? && params[:from] != 'Conabio'
+    Rails.env.production? && params.present? && params[:from].present? && !params[:from].include?('conabio')
   end
 
 end

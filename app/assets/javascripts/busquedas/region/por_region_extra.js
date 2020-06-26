@@ -28,7 +28,6 @@ var cargaEspecies = function()
         else
             $('#contenedor_especies_itera').empty().html(html);
 
-
     }).fail(function() {
         console.log('Hubo un fallo al cargar la lista de especies');
     });
@@ -46,7 +45,6 @@ var seleccionaRegion = function(prop)
     $('#tipo_region').val(prop.tipo.toLowerCase());
 
     //$('#svg-division-municipal').remove();
-
     opciones.filtros.pagina = 1;
     $('#pagina').val(opciones.filtros.pagina);
 
@@ -66,7 +64,6 @@ var seleccionaMunicipio = function(region_id)
         opciones.tipo_region_seleccionado = 'estado';
 
     } else {
-        var region_id = parseInt(region_id);
         $('#region_municipio').val(region_id);
         opciones.municipio_seleccionado = region_id;
         opciones.tipo_region_seleccionado = 'municipio';

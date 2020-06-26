@@ -2,11 +2,12 @@ module CacheServices
 
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
+    guarda_redis_servicio
+
     if Rails.env.production?
       guarda_estadisticas_servicio
       guarda_observaciones_naturalista_servicio
       guarda_ejemplares_snib_servicio
-      guarda_redis_servicio
       guarda_pez_servicios
       # estadisticas_naturalista_servicio
       # estadisticas_conabio_servicio
@@ -81,52 +82,47 @@ module CacheServices
 
   # REVISADO: Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
   def ficha_naturalista_por_nombre
-    return {estatus: false, msg: 'No hay resultados'} if existe_cache?('ficha_naturalista')
-    escribe_cache('ficha_naturalista', CONFIG.cache.ficha_naturalista) if Rails.env.production?
+    return if existe_cache?('ficha_naturalista')
+    self.jres = { estatus: false, msg: 'No hay resultados' }  # Mensaje default
 
     begin
-      respuesta = RestClient.get "#{CONFIG.naturalista_url}/taxa/search.json?q=#{URI.escape(nombre_cientifico.limpia_ws)}"
+      respuesta = RestClient.get "#{CONFIG.inaturalist_api}/taxa?q=#{URI.escape(nombre_cientifico.limpiar)}"
       resultados = JSON.parse(respuesta)
     rescue => e
-      return {estatus: false, msg: e}
+      self.jres = jres.merge({msg: e})
+      return
     end
 
     # Nos aseguramos que coincide el nombre
-    return {estatus: false, msg: 'No hay resultados'} if resultados.count == 0
+    return if resultados['total_results'].blank? || resultados['total_results'] == 0
 
-    resultados.each do |t|
-      next unless t['ancestry'].present?
+    resultados['results'].each do |t|
+      next unless t['ancestor_ids'].present?
+      next unless t['name'].downcase == nombre_cientifico.limpiar.downcase
 
-      if t['name'].downcase == nombre_cientifico.limpia_ws.downcase
-        array_ancestros = t['ancestry'].split('/')
+      # Es un reino
+      reino_naturalista = t['ancestor_ids'][1]
+      next unless reino_naturalista.present?
+      reino_enciclovida = root_id
 
-        if array_ancestros.count > 1
-          reino_naturalista = t['ancestry'].split('/')[1].to_i
+      # Me aseguro que el reino coincida
+      next if !((reino_naturalista == reino_enciclovida) || # Reino animalia
+          (reino_naturalista == 47126 && reino_enciclovida == 2) || # Reino plantae
+          (reino_naturalista == 47170 && reino_enciclovida == 4) || # Reino fungi
+          ([48222, 47686].include?(reino_naturalista) && reino_enciclovida == 5)) # Reino protoctista o chromista en naturalista
 
-          # Es un reino
-          next unless reino_naturalista.present?
-          reino_enciclovida = root_id
+      if p = proveedor
+        p.naturalista_id = t['id']
+        p.save if p.changed?
+      else
+        self.proveedor = Proveedor.create({ naturalista_id: t['id'], especie_id: id })
+      end
 
-          # Me aseguro que el reino coincida
-          next if !((reino_naturalista == reino_enciclovida) || # Reino animalia
-              (reino_naturalista == 47126 && reino_enciclovida == 2) || # Reino plantae
-              (reino_naturalista == 47170 && reino_enciclovida == 4) || # Reino fungi
-              ([48222, 47686].include?(reino_naturalista) && reino_enciclovida == 5)) # Reino protoctista o chromista en naturalista
-        end
+      self.jres = jres.merge({ estatus: true, ficha: t, msg: nil })
+      escribe_cache('ficha_naturalista', CONFIG.cache.ficha_naturalista) if Rails.env.production?
+      return
 
-        if p = proveedor
-          p.naturalista_id = t['id']
-          p.save
-        else
-          self.proveedor = Proveedor.create({naturalista_id: t['id'], especie_id: id})
-        end
-
-        return {estatus: true, ficha: t}
-
-      end  # End nombre cientifico
     end  # End resultados
-
-    return {estatus: false, msg: 'No hubo coincidencias con los resultados del servicio'}
   end
 
   # REVISADO: Escribe un cache
@@ -138,6 +134,9 @@ module CacheServices
   def existe_cache?(recurso)
     if Rails.cache.exist?("#{recurso}_#{id}")
       cache = Rails.cache.read("#{recurso}_#{id}")
+
+      r = cache[:created_at] && cache[:expires_in]
+      return false unless r
 
       begin
         (cache[:created_at] + cache[:expires_in]) > Time.now.to_f
@@ -183,7 +182,7 @@ module CacheServices
     # Borra los actuales
     borra_redis(loader)
 
-    # Guarda el redis con el nombre cientifico
+    # Guarda el redis con el nombre cientifico y los demas servicios
     loader.add(asigna_redis(opc.merge({consumir_servicios: true})))
 
     # Guarda el redis con todos los nombres comunes
@@ -316,28 +315,24 @@ module CacheServices
 
     # Acceder a tabla proveedor
     if proveedor_n = proveedor
+      sleep(3.seconds)  # Esperar X segundo(s) antes de llamar al servicio
 
-      # Esperar X segundo(s) antes de llamar al servicio
-      sleep(3.seconds)
+      # Para los nombres comunes de naturalista
+      proveedor_n.nombres_comunes_naturalista
+      self.resp = proveedor_n.resp
 
-      # Obtener los nombres comunes y fotos de naturalista
-      respuesta_naturalista = proveedor_n.nombres_comunes_Y_fotos_naturalista
-      if respuesta_naturalista[:estatus]
-        # Verificar que existan nombres comúnes y # ID: 4 Obtener el total de los nombres comunes
-        if respuesta_naturalista[:msg][:nc].present?
-          resp = respuesta_naturalista[:msg][:nc]
-          if resp.kind_of?(Array) && resp.any?
-            resp = resp.delete_if { |h| h["lexicon"] == "Scientific Names" }
-            res[:total_nombres_comunes] = resp.index_by {|r| r["id"]}.values.count
-          end
-        end
+      if resp[:estatus]
+        resp_nombres = resp[:nombres_comunes]
+        resp_nombres = resp_nombres.delete_if { |h| h["lexicon"] == "Scientific Names" }
+        res[:total_nombres_comunes] = resp_nombres.length
+      end
 
-        # Verificar que existan fotos y # ID: 6 Obtener el total de fotos en NaturaLista
-        if respuesta_naturalista[:msg][:ft].present?
-          if respuesta_naturalista[:msg][:ft].kind_of?(Array)  && respuesta_naturalista[:msg][:ft].any?
-            res[:total_fotos] = respuesta_naturalista[:msg][:ft].count
-          end
-        end
+      # Para las fotos de naturalista
+      proveedor_n.fotos_naturalista
+      self.resp = proveedor_n.resp
+
+      if resp[:estatus]
+        res[:total_fotos] = resp[:fotos].length
       end
 
       if especie_o_inferior?
@@ -355,6 +350,7 @@ module CacheServices
           if los_geodatos.key?(:naturalista_mapa_json) && !los_geodatos[:naturalista_mapa_json].blank? # verificar que contenga la llave naturalista_mapa_json
             url_geodatos = los_geodatos[:naturalista_mapa_json]
             consulta = invoca_url_geodatos(url_geodatos)
+
             if consulta['estatus'] # buscar el total y tipos de observaciones existentes en un archivo JSON
               json = consulta['msg']
               observaciones = json.map { |x| x[3]}
@@ -517,7 +513,7 @@ module CacheServices
       end
 
     rescue
-        borra_cache("estadisticas_maccaulay")
+      borra_cache("estadisticas_maccaulay")
     end
 
     res
@@ -543,15 +539,15 @@ module CacheServices
       res[:ejemplares_snib] = resultados_snib.first['nregistros']
     end
 
-      # Ahora, buscar los de eBird
-      # buscar = ['eBird eBird', 'aVerAves aVerAves']
-      # res[:ejemplares_snib_averaves] = 0
-      # Itera todos los ejemplares y busca los de aVerAves
-      # resultados_snib['resultados'].each do |ejemplar|
-      #   if buscar.include? (ejemplar['coleccion'])
-      #     res[:ejemplares_snib_averaves] += 1
-      #   end
-      # end
+    # Ahora, buscar los de eBird
+    # buscar = ['eBird eBird', 'aVerAves aVerAves']
+    # res[:ejemplares_snib_averaves] = 0
+    # Itera todos los ejemplares y busca los de aVerAves
+    # resultados_snib['resultados'].each do |ejemplar|
+    #   if buscar.include? (ejemplar['coleccion'])
+    #     res[:ejemplares_snib_averaves] += 1
+    #   end
+    # end
 
     if guardar
       estd = especie_estadisticas
@@ -811,9 +807,12 @@ module CacheServices
 
     # Caracteristicas de riesgo y conservacion, ambiente y distribucion
     cons_amb_dist = {}
-    caracteristicas = nom_cites_iucn_ambiente_prioritaria(iucn_ws: true) << tipo_distribucion
 
-    caracteristicas.reduce({}, :merge).each do |nombre, valores|
+    caracteristicas = nom_cites_iucn_ambiente_prioritaria({iucn_ws: true})
+    caracteristicas[:grupo1] << tipo_distribucion
+
+    # Paso de la muerte para que solo itere sobre un hash
+    caracteristicas.map { |k,v| v.reduce({}, :merge) }.reduce({}, :merge).each do |nombre, valores|
       next unless valores.any?
 
       valores.each do |valor|
@@ -836,8 +835,7 @@ module CacheServices
 
   # REVISADO: Es el ID del nombre comun que va vinculado al nombre cientifico
   def nombre_comun_a_id_referencia(num_nombre)
-    # El 1 inicial es para identificarlo, despues se forza el ID de la tabla nombre a 6 digitos y el numero de nombre comun a 3 digitos,
-    # dando un total de 10 digitos
+    # El 1 inicial es para identificarlo, despues se forza el ID a 6 digitos y el numero de nombre comun a 3 digitos
     "1#{id.to_s.rjust(6,'0')}#{num_nombre.to_s.rjust(3,'0')}".to_i
   end
 
@@ -848,7 +846,7 @@ module CacheServices
     loader.remove(nombre_cient_data)
 
     # Borra los nombre comunes
-    50.times do |i|
+    100.times do |i|
       id_referencia = nombre_comun_a_id_referencia(i+1)
       nombre_com_data = {id: id_referencia}.stringify_keys
       loader.remove(nombre_com_data)
@@ -862,7 +860,7 @@ module CacheServices
     FUZZY_NOM_CIEN.delete(id)
 
     # Borra los nombre comunes
-    50.times do |i|
+    100.times do |i|
       id_referencia = nombre_comun_a_id_referencia(i+1)
       FUZZY_NOM_COM.delete(id_referencia)
     end

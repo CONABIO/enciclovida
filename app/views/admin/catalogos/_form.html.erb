@@ -1,0 +1,62 @@
+<% content_for(:delayedjs) do %>
+  <%= javascript_include_tag 'admin/catalogos/catalogos_extra', 'data-turbolinks-track' => true %>
+<% end %>
+
+<% content_for(:extracss) do %>
+  <% if I18n.locale.to_s != 'es-cientifico' %>
+    <style type="text/css" data-turbolinks-track="true">
+      .soulmate-type-suggestions li{
+        padding: 1em 0;
+        min-height: 125px;
+      }
+
+      .color-opciones {
+        background-color: white;
+        pointer-events: visible;
+      }
+    </style>
+  <% end %>
+<% end %>
+
+<%= simple_form_for @admin_catalogo, **@form_params, wrapper: :horizontal_form do |f| %>
+
+  <% if @admin_catalogo.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@admin_catalogo.errors.count, 'error') %> prohibieron que el uso se guardara:</h2>
+
+      <ul>
+        <% @admin_catalogo.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%#= f.input :descripcion, disabled: true, class: 'form-control' %>
+  <%#= f.input :nivel1, as: :select, collection: @admin_catalogo.dame_nivel1, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel form-control'}, disabled: true %>
+  <%#= f.input :nivel2, as: :select, collection: @admin_catalogo.dame_nivel2, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel form-control'}, disabled: true %>
+  <%#= f.input :nivel3, as: :select, collection: @admin_catalogo.dame_nivel3, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel form-control'}, disabled: true %>
+  <%#= f.input :nivel4, as: :select, collection: @admin_catalogo.dame_nivel4, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel form-control'}, disabled: true %>
+  <%#= f.input :nivel5, as: :select, collection: @admin_catalogo.dame_nivel5, include_blank: '- - Selecciona un catálogo - -', input_html: { class: 'select-nivel form-control'}, disabled: true %>
+
+  <hr />
+  <h3>Especies asociadas</h3>
+  <div>
+    <% @index = 0 %>
+    <%= f.simple_fields_for :especies_catalogo do |especie| %>
+      <%= render partial: 'especies_fields', locals: { f: especie } %>
+      <% @index+= 1 %>
+    <% end %>
+
+    <% @index = -1 %>
+    <%= link_to_add_association 'Asocia una especie', f, :especies_catalogo, partial: 'especies_fields', class: 'btn btn-info', role: 'button', 'data-association-insertion-method': :after, force_non_association_create: true %>
+  </div>
+
+  <hr />
+
+  <div class="col">
+    <%= f.submit class: 'btn btn-lg btn-block btn-success' %>
+    <%= link_to t('helpers.submit.admin_catalogo.cancel'), admin_catalogos_path, { :class=>"btn btn-lg btn-block btn-secondary" } %>
+  </div>
+
+<% end %>

@@ -1,7 +1,8 @@
 # Este controlador tiene la finalidad de hacer contenido por paginas, ej la lista de invasoras
 class PaginasController < ApplicationController
   skip_before_action :set_locale
-  layout false, :only => [:exoticas_invasoras_paginado]
+
+  layout Proc.new{['exoticas_invasoras_paginado'].include?(action_name) ? false : 'application_b3'}
 
   # La pagina cuando entran por get
   def exoticas_invasoras
@@ -48,9 +49,8 @@ class PaginasController < ApplicationController
       pdf = false
       datos = []
 
-      if row['Enciclovida'].present?
-        id = row['Enciclovida'].split('/')[4]
-        t = Especie.find(id)
+      if row['enciclovida_id'].present?
+        t = Especie.find(row['enciclovida_id'])
         datos << t.adicional.try(:foto_principal)
         datos << t
 
@@ -60,7 +60,7 @@ class PaginasController < ApplicationController
           datos << nil
         end
 
-        datos << row['OrdenfiloWEB']
+        datos << row['Grupo']
 
         pdf_path = exoticas_dir + t.nombre_cientifico + '.pdf'
         pdf = exoticas_url + t.nombre_cientifico + '.pdf' if File.exist?(pdf_path)
@@ -83,7 +83,7 @@ class PaginasController < ApplicationController
 
         datos << row['Nombre científico']
         datos << row['Familia']
-        datos << row['OrdenfiloWEB']
+        datos << row['Grupo']
 
         pdf_path = exoticas_dir + row['Nombre científico'] + '.pdf'
         pdf = exoticas_url + row['Nombre científico'] + '.pdf' if File.exist?(pdf_path)
@@ -138,7 +138,7 @@ class PaginasController < ApplicationController
     if params[:grupo].present?
       @selected[:grupo] = {}
       @selected[:grupo][:valor] = params[:grupo]
-      @selected[:grupo][:nom_campo] = 'OrdenfiloWEB'
+      @selected[:grupo][:nom_campo] = 'Grupo'
     end
 
     if params[:origen].present?

@@ -3,76 +3,84 @@ class Proveedor < ActiveRecord::Base
   self.table_name = "#{CONFIG.bases.ev}.proveedores"
 
   belongs_to :especie
-  attr_accessor :totales, :observaciones, :observacion, :observaciones_mapa, :kml, :ejemplares, :ejemplar, :ejemplares_mapa
+  attr_accessor :totales, :observaciones, :observacion, :observaciones_mapa, :kml, :ejemplares, :ejemplar, :ejemplares_mapa, :jres
 
   # REVISADO: Las fotos de referencia de naturalista son una copia de las fotos de referencia de enciclovida
   def fotos_naturalista
-    ficha = ficha_naturalista_api_nodejs
-    return ficha unless ficha[:estatus]
+    ficha_naturalista_api_nodejs
+    return unless jres[:estatus]
 
-    resultado = ficha[:ficha]['results'].first
-    fotos = resultado['taxon_photos']
-    {estatus: true, fotos: fotos}
-  end
-
-  def nombres_comunes_Y_fotos_naturalista
-    ficha = ficha_naturalista_api # Se utilizará la versión sin nodejs, ya que esta no regresa los nombres comuúes
-    return ficha unless ficha[:estatus]
-
-    fotos = ficha[:ficha]['taxon_photos']
-    nombres_comunes = ficha[:ficha]['taxon_names']
-    # Pone en la primera posicion el deafult_name
-    nombres_comunes.unshift(ficha[:ficha]['default_name']) if (ficha[:ficha]['default_name'].present? && ficha[:ficha]['default_name'].any?)
-    {estatus: true, msg: {nc: nombres_comunes, ft: fotos}}
+    fotos = jres[:ficha]['taxon_photos']
+    self.jres = jres.merge({ fotos: fotos })
   end
 
   # REVISADO: Todos los nombres comunes de la ficha de naturalista
   def nombres_comunes_naturalista
-    ficha = ficha_naturalista_api
-    return ficha unless ficha[:estatus]
+    ficha_naturalista_api_nodejs
+    return unless jres[:estatus]
 
-    nombres_comunes = ficha[:ficha]['taxon_names']
-    # Pone en la primera posicion el deafult_name
-    nombres_comunes.unshift(ficha[:ficha]['default_name']) if (ficha[:ficha]['default_name'].present? && ficha[:ficha]['default_name'].any?)
-    {estatus: true, nombres_comunes: nombres_comunes}
+    nombres_comunes = jres[:ficha]['names']
+    self.jres = jres.merge({ nombres_comunes: nombres_comunes })
+  end
+
+  # Devuelve el conteo de obs por grado de calidad; casual, investigacion y necesita identificacion
+  def conteo_observaciones_grado_calidad
+    self.jres = Rails.cache.fetch("conteo_obs_naturalista_#{especie_id}", expires_in: eval(CONFIG.cache.ficha_naturalista)) do
+
+      begin
+        resp = RestClient.get "#{CONFIG.inaturalist_api}/observations/quality_grades?place_id=6793&taxon_id=#{naturalista_id}"
+        consulta = JSON.parse(resp)
+
+        if consulta['total_results'] > 0
+          { estatus: true, conteo_obs: consulta['results'][0] }
+        else
+          { estatus: false, msg: 'No tiene reusltados esa busqueda' }
+        end
+
+      rescue => e
+        { estatus: false, msg: e }
+      end
+
+    end  # End cache.fetch
   end
 
   # REVISADO: Consulta la ficha de naturalista por medio de su API nodejs
+  # TODO se requiere un boton de borrar cache
   def ficha_naturalista_api_nodejs
-    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
-    if naturalista_id.blank?
-      resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus]
+    if Rails.cache.exist?("ficha_naturalista_#{especie_id}")
+      self.jres = Rails.cache.fetch("ficha_naturalista_#{especie_id}")
+      return
     end
 
-    begin
-      resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
-      ficha = JSON.parse(resp)
-    rescue => e
-      return {estatus: false, msg: e}
+    Rails.cache.fetch("ficha_naturalista_#{especie_id}", expires_in: eval(CONFIG.cache.ficha_naturalista)) do
+      if naturalista_id.blank?
+        t = especie
+        t.ficha_naturalista_por_nombre
+        self.jres = t.jres
+
+        return unless jres.present?
+      end
+
+      begin
+        resp = RestClient.get "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}?all_names=true"
+        ficha = JSON.parse(resp)
+
+        if ficha['total_results'] == 1
+          { estatus: true, ficha: ficha['results'][0] }
+        else
+          { estatus: false, msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha' }
+        end
+
+      rescue => e
+        { estatus: false, msg: e }
+      end
+    end  # End cache.fetch
+
+    if Rails.cache.exist?("ficha_naturalista_#{especie_id}")
+      self.jres = Rails.cache.fetch("ficha_naturalista_#{especie_id}")
+    else
+      self.res = { estatus: false, msg: 'Error en el cache' }
     end
-
-    return {estatus: false, msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} unless ficha['total_results'] == 1
-    return {estatus: true, ficha: ficha}
-  end
-
-  # REVISADO: Consulta la ficha por medio de su API web, algunas cosas no vienen en el API nodejs
-  def ficha_naturalista_api
-    # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
-    if naturalista_id.blank?
-      resp = especie.ficha_naturalista_por_nombre
-      return resp unless resp[:estatus]
-    end
-
-    begin
-      resp = RestClient.get "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}.json"
-      ficha = JSON.parse(resp)
-    rescue => e
-      return {estatus: false, msg: e}
-    end
-
-    return {estatus: false, msg: 'Tiene más de un resultado, solo debería ser uno por ser ficha'} if ficha['error'] == 'No encontrado'
-    return {estatus: true, ficha: ficha}
   end
 
   # REVISADO: Devuelve una lista de todas las URLS asociadas a los geodatos
@@ -85,8 +93,11 @@ class Proveedor < ActiveRecord::Base
 
       geodatos[:cuales] << 'geoserver'
       geodatos[:geoserver_url] = CONFIG.geoserver_url.to_s
-      geodatos[:geoserver_descarga_url] = "#{CONFIG.geoserver_descarga_url}&layers=cnb:#{info['layers']}&styles=#{info['styles']}&bbox=#{info['bbox']}&transparent=true"
-      geodatos[:geoserver_layer] = info['layers']
+      geodatos[:geoserver_descargas_url] = []
+
+      info.each do |mapa, datos|
+        geodatos[:geoserver_descargas_url] << { layers: datos['layers'], styles: datos['styles'], bbox: datos['bbox'], mapa: mapa, anio: datos['anio'], autor: datos['autor'], geoportal_url: datos['geoportal_url'] }
+      end
     end
 
     # Para las descargas del SNIB
@@ -229,19 +240,21 @@ class Proveedor < ActiveRecord::Base
 
   # REVISADO: Guarda las observaciones de naturalista
   def guarda_observaciones_naturalista
+    e = especie
 
     # Para no generar geodatos arriba de familia
-    return unless especie.apta_con_geodatos?
+    return unless e.apta_con_geodatos?
 
     # Para no guardar nada si el cache aun esta vigente
-    return if especie.existe_cache?('observaciones_naturalista')
+    return if e.existe_cache?('observaciones_naturalista')
 
     # Pone el cache para no volverlo a consultar
-    especie.escribe_cache('observaciones_naturalista', CONFIG.cache.observaciones_naturalista) if Rails.env.production?
+    e.escribe_cache('observaciones_naturalista', CONFIG.cache.observaciones_naturalista) if Rails.env.production?
 
     # Si no existe naturalista_id, trato de buscar el taxon en su API y guardo el ID
     if naturalista_id.blank?
-      resp = especie.ficha_naturalista_por_nombre
+      e.ficha_naturalista_por_nombre
+      resp = e.jres
       return resp unless resp[:estatus]
     end
 
@@ -258,7 +271,7 @@ class Proveedor < ActiveRecord::Base
     # Para el paginado
     paginas = totales/CONFIG.inaturalist_por_pagina.to_i
     residuo = totales%200
-    paginas+= 1 if residuo < 200 || paginas == 0
+    paginas+= 1 if residuo > 0 || paginas == 0
 
     # Si son mas de 50 paginas, entonces el elastic search truena del lado de inaturalist, ver como resolver despues (pasa mas en familia)
     #return {estatus: 'error', msg: 'Son mas de 50 paginas, truena el elastic search'} if paginas > 50
@@ -277,7 +290,7 @@ class Proveedor < ActiveRecord::Base
 
     # Crea carpeta y archivo
     carpeta = carpeta_geodatos
-    nombre = carpeta.join("observaciones_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}")
+    nombre = carpeta.join("observaciones_#{e.nombre_cientifico.limpiar.gsub(' ','_')}")
 
     archivo_observaciones = File.new("#{nombre}.json", 'w+')
     archivo_observaciones_mapa = File.new("#{nombre}_mapa.json", 'w+')
@@ -407,6 +420,7 @@ class Proveedor < ActiveRecord::Base
     end
     numero_observs
   end
+
 
   private
 
@@ -625,8 +639,7 @@ class Proveedor < ActiveRecord::Base
   # REVISADO: Valida los ejemplares del SNIB
   def valida_ejemplares_snib
     begin
-      Rails.logger.debug "[DEBUG] - #{CONFIG.geoportal_url}/#{especie.root.nombre_cientifico.downcase}/#{especie.scat.catalogo_id}?apiKey=enciclovida"
-      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.geoportal_url}/#{especie.root.nombre_cientifico.estandariza}/#{especie.scat.catalogo_id}?apiKey=enciclovida", timeout: 3)
+      rest_client = RestClient::Request.execute(method: :get, url: "#{CONFIG.ssig_api}/snib/#{especie.scat.catalogo_id}", timeout: 3)
       resultados = JSON.parse(rest_client)
     rescue => e
       return {estatus: false, msg: e}

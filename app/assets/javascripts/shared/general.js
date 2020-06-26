@@ -2,11 +2,22 @@
 var co = ["xm.bo","g.oiba","noc","@adivol","cicne:o","tliam"];
 
 /**
+ * Emula el comportamiento de la funcion limpiar en ruby
+ */
+var limpiar = function (str)
+{
+    return str.replace(/\([^()]*\)/i, "").trim();
+};
+
+/**
  * Pone el tamaño inicial al mapa
  */
 var ponTamaño = function () {
-    $('#map').css('height', $('#contenedor_mapa').height() - 30);
+    $('#map').css('height', 0);
+    $('#contenedor_mapa').addClass('embed-responsive embed-responsive-16by9');
+    $('#map').css('height', $('#contenedor_mapa').height());
     map.invalidateSize(true);
+    $('#contenedor_mapa').removeClass('embed-responsive embed-responsive-16by9');
 };
 
 /**
@@ -43,9 +54,9 @@ var cambiaLocale = function(locale){
                 locale: locale
             }
         }).done(function(resp){
-            if (resp.estatus) location.reload(true);
-            return false;
-        });
+        if (resp.estatus) location.reload(true);
+        return false;
+    });
     return false;
 };
 
@@ -90,11 +101,24 @@ var scrolling_page = function(objeto, por_pagina, url)
     });
 };
 
+var dameValidacionCorreo = function(recurso, notice)
+{
+    // Para validar en vivo el correo
+    $('#modal-descarga-' + recurso).on('keyup', '#correo-' + recurso, function(){
+        $(notice).empty().addClass('hidden');
+
+        if( !correoValido($(this).val()) )
+            $('#boton-descarga-' + recurso).attr('disabled', 'disabled');
+        else
+            $('#boton-descarga-' + recurso).removeAttr('disabled');
+    });
+};
+
 $(document).ready(function(){
     tooltip();
 
     $(window).resize(function(){
-        refreshMediaQueries();
+        //refreshMediaQueries();
     });
 });
 

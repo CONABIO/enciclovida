@@ -16,11 +16,15 @@ module ApplicationHelper
                   end
                 end.try(:capitalize)
 
-    nombre_cientifico = "<text class='f-nom-cientifico'>#{taxon.nombre_cientifico}</text>"
+    nombre_cientifico = "<i class='f-nom-cientifico'>#{taxon.nombre_cientifico}</i>"
+
+    if params[:adicional_nom_cient].present?
+      nombre_cientifico += "&nbsp;&nbsp;#{params[:adicional_nom_cient]}"
+    end
 
     if params[:solo_especies] || !taxon.especie_o_inferior?
       cat = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
-      cat_taxonomica = "<text class='f-nom-cientifico'>#{cat}</text> "
+      cat_taxonomica = "<text class='f-cat-tax'>#{cat}</text> "
     end
 
     if I18n.locale.to_s == 'es-cientifico'
@@ -29,29 +33,40 @@ module ApplicationHelper
       case params[:render]
       when 'title'
         nombre_cientifico.sanitize.gsub(/[<b><\/b>]/,'').html_safe
-      when 'link'
+      when 'link', 'link-inline'
         "<b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon), link_params}</i></b> #{taxon.nombre_autoridad} #{estatus}".html_safe
       when 'header'
-        "<h3>#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico} #{taxon.nombre_autoridad} #{estatus}</h3>".html_safe
+        "<h1 class='font-weight-bold'>#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico} <small> #{taxon.nombre_autoridad} #{estatus}</small></h1>".html_safe
       when 'inline'
         "#{nombre_cientifico} #{taxon.nombre_autoridad}".html_safe
+      when 'arreglo-taxonomico'
+        "#{cat_taxonomica unless taxon.especie_o_inferior?} <b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon), link_params}</i></b> #{taxon.nombre_autoridad} #{estatus}".html_safe
       else
         "#{nombre_cientifico} #{taxon.nombre_autoridad} #{estatus}".html_safe
       end
 
     else   #vista general
-
-      nombre_comun = "<text class='f-nom-comun'>#{nom_comun}</text>" if nom_comun.present?
+      nombre_cientifico = nombre_cientifico.limpiar({tipo: 'show'})
+      nombre_comun = "<text>#{nom_comun}</text>" if nom_comun.present?
 
       case params[:render]
       when 'title'
         "#{nombre_comun} (#{nombre_cientifico})".sanitize.html_safe
       when 'link'
-        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon), link_params}</i></b>".html_safe
+        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
       when 'header'
-        "<h3>#{nombre_comun}#{'<br />' if nombre_comun.present?}#{cat_taxonomica unless taxon.especie_o_inferior?}#{nombre_cientifico}</h3>".html_safe
+        if nombre_comun.present?
+          "<h1 class='font-weight-bold'>#{nombre_comun}</h1><h2>#{cat_taxonomica unless taxon.especie_o_inferior?}<small>#{nombre_cientifico}</small></h2>".html_safe
+        else
+          "<h1 class='font-weight-bold'>#{cat_taxonomica unless taxon.especie_o_inferior?}<small>#{nombre_cientifico}</small></h1>".html_safe
+        end
       when 'inline'
         nombre_cientifico.html_safe
+      when 'link-inline'
+        "#{nombre_comun} <b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
+      when 'link-inline-clasificacion'
+        clasificacion = "<text class='f-cat-clasificacion'>[#{taxon.nombre_categoria_taxonomica[0].upcase}]</text>" 
+        "#{clasificacion} <span class='f-nom-clasificacion'>#{nombre_comun}</span> <b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
       else
         "#{nombre_comun}#{'<br />' if nombre_comun.present?}#{nombre_cientifico}".html_safe
       end
@@ -206,6 +221,12 @@ module ApplicationHelper
     link_to(correo_en_fuente.html_safe,"", :onclick => "$(this).attr('href',co.join('').split('').reverse().join(''));", :target => "_blank")
   end
 
+  def correo_enciclovida_b4 claro=nil
+    correo_en_fuente = "<span class='enciclovida_correo-ev-icon text-success'></span><i class='fa fa-envelope text-success'></i></span>"
+    correo_en_fuente.gsub!("text-success","text-light") if claro
+    link_to(correo_en_fuente.html_safe,"", :onclick => "$(this).attr('href',co.join('').split('').reverse().join(''));", :target => "_blank")
+  end
+
   def imagotipo_naturalista_completo
     "<i class='naturalista-ev-icon'></i><i class='naturalista-2-ev-icon'></i><i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>".html_safe
   end
@@ -219,11 +240,11 @@ module ApplicationHelper
   end
 
   def icono_globo
-    "<i class='glyphicon glyphicon-globe'></i>".html_safe
+    "<i class='fa fa-globe'></i>".html_safe
   end
 
   def icono_descarga
-    "<i class='glyphicon glyphicon-save'></i>".html_safe
+    "<i class='fa fa-download'></i>".html_safe
   end
 
   def tiene_permiso?(nombre_rol, con_hijos=false)

@@ -1,0 +1,84 @@
+es:
+  helpers:
+    submit:
+      admin_catalogo:
+        create: Guardar
+        update: Actualizar
+        cancel: Cancelar
+      admin_especie_catalogo:
+        create: Guardar
+        update: Actualizar
+        cancel: Cancelar        
+  simple_form:
+    hints:
+    labels:
+      admin_catalogo:
+        nombre_cientifico: Nombre común o científico
+        descripcion: Catálogo
+        nivel1: Nivel 1
+        nivel2: Nivel 2
+        nivel3: Nivel 3
+        nivel4: Nivel 4
+        nivel5: Nivel 5
+        especies_catalogo:
+          especie_id: Nombre
+          nombre_cientifico: Nombre
+          bibliografias:
+            biblio: Biliografía
+          regiones:
+            reg: Región
+            bibliografias:
+              biblio: Biliografía de región
+      admin_especie_catalogo:
+        nombre_cientifico: Nombre
+        catalogo_id: Catálogo
+        bibliografias:
+          biblio: Biliografía
+        regiones:
+          reg: Región
+          bibliografias:
+            biblio: Biliografía de región
+    placeholders:
+
+    "yes": 'Yes'
+    "no": 'No'
+    required:
+      text: 'required'
+      mark: '*'
+      # You can uncomment the line below if you need to overwrite the whole required html.
+      # When using html, text and mark won't be used.
+      # html: '<abbr title="required">*</abbr>'
+    error_notification:
+      default_message: "Please review the problems below:"
+    # Examples
+    # labels:
+    #   defaults:
+    #     password: 'Password'
+    #   user:
+    #     new:
+    #       email: 'E-mail to sign in.'
+    #     edit:
+    #       email: 'E-mail.'
+    # hints:
+    #   defaults:
+    #     username: 'User name to sign in.'
+    #     password: 'No special characters, please.'
+    # include_blanks:
+    #   defaults:
+    #     age: 'Rather not say'
+    # prompts:
+    #   defaults:
+    #     age: 'Select your age'
+  activerecord:
+    errors:
+      models:
+        admin/especie_catalogo:
+          attributes:
+            especie:
+              required: 'El nombre científico no puede ser vacío. Selecciona uno autocompletando'
+            catalogo:
+              required: 'El catálogo no puede ser vacío, selecciona uno de la lista'
+        admin/especie_catalogo_bibliografia:
+          attributes:
+            bibliografia:
+              required: 'La bibliografía debe escogerse del autocompletado'

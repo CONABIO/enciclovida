@@ -21,14 +21,14 @@ class Especie < ActiveRecord::Base
   alias_attribute :anotacion, :Anotacion
   alias_attribute :ancestry_ascendente_directo, :Ascendentes
   alias_attribute :ancestry_ascendente_obligatorio, :AscendentesObligatorios
-  alias_attribute :nombre_cientifico, :NombreCompleto
+  alias_attribute :nombre_cientifico, :TaxonCompleto
   alias_attribute :created_at, :FechaCaptura
   alias_attribute :updated_at, :FechaModificacion
 
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
                 :x_naturalista_obs, :x_snib_registros, :x_geoportal_mapa,
-                :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion,
+                :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion, :x_distribucion,
                 :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista, :x_nombres_comunes_catalogos, :x_nombres_comunes_todos,
                 :x_fotos, :x_foto_principal, :x_square_url, :x_fotos_principales, :x_fotos_totales, :x_naturalista_fotos, :x_bdi_fotos,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
@@ -43,6 +43,7 @@ class Especie < ActiveRecord::Base
   alias_attribute :x_nombre_cientifico, :nombre_cientifico
   attr_accessor :e_geodata, :e_nombre_comun_principal, :e_foto_principal, :e_nombres_comunes, :e_categoria_taxonomica,
                 :e_tipo_distribucion, :e_caracteristicas, :e_bibliografia, :e_fotos  # Atributos para la respuesta en json
+  attr_accessor :jres  # Para las respuest en json
 
   has_one :proveedor
   has_one :adicional
@@ -94,13 +95,17 @@ class Especie < ActiveRecord::Base
   OR LOWER(#{:nombres_comunes}) LIKE LOWER('%#{nombre}%')") }
 
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
-  scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).left_joins(:categoria_taxonomica, :adicional, :scat) }
-  #Select para el Checklist (por_arbol)
-  scope :datos_arbol_sin_filtros , -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo,
+  scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join }
+  #Select para el Checklist
+  scope :select_checklist, -> { select(:id, :nombre_cientifico).select("#{attribute_alias(:ancestry_ascendente_directo)} AS ancestry") }
+  scope :select_ancestry, -> { select(:id).select("#{attribute_alias(:ancestry_ascendente_directo)} AS ancestry") }
+  scope :datos_checklist, -> { select_checklist.order('ancestry ASC') }
+  scope :categorias_checklist, -> { where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} IN (?)", CategoriaTaxonomica::CATEGORIAS_CHECKLIST) }
+  scope :datos_arbol_sin_filtros, -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo,
 ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id,
 categorias_taxonomicas.nombre_categoria_taxonomica, nombre_autoridad, estatus, nombre_comun_principal,
 nombres_comunes as nombres_comunes_adicionales").categoria_taxonomica_join.adicional_join }
-  scope :datos_arbol_con_filtros , -> { select("CONCAT(#{attribute_alias(:ancestry_ascendente_directo)}, '/', #{attribute_alias(:id)} AS arbol") }
+
   #Selects para construir la taxonomía por cada uno del set de resultados cuando se usca por nombre cientifico en la básica
   scope :datos_arbol_para_json , -> {select("ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol")}
   scope :datos_arbol_para_json_2 , -> {select("especies.id, nombre_cientifico,
@@ -112,7 +117,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
-  scope :select_basico, ->(attr_adicionales=[]) { select(:id, :nombre_cientifico, :estatus, :nombre_autoridad, :categoria_taxonomica_id, :cita_nomenclatural, :ancestry_ascendente_directo, "nombre_comun_principal, foto_principal, nombres_comunes as nombres_comunes_adicionales" << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')).select_categoria_taxonomica }
+  scope :select_basico, ->(attr_adicionales=[]) { select(:id, :nombre_cientifico, :estatus, :nombre_autoridad, :categoria_taxonomica_id, :cita_nomenclatural, :ancestry_ascendente_directo, "nombre_comun_principal, foto_principal, nombres_comunes as nombres_comunes_adicionales, TaxonCompleto AS NombreCompleto" << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')).select_categoria_taxonomica }
   # Select para nombre de la categoria y niveles
   scope :select_categoria_taxonomica, -> { select("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)} AS nivel1, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)} AS nivel2, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)} AS nivel3, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)} AS nivel4") }
   #select para los grupos iconicos en la busqueda avanzada para no realizar varios queries al mismo tiempo
@@ -123,24 +128,26 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   scope :nivel_categoria, ->(nivel, categoria) { where("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) #{nivel} '#{categoria}'") }
   # Para que regrese las especies
   scope :solo_especies, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=?", 7,0,0).left_joins(:categoria_taxonomica) }
+  # Regresa solo las categorias obligatorias en categoria taxonomica
+  scope :solo_cat_obligatorias, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}>0 AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=0 AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} IN (?)", CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS) }
   # Para mostrar solo los taxones publicos
   scope :solo_publicos, -> { left_joins(:scat).where("#{Scat.attribute_alias(:publico)}=?", 1) }
   # Para que regrese las especies e inferiores
   scope :especies_e_inferiores, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}>?", 7,0).left_joins(:categoria_taxonomica) }
-  # Scope para cargar el arbol nodo D3 en la ficha de la espcie
-  scope :arbol_nodo_select, -> { Especie.select_basico(['conteo', "#{CategoriaTaxonomica.attribute_alias(:nivel1)} AS nivel1", "#{CategoriaTaxonomica.attribute_alias(:nivel2)} AS nivel2"]).left_joins(:adicional, :categoria_taxonomica, :especie_estadisticas, :scat).where('estadistica_id=?',22).where(estatus: 2).where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=? AND #{Scat.attribute_alias(:publico)}=?",0,0,true) }
-  # Scope para cargar el arbol nodo inical en la ficha de la especie
-  scope :arbol_nodo_inicial, ->(taxon) { arbol_nodo_select.where(id: taxon.path_ids).order("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}") }
-  # Scope para cargar las hojas del arbol nodo inical en la ficha de la especie
-  scope :arbol_nodo_hojas, ->(taxon) { arbol_nodo_select.where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=?",taxon.categoria_taxonomica.nivel1+1).where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,?,%'", taxon.id).order(:nombre_cientifico) }
-  # Scope para cargar el arbol identado en la ficha de la espcie
-  scope :arbol_identado_select, -> { Especie.select_basico(['conteo']).select_nivel_categoria.left_joins(:adicional, :categoria_taxonomica, :especie_estadisticas, :scat).where("estadistica_id=? AND #{Scat.attribute_alias(:publico)}=?",3,true) }
-  # Scope para cargar el arbol identado inical en la ficha de la especie
-  scope :arbol_identado_inicial, ->(taxon) { arbol_identado_select.where(id: taxon.path_ids).order('nivel_categoria DESC') }
-  # Scope para cargar las hojas del arbol identado inical en la ficha de la especie
-  scope :arbol_identado_hojas, ->(taxon) { arbol_identado_select.where(id_nombre_ascendente: taxon.id).where.not(id: taxon.id).order(nombre_cientifico: :asc) }
   # Query que saca los ancestros, nombres cientificos y sus categorias taxonomicas correspondientes
-  scope :asigna_info_ancestros, -> { path.select("#{Especie.attribute_alias(:nombre)}, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)}").left_joins(:categoria_taxonomica) }
+  scope :asigna_info_ancestros, -> { path.select("#{Especie.attribute_alias(:nombre)}, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)}").left_joins(:categoria_taxonomica) }  
+  
+  # Scope para cargar el arbol identado en la ficha de la espcie
+  scope :arbol_select, -> { Especie.select_basico(['conteo']).select_nivel_categoria.left_joins(:adicional, :categoria_taxonomica, :especie_estadisticas) }
+  # Scope para cargar el arbol identado inical en la ficha de la especie
+  scope :arbol_inicial, ->(taxon, estadistica_id) { arbol_select.solo_publicos.where(id: taxon.path_ids).order('nivel_categoria ASC').where("estadistica_id=?",estadistica_id) }
+  # Scope para cargar el arbol identado inical en la ficha de la especie, solo las categorias obligatorias
+  scope :arbol_inicial_obligatorias, ->(taxon, estadistica_id) { arbol_inicial(taxon, estadistica_id).solo_cat_obligatorias.where(estatus: 2) }
+  # Scope para los reinos iniciales en la busqueda por clasificacion
+  scope :arbol_reinos, ->(estadistica_id) { arbol_select.solo_publicos.where("estadistica_id=?",estadistica_id).where(id: [1..5]).order('nivel_categoria ASC') }
+  # Scope para cargar las hojas del arbol
+  scope :arbol_hojas, ->(taxon, estadistica_id, ascendente) { arbol_select.solo_publicos.where("#{attribute_alias(ascendente)}=#{taxon.id}").where.not(id: taxon.id).where("estadistica_id=?",estadistica_id).order(nombre_cientifico: :asc) }
+  scope :arbol_hojas_obligatorias, ->(taxon, estadistica_id, ascendente) { arbol_hojas(taxon, estadistica_id, ascendente).solo_cat_obligatorias.where(estatus: 2) }
 
   # Scopes de estadisticas
   scope :conteo_estadisticas, ->(estadisticas, conteo) { left_joins(:estadisticas).where("estadistica_id IN (#{estadisticas})").where("conteo #{conteo} 0") }
@@ -261,26 +268,32 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
   # REVISADO: Para sacar los nombres de las categorias de IUCN, NOM, CITES, ambiente y prioritaria, regresa un array con los valores
   def nom_cites_iucn_ambiente_prioritaria(opc={})
-    response = []
+    # Se ponen en grupos para poder meterles espacios cuando se despliegan en el show
+    response = { grupo1: [], grupo2: [], grupo3: [], grupo4: [] }
 
-    response << {'NOM-059-SEMARNAT 2010' => catalogos.nom.map(&:descripcion).uniq}
+    response[:grupo2] << {'NOM-059-SEMARNAT 2010' => catalogos.nom.map(&:descripcion).uniq}
+
+    response[:grupo2] << {'Evaluación CONABIO' => catalogos.evaluacion_conabio.map do |cat|
+      cat.descripcion + ' Evaluación CONABIO'
+    end }
 
     if opc[:iucn_ws]
       iucn_ws = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico, id: id)
 
       if iucn_ws.present?
-        response << {'IUCN Red List of Threatened Species 2017-1' => [iucn_ws]}
+        response[:grupo2] << {'IUCN Red List of Threatened Species 2017-1' => [iucn_ws]}
       else
-        response << {'IUCN Red List of Threatened Species 2017-1' => catalogos.iucn.map(&:descripcion).uniq}
+        response[:grupo2] << {'IUCN Red List of Threatened Species 2017-1' => catalogos.iucn.map(&:descripcion).uniq}
       end
 
     else
-      response << {'IUCN Red List of Threatened Species 2017-1' => catalogos.iucn.map(&:descripcion).uniq}
+      response[:grupo2] << {'IUCN Red List of Threatened Species 2017-1' => catalogos.iucn.map(&:descripcion).uniq}
     end
 
-    response << {'CITES 2016' => catalogos.cites.map(&:descripcion)}
-    response << {'Prioritarias DOF 2014' => catalogos.prioritarias.map(&:descripcion)}
-    response << {'Tipo de ambiente' => catalogos.ambientes.map(&:descripcion)}
+    response[:grupo3] << {'CITES 2016' => catalogos.cites.map(&:descripcion)}
+    response[:grupo4] << {'Prioritarias DOF 2014' => catalogos.prioritarias.map(&:descripcion)}
+    response[:grupo4] << {'Tipo de ambiente' => catalogos.ambientes.map(&:descripcion)}
+
     response
   end
 
@@ -292,7 +305,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       cat = esp_cat.catalogo
       next unless cat.es_catalogo_permitido?
       nombre_catalogo = cat.dame_nombre_catalogo
-      biblio_cita_completa = esp_cat.especies_catalogos_bibliografias.where(catalogo_id: cat.id).map { |b| b.bibliografia.cita_completa }
+      biblio_cita_completa = esp_cat.biblios.where(catalogo_id: cat.id).map { |b| b.bibliografia.cita_completa }
       seccion = nombre_catalogo.estandariza.to_sym
 
       resp[seccion] = { nombre_catalogo: nombre_catalogo, datos: [] } unless resp[seccion].present?
@@ -306,14 +319,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   def tipo_distribucion(opc={})
     response = []
 
-    if opc[:tab_catalogos]
-      tipos_distribuciones.uniq.each do |distribucion|
-        response << distribucion.descripcion
-      end
-    else
-      tipos_distribuciones.distribuciones_vista_general.uniq.each do |distribucion|
-        response << distribucion.descripcion
-      end
+    tipos_distribuciones.uniq.each do |distribucion|
+      response << distribucion.descripcion
     end
 
     {'Tipo de distribución' => response}
@@ -369,14 +376,15 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   def dame_fotos_todas
     # Fotos de naturalista
     if p = proveedor
-      fn = p.fotos_naturalista
+      p.fotos_naturalista
+      self.jres = p.jres
 
-      if fn[:estatus]
-        self.x_fotos_totales+= fn[:fotos].count
+      if jres[:estatus]
+        self.x_fotos_totales = jres[:fotos].count
 
-        if fn[:fotos].count > 0
-          self.x_square_url = fn[:fotos].first['photo']['square_url']
-          self.x_foto_principal = fn[:fotos].first['photo']['medium_url'] || fn[:fotos].first['photo']['large_url']
+        if jres[:fotos].count > 0
+          self.x_square_url = jres[:fotos].first['photo']['square_url']
+          self.x_foto_principal = jres[:fotos].first['photo']['medium_url'] || jres[:fotos].first['photo']['large_url']
         end
       end
     end
@@ -400,25 +408,84 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
   end
 
+  # REVISADO: regresa todos los nombres comunes de catalogos
+  def dame_nombres_comunes_catalogos
+    # Los nombres comunes de catalogos en hash con la lengua
+    ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
+    #ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
+
+    nombres_inicio = []
+    nombres_mitad = []
+    nombres_final = []
+
+    ncc.each do |nombre|
+      lengua = nombre.keys.first  # Ya que es un hash
+
+      if NombreComun::LENGUAS_PRIMERO.include?(lengua)
+        index = NombreComun::LENGUAS_PRIMERO.index(lengua)
+
+        # Crea el arreglo dentro del hash lengua para agrupar nombres de la misma lengua
+        if nombres_inicio[index].nil?
+          nombres_inicio[index] = {}
+          nombres_inicio[index][lengua] = []
+        end
+
+        nombres_inicio[index][lengua] << nombre[lengua]
+
+      elsif NombreComun::LENGUAS_ULTIMO.include?(lengua)
+        index = NombreComun::LENGUAS_ULTIMO.index(lengua)
+
+        # Crea el arreglo dentro del hash lengua para agrupar nombres de la misma lengua
+        if nombres_final[index].nil?
+          nombres_final[index] = {}
+          nombres_final[index][lengua] = []
+        end
+
+        nombres_final[index][lengua] << nombre[lengua]
+
+      else
+        encontro_lengua = false
+        nombres_mitad.each do |nombre_mitad|
+          lengua_mitad = nombre_mitad.keys.first
+
+          # Quiere decir que ya habia metido esa lengua
+          if lengua_mitad == lengua
+            nombre_mitad[lengua] << nombre[lengua]
+            encontro_lengua = true
+            break
+          end
+        end
+
+        next if encontro_lengua
+
+        # Si llego a este punto, entonces creamos el hash
+        nombres_mitad << {lengua => [nombre[lengua]]}
+      end
+    end
+
+    # Los uno para obtener sus respectivas posiciones
+    (nombres_inicio + nombres_mitad + nombres_final).compact
+  end
+
   # REVISADO: regresa todos los nombres comunes en diferentes proveedores en diferentes formatos
   def dame_nombres_comunes_todos
+    self.jres = { estatus: false, msg: 'Hubo un error al procesar los nombres comunes' }  # mensaje default
+
     # Los nombres comunes de catalogos en hash con la lengua
     ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
     ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
 
     # Para los nombres comunes de naturalista
     if p = proveedor
-      ncnat = p.nombres_comunes_naturalista
-    else
-      ncnat = {estatus: false}
+      p.nombres_comunes_naturalista
+      self.jres = p.jres
     end
 
-    if ncnat[:estatus]
-      ncn = ncnat[:nombres_comunes].map do |nc|
-        next unless nc['name'].present?
-        next if nc['lexicon'].present? && nc['lexicon'] == 'Scientific Names'
+    if jres[:estatus]
+      ncn = jres[:nombres_comunes].map do |nc|
+        next if nc['name'].blank? || nc['locale'].blank? || nc['locale'] == 'sci'
 
-        # Un nombre de catalogos es igualq ue uno de Naturalista, conservo el de Naturalista
+        # Un nombre de catalogos es igual que uno de Naturalista, conservo el de Naturalista
         if ncc_estandar.present? && ncc_estandar.include?(nc['name'].estandariza)
           ncc.each_with_index do |h, index|
             ncc.delete_at(index) if h.values.join('').estandariza == nc['name'].estandariza
@@ -426,16 +493,16 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
         end
 
         # Asigna la lengua
-        lengua = nc['lexicon']
+        lengua = nc['locale']
 
-        if lengua.present?
-          l = lengua.estandariza.gsub('-','_')
-        else
-          l = 'nd'
-        end
+        l = if lengua.present?
+              lengua.estandariza
+            else
+              'nd'
+            end
 
         # Los nombres comunes de naturalista en hash con la lengua
-        {I18n.t("lenguas.#{l}", default: l.capitalize) => nc['name'].capitalize}
+        { I18n.t("lenguas.#{l}", default: l.capitalize) => nc['name'].capitalize }
       end
     else
       ncn = []
@@ -512,6 +579,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     if I18n.locale.to_s != 'es-cientifico'
       cats.where(nivel3: 0, nivel4: 0)
     end
+
+    cats
   end
 
   # Metodo para retraer el nombre comun principal ya sea que venga de un join con adicionales o lo construye

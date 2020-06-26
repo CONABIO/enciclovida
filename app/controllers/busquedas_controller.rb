@@ -4,12 +4,13 @@ class BusquedasController < ApplicationController
     @no_render_busqueda_basica = true
   end
 
-  before_action only: :avanzada do
+  before_action only: [:avanzada, :por_clasificacion, :por_clasificacion_hojas] do
     @no_render_busqueda_basica = true
   end
 
+  before_action :set_especie, only: [:por_clasificacion, :por_clasificacion_hojas]
   skip_before_action :set_locale, only: [:cat_tax_asociadas]
-  layout false, :only => [:cat_tax_asociadas]
+  layout false, only: [:por_clasificacion_hojas]
 
   # REVISADO: Los filtros de la busqueda avanzada
   def avanzada
@@ -60,13 +61,77 @@ class BusquedasController < ApplicationController
   def cat_tax_asociadas
     especie = Especie.find(params[:id])
     @categorias = especie.cat_tax_asociadas
+    render layout: false
   end
 
   def tabs
   end
 
+  # Duvuelve la clasificacion taxonomica en forma de arbol
+  def por_clasificacion
+    if I18n.locale.to_s == 'es-cientifico'
+      if @especie
+        @taxones = Especie.arbol_inicial(@especie, 3)  
+      else
+        @reinos = true
+        @taxones = Especie.arbol_reinos(3)  
+      end  
+
+    else  # Vista general
+      if @especie
+        @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)  
+        consulta_redis
+      else
+        @reinos = true
+        @taxones = Especie.arbol_reinos(22)  
+      end 
+    end
+
+    render 'busquedas/clasificacion/por_clasificacion'
+  end
+
+  # Devuelve las hojas de la categoria taxonomica con el nivel siguiente en cuestion
+  def por_clasificacion_hojas
+    if I18n.locale.to_s == 'es-cientifico'
+      if @especie
+        @taxones = Especie.arbol_hojas(@especie, 3, 'id_nombre_ascendente')  
+      end  
+
+    else  # Vista general
+      if @especie
+        @taxones = Especie.arbol_hojas_obligatorias(@especie, 22, 'id_ascend_obligatorio')
+        consulta_redis
+      end 
+    end
+
+    @ancestros = params[:ancestros].map(&:to_i) || []
+    render 'busquedas/clasificacion/por_clasificacion_hojas'
+  end
+
 
   private
+
+  # Consulta el redis para desplegar los datos
+  def consulta_redis
+    @taxones.each do |taxon|
+      if taxon.nivel1 == 7 && taxon.nivel3 == 0
+        begin
+          redis_url = "#{CONFIG.site_url}/sm/search?term=#{taxon.nombre_cientifico}&types%5B%5D=especie&limit=5"
+          resp = RestClient.get redis_url
+          json_redis = JSON.parse(resp)
+
+          json_redis["results"]["especie"].each do |especie|
+            if especie["data"]["id"] == taxon.id
+              taxon.jres = especie["data"]
+            end  
+          end  
+  
+        rescue => e
+          next
+        end
+      end  
+    end   
+  end
 
   # REVISADO: Los filtros de la busqueda avanzada y de los resultados
   def filtros_iniciales
@@ -181,20 +246,42 @@ class BusquedasController < ApplicationController
         format.html { render plain: '' }
         format.json { render json: {taxa: []} }
       elsif params[:checklist].present? && params[:checklist].to_i == 1  # Imprime el checklist de la taxa dada
-        format.html { render 'busquedas/checklists' }
-        format.pdf do  #Para imprimir el listado en PDF
-          ruta = Rails.root.join('public', 'pdfs').to_s
-          fecha = Time.now.strftime("%Y%m%d%H%M%S")
-          pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
-          FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
+        @bibliografias = []
+        @categorias_checklist = busqueda.categorias_checklist
 
-          render :pdf => 'listado_de_especies',
-                 :save_to_file => pdf,
-                 #:save_only => true,
-                 :template => 'busquedas/checklists.pdf.erb',
-                 :encoding => 'UTF-8',
-                 :wkhtmltopdf => CONFIG.wkhtmltopdf_path,
-                 :orientation => 'Landscape'
+        format.html { render 'busquedas/checklist/checklists' }
+        format.pdf do  #Para imprimir el listado en PDF
+          #ruta = Rails.root.join('public', 'pdfs').to_s
+          #fecha = Time.now.strftime("%Y%m%d%H%M%S")
+          #pdf = "#{ruta}/#{fecha}_#{rand(1000)}.pdf"
+          #FileUtils.mkpath(ruta, :mode => 0755) unless File.exists?(ruta)
+
+          render pdf: 'listado_de_especies',
+                 template: 'busquedas/checklist/checklists.pdf.erb',
+                 encoding: 'UTF-8',
+                 wkhtmltopdf: CONFIG.wkhtmltopdf_path,
+                 page_size: 'Letter',
+                 disposition: 'attachment',
+                 #show_as_html: true,
+                 header: {
+                     html: {
+                     template: 'busquedas/checklist/header.html.erb'
+                     },
+                     line: true,
+                     spacing: 5,
+                 },
+                 footer: {
+                     html: {
+                         template: 'busquedas/checklist/footer.html.erb'
+                     },
+                     right: '[page] de [topage]',
+                     line: true,
+                     spacing: 3
+                 },
+                 margin: {
+                     top: 23,
+                     bottom: 20
+                 }
         end
         format.xlsx do  # Falta implementar el excel de salida
           @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
@@ -221,18 +308,7 @@ class BusquedasController < ApplicationController
     lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
     @atributos = columnas
 
-    if @totales <= 200  # Si son menos de 200, es optimo para bajarlo en vivo
-      # el nombre de la lista es cuando la bajo ya que no metio un correo
-      lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + '_taxa_EncicloVida'
-      @taxones = lista.datos_descarga(@taxones)
-
-      if Rails.env.production?  # Solo en produccion la guardo
-        render(xlsx: 'resultados') if lista.save
-      else
-        render xlsx: 'resultados'
-      end
-
-    elsif @totales > 200  # Creamos el excel y lo mandamos por correo por medio de delay_job, mas de 200
+    if @totales > 0  # Creamos el excel y lo mandamos por correo por medio de delay_job, mas de 200
       # Para saber si el correo es correcto y poder enviar la descarga
       if Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
         # el nombre de la lista es cuando la solicito? y el correo
@@ -263,17 +339,30 @@ class BusquedasController < ApplicationController
       next unless v.present?
 
       case k
-        when 'id', 'nombre', 'por_pagina'
-          @setParams[k] = v
-        when 'edo_cons', 'dist', 'prior', 'estatus', 'uso', 'ambiente', 'reg'
-          if @setParams[k].present?
-            @setParams[k] << v.map{ |x| x.parameterize if x.present?}
-          else
-            @setParams[k] = v.map{ |x| x.parameterize if x.present?}
-          end
+      when 'id', 'nombre', 'por_pagina'
+        @setParams[k] = v
+      when 'edo_cons', 'dist', 'prior', 'estatus', 'uso', 'ambiente', 'reg'
+        if @setParams[k].present?
+          @setParams[k] << v.map{ |x| x.parameterize if x.present?}
         else
-          next
+          @setParams[k] = v.map{ |x| x.parameterize if x.present?}
+        end
+        #when 'uso'
+        #puts v.map{ |x| x.parameterize if x.present?}.inspect + '------------'
+      else
+        next
       end
     end
   end
+
+  def set_especie
+    if params[:especie_id].present?
+      begin
+        @especie = Especie.find(params[:especie_id])
+      rescue
+        render 'shared_b4/error' and return
+      end
+    end
+  end
+
 end

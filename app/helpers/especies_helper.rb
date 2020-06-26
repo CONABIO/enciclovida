@@ -19,42 +19,6 @@ module EspeciesHelper
     "#{enlaces[0..-3]}</td></tr></table>".html_safe
   end
 
-  # REVISADO: Regresa el arbol identado inicial en la ficha de especie
-  def dameArbolIdentadoInicial(taxones)
-    html = ''
-
-    def creaLista(taxon, lista=nil)
-      link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
-                        :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, render: 'link')
-      "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}#{lista.present? ? lista : ''}</li></ul>"
-    end
-
-    taxones.each do |taxon|
-      if html.present?
-        html = creaLista(taxon, html)
-      else
-        html = creaLista(taxon)
-      end
-    end
-
-    html.html_safe
-  end
-
-  # REVISADO: Regresa los taxones hijos del taxon en cuestion
-  def dameArbolIdentadoHojas(taxones)
-    html = ''
-
-    taxones.each do |taxon|
-      link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
-                        :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, render: 'link')
-      html << "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}</li></ul>"
-    end
-
-    html.html_safe
-  end
-
   # REVISADO: Nombres comunes con su bibliografia como referencia
   def dameNomComunesBiblio(taxon)
     html = ''
@@ -206,7 +170,15 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
       "<li>#{distribucion}</li>"
     end
 
-    distribuciones = taxon.tipo_distribucion(tab_catalogos: true).values.flatten.compact
+    # Hago el cambio de locale a es-cientifico y regreso al original, ya que la pestaña de ficha técnica siempre la toma de catálogos
+    unless I18n.locale.to_s == 'es-cientifico'
+      locale_original = I18n.locale.to_s
+      I18n.locale = 'es-cientifico'
+      distribuciones = taxon.tipo_distribucion.values.flatten.compact
+      I18n.locale = locale_original
+    else
+      distribuciones = taxon.tipo_distribucion.values.flatten.compact
+    end
 
     distribuciones.each do |distribucion|
       html << creaLista(distribucion)
@@ -218,11 +190,18 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
   # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies
   def ponCaracteristicaDistribucionAmbienteTaxon(taxon)
     response = []
-    caracteristicas = [taxon.tipo_distribucion.values, taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true}).map{|h| h.values}].flatten
+    caracteristicas = taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true})
+    caracteristicas[:grupo1] << taxon.tipo_distribucion
 
-    caracteristicas.each{ |x|
-      response << "<span class='btn-title' title='#{x}'><i class ='#{x.estandariza}-ev-icon'></i></span>"
-    }
+    caracteristicas.each do |g, valores|
+      tiene_valor = false
+      valores.map{ |v| v.values }.flatten.each do |valor|
+        response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon' title='#{valor}'><i class ='#{valor.estandariza}-ev-icon'></i></span>"
+        tiene_valor = true
+      end
+
+      response << "&nbsp;"*2 if tiene_valor  # Espacios para seprar las categorias
+    end
 
     response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600,
 'easeOutBounce')\" style='cursor: pointer; margin-left: 10px;'></small>" if response.any?
@@ -236,7 +215,8 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     def creaSpan(recurso)
       nombre = recurso.descripcion
       icono  = "<i class = '#{recurso.descripcion.parameterize}-ev-icon'></i>"
-      "<span title='#{nombre}' class='btn-title' alt='#{nombre}'>#{icono}</span>"
+
+      "<span title='#{nombre}' class='btn-title alt='#{nombre}'>#{icono}</span>"
     end
 
     Catalogo.nom_cites_iucn_todos.each do |k, valores|
@@ -292,8 +272,8 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     copyright = "BDI - CONABIO"
     case type
     when 'photo'
-      link_to("<img src='#{item.medium_url}' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+      link_to("<img src='#{item.medium_url}' class='rounded-sm border-light' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-type" => 'photo',
               "data-copyright" => copyright,
               "data-url" => item.medium_url,
@@ -302,15 +282,16 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
               "data-observation"=> item.native_page_url
       )
     when 'video' # Datos fasos por ahora
-      link_to("<img src='#{item.preview_img}' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+      link_to("<img src='#{item.preview_img}' class='rounded-sm border-light' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-type" => 'video',
               "data-copyright" => item.licencia.present? ? "<a href='#{item.licencia}' target='_blank'>#{copyright}</a>" : copyright,
               "data-observation"=> item.href_info,
               "data-url" => item.url_acces,
               "data-author" => item.autor,
               "data-locality" =>  item.localidad.present? ? item.localidad : "No disponible",
-              "data-state" =>  item.municipio.present? ? item.municipio : nil)
+              "data-state" =>  item.municipio.present? ? item.municipio : nil
+      )
     end
   end
 
@@ -319,19 +300,19 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     case type
     when 'photo'
       link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900",
               "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='',
               "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='', "data-copyright" => copyright)
     when 'video'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
               "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
     when 'audio'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal",
-              "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'],
+              "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons", "data-observation"=> item['citationUrl'],
               "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
               "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
@@ -342,7 +323,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     copyright = "Missouri Botanical Garden"
     link_to("<img src='#{item['DetailJpgUrl']}'/>".html_safe, '', "data-toggle" => "modal",
             "data-target" => "#modal_reproduce",
-            :class => "btn btn-link btn-title modal-buttons",
+            :class => "m-1 modal-buttons",
             "data-observation"=> item['DetailUrl'],
             "data-url" => item['DetailJpgUrl'],
             "data-type" => 'photo',
@@ -371,6 +352,10 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
 
   def dejaComentario
     link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie))
+  end
+
+  def cargandoEspera
+    "<p>Cargando... por favor, espera</p><div class='spinner-border text-secondary' role='status'><span class='sr-only'>Cargando...</span></div>".html_safe
   end
 
 end

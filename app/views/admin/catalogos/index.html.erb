@@ -1,0 +1,57 @@
+<h3 class="text-center">Administración de catálogos</h3>
+
+<%= render partial: 'admin/catalogos/filtro_index' %>
+
+<table class="table table-responsive table-hover">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Número de especies</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <% @admin_catalogos.each do |catalogo| %>
+        <%
+            niveles = [catalogo.nivel1, catalogo.nivel2, catalogo.nivel3, catalogo.nivel4, catalogo.nivel5]
+            niveles.delete_if { |n| n == 0 }
+          %>
+        <tr>
+            <td class="<%= 'bg-secondary text-white border-top border-dark' if catalogo.nivel2 == 0 %>"><%= ("&nbsp;"*5*niveles.length).html_safe %><%= catalogo.descripcion %>
+            </td>
+
+            <td class="<%= 'bg-secondary text-white border-top border-dark' if catalogo.nivel2 == 0 %>"><%= catalogo.totales %>
+            </td>
+
+            <td>
+                <%= link_to("Nueva asociación en este catálogo", new_admin_especie_catalogo_path(admin_especie_catalogo: { catalogo_id: catalogo.id })) %>
+
+                <% if @admin_catalogo.especie_id %>
+                | <%= link_to("Nueva asociación con esta especie", new_admin_especie_catalogo_path(admin_especie_catalogo: { especie_id: @admin_catalogo.especie_id })) %>
+
+                | <%= link_to("Editar", edit_admin_especie_catalogo_path(["#{catalogo.id},#{@admin_catalogo.especie_id}"])) %>
+
+                <% elsif catalogo.totales > 0 %>
+                | <%= link_to("Ver especies", admin_catalogo_path(catalogo)) if catalogo.totales > 0 %>
+                <% end %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if @admin_catalogos.length == 0 %>
+        <tr>
+            <td>Sin coincidencias</td>
+            <td>Sin coincidencias</td>
+            <td>
+                <% if @admin_catalogo.especie_id %>
+                <%= link_to("Nueva asociación con esta especie", new_admin_especie_catalogo_path(admin_especie_catalogo: { especie_id: @admin_catalogo.especie_id })) %>
+                <% end %>
+            </td>
+        </tr>
+        <% end %>
+
+    </tbody>
+</table>
+
+</div>
