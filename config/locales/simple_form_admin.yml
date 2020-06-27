@@ -38,6 +38,15 @@ es:
           reg: Región
           bibliografias:
             biblio: Biliografía de región
+      admin_bibliografia:
+        autor: Autor(es)
+        anio: Año(s)
+        titulo_publicacion: Título de la publicación
+        titulo_sub_publicacion: Título de la subpublicación
+        editorial_pais_pagina: Editorial, país, lugar, páginas
+        numero_volumen_anio: Número, volumen, año, mes(es)
+        editores_compiladores: Editor(es) / compilador(es)
+        observaciones: Observaciones
     placeholders:
 
     "yes": 'Yes'
@@ -49,7 +58,7 @@ es:
       # When using html, text and mark won't be used.
       # html: '<abbr title="required">*</abbr>'
     error_notification:
-      default_message: "Please review the problems below:"
+      default_message: "Por favor revisa los siguientes problemas:"
     # Examples
     # labels:
     #   defaults:
