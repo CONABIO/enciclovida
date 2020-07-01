@@ -19,7 +19,7 @@ Buscador::Application.routes.draw do
       end
     end
     
-    resources :bibliografias do
+    resources :bibliografias, except: [:index, :show] do
       collection do
         get :autocompleta
       end
