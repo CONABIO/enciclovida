@@ -44,6 +44,7 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
   def create
     @admin_especie_catalogo = Admin::EspecieCatalogo.new(admin_especie_catalogo_params)
 
+    puts admin_especie_catalogo_params.inspect + '////////////////+'
     respond_to do |format|
 
       @admin_especie_catalogo.usuario = current_usuario.email
@@ -129,12 +130,12 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
     if p["bibliografias_attributes"].present?
       p["bibliografias_attributes"].each do |kbiblio, biblio|
         next unless biblio.present?
+        biblio["usuario"] = usuario
         next unless biblio["id"].present?
         next unless biblio["catalogo_id"].present?
         next unless biblio["especie_id"].present?
         next unless biblio["bibliografia_id"].present?
         biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["bibliografia_id"]]
-        biblio["usuario"] = usuario
       end
     end
 

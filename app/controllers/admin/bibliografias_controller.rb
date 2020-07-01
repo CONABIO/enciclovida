@@ -29,7 +29,7 @@ class Admin::BibliografiasController < Admin::AdminController
 
     respond_to do |format|
       if @admin_bibliografia.save
-        format.html { redirect_to @admin_bibliografia, notice: 'Bibliografia was successfully created.' }
+        format.html { redirect_to edit_admin_bibliografia_path(@admin_bibliografia), notice: 'La bibliografía fue creada satisfactoriamente. Puedes cerrar cierrar esta pestaña y volver a la asociación de bibliografía.' }
         format.json { render :show, status: :created, location: @admin_bibliografia }
       else
         format.html { render :new }
@@ -43,7 +43,7 @@ class Admin::BibliografiasController < Admin::AdminController
   def update
     respond_to do |format|
       if @admin_bibliografia.update(admin_bibliografia_params)
-        format.html { redirect_to @admin_bibliografia, notice: 'Bibliografia was successfully updated.' }
+        format.html { redirect_to edit_admin_bibliografia_path(@admin_bibliografia), notice: 'La bibliografía fue actualizada satisfactoriamente. Puedes cerrar cierrar esta pestaña y volver a la asociación de bibliografía.' }
         format.json { render :show, status: :ok, location: @admin_bibliografia }
       else
         format.html { render :edit }
@@ -57,7 +57,7 @@ class Admin::BibliografiasController < Admin::AdminController
   def destroy
     @admin_bibliografia.destroy
     respond_to do |format|
-      format.html { redirect_to admin_bibliografias_url, notice: 'Bibliografia was successfully destroyed.' }
+      format.html { redirect_to admin_bibliografias_url, notice: 'La bibliografía fue destruida satisfactoriamente. Cierra esta pestaña y vuelve a la asociación de bibliografía.' }
       format.json { head :no_content }
     end
   end
@@ -68,7 +68,9 @@ class Admin::BibliografiasController < Admin::AdminController
     render json: bibliografias.map { |b| { label: b.cita_completa, value: b.id } }
   end
 
+
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_admin_bibliografia
       @admin_bibliografia = Admin::Bibliografia.find(params[:id])
@@ -76,7 +78,7 @@ class Admin::BibliografiasController < Admin::AdminController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def admin_bibliografia_params
-      params.require(:admin_bibliografia).permit(:autor, :anio, :titulo_publicacion, :titulo_sub_publicacion, :editorial_pais_pagina, :numero_volumen_anio, :editores_compiladores, :isbnissn, :observaciones)
+      params.require(:admin_bibliografia).permit(:autor, :anio, :titulo_publicacion, :titulo_sub_publicacion, :editorial_pais_pagina, :numero_volumen_anio, :editores_compiladores, :observaciones)
     end
 
 end
