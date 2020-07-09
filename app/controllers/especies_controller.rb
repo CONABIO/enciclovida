@@ -10,7 +10,7 @@ class EspeciesController < ApplicationController
                                      :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
-                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :resumen_wikipedia]
+                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :resumen_wikipedia, :resumen_app]
 
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista]
 
@@ -511,6 +511,23 @@ class EspeciesController < ApplicationController
     end
 
     render json: { estatus: (resumen.present? ? true : false), sumamry: resumen }
+  end
+
+  def resumen_app
+    catalogo_id = @especie.scat.catalogo_id
+    ficha_conabio = Fichas::Taxon.where(IdCAT: catalogo_id).first
+
+    if ficha_conabio
+      @ficha = ficha_conabio.resumen_app
+    else
+      ficha_wikipedia = Api::Wikipedia.new(taxon: @especie)
+      @ficha = ficha_wikipedia.dame_descripcion_cualquiera
+    end
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @ficha }
+    end
   end
 
   # Viene de la pestaña de la ficha

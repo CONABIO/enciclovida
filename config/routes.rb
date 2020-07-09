@@ -215,6 +215,7 @@ Buscador::Application.routes.draw do
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
       get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
       get ':id/resumen-wikipedia' => 'especies#resumen_wikipedia'
+      get ':id/resumen-app' => 'especies#resumen_app'
       get ':id/descripcion' => 'especies#descripcion'
     end
   end
