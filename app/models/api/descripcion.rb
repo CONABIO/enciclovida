@@ -1,11 +1,13 @@
 class Api::Descripcion
 
-  attr_accessor :taxon, :servidor, :timeout, :debug
+  attr_accessor :taxon, :servidor, :timeout, :debug, :locale
 
-  DESCRIPCIONES = %w(conabio wikipedia_es wikipedia_en conabio_tecnico)
+  DESCRIPCIONES_ES = %w(conabio wikipedia_es wikipedia_en)
+  DESCRIPCIONES_ES_CIENTIFICO = %w(conabio_tecnico wikipedia_es wikipedia_en)
 
   def initialize(opc = {})
     self.taxon = opc[:taxon]
+    self.locale = locale || opc[:locale] || I18n.locale || 'es'
     self.servidor = opc[:servidor]
     self.timeout = opc[:timeout] || 8
     self.debug = opc[:debug] || Rails.env.development? || false
@@ -17,7 +19,7 @@ class Api::Descripcion
   end
 
   def dame_descripcion
-    DESCRIPCIONES.each do |descripcion|
+    eval("DESCRIPCIONES_#{locale.to_s.gsub('-','_').upcase}").each do |descripcion|
       desc = eval("Api::#{descripcion.camelize}")
       resp = desc.new(taxon: taxon).dame_descripcion
       return { api: descripcion, descripcion: resp } if resp
@@ -29,7 +31,7 @@ class Api::Descripcion
   def self.opciones_select
     opciones = []
 
-    DESCRIPCIONES.each do |descripcion|
+    eval("DESCRIPCIONES_#{I18n.locale.to_s.gsub('-','_').upcase}").each do |descripcion|
       desc = eval("Api::#{descripcion.camelize}")
       opciones << [desc.new.nombre, descripcion]
     end

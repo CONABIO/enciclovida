@@ -113,6 +113,9 @@ Buscador::Application.routes.draw do
 
         # X. Necesidades de información
         get ':id/necesidadesDeInformacion' => 'fichas#necesidades_de_informacion'
+
+        # Para la ficha de la DGCC
+        get ':id/dgcc' => 'front#dgcc'
       end
     end
   end

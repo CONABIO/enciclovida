@@ -1,16 +1,16 @@
 class Api::Wikipedia < Api::Descripcion
 
-  attr_accessor :locale
+  #attr_accessor :locale
   DESCRIPCIONES = %w(wikipedia_es wikipedia_en)
 
   def initialize(opc = {})
     super(opc)
-    self.locale = locale || opc[:locale] || I18n.locale || 'en'
-    self.servidor = servidor || "http://#{locale}.wikipedia.org/w/api.php?redirects=true&action=parse&format=json"
+    #self.locale = locale || opc[:locale] || I18n.locale || 'en'
+    #self.servidor = servidor || "http://#{locale}.wikipedia.org/w/api.php?redirects=true&action=parse&format=json"
   end
 
   def nombre
-    "Wikipedia (#{locale.try(:upcase)})"
+    "Wikipedia"
   end
 
   def dame_descripcion_cualquiera

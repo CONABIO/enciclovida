@@ -16,6 +16,7 @@ class Fichas::Taxon < Ficha
 	has_many :productoComercios, class_name: 'Fichas::Productocomercio', :foreign_key => 'especieId'
 	has_many :sinonimos , class_name: 'Fichas::Sinonimo', :foreign_key => 'especieId'
 	has_many :referenciasBibliograficas, class_name: 'Fichas::Referenciabibliografica', :foreign_key => 'especieId'
+	has_many :observacionescaracteristicas, class_name: 'Fichas::Observacionescarac', :foreign_key => 'especieId'
 
   	has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
   	has_one :especie, through: :scat, source: :especie
@@ -56,7 +57,8 @@ class Fichas::Taxon < Ficha
 		datos
 	end
 
-	def resumen_app
+	# Los datos para armar la ficha de la DGCC
+	def dgcc
 		resumen = []
 
 		# Descripcion
@@ -67,6 +69,11 @@ class Fichas::Taxon < Ficha
 			resumen << dist.historicaPotencial if dist.historicaPotencial.present?  			
 		end	
 
+		# Vegetacion
+		if vegetacion = observacionescaracteristicas.vegetacion_mundial.first
+			resumen << vegetacion.infoadicional
+		end	
+
 		# NOM
 		if nom = especie.catalogos.nom.first
 			resumen << "Se considera en #{nom.descripcion} por la Norma Oficial Mexicana 059."
@@ -74,7 +81,7 @@ class Fichas::Taxon < Ficha
 		
 		# Usos
 		if uso = historiaNatural
-			resumen << uso.descUos if uso.descUos.present?
+			resumen << uso.descUsos if uso.descUsos.present?
 		end		
 
 		resumen.join('/n')

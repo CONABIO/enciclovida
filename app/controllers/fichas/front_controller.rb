@@ -229,6 +229,15 @@ class Fichas::FrontController < Fichas::FichasController
     end
   end
 
+  # La ficha de la DGCC
+  def dgcc
+    @ficha = @taxon.dgcc
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @ficha }
+    end
+  end
 
 
   private
