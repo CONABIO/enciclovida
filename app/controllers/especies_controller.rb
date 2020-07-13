@@ -5,7 +5,7 @@ class EspeciesController < ApplicationController
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
                                          :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
 
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion,
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion, :descripcion_app,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
@@ -498,6 +498,13 @@ class EspeciesController < ApplicationController
   def descripcion
     asigna_variables_descripcion
     render 'especies/descripciones/descripcion'
+  end
+
+  # La respuesta a la ficha en la app
+  def descripcion_app
+    #layout :descripcion_app
+    asigna_variables_descripcion
+    render 'especies/descripciones/descripcion_app', layout: 'descripcion_app'
   end
 
   # Viene de la pestaña de la ficha
