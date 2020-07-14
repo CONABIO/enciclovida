@@ -84,6 +84,10 @@ class Fichas::Taxon < Ficha
 			resumen << uso.descUsos.a_HTML if uso.descUsos.present?
 		end		
 
+		if referencias = referenciasBibliograficas.first
+			resumen << referencias.referencia.a_HTML if referencias.referencia.present?
+		end
+
 		resumen.join(' ')
 	end
 
