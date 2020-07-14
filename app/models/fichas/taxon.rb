@@ -62,16 +62,16 @@ class Fichas::Taxon < Ficha
 		resumen = []
 
 		# Descripcion
-		resumen << descEspecie if descEspecie.present?
+		resumen << descEspecie.a_HTML if descEspecie.present?
 		
 		# Distribucion
 		if dist = distribuciones.first
-			resumen << dist.historicaPotencial if dist.historicaPotencial.present?  			
+			resumen << dist.historicaPotencial.a_HTML if dist.historicaPotencial.present?  			
 		end	
 
 		# Vegetacion
 		if vegetacion = observacionescaracteristicas.vegetacion_mundial.first
-			resumen << vegetacion.infoadicional
+			resumen << vegetacion.infoadicional.a_HTML
 		end	
 
 		# NOM
@@ -81,10 +81,10 @@ class Fichas::Taxon < Ficha
 		
 		# Usos
 		if uso = historiaNatural
-			resumen << uso.descUsos if uso.descUsos.present?
+			resumen << uso.descUsos.a_HTML if uso.descUsos.present?
 		end		
 
-		resumen.join('/n')
+		resumen.join(' ')
 	end
 
 end

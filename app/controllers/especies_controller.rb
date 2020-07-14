@@ -502,7 +502,6 @@ class EspeciesController < ApplicationController
 
   # La respuesta a la ficha en la app
   def descripcion_app
-    #layout :descripcion_app
     asigna_variables_descripcion
     render 'especies/descripciones/descripcion_app', layout: 'descripcion_app'
   end
