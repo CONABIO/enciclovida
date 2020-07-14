@@ -8,7 +8,7 @@ class Api::Descripcion
   def initialize(opc = {})
     self.taxon = opc[:taxon]
     self.locale = locale || opc[:locale] || I18n.locale || 'es'
-    self.servidor = opc[:servidor]
+    self.servidor = servidor || opc[:servidor]
     self.timeout = opc[:timeout] || 8
     self.debug = opc[:debug] || Rails.env.development? || false
     Rails.logger.debug "[DEBUG] Inicializar el servicio: #{nombre}" if debug
