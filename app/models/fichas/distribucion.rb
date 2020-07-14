@@ -8,5 +8,8 @@ class Fichas::Distribucion < Ficha
 	has_many :relDistribucionesMunicipios, class_name: 'Fichas::Reldistribucionmunicipio'
 	has_many :relDistribucionesPaises, class_name: 'Fichas::Reldistribucionpais'
 
+	def tiene_datos?
+		return true if infoAdicionalMun.present? || historicaPotencial.present? || alcanceDistribucion.present? || infoAdicionalAlcance.present?
+	end
 
 end

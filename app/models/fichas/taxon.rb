@@ -76,7 +76,7 @@ class Fichas::Taxon < Ficha
 
 		# NOM
 		if nom = especie.catalogos.nom.first
-			resumen << "Se considera en #{nom.descripcion} por la Norma Oficial Mexicana 059."
+			resumen << "Se considera \"#{nom.descripcion}\" por la Norma Oficial Mexicana 059."
 		end
 		
 		# Usos

@@ -64,7 +64,15 @@
   <div class="col-md-4 p-3 shadow-lg bg-white">
     <h6 class="text-center text-info">Taxonomía</h6>
     <p><strong>Reino: </strong><%= @ficha[:especie].x_reino %></p>
-    <p><strong><%= @ficha[:especie].x_reino == 'Animalia' ? 'Phylum' : 'División' %>: </strong><%= @ficha[:especie].x_division %></p>
+    
+    <p>
+      <% if @ficha[:especie].x_reino == 'Animalia' %>
+        <strong>Phylum</strong>: <%= @ficha[:especie].x_phylum %>
+      <% else %>
+      <strong>División</strong>: <%= @ficha[:especie].x_division %>
+      <% end %>
+    </p>
+    
     <p><strong>Clase: </strong><%= @ficha[:especie].x_clase %></p>
     <p><strong>Orden: </strong><%= @ficha[:especie].x_orden %></p>
     <p><strong>Familia: </strong><%= @ficha[:especie].x_familia %></p>

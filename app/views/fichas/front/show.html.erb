@@ -4,7 +4,7 @@
     <%#= render partial: 'titulo' %>
   </div>
 
-  <div class="" id="clasiDescEsp">
+  <div id="clasiDescEsp">
     <div class="xSection row active">
       <div class="col-md-12">
         <h5 class="text-primary">Clasificación y descripción</h5>
@@ -13,14 +13,16 @@
     <%= render partial: 'clasificacion_y_descripcion_de_especie' %>
   </div>
 
-  <div class="" id="distribucionEspecie">
-    <div class="xSection row">
-      <div class="col-md-12">
-        <h5 class="text-primary">Distribución</h5>
+  <% if @distribucion.tiene_datos? || @endemica.tiene_datos? || @habitat.tiene_datos_dist? %>
+    <div id="distribucionEspecie">
+      <div class="xSection row">
+        <div class="col-md-12">
+          <h5 class="text-primary">Distribución</h5>
+        </div>
       </div>
+      <%= render partial: 'distribucione_de_la_especie' %>
     </div>
-    <%= render partial: 'distribucione_de_la_especie' %>
-  </div>
+  <% end %>
 
   <div class="" id="ambienteDeEspecie">
     <div class="xSection row">

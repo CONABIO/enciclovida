@@ -5,4 +5,8 @@ class Fichas::Endemica < Ficha
 
 	belongs_to :taxon, :class_name => 'Fichas::Taxon', :foreign_key => 'especieId'
 
+	def tiene_datos?
+		return true if endemicaA.present? || infoAdicionalEndemica.present?
+	end
+
 end
