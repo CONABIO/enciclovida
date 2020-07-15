@@ -1,6 +1,6 @@
 <div class="row showInfo">
 
-  <div class="col-md-12 mt-3">
+  <div class="col-md-12 mt-1">
     <% if @ecorregion.tiene_datos_amb? || @ecosistema.tiene_datos_amb? %>
       <div class="row text-center">
         <% if @ecorregion.descripcion.present? %>
@@ -15,10 +15,10 @@
     <% end %>
 
     <% if @habitat.tiene_datos_amb? || @habitatAntropico.tiene_datos_amb? || @suelo.tiene_datos_amb? || @geoforma.tiene_datos_amb? || @tipoClima.tiene_datos_amb? %>
-      <div class="row text-justify mt-3" >
+      <div class="row text-justify mt-1" >
         
         <% if @habitat.tiene_datos_amb? || @habitatAntropico.tiene_datos_amb? %>
-          <div class="col-md-8 mt-3">
+          <div class="col-md-8 mt-1">
             <h6>Tipos de vegetación</h6>
             <ul>
 
