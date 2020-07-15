@@ -24,14 +24,16 @@
     </div>
   <% end %>
 
-  <div class="" id="ambienteDeEspecie">
-    <div class="xSection row">
-      <div class="col-md-12" >
-        <h5 class="text-primary">Ambiente</h5>
+  <% if @habitat.tiene_datos_amb? || @ecorregion.tiene_datos_amb? || @ecosistema.tiene_datos_amb? || @habitatAntropico.tiene_datos_amb? || @suelo.tiene_datos_amb? || @geoforma.tiene_datos_amb? %>
+    <div class="" id="ambienteDeEspecie">
+      <div class="xSection row">
+        <div class="col-md-12" >
+          <h5 class="text-primary">Ambiente</h5>
+        </div>
       </div>
+      <%= render partial: 'ambiente_de_desarrollo_de_especie' %>
     </div>
-    <%= render partial: 'ambiente_de_desarrollo_de_especie' %>
-  </div>
+  <% end %>
 
   <div class="" id="biologiaEspecie">
     <div class="xSection row">

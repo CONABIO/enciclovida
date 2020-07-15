@@ -25,4 +25,12 @@ class Fichas::Habitat < Ficha
 		return true if estadoHabitat.present?
 	end
 
+	def tiene_datos_amb?
+		return true if tipoVegetacion.present? || habitatAgropecuario.present? || zonaUrbana.present? || self.VegetacionSecundaria.present? || tipoVegetacionSecundaria.present? || descripcionSuelo.present? || climaAdicional.present? || temperaturainicial.present? || temperaturafinal.present? || infoaddtemperatura.present? || precipitacioninicial.present? || precipitacionfinal.present? || infoaddprecipitacion.present? || humedadinicial.present? || humedadfinal.present? || infoaddhumedad.present? || descripcionGeoforma.present?
+	end
+
+	def tiene_datos_amb_mas_info?
+		return true if climaAdicional.present? || temperaturainicial.present? || temperaturafinal.present? || infoaddtemperatura.present? || precipitacioninicial.present? || precipitacionfinal.present? || infoaddprecipitacion.present? || humedadinicial.present? || humedadfinal.present? || infoaddhumedad.present? || descripcionGeoforma.present?
+	end
+
 end

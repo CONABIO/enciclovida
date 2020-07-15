@@ -5,4 +5,8 @@ class Fichas::Geoforma < Ficha
 
 	has_many :habitat, class_name: 'Fichas::Habitat'
 
+	def tiene_datos_amb?
+		return true if descrpcion.present?
+	end
+
 end
