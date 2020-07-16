@@ -1,8 +1,10 @@
 <%#= stylesheet_link_tag 'especies/arbol/arbol_identado' %>
 <%#= javascript_include_tag 'especies/arbol/arbol_identado' %>
 <% if @taxones.present? && @taxones.length > 0 %>
-  <div class="border d-flex flex-row mb-2 rounded-sm">
-    <p class="bg-secondary d-none font-weight-bold m-0 p-2 rounded-top text-center text-white">Taxonomía</p>
+  <div class="d-flex align-items-center px-4 py-1 rounded-sm" style="overflow-x: auto;">
+    <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-circle-left"></i></button>
+    <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-circle-right"></i></button>
     <%= dameArbolInicialSinIndentar(@taxones) %>
   </div>
+  <div class="mt-2"><%= link_to('Explora por clasificación...', "/explora-por-clasificacion?especie_id=#{@especie.id}", { target: :_self }) %></div>
 <% end %>
