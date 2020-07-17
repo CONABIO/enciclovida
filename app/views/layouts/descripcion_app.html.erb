@@ -5,12 +5,21 @@
     <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
     <%= stylesheet_link_tag 'descripcion_app', 'data-turbolinks-track' => true %>
     <%= csrf_meta_tags %>
+
+    <style>
+        .margen-general {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+    </style>
 </head>
 
 <body>
 
     <section id="content" class="container-fluid">
-        <div class="row main m-4">
+        <div class="row main margen-general">
             <%= yield %>
         </div>
     </section>

@@ -86,7 +86,7 @@ class Fichas::Taxon < Ficha
 
 		if referencias = referenciasBibliograficas.first
 			if referencias.referencia.present?
-				resumen << '<div class="mt-3 mb-1"><span><strong>Referencias</strong></span>'
+				resumen << '<br/><br/><div class="mt-3 mb-1"><span><strong>Referencias</strong></span>'
 				resumen << referencias.referencia.a_HTML 
 				resumen << '</div>'
 			end
