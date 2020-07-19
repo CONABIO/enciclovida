@@ -72,9 +72,19 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   max-height: 250px;
 }
 
-#arbol > div > div:last-child{
-  /*display: none!important;*/
+#inicia-clasificacion{
+  max-width: 38px;
+  /*max-height: 35px;*/
+  transition: all .25s ease-in-out;
+  /*white-space: nowrap;*/
+  overflow-x: hidden;
+  left:10px;
+  bottom: -10px;
 }
+#inicia-clasificacion:hover{
+  max-width: 300px;
+}
+
 #navegacion .btn.btn-outline-primary{
   border-color: transparent!important;
   box-shadow: rgba(189, 0, 22, 0.1) 1px 1px 2px;
