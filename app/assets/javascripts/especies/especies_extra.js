@@ -45,10 +45,10 @@ $(document).ready(function(){
     });
     $("html,body").animate({scrollTop: 101}, 500);
 
-    $('#media, #contenedor_fotos').on('click','.paginado-media button:first-of-type, #especies-destacadas button:first-of-type',function(){
+    $('#media, #contenedor_fotos, #arbol').on('click','.paginado-media button:first-of-type, #especies-destacadas button:first-of-type, #clasificacion button:first-of-type',function(){
         $(this).parent().animate({scrollLeft: "-=600px"}, 250);
     });
-    $('#media, #contenedor_fotos').on('click','.paginado-media button:last-of-type, #especies-destacadas button:last-of-type',function(){
+    $('#media, #contenedor_fotos, #arbol').on('click','.paginado-media button:last-of-type, #especies-destacadas button:last-of-type, #clasificacion button:last-of-type',function(){
         $(this).parent().animate({scrollLeft: "+=600px"}, 250);
     });
 });
