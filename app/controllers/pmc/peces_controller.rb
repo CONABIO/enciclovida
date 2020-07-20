@@ -12,7 +12,7 @@ class Pmc::PecesController < Pmc::PmcController
 
   def index
     #render layout: false
-    @doc = Nokogiri::HTML(open("http://www2.biodiversidad.gob.mx/usos/alimentacion/peces/")).css('#introenciclovida2')
+    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/usos/alimentacion/peces/")).css('#introenciclovida2')
     #@doc.css('#pagetitle').remove
     #@doc.css('#sectionmenu').remove
     #@doc.css('#pageima').remove
