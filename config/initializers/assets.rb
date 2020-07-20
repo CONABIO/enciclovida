@@ -16,7 +16,7 @@ inicio.scss especies/especies.scss
 admin/admin.js admin/catalogos/catalogos_extra.js
 lib/bootstrap-select.min.css lib/bootstrap-select.min.js
 boots3-downgrade/bootstrap.js boots3-downgrade/bootstrap-sprockets.js
-boots3-downgrade/boots3/bootstrap/_bootstrap.scss boots3-downgrade/busquedas/avanzada/checklist.css boots3-downgrade/busquedas/region/por_region.css boots3-downgrademetamares/metamares.css boots3-downgrade/metamares/graficas.css
+boots3-downgrade/boots3/bootstrap/_bootstrap.scss boots3-downgrade/busquedas/avanzada/checklist.css boots3-downgrade/busquedas/region/por_region.css boots3-downgrade/metamares/metamares.css boots3-downgrade/metamares/graficas.css
 jquery-ui.js
 boots3-downgrade/busquedas.css busquedas/avanzada/checklist.css
 )

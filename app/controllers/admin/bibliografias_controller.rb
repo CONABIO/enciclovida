@@ -28,6 +28,7 @@ class Admin::BibliografiasController < Admin::AdminController
     @admin_bibliografia = Admin::Bibliografia.new(admin_bibliografia_params)
 
     respond_to do |format|
+      @admin_bibliografia.usuario = current_usuario.email
       if @admin_bibliografia.save
         format.html { redirect_to edit_admin_bibliografia_path(@admin_bibliografia), notice: 'La bibliografía fue creada satisfactoriamente. Puedes cerrar cierrar esta pestaña y volver a la asociación de bibliografía.' }
         format.json { render :show, status: :created, location: @admin_bibliografia }
@@ -42,6 +43,7 @@ class Admin::BibliografiasController < Admin::AdminController
   # PATCH/PUT /admin/bibliografias/1.json
   def update
     respond_to do |format|
+      @admin_bibliografia.usuario = current_usuario.email
       if @admin_bibliografia.update(admin_bibliografia_params)
         format.html { redirect_to edit_admin_bibliografia_path(@admin_bibliografia), notice: 'La bibliografía fue actualizada satisfactoriamente. Puedes cerrar cierrar esta pestaña y volver a la asociación de bibliografía.' }
         format.json { render :show, status: :ok, location: @admin_bibliografia }

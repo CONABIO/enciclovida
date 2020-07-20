@@ -6,6 +6,7 @@ class Admin::Bibliografia < Bibliografia
   scope :autocompleta, ->(termino) { select(:id, :cita_completa).where("#{Bibliografia.attribute_alias(:cita_completa)} LIKE ? COLLATE utf8_general_ci", "%#{termino}%").limit(10) }
 
   before_save :asigna_cita_completa
+  before_update :asigna_usuario
   
   def asigna_cita_completa
     orden_cita    = []
@@ -18,6 +19,15 @@ class Admin::Bibliografia < Bibliografia
     orden_cita[6] = editorial_pais_pagina
 
     self.cita_completa = orden_cita.join('. ').gsub('..','.').gsub('  ','').strip
+  end
+
+  def asigna_usuario
+    cambios = changes.keys
+
+    # Regresa el valor original del usuario si no se edito nada
+    if cambios.length == 1 && cambios.include?('usuario')
+      self.usuario = usuario_was
+    end
   end
 
 end
