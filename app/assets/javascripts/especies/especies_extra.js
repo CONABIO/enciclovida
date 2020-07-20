@@ -51,4 +51,16 @@ $(document).ready(function(){
     $('#media, #contenedor_fotos, #arbol').on('click','.paginado-media button:last-of-type, #especies-destacadas button:last-of-type, #clasificacion button:last-of-type',function(){
         $(this).parent().animate({scrollLeft: "+=600px"}, 250);
     });
+
+
+    $('#modal_clasificacion_completa').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var taxonId = button.data('taxon-id');
+        var modal = $(this);
+        modal.find('.modal-body').load('/explora-por-clasificacion?especie_id='+taxonId+'&fromShow=1', function(){
+            $(this).children('header, footer').remove();
+            $('#buscador-taxonomico').remove();
+        });
+
+    })
 });

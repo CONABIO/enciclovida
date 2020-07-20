@@ -21,14 +21,14 @@
 
 <div id="dvLoading"><i></i></div>
 
-<div class="input-group">
+<div id="buscador-taxonomico" class="input-group">
     <div class="w-50 text-center mb-3 mx-auto">
         <h4>Busca un nombre o explora por clasificación</h4>
         <%= text_field_tag :nombre, nil, :maxlength => 100, :placeholder => 'ej: Ajolote', :autocomplete => :off, :class => 'form-control', id: 'clasificacion-nombre', :value => params[:q].present? ? params[:q] : '' %>
     </div>
 </div>
 
-<div class="col-12 d-flex justify-content-end">
+<div id="arbol-taxonomico" class="col-12 d-flex justify-content-end">
     <% if @taxones.present? && @taxones.length > 0 %>
 
     <script>

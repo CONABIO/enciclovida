@@ -7,7 +7,7 @@
       <button type="button" class="btn rounded-circle position-absolute"><i class="fa fa-chevron-right"></i></button>
       <%= dameArbolInicialSinIndentar(@taxones) %>
     </div>
-    <button id="inicia-clasificacion" type="button" class="btn btn-dark btn-outline-success position-absolute px-1 py-1 rounded-pill text-nowrap">
+    <button id="inicia-clasificacion" data-toggle="modal" data-target="#modal_clasificacion_completa" data-taxon-id="<%= @especie.id %>" type="button" class="btn btn-dark btn-outline-success position-absolute px-1 py-1 rounded-pill text-nowrap">
       <%#= link_to('Explorar la clasificación completa...', "/explora-por-clasificacion?especie_id=#{@especie.id}", { target: :_self }) %>
       <i class="flow-cascade-ev-icon h5"></i>
       Explorar la clasificación completa...
