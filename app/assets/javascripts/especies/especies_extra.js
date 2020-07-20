@@ -1,39 +1,3 @@
-// REVISADO: Para desplegar o contraer el arbol identado en ficha de la espcie
-var despliegaOcontrae = function(elemento)
-{
-    var id = elemento.attr('taxon_id');
-    var ul = $('#ul_' + id);
-    var hijos = $('#ul_' + id).children().children('ul');
-
-    if (hijos.size() > 0)  // Existe algun hijo
-    {
-        var minus = $('#span_' + id).hasClass("fa-minus");
-
-        if (minus)
-            $('#span_' + id).removeClass("fa-minus").addClass("fa-plus");
-
-        hijos.remove();
-
-    } else {
-        $.ajax(
-            {
-                url: "/especies/" + id + "/arbol_identado_hojas"
-            }).done(function(lista)
-        {
-            if (lista != '')
-            {
-                var plus = $('#span_' + id).hasClass("fa-plus");
-
-                if (plus)
-                    $('#span_' + id).removeClass("fa-plus").addClass("fa-minus");
-
-                hijos.remove();
-                $(elemento).parent().append(lista);
-            }
-        });
-    }
-};
-
 $(document).ready(function(){
     tooltip();
     refreshMediaQueries();
@@ -81,15 +45,22 @@ $(document).ready(function(){
     });
     $("html,body").animate({scrollTop: 101}, 500);
 
-    $('#arbol').on('click', '.sub_link_taxon', function(){
-        despliegaOcontrae($(this));
-        return false;
+    $('#media, #contenedor_fotos, #arbol').on('click','.paginado-media button:first-of-type, #especies-destacadas button:first-of-type, #clasificacion button:first-of-type',function(){
+        $(this).parents().animate({scrollLeft: "-=600px"}, 250);
+    });
+    $('#media, #contenedor_fotos, #arbol').on('click','.paginado-media button:last-of-type, #especies-destacadas button:last-of-type, #clasificacion button:last-of-type',function(){
+        $(this).parents().animate({scrollLeft: "+=600px"}, 250);
     });
 
-    $('#media, #contenedor_fotos').on('click','.paginado-media button:first-of-type, #especies-destacadas button:first-of-type',function(){
-        $(this).parent().animate({scrollLeft: "-=600px"}, 250);
-    });
-    $('#media, #contenedor_fotos').on('click','.paginado-media button:last-of-type, #especies-destacadas button:last-of-type',function(){
-        $(this).parent().animate({scrollLeft: "+=600px"}, 250);
-    });
+
+    $('#modal_clasificacion_completa').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var taxonId = button.data('taxon-id');
+        var modal = $(this);
+        modal.find('.modal-body').load('/explora-por-clasificacion?especie_id='+taxonId+'&fromShow=1', function(){
+            $(this).children('header, footer').remove();
+            $('#buscador-taxonomico').remove();
+        });
+
+    })
 });

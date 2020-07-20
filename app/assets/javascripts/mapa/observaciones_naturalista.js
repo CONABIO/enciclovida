@@ -167,17 +167,17 @@ var observacionNaturalista = function(prop)
 
     if (prop.thumb_url != undefined)
     {
-        contenido += "<div><img style='margin: 10px auto!important;' class='img-responsive' src='" + prop.thumb_url + "'/></div>";
-        contenido += "<dt>Atribución: </dt><dd>" + prop.attribution + "</dd>";
+        contenido += "<div><img class='img-responsive mx-auto d-block' src='" + prop.thumb_url + "'/></div>";
+        contenido += "<strong>Atribución: </strong>" + prop.attribution + "<br />";
     }
 
-    contenido += "<dt>Fecha: </dt><dd>" + prop.observed_on + "</dd>";
-    contenido += "<dt>¿Silvestre / Naturalizado?: </dt><dd>" + (prop.captive == true ? 'sí' : 'no') + "</dd>";
-    contenido += "<dt>Grado de calidad: </dt><dd>" + prop.quality_grade + "</dd>";
-    contenido += "<dt>URL NaturaLista: </dt><dd><a href='"+ prop.uri +"' target='_blank'>ver la observación</a></dd>";
+    contenido += "<strong>Fecha: </strong>" + prop.observed_on + "<br />";
+    contenido += "<strong>¿Silvestre / Naturalizado?: </strong>" + (prop.captive == true ? 'sí' : 'no') + "<br />";
+    contenido += "<strong>Grado de calidad: </strong>" + prop.quality_grade + "<br />";
+    contenido += "<strong>URL NaturaLista: </strong><a href='"+ prop.uri +"' target='_blank'>ver la observación</a><br />";
 
     // Para enviar un comentario acerca de un registro en particular
-    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" + prop.id + "&tipo_proveedor=7' target='_blank'>redactar</a></dd>";
+    contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" + prop.id + "&tipo_proveedor=7' target='_blank'>redactar</a><br />";
 
     return "<dl class='dl-horizontal'>" + contenido + "</dl>";
 };

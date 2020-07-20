@@ -10,7 +10,7 @@
   <%= javascript_include_tag 'admin/admin', 'data-turbolinks-track': true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
-      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
+      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_usos_redis %>");
       IP = "<%= IP %>";
       PORT = "<%= PORT %>";
   </script>
@@ -39,8 +39,14 @@
 
 <section id="content" class="container-fluid">
   <div class="row main">
-    <%= yield %>
+
+    <div class="container col-auto">
+      <div class="text-success text-center mb-3"><%= notice %></div>
+      <%= render partial: 'admin/shared/menu_acciones' %>      
+      <%= yield %>
+    </div>
   </div>
+
 </section>
 
 <footer class="container-fluid">

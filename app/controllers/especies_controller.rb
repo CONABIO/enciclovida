@@ -11,9 +11,6 @@ class EspeciesController < ApplicationController
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
                                      :dame_nombre_con_formato, :noticias, :media_tropicos, :resumen_wikipedia]
-  before_action :only => [:arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas] do
-    set_especie(true)
-  end
 
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista]
 
@@ -22,7 +19,7 @@ class EspeciesController < ApplicationController
   end
 
   layout false, :only => [:media, :descripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
+                          :comentarios,
                           :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
                           :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :resumen_wikipedia]
@@ -40,8 +37,9 @@ class EspeciesController < ApplicationController
   # GET /especies/1.json
   def show
     render 'especies/noPublicos' and return unless @especie.scat.Publico
-    ## Para mostrar la taxonomia en la página inicial del show
-    @taxones = Especie.arbol_nodo_inicial(@especie)
+    
+    # Para mostrar la taxonomia en la página inicial del show
+    @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)
 
     respond_to do |format|
       format.html do
@@ -299,48 +297,6 @@ class EspeciesController < ApplicationController
     render html: "#{helpers.tituloNombreCientifico(@especie, render: 'link')}".html_safe
   end
 
-  # REVISADO: Despliega el arbol identado o nodo
-  def arbolgit add 
-    if I18n.locale.to_s == 'es-cientifico'
-      @taxones = Especie.arbol_identado_inicial(@especie)
-      render :partial => 'especies/arbol/arbol_identado_inicial'
-    else
-      render :partial => 'especies/arbol/arbol_nodo_inicial'
-    end
-  end
-
-  # REVISADO: JSON que se ocupara para desplegar el arbol nodo incial en D3
-  def arbol_nodo_inicial
-    hash_d3 = {}
-    taxones = Especie.arbol_nodo_inicial(@especie)
-
-    taxones.reverse.each do |taxon|
-      if hash_d3.empty?
-        hash_d3 = taxon.arbol_nodo_hash
-      else  # El taxon anterior la pone como hija del taxon actual
-        parent = taxon.arbol_nodo_hash
-        parent[:children] = [hash_d3]
-        hash_d3 = parent
-      end
-    end
-
-    render :json => hash_d3
-  end
-
-  # REVISADO: JSON que despliega los hijosen el arbol nodo, en la ficha de la especie
-  def arbol_nodo_hojas
-    taxones = Especie.arbol_nodo_hojas(@especie)
-    render :json => taxones.map{|t| t.arbol_nodo_hash}
-  end
-
-  # REVISADO: JSON que despliega los hijos en el arbol identado, en la ficha de la especie
-  def arbol_identado_hojas
-    @taxones = Especie.arbol_identado_hojas(@especie)
-    @hojas = true
-
-    render :partial => 'especies/arbol/arbol_identado_hojas'
-  end
-
   # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista o de bdi
   def fotos_referencia
     @fotos = []
@@ -554,7 +510,7 @@ class EspeciesController < ApplicationController
       resumen = Api::Wikipedia.new(opc).resumen_cualquiera
     end
 
-    render json: { estatus: (resumen.present? ? true : false), summary: resumen }
+    render json: { estatus: (resumen.present? ? true : false), sumamry: resumen }
   end
 
   # Viene de la pestaña de la ficha
@@ -906,7 +862,7 @@ class EspeciesController < ApplicationController
 
   private
 
-  def set_especie(arbol = false)
+  def set_especie
     id = params[:id].split('-').first
 
     if id.numeric?  # Quiere decir que es un ID de la centralizacion o del antiguo de millones
@@ -928,20 +884,17 @@ class EspeciesController < ApplicationController
         render :_error and return
       end
     end
+    
+    # seteo pedir el taxon valido ANTES de correr los servicios debido a que debo actualizar el valido en vez del sinonimo
+    @especie = @especie.dame_taxon_valido
 
-    # Por si no viene del arbol, ya que no necesito encontrar el valido
-    unless arbol
-      # seteo pedir el taxon valido ANTES de correr los servicios debido a que debo actualizar el valido en vez del sinonimo
-      @especie = @especie.dame_taxon_valido
+    # Si llego aqui quiere decir que encontro un id en la centralizacion valido
+    @especie.servicios if params[:action] == 'show' && params[:format].blank?
 
-      # Si llego aqui quiere decir que encontro un id en la centralizacion valido
-      @especie.servicios if params[:action] == 'show' && params[:format].blank?
+    render :_error and return unless @especie
 
-      render :_error and return unless @especie
-
-      if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
-        redirect_to especie_path(@especie) and return
-      end
+    if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
+      redirect_to especie_path(@especie) and return
     end
   end
 

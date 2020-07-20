@@ -83,6 +83,22 @@ var soulmateAsigna = function(tipo_busqueda, elem)
             case 'admin/catalogos/index':
                 $('#admin_catalogo_especie_id').val(data.id);
                 $('#admin_catalogo_nombre_cientifico').val(data.nombre_cientifico);
+                $('#new_admin_catalogo').submit();
+                break;
+            case 'admin/especie_catalogo':
+                if (data.estatus == "válido")
+                {
+                    $('#admin_especie_catalogo_especie_id').val(data.id);
+                    $('#' + elemento).val(data.nombre_cientifico);
+                } else {
+                    let data_valido = dameTaxonValido(data.id);
+                    $('#admin_especie_catalogo_especie_id').val(data_valido.IdNombre);
+                    $('#' + elemento).val(data_valido.TaxonCompleto);
+                }
+                
+                break;                
+            case 'busquedas/explora-por-clasificacion':
+                window.location.replace('/explora-por-clasificacion?especie_id='  + data.id + '&q=' + data.nombre_cientifico);
                 break;
             default:
                 // Para no pasar por el controlador de busquedas, ir directo a la especie, solo busqueda basica
@@ -101,4 +117,19 @@ var soulmateAsigna = function(tipo_busqueda, elem)
         maxResults:     5,
         timeout:        3500
     });
+};
+
+var dameTaxonValido = function(especie_id)
+{
+    let data_valio = null
+
+    $.ajax({
+            url: "/especies/" + especie_id + '.json',
+            async: false,
+            success: function(data) {
+                data_valido = data
+            }
+        });
+    
+    return data_valido;
 };

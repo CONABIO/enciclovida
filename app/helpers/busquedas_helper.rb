@@ -333,5 +333,73 @@ module BusquedasHelper
 
     checkBoxes.html_safe
   end
+  
+  def dameArbolInicial
+    return unless (@taxones.present? && @taxones.any?)
+    html = ''
+
+    @taxones.each do |taxon|
+      html << iteraArbol(taxon, false, 'fa-minus', true)
+    end  
+
+    html = "#{html}#{'</div>'*@taxones.length}"
+    html.html_safe
+  end 
+
+  def iteraArbol(taxon, hojas, icono_fuente, inicial=false)
+    icono_fuente = 'fa-circle' if taxon.conteo == 0
+    
+    if @ancestros.present?
+      busqueda_orig = @ancestros.include?(taxon.id) ? 'clas-fila-busqueda-orig' : ''
+    end
+    busqueda_orig = 'clas-fila-busqueda-orig' if inicial
+
+    if taxon.jres
+      iconos_fuentes = ''
+      taxon.jres["cons_amb_dist"].each do |fuente, titulo|
+        iconos_fuentes << "<span class='btn-title caracteristica-distribucion-ambiente-taxon h2' tooltip-title='#{titulo}'><i class='#{fuente}-ev-icon'></i></span>"
+      end  
+    end
+    
+    link = "#{link_to("<i class='fa #{icono_fuente} f-clas-plus'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link clas-plus')}"
+    nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
+    especies_url = "/busquedas/resultados?nivel=%3D&cat=7100&busqueda=avanzada&id=#{taxon.id}&por_pagina=50"
+    especies = "<sup>" + link_to(taxon.conteo, especies_url, target: :_blank) + "</sup>" if taxon.conteo > 0
+    span = "<div class='clas-fila mt-2 mb-2 #{busqueda_orig}'>#{link} #{nombre} #{especies} #{iconos_fuentes}</div>"
+    html = "<div id='clas-div-#{taxon.id}' class='ml-3'>#{span}"
+
+    if hojas
+      html << '</div>'
+    else
+      html
+    end
+
+  end
+
+  def dameArbolInicialSinIndentar(taxones)
+    html = ''
+    taxones.each do |taxon|
+      nombre = tituloNombreCientifico(taxon, render: 'link-inline')
+      html << "<div class='d-flex flex-grow-0 align-items-center mr-4 text-secondary'><i class='fa fa-long-arrow-right'></i></div>" unless html.empty?
+      html << "<div class='d-flex flex-column text-nowrap pr-4'>"
+      html << "<text class='text-capitalize font-weight-bold h6 text-secondary text-center'>#{taxon.nombre_categoria_taxonomica}</text>"
+      html << nombre
+      html << "</div>"
+    end
+
+    html.html_safe
+  end
+
+  # REVISADO: Regresa los taxones hijos del taxon en cuestion
+  def dameArbolHojas
+    html = ''
+    return html unless @taxones
+
+    @taxones.each do |taxon|
+      html << iteraArbol(taxon, hojas=true, 'fa-plus')
+    end
+
+    html.html_safe
+  end
 
 end

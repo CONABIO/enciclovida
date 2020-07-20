@@ -1,5 +1,5 @@
 
-<%= simple_form_for(@admin_bibliografia) do |f| %>
+<%= simple_form_for @admin_bibliografia, wrapper: :horizontal_form do |f| %>
   <%= f.error_notification %>
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
 
@@ -11,11 +11,11 @@
     <%= f.input :editorial_pais_pagina %>
     <%= f.input :numero_volumen_anio %>
     <%= f.input :editores_compiladores %>
-    <%= f.input :isbnissn %>
+    <%#= f.input :isbnissn %>
     <%= f.input :observaciones %>
   </div>
 
   <div class="form-actions">
-    <%= f.button :submit %>
+    <%= f.button :submit, class: 'btn btn-lg btn-block btn-success' %>
   </div>
 <% end %>

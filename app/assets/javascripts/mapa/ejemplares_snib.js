@@ -244,25 +244,25 @@ var ejemplarSnib = function(prop)
     var nombre_f = $('<textarea/>').html(opciones.nombre).text().replace(/<h5/g, "<h4 class='text-center'").replace(/<\/h5/g, "</h4");
     var contenido = "";
 
-    contenido += "" + nombre_f + "";
-    contenido += "<dt>Localidad: </dt><dd>" + prop.localidad + "</dd>";
-    contenido += "<dt>Municipio: </dt><dd>" + prop.municipiomapa + "</dd>";
-    contenido += "<dt>Estado: </dt><dd>" + prop.estadomapa + "</dd>";
-    contenido += "<dt>País: </dt><dd>" + prop.paismapa + "</dd>";
-    contenido += "<dt>Fecha: </dt><dd>" + prop.fechacolecta + "</dd>";
-    contenido += "<dt>Colector: </dt><dd>" + prop.colector + "</dd>";
-    contenido += "<dt>Colección: </dt><dd>" + prop.coleccion + "</dd>";
-    contenido += "<dt>Institución: </dt><dd>" + prop.institucion + "</dd>";
-    contenido += "<dt>País de la colección: </dt><dd>" + prop.paiscoleccion + "</dd>";
+    contenido += "" + nombre_f + "<br />";
+    contenido += "<strong>Localidad:</strong> " + prop.localidad + "<br />";
+    contenido += "<strong>Municipio: </strong>" + prop.municipiomapa + "<br />";
+    contenido += "<strong>Estado: </strong>" + prop.estadomapa + "<br />";
+    contenido += "<strong>País: </strong>" + prop.paismapa + "<br />";
+    contenido += "<strong>Fecha: </strong>" + prop.fechacolecta + "<br />";
+    contenido += "<strong>Colector: </strong>" + prop.colector + "<br />";
+    contenido += "<strong>Colección: </strong>" + prop.coleccion + "<br />";
+    contenido += "<strong>Institución: </strong>" + prop.institucion + "<br />";
+    contenido += "<strong>País de la colección: </strong>" + prop.paiscoleccion + "<br />";
 
     if (prop.proyecto.length > 0 && prop.urlproyecto.length > 0)
-        contenido += "<dt>Proyecto: </dt><dd><a href='" + prop.urlproyecto + "' target='_blank'>" + prop.proyecto + "</a></dd>";
+        contenido += "<strong>Proyecto: </strong><a href='" + prop.urlproyecto + "' target='_blank'>" + prop.proyecto + "</a><br />";
 
-    contenido += "<dt>Más información: </dt><dd><a href='" + prop.urlejemplar + "' target='_blank'>consultar</a></dd>";
+    contenido += "<strong>Más información: </strong><a href='" + prop.urlejemplar + "' target='_blank'>consultar</a><br />";
 
     //Para enviar un comentario acerca de un ejemplar en particular
-    contenido += "<dt>¿Tienes un comentario?: </dt><dd><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" +
-        prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a></dd>";
+    contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" +
+        prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a><br />";
 
     return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID SNIB: </strong>" + prop.idejemplar;
 };
@@ -300,7 +300,7 @@ var geojsonSnib = function(url)
                     allowedPoints.set(item_id, {
                         "type"      : "Feature",
                         "properties": {d: d[i]},
-                        "geometry"  : JSON.parse(d[i].json_geom)
+                        "geometry"  : {"type": "Point", "coordinates":[d[i].longitud,d[i].latitud]}
                     });
                 }
             }

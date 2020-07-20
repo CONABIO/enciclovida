@@ -98,7 +98,7 @@
 
     <div class="tab-pane show active" id="geodata" role="tabpanel" aria-labelledby="geodata-tab">
       <div class="row">
-        <div class="col-12 d-block d-lg-inline-block col-lg-3" id="arbol">
+        <div class="col-12 mb-3 mt-1" id="arbol">
           <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
         </div>
         <div class="col-12 col-lg-9">
@@ -122,4 +122,5 @@
 
 </div>
 <%= render :partial => 'especies/media/modalMedia' %>
+<%= render :partial => 'modalClasificacionCompleta' %>
 <%= render :partial => 'modalEditarIDNaturalista' if editarIDNaturalista %>

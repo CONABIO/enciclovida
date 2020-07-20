@@ -13,7 +13,8 @@
     <%= link_to '¿Qué es EncicloVida?', inicio_acerca_path << '?tab=queEs', data: { turbolinks: false }, class: 'dropdown-item' %>
     <div class="dropdown-divider"></div>
     <% if usuario_signed_in? %>
-      <%= link_to 'Administracion de comentarios', admin_path, data: { turbolinks: false }, class: 'dropdown-item' %>
+      <%= link_to 'Administración de comentarios', admin_path, data: { turbolinks: false }, class: 'dropdown-item' %>
+      <%= link_to 'Administración del catálogo', admin_catalogos_path, data: { turbolinks: false }, class: 'dropdown-item' %>
       <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path, data: { turbolinks: false }, class: 'dropdown-item' %>
       <%= link_to "Cerrar sesión", destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe, turbolinks: false}, class: 'dropdown-item' %>
     <% else %>

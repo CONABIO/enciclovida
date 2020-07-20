@@ -7,4 +7,15 @@ class Admin::EspecieCatalogo < EspecieCatalogo
   accepts_nested_attributes_for :bibliografias, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :regiones, reject_if: :all_blank, allow_destroy: true
 
+  before_update :asigna_usuario
+
+  def asigna_usuario
+    cambios = changes.keys
+
+    # Regresa el valor original del usuario si no se edito nada
+    if cambios.length == 1 && cambios.include?('usuario')
+      self.usuario = usuario_was
+    end
+  end
+
 end
