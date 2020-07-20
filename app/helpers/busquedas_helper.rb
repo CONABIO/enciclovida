@@ -357,7 +357,7 @@ module BusquedasHelper
     if taxon.jres
       iconos_fuentes = ''
       taxon.jres["cons_amb_dist"].each do |fuente, titulo|
-        iconos_fuentes << "<span class='btn-title caracteristica-distribucion-ambiente-taxon' tooltip-title='#{titulo}'><i class='#{fuente}-ev-icon'></i></span>"
+        iconos_fuentes << "<span class='btn-title caracteristica-distribucion-ambiente-taxon h2' tooltip-title='#{titulo}'><i class='#{fuente}-ev-icon'></i></span>"
       end  
     end
     

@@ -65,7 +65,7 @@ module ApplicationHelper
       when 'link-inline'
         "#{nombre_comun} <b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
       when 'link-inline-clasificacion'
-        clasificacion = "<text class='f-cat-clasificacion'>[#{taxon.nombre_categoria_taxonomica[0].upcase}]</text>" 
+        clasificacion = "<span class='bg-gradient-secondary text-white bagde badge-pill'>#{taxon.nombre_categoria_taxonomica[0].upcase}</span>"
         "#{clasificacion} <span class='f-nom-clasificacion'>#{nombre_comun}</span> <b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
       else
         "#{nombre_comun}#{'<br />' if nombre_comun.present?}#{nombre_cientifico}".html_safe

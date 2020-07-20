@@ -1,5 +1,3 @@
-<%#= stylesheet_link_tag 'especies/arbol/arbol_identado' %>
-<%#= javascript_include_tag 'especies/arbol/arbol_identado' %>
 <% if @taxones.present? && @taxones.length > 0 %>
   <button id="inicia-clasificacion" data-toggle="modal" data-target="#modal_clasificacion_completa" data-taxon-id="<%= @especie.id %>" type="button" class="bg-gradient-light   position-absolute px-1 py-1 rounded-left shadow-sm text-nowrap text-truncate text-primary">
     <i class='fa fa-caret-left'></i>
