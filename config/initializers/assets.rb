@@ -1,5 +1,5 @@
 Rails.application.config.assets.precompile += %w(
-inicio/inicio.js soulmate.css
+inicio/inicio.js soulmate.css descripcion_app.css
 busquedas/avanzada/avanzada.js lib/scrolling.js busquedas/avanzada/basica.js
 especies/especies.js especies/fichas/fichas_extra.js especies/media/bdi.js especies/media/multimedia.js especies/comentarios/comentarios_extra.js
 busquedas.css carrusel.css especies/obligatorios.js

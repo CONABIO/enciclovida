@@ -5,4 +5,8 @@ class Fichas::Ficha_Ecorregion < Ficha
 
 	has_many :relEcorregionesHabitats, class_name: 'Fichas::Relecorregionhabitat'
 
+	def tiene_datos_amb?
+		return true if descripcion.present?
+	end
+	
 end

@@ -1,22 +1,20 @@
 class Api::Wikipedia < Api::Descripcion
 
-  attr_accessor :locale
+  #attr_accessor :locale
   DESCRIPCIONES = %w(wikipedia_es wikipedia_en)
 
   def initialize(opc = {})
     super(opc)
-    self.locale = locale || opc[:locale] || I18n.locale || 'en'
-    self.servidor = servidor || "http://#{locale}.wikipedia.org/w/api.php?redirects=true&action=parse&format=json"
   end
 
   def nombre
-    "Wikipedia (#{locale.try(:upcase)})"
+    "Wikipedia"
   end
 
   def dame_descripcion_cualquiera
     DESCRIPCIONES.each do |descripcion|
       desc = eval("Api::#{descripcion.camelize}")
-      resp = desc.new(taxon: taxon).buscar
+      resp = desc.new(taxon: taxon).dame_descripcion
       return resp if resp
     end
 
@@ -27,7 +25,7 @@ class Api::Wikipedia < Api::Descripcion
     begin
       buscar
     rescue => e
-      Rails.logger.info "[INFO] Wikipedia API falló a intentar consutar el resumen: #{e.message}"
+      Rails.logger.info "[INFO] Wikipedia API falló a intentar consutar la descripcion: #{e.message}"
       return
     end
   end
