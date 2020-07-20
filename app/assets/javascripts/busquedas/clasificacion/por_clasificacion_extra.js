@@ -60,7 +60,7 @@ var despliegaOcontrae_orig = function (elemento) {
 };
 
 $(document).ready(function () {
-    $('#clas-contenido').on('click', '.clas-plus', function () {
+    $('#arbol-taxonomico').on('click', '.clas-plus', function () {
         despliegaOcontrae($(this));
         return false;
     });
