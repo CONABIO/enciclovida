@@ -380,9 +380,9 @@ module BusquedasHelper
     html = ''
     taxones.each do |taxon|
       nombre = tituloNombreCientifico(taxon, render: 'link-inline')
-      html << "<div class='d-flex flex-grow-0 align-items-center mr-4 text-secondary'><i class='fa fa-long-arrow-right'></i></div>" unless html.empty?
-      html << "<div class='d-flex flex-column text-nowrap pr-4'>"
-      html << "<text class='text-capitalize font-weight-bold h6 text-secondary text-center'>#{taxon.nombre_categoria_taxonomica}</text>"
+      html << "<div class='d-flex flex-grow-0 align-items-center mr-3 text-secondary'><i class='fa fa-long-arrow-right'></i></div>" unless html.empty?
+      html << "<div class='d-flex flex-column text-nowrap pr-3'>"
+      #html << "<text class='text-capitalize font-weight-bold h6 text-secondary text-center'>#{taxon.nombre_categoria_taxonomica}</text>"
       html << nombre
       html << "</div>"
     end

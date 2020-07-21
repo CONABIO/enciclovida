@@ -67,21 +67,19 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   z-index: 1;
 }
 #especies-destacadas div img{
-  min-height: 200px;
-  height: 30vh;
-  max-height: 250px;
+  min-height: 175px;
+  height: 25vh;
+  max-height: 200px;
 }
 #clasificacion, #inicia-clasificacion{
-  /*border-color: #dee2e6!important;*/
-  border: 1px solid rgba(189, 0, 22, 0.1)!important;
-
+  /*border: 1px solid rgba(189, 0, 22, 0.1)!important;*/
 }
 #inicia-clasificacion{
   max-width: 55px;
   transition: all .25s ease-in-out;
   overflow-x: hidden;
-  right: 6px;
-  top: -10px;
+/*  right: 6px;*/
+/*  top: -10px;*/
 }
 #inicia-clasificacion:hover{
   max-width: 320px;
@@ -117,8 +115,8 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
 }
 .paginado-media button, #especies-destacadas button{z-index: 1;}
-.paginado-media button:first-of-type, #especies-destacadas button:first-of-type, #clasificacion button:first-of-type{left: -2px;}
-.paginado-media button:last-of-type, #especies-destacadas button:last-of-type, #clasificacion button:last-of-type{right: -2px;}
+.paginado-media button:first-of-type, #especies-destacadas button:first-of-type/*, #clasificacion button:first-of-type*/{left: -2px;}
+.paginado-media button:last-of-type, #especies-destacadas button:last-of-type/*, #clasificacion button:last-of-type*/{right: -2px;}
 
 #mediaCornell_a img{max-height: 180px;}
 .paginado-media img:hover{
