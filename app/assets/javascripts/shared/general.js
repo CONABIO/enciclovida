@@ -14,10 +14,10 @@ var limpiar = function (str)
  */
 var ponTamaño = function () {
     $('#map').css('height', 0);
-    $('#contenedor_mapa').addClass('embed-responsive embed-responsive-5by2');
+    $('#contenedor_mapa').addClass('embed-responsive embed-responsive-23by9');
     $('#map').css('height', $('#contenedor_mapa').height());
     map.invalidateSize(true);
-    $('#contenedor_mapa').removeClass('embed-responsive embed-responsive-5by2');
+    $('#contenedor_mapa').removeClass('embed-responsive embed-responsive-23by9');
 };
 
 /**

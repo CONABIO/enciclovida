@@ -357,7 +357,7 @@ module BusquedasHelper
     if taxon.jres
       iconos_fuentes = ''
       taxon.jres["cons_amb_dist"].each do |fuente, titulo|
-        iconos_fuentes << "<span class='btn-title caracteristica-distribucion-ambiente-taxon h4' tooltip-title='#{titulo}'><i class='#{fuente}-ev-icon'></i></span>"
+        iconos_fuentes << "<span class='btn-title caracteristica-distribucion-ambiente-taxon h1' tooltip-title='#{titulo}'><i class='#{fuente}-ev-icon'></i></span>"
       end  
     end
     
@@ -365,7 +365,7 @@ module BusquedasHelper
     nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
     especies_url = "/busquedas/resultados?nivel=%3D&cat=7100&busqueda=avanzada&id=#{taxon.id}&por_pagina=50"
     especies = "<span>" + link_to("(#{taxon.conteo} especies)", especies_url, target: :_blank) + "</span>" if taxon.conteo > 0
-    span = "<div class='clas-fila mb-0 p-3 rounded shadow-sm border-bottom bg-white h6 #{busqueda_orig}'>#{link} #{nombre} #{especies} #{iconos_fuentes}</div>"
+    span = "<div class='clas-fila mb-0 p-3 rounded shadow-sm border-bottom bg-white h5 #{busqueda_orig}'>#{link} #{nombre} #{especies} #{iconos_fuentes}</div>"
     html = "<div id='clas-div-#{taxon.id}' class='ml-3'>#{span}"
 
     if hojas
@@ -379,12 +379,15 @@ module BusquedasHelper
   def dameArbolInicialSinIndentar(taxones)
     html = ''
     taxones.each do |taxon|
-      nombre = tituloNombreCientifico(taxon, render: 'link-inline')
-      html << "<div class='d-flex flex-grow-0 align-items-center mr-3 text-secondary'><i class='fa fa-long-arrow-right'></i></div>" unless html.empty?
-      html << "<div class='d-flex flex-column text-nowrap pr-3'>"
+      nombre = tituloNombreCientifico(taxon, render: 'link')
+      html << "<i class='fa fa-#{html.empty? ? 'caret-' : 'long-arrow-'}right text-secondary mx-1'></i>"  #unless html.empty?
+      #html << "<div class='d-flex flex-column text-nowrap'>"
       #html << "<text class='text-capitalize font-weight-bold h6 text-secondary text-center'>#{taxon.nombre_categoria_taxonomica}</text>"
+      html << "<button data-toggle='modal' data-target='#modal_clasificacion_completa' data-taxon-id='#{taxon.id}' type='button' class='btn btn-light shadow-sm btn-sm rounded-sm border-0 text-left text-nowrap'>"
       html << nombre
-      html << "</div>"
+      html << "<text class='btn-label bg-light text-warning rounded-sm shadow-sm px-2 py-1 text-nowrap'>Explorar la clasificación hasta este taxón...</text>"
+      html << "</button>"
+        #html << "</div>"
     end
 
     html.html_safe

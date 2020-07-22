@@ -13,14 +13,9 @@
 
 <% content_for(:delayedjs) do %>
   <%= javascript_include_tag 'especies/mapa/mapa_delayed', 'data-turbolinks-track' => true %>
-  <script data-turbolinks-track="true">
-      //$('#map').css('height', $('#contenedor_mapa').height());
-      //$('#contenedor_mapa').removeClass(); //Esto es para quitar los embed responsive ¬¬
-      //ponTamaño();
-  </script>
 <% end %>
 
-<div id="contenedor_mapa" class="embed-responsive embed-responsive-5by2">
+<div id="contenedor_mapa" class="embed-responsive embed-responsive-23by9">
   <div id="map" class="w-100"></div>
 </div>
 

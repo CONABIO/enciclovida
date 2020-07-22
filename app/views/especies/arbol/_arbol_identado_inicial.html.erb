@@ -1,7 +1,9 @@
 <% if @taxones.present? && @taxones.length > 0 %>
   <div id="clasificacion" class="align-items-center d-flex px-3" style="overflow-x: auto;">
-    <!--button type="button" class="btn rounded-circle position-absolute"><i class="fa fa-chevron-left"></i></button-->
+    <button id="inicia-clasificacion" data-toggle="modal" data-target="#modal_clasificacion_completa" data-taxon-id="<%= @especie.id %>" type="button" class="btn btn-outline-success border">
+      <i class="flow-cascade-ev-icon h3"></i>
+      <text class="btn-label bg-light rounded-sm shadow-sm px-2 py-1 text-nowrap">Explorar la clasificación completa...</text>
+    </button>
     <%= dameArbolInicialSinIndentar(@taxones) %>
-    <!--button type="button" class="btn rounded-circle position-absolute"><i class="fa fa-chevron-right"></i></button-->
   </div>
 <% end %>

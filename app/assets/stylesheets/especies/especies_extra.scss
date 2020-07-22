@@ -68,24 +68,19 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
 }
 #especies-destacadas div img{
   min-height: 175px;
-  height: 25vh;
-  max-height: 200px;
+  height: 27vh;
+  max-height: 225px;
 }
-#clasificacion, #inicia-clasificacion{
-  /*border: 1px solid rgba(189, 0, 22, 0.1)!important;*/
+#clasificacion button{position: relative;}
+#clasificacion button .btn-label{
+  position: absolute;
+  visibility: hidden;
+  top: -20%;
+  left: 75%;
+  z-index: 1;
 }
-#inicia-clasificacion{
-  max-width: 55px;
-  transition: all .25s ease-in-out;
-  overflow-x: hidden;
-/*  right: 6px;*/
-/*  top: -10px;*/
-}
-#inicia-clasificacion:hover{
-  max-width: 320px;
-}
-#inicia-clasificacion:hover .fa-caret-left{
-  display: none;
+#clasificacion button:hover .btn-label{
+  visibility: visible;
 }
 #navegacion .btn.btn-outline-primary{
   border-color: transparent!important;

@@ -31,6 +31,10 @@
 <div class="col-12 mb-1 p-0">
   <div class="bg-white no-gutters rounded-lg row shadow-sm">
 
+    <div class="col-12 py-2" id="arbol">
+      <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
+    </div>
+
     <div class="col-12 col-md-5 px-3 py-2">
       <%= tituloNombreCientifico(@especie, render: 'header') %>
       <%# if (@datos[:especie_o_inferior]) %>
@@ -42,12 +46,6 @@
       <div class="h1 mt-2 pt-2">
         <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
 
-        <!--button id="inicia-clasificacion" data-toggle="modal" data-target="#modal_clasificacion_completa" data-taxon-id="<%= @especie.id %>" type="button" class="btn btn-link shadow-sm text-nowrap text-truncate">
-          <i class='fa fa-caret-left'></i>
-          <i class="flow-cascade-ev-icon h5"></i>
-          <text class="h6">Explorar la clasificación completa</text>
-        </button-->
-
       </div>
 
     </div>
@@ -56,9 +54,6 @@
       <%= cargandoEspera %>
     </div>
 
-    <div class="col-12 py-2 mt-1" id="arbol">
-      <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
-    </div>
 
   </div>
 </div>
