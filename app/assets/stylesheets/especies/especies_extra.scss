@@ -71,17 +71,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   height: 27vh;
   max-height: 225px;
 }
-/*#clasificacion button{position: relative;}
-#clasificacion button .btn-label{
-  position: absolute;
-  visibility: hidden;
-  top: -20%;
-  left: 75%;
-  z-index: 1;
-}
-#clasificacion button:hover .btn-label{
-  visibility: visible;
-}*/
+
 #navegacion .btn.btn-outline-primary{
   border-color: transparent!important;
   box-shadow: rgba(189, 0, 22, 0.1) 1px 1px 2px;
