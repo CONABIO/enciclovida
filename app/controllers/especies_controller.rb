@@ -3,14 +3,14 @@ class EspeciesController < ApplicationController
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
                                          :fotos_naturalista, :bdi_photos, :bdi_videos, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
-                                         :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :resumen_wikipedia]
+                                         :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista]
 
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion,
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion, :descripcion_app,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
-                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :resumen_wikipedia]
+                                     :dame_nombre_con_formato, :noticias, :media_tropicos]
 
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista]
 
@@ -22,7 +22,7 @@ class EspeciesController < ApplicationController
                           :comentarios,
                           :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
-                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :resumen_wikipedia]
+                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias]
 
   # Pone en cache el webservice que carga por default
   caches_action :descripcion, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
@@ -500,17 +500,10 @@ class EspeciesController < ApplicationController
     render 'especies/descripciones/descripcion'
   end
 
-  # Regresa el resumen de wikipedia en español o ingles
-  def resumen_wikipedia
-    opc = { taxon: @especie, locale: params[:locale] }
-
-    if params[:locale].present?
-      resumen = Api::Wikipedia.new(opc).resumen
-    else
-      resumen = Api::Wikipedia.new(opc).resumen_cualquiera
-    end
-
-    render json: { estatus: (resumen.present? ? true : false), sumamry: resumen }
+  # La respuesta a la ficha en la app
+  def descripcion_app
+    asigna_variables_descripcion
+    render 'especies/descripciones/descripcion_app', layout: 'descripcion_app'
   end
 
   # Viene de la pestaña de la ficha

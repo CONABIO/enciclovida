@@ -47,7 +47,7 @@ module ApplicationHelper
 
     else   #vista general
       nombre_cientifico = nombre_cientifico.limpiar({tipo: 'show'})
-      nombre_comun = "<text>#{nom_comun}</text>" if nom_comun.present?
+      nombre_comun = "<text class='text-nowrap'>#{nom_comun}</text>" if nom_comun.present?
 
       case params[:render]
       when 'title'
@@ -65,8 +65,8 @@ module ApplicationHelper
       when 'link-inline'
         "#{nombre_comun} <b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
       when 'link-inline-clasificacion'
-        clasificacion = "<span class='bg-gradient-secondary text-white bagde badge-pill'>#{taxon.nombre_categoria_taxonomica[0].upcase}</span>"
-        "#{clasificacion} <span class='f-nom-clasificacion'>#{nombre_comun}</span> <b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
+        clasificacion = "<small class='border px-2 rounded text-capitalize'>#{taxon.nombre_categoria_taxonomica[0]}</small>"
+        "#{clasificacion} <b>#{nombre_comun} <i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
       else
         "#{nombre_comun}#{'<br />' if nombre_comun.present?}#{nombre_cientifico}".html_safe
       end

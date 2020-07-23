@@ -7,7 +7,7 @@ var despliegaOcontrae = function (elemento) {
 
     if (hijos > 1) {
         siguiente_hoja.remove();
-        $(icono_fuente).removeClass("fa-minus", "fa-plus").addClass("fa-plus");
+        $(icono_fuente).removeClass("fa-caret-up", "fa-caret-down").addClass("fa-caret-down");
         return;
     }
 
@@ -21,7 +21,7 @@ var despliegaOcontrae = function (elemento) {
         }).done(function (lista) {
             if (lista != '') {
                 parent.append(lista);
-                $(icono_fuente).removeClass("fa-minus", "fa-plus").addClass("fa-minus");
+                $(icono_fuente).removeClass("fa-caret-up", "fa-caret-down").addClass("fa-caret-up");
             }
         });
 };
@@ -34,10 +34,10 @@ var despliegaOcontrae_orig = function (elemento) {
 
     if (hijos.size() > 0)  // Existe algun hijo
     {
-        var minus = $('#span_' + id).hasClass("fa-minus");
+        var minus = $('#span_' + id).hasClass("fa-caret-up");
 
         if (minus)
-            $('#span_' + id).removeClass("fa-minus").addClass("fa-plus");
+            $('#span_' + id).removeClass("fa-caret-up").addClass("fa-caret-down");
 
         hijos.remove();
 
@@ -47,10 +47,10 @@ var despliegaOcontrae_orig = function (elemento) {
                 url: "/especies/" + id + "/arbol_identado_hojas"
             }).done(function (lista) {
                 if (lista != '') {
-                    var plus = $('#span_' + id).hasClass("fa-plus");
+                    var plus = $('#span_' + id).hasClass("fa-caret-down");
 
                     if (plus)
-                        $('#span_' + id).removeClass("fa-plus").addClass("fa-minus");
+                        $('#span_' + id).removeClass("fa-caret-down").addClass("fa-caret-up");
 
                     hijos.remove();
                     $(elemento).parent().append(lista);

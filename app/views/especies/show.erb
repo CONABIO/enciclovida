@@ -28,9 +28,13 @@
   </div>
 <% end %>
 
-<div class="col-12 mb-2 p-0">
-  <div class="bg-white no-gutters rounded-lg row shadow-sm">
-    <div class="col-12 col-md-5 pl-3 pt-2">
+<div class="col-12 p-0">
+  <div class="bg-white no-gutters row shadow-sm">
+    <div class="col-12 mt-1 pb-2" id="arbol">
+      <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
+    </div>
+
+    <div class="col-12 col-md-4 px-2">
       <%= tituloNombreCientifico(@especie, render: 'header') %>
       <%# if (@datos[:especie_o_inferior]) %>
       <!--div id="panelCaracteristicaDistribucionAmbiente" class="shadow"--><%#= render :partial => 'panelCaracteristicaDistribucionAmbiente' %><!--/div-->
@@ -38,20 +42,19 @@
       <div id="nombres_comunes_todos" class="text-secondary"></div>
       <div id="sinonimos" class="text-secondary"><%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos'}) %></div>
       <!--div id="homonimos" class="text-secondary"><%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos'}) %></div-->
-      <div class="h2 mt-2 pt-2"><%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %></div>
+      <div class="h1 mt-2 pt-2">
+        <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
+      </div>
     </div>
 
     <div class="col-xs-12 col-md" id="contenedor_fotos">
       <%= cargandoEspera %>
     </div>
+
   </div>
 </div>
 
-
-
-
-<div class="col-12 d-flex flex-column flex-md-row my-3 p-0">
-
+<div class="col-12 d-flex flex-column flex-md-row my-0 p-0">
   <div class="flex-row flex-md-column flex-nowrap flex-md-wrap nav-pills justify-content-around justify-content-md-start nav" id="navegacion" role="tablist" aria-orientation="vertical">
 
     <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary rounded-0 mt-2 active" id="geodata-tab" data-toggle="pill" href="#geodata" role="tab" aria-controls="geodata" aria-selected="true">
@@ -94,20 +97,16 @@
 
   </div>
 
-  <div class="d-flex flex-column flex-grow-1 p-2 bg-white border tab-content" id="tabContent">
+  <div class="bg-white d-flex flex-column flex-grow-1 p-2 tab-content" id="tabContent">
 
     <div class="tab-pane show active" id="geodata" role="tabpanel" aria-labelledby="geodata-tab">
       <div class="row">
-        <div class="col-12 mb-3 mt-1" id="arbol">
-          <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
-        </div>
-        <div class="col-12 col-lg-9">
+        <div class="col-12">
           <% if @datos[:geodatos].present? %>
             <%= render :partial => 'geodata' %>
           <% end %>
           <p id='sin_datos' class="text-primary text-center"></p>
         </div>
-
       </div>
     </div>
 
@@ -116,9 +115,7 @@
     <div class="tab-pane fade p-2" id="comentario" role="tabpanel" aria-labelledby="comentario-tab"><%= cargandoEspera %></div>
     <!--div class="tab-pane fade p-2" id="noticias" role="tabpanel" aria-labelledby="noticias-tab"><%#= cargandoEspera %></div-->
 
-
   </div>
-
 
 </div>
 <%= render :partial => 'especies/media/modalMedia' %>

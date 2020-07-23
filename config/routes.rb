@@ -113,6 +113,9 @@ Buscador::Application.routes.draw do
 
         # X. Necesidades de información
         get ':id/necesidadesDeInformacion' => 'fichas#necesidades_de_informacion'
+
+        # Para la ficha de la DGCC
+        get ':id/dgcc' => 'front#dgcc'
       end
     end
   end
@@ -215,7 +218,9 @@ Buscador::Application.routes.draw do
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
       get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
       get ':id/resumen-wikipedia' => 'especies#resumen_wikipedia'
+      get ':id/resumen-app' => 'especies#resumen_app'
       get ':id/descripcion' => 'especies#descripcion'
+      get ':id/descripcion-app' => 'especies#descripcion_app'
     end
   end
 

@@ -5,4 +5,8 @@ class Fichas::Tipoclima < Ficha
 
 	has_many :habitats, class_name: 'Fichas::Habitat'
 
+	def tiene_datos_amb?
+		return true if clima.present?
+	end
+
 end
