@@ -383,9 +383,9 @@ module BusquedasHelper
       html << "<i class='fa fa-#{html.empty? ? 'caret-' : 'long-arrow-'}right text-secondary mx-1'></i>"  #unless html.empty?
       #html << "<div class='d-flex flex-column text-nowrap'>"
       #html << "<text class='text-capitalize font-weight-bold h6 text-secondary text-center'>#{taxon.nombre_categoria_taxonomica}</text>"
-      html << "<button data-toggle='modal' data-target='#modal_clasificacion_completa' data-taxon-id='#{taxon.id}' type='button' class='btn btn-light shadow-sm btn-sm rounded-sm border-0 text-left text-nowrap'>"
+      html << "<button data-toggle='modal' data-target='#modal_clasificacion_completa' data-taxon-id='#{taxon.id}' type='button' class='btn btn-light btn-label btn-sm rounded-sm border-0 text-left text-nowrap' title='Explorar la clasificación hasta este taxón...'>"
       html << nombre
-      html << "<text class='btn-label bg-light text-warning rounded-sm shadow-sm px-2 py-1 text-nowrap'>Explorar la clasificación hasta este taxón...</text>"
+      #html << "<text class='btn-label bg-light text-warning rounded-sm shadow-sm px-2 py-1 text-nowrap'>Explorar la clasificación hasta este taxón...</text>"
       html << "</button>"
         #html << "</div>"
     end

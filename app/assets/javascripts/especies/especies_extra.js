@@ -61,5 +61,12 @@ $(document).ready(function(){
             $(this).children('header, footer').remove();
             $('#buscador-taxonomico').remove();
         });
-    })
+    });
+    $('.btn-label').tooltip({
+        html:true,
+        sanitize:false,
+        container: 'body',
+        placement: 'bottom',
+        boundary: 'window'
+    });
 });
