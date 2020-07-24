@@ -1,0 +1,35 @@
+<% content_for(:extracss) do %>
+  <%# stylesheet_link_tag 'busquedas/clasificacion/por_clasificacion', 'data-turbolinks-track' => true %>
+<% end %>
+
+<% content_for(:extrajs) do %>
+  <%= javascript_include_tag 'busquedas/clasificacion/por_clasificacion_extra', 'data-turbolinks-track' => true %>
+<% end %>
+
+<% content_for(:delayedjs) do %>
+  <script data-turbolinks-track="true">
+      // Asigna el soulmate a la caja nombre
+      $(document).ready(function() {
+          soulmateAsigna('busquedas/explora-por-clasificacion', 'clasificacion-nombre');
+      });
+      taxones = <%=raw @taxones.map(&:id) %>
+  </script>
+<% end %>
+
+<% content_for(:title) do %>
+  <%= @titulo='Explora por clasificación' %>
+<% end %>
+
+<% content_for(:extra_title_header) do %>
+  <%= render :partial => 'shared_b4/tituloBuscador', locals: {icon_class: 'flow-cascade', titulo: 'Búsqueda por clasificación', subtitulo: '(Busca un nombre o explora por clasificación)'} %>
+<% end %>
+
+<div id="buscador-taxonomico" class="col-12 col-md-8 text-center mx-auto mb-3">
+  <%= text_field_tag :nombre, nil, :maxlength => 100, :placeholder => 'ej: Ajolote', :autocomplete => :off, :class => 'form-control form-control-lg', id: 'clasificacion-nombre', :value => params[:q].present? ? params[:q] : '' %>
+</div>
+
+<div id="arbol-taxonomico" class="col-12">
+  <% if @taxones.present? && @taxones.length > 0 %>
+      <%= @reinos ? dameArbolHojas : dameArbolInicial %>
+  <% end %>
+</div>

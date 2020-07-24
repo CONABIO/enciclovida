@@ -44,9 +44,7 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
   def create
     @admin_especie_catalogo = Admin::EspecieCatalogo.new(admin_especie_catalogo_params)
 
-    puts admin_especie_catalogo_params.inspect + '////////////////+'
     respond_to do |format|
-
       @admin_especie_catalogo.usuario = current_usuario.email
       if @admin_especie_catalogo.save
         format.html do
@@ -75,7 +73,6 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
   # PATCH/PUT /admin/especies_catalogos/1.json
   def update
     respond_to do |format|
-
       @admin_especie_catalogo.usuario = current_usuario.email
       if @admin_especie_catalogo.update(admin_especie_catalogo_params)
         format.html do

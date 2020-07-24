@@ -45,10 +45,22 @@ $(document).ready(function(){
     });
     $("html,body").animate({scrollTop: 101}, 500);
 
-    $('#media, #contenedor_fotos').on('click','.paginado-media button:first-of-type, #especies-destacadas button:first-of-type',function(){
-        $(this).parent().animate({scrollLeft: "-=600px"}, 250);
+    $('#media, #contenedor_fotos, #arbol').on('click','.paginado-media button:first-of-type, #especies-destacadas button:first-of-type, #clasificacion button:first-of-type',function(){
+        $(this).parents().animate({scrollLeft: "-=600px"}, 250);
     });
-    $('#media, #contenedor_fotos').on('click','.paginado-media button:last-of-type, #especies-destacadas button:last-of-type',function(){
-        $(this).parent().animate({scrollLeft: "+=600px"}, 250);
+    $('#media, #contenedor_fotos, #arbol').on('click','.paginado-media button:last-of-type, #especies-destacadas button:last-of-type, #clasificacion button:last-of-type',function(){
+        $(this).parents().animate({scrollLeft: "+=600px"}, 250);
     });
+
+
+    $('#modal_clasificacion_completa').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var taxonId = button.data('taxon-id');
+        var modal = $(this);
+        modal.find('.modal-body').load('/explora-por-clasificacion?especie_id='+taxonId+'&fromShow=1', function(){
+            $(this).children('header, footer').remove();
+            $('#buscador-taxonomico').remove();
+        });
+
+    })
 });
