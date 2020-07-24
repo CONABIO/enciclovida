@@ -14,10 +14,10 @@ var limpiar = function (str)
  */
 var ponTamaño = function () {
     $('#map').css('height', 0);
-    $('#contenedor_mapa').addClass('embed-responsive embed-responsive-16by9');
+    $('#contenedor_mapa').addClass('embed-responsive embed-responsive-23by9');
     $('#map').css('height', $('#contenedor_mapa').height());
     map.invalidateSize(true);
-    $('#contenedor_mapa').removeClass('embed-responsive embed-responsive-16by9');
+    $('#contenedor_mapa').removeClass('embed-responsive embed-responsive-23by9');
 };
 
 /**
@@ -63,22 +63,16 @@ var cambiaLocale = function(locale){
 /**
  * Pequeño hack para mejorar el title de los iconos, agregar solo clase .btn-title
  */
-var tooltip = function()
-{
-    $('.btn-title').attr('tooltip-title', function(){return $(this).attr('title');}).removeAttr('title');
+var tooltip = function(){
+        $('.btn-title').tooltip({
+        html:true,
+        sanitize:false,
+        container: 'body',
+        placement: 'bottom',
+        boundary: 'window'
+    });
 };
 
-/**
- * Para automáticamente hacer un resize a la cajita de la busqueda básica se puede (y debe) MEJORAR
- */
-var refreshMediaQueries = function()
-{
-    if (window.innerWidth < 992){
-        $('#pestañas > ul.nav').addClass('nav-stacked').removeClass('nav-tabs');
-    }else{
-        $('#pestañas > ul.nav').addClass('nav-tabs').removeClass('nav-stacked');
-    }
-};
 
 /**
  * Para general el scrolling en la pagina
@@ -116,9 +110,5 @@ var dameValidacionCorreo = function(recurso, notice)
 
 $(document).ready(function(){
     tooltip();
-
-    $(window).resize(function(){
-        //refreshMediaQueries();
-    });
 });
 

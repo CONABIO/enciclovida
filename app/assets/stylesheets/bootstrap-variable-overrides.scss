@@ -6,12 +6,12 @@ $enable-gradients:                            true !default;
 $font-size-base:              .85rem !default;
 $font-family-sans-serif:      opensans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;;
 
-$h1-font-size:                $font-size-base * 2.5 !default;
-$h2-font-size:                $font-size-base * 2.25 !default;
-$h3-font-size:                $font-size-base * 2 !default;
-$h4-font-size:                $font-size-base * 1.75 !default;
-$h5-font-size:                $font-size-base * 1.5 !default;
-$h6-font-size:                $font-size-base * 1.25 !default;
+$h1-font-size:                $font-size-base * 2 !default;
+$h2-font-size:                $font-size-base * 1.75 !default;
+$h3-font-size:                $font-size-base * 1.5 !default;
+$h4-font-size:                $font-size-base * 1.25 !default;
+$h5-font-size:                $font-size-base * 1 !default;
+$h6-font-size:                $font-size-base * 0.9 !default;
 
 /* Breadcrumbs overrides! */
 $breadcrumb-padding-y:              .5rem !default;
@@ -30,3 +30,5 @@ $success: #A0C11F;
 $info: #104C5B;
 $warning: #ea9028;
 $danger: #C77878;
+
+$embed-responsive-aspect-ratios: ((21 9), (23 9), (16 9), (11 4), (4 3), (1 1)) !default;
