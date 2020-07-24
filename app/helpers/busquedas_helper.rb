@@ -379,9 +379,9 @@ module BusquedasHelper
   def dameArbolInicialSinIndentar(taxones)
     html = ''
     taxones.each do |taxon|
-      nombre = tituloNombreCientifico(taxon, render: 'link')
-      html << "<i class='fa fa-#{html.empty? ? 'caret-' : 'long-arrow-'}right text-secondary mx-1'></i>"
-      html << "<button data-toggle='modal' data-target='#modal_clasificacion_completa' data-taxon-id='#{taxon.id}' type='button' class='btn btn-light btn-title btn-sm rounded-0 border-0 text-left text-nowrap' title='Explorar la clasificación hasta este taxón...'>"
+      nombre = tituloNombreCientifico(taxon)
+      html << "<i class='fa fa-#{html.empty? ? 'ellipsis-h' : 'long-arrow-right'} text-secondary mx-1'></i>"
+      html << "<button data-toggle='modal' data-target='#modal_clasificacion_completa' data-taxon-id='#{taxon.id}' type='button' class='btn btn-sm btn-outline-info btn-title border text-left text-nowrap' title='Explorar la clasificación hasta este taxón...'>"
       html << nombre
       html << "</button>"
     end
