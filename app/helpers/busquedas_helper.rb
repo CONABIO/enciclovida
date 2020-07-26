@@ -347,7 +347,8 @@ module BusquedasHelper
   end 
 
   def iteraArbol(taxon, hojas, icono_fuente, inicial=false)
-    icono_fuente = 'fa-genderless' if taxon.conteo == 0
+    soyHoja = taxon.conteo == 0
+    icono_fuente = 'fa-genderless' if soyHoja
     
     if @ancestros.present?
       busqueda_orig = @ancestros.include?(taxon.id) ? 'clas-fila-busqueda-orig' : ''
@@ -365,7 +366,7 @@ module BusquedasHelper
     nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
     especies_url = "/busquedas/resultados?nivel=%3D&cat=7100&busqueda=avanzada&id=#{taxon.id}&por_pagina=50"
     especies = "<span>" + link_to("(#{taxon.conteo} especies)", especies_url, target: :_blank) + "</span>" if taxon.conteo > 0
-    span = "<button data-taxon-id='#{taxon.id}' type='button' class='btn btn-block btn-outline-success border-0 clas-fila my-0 px-3 py-3 rounded-sm shadow-sm text-left text-info #{busqueda_orig} nodo-taxon'>#{caret} #{nombre} #{especies} #{iconos_fuentes}</button>"
+    span = "<button data-taxon-id='#{taxon.id}' #{'data-hoja=true' if soyHoja} type='button' class='btn btn-block btn-outline-success border-0 clas-fila my-0 px-3 py-3 rounded-sm shadow-sm text-left text-info #{busqueda_orig} nodo-taxon'>#{caret} #{nombre} #{especies} #{iconos_fuentes}</button>"
     html = "<div class='arbol-taxon ml-3'>#{span}"
 
     if hojas

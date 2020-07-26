@@ -1,26 +1,14 @@
-var despliegaOcontrae = function (elemento){
-    var elemento = $(elemento)
-    var siguiente_hoja = $(elemento).siblings('.arbol-taxon');
-    var hijos = siguiente_hoja.length;
+var despliegaOcontrae = function(button){
+    var button = $(button);
+    var sub_arbol = button.siblings('.arbol-taxon');
 
-    var caret = elemento.children('i');
+    button.children('i').toggleClass(["fa-caret-up", "fa-caret-down"]);
 
-    if (hijos > 0){
-        siguiente_hoja.remove();
-        caret.toggleClass(["fa-caret-up", "fa-caret-down"]);
-        return;
+    if(sub_arbol.length == 0 && !button.data('hoja')){
+        $.get("/explora-por-clasificacion/hojas?especie_id="+button.data('taxonId'), function (data) {
+            button.after(data);
+        });
+    }else{
+        sub_arbol.remove();
     }
-
-    $.ajax({
-        url: "/explora-por-clasificacion/hojas",
-        data: {
-            especie_id: elemento.data('taxonId')
-        }
-    }).done(function (lista){
-        if (lista != ''){
-            elemento.after(lista);
-            caret.toggleClass(["fa-caret-up", "fa-caret-down"]);
-        }
-    });
 };
-
