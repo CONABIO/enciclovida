@@ -349,11 +349,8 @@ module BusquedasHelper
   def iteraArbol(taxon, hojas, icono_fuente, inicial=false)
     soyHoja = taxon.conteo == 0
     icono_fuente = 'fa-genderless' if soyHoja
-    
-    if @ancestros.present?
-      busqueda_orig = @ancestros.include?(taxon.id) ? 'clas-fila-busqueda-orig' : ''
-    end
-    busqueda_orig = 'clas-fila-busqueda-orig' if inicial
+
+    busqueda_orig = inicial ? 'clas-fila-busqueda-orig' : ''
 
     if taxon.jres
       iconos_fuentes = ''
