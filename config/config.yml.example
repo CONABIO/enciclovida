@@ -31,11 +31,11 @@ base: &base
   bdi_fotoweb: http://bdi2.conabio.gob.mx/fotoweb/archives/5000-Banco%20de%20Imágenes/
 
   # URL de NaturaLista e iNaturalist
-  naturalista_url: http://www.naturalista.mx
+  naturalista_url: https://www.naturalista.mx
   # Es necesario la URL de iNaturalist para las observaciones, ya que en NaturaLista no salen todas
-  inaturalist_url: http://www.inaturalist.org
+  inaturalist_url: https://www.inaturalist.org
   # El API nodejs de inaturalist
-  inaturalist_api: http://api.inaturalist.org/v1
+  inaturalist_api: https://api.inaturalist.org/v1
   # El paginado del API, es la maxima cantidad de momento
   inaturalist_por_pagina: 200
 
