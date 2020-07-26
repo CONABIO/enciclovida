@@ -32,7 +32,7 @@ module ApplicationHelper
 
       case params[:render]
       when 'title'
-        nombre_cientifico.sanitize.gsub(/[<b><\/b>]/,'').html_safe
+        taxon.nombre_cientifico.sanitize.html_safe
       when 'link', 'link-inline'
         "<b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon), link_params}</i></b> #{taxon.nombre_autoridad} #{estatus}".html_safe
       when 'header'
