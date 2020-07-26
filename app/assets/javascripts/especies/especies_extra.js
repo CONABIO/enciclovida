@@ -7,13 +7,13 @@ $(document).ready(function(){
                 case 'media':
                     $('#mediaBDI_p').load('/especies/' + opciones.taxon + '/bdi-photos?type=photo', function () {
                         //$('#mediaBDI_v').load('/especies/' + opciones.taxon + '/bdi-videos?type=video', function () {
-                            $('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {
-                                $('#mediaCornell_v').load('/especies/' + opciones.taxon + '/media-cornell?type=video', function () {
-                                    $('#mediaCornell_a').load('/especies/' + opciones.taxon + '/media-cornell?type=audio',function () {
-                                        $('#mediaTropicos').load('/especies/' + opciones.taxon + '/media-tropicos');
-                                    });
+                        $('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {
+                            $('#mediaCornell_v').load('/especies/' + opciones.taxon + '/media-cornell?type=video', function () {
+                                $('#mediaCornell_a').load('/especies/' + opciones.taxon + '/media-cornell?type=audio',function () {
+                                    $('#mediaTropicos').load('/especies/' + opciones.taxon + '/media-tropicos');
                                 });
                             });
+                        });
                         //});
                     });
                     break;
@@ -52,10 +52,11 @@ $(document).ready(function(){
     $('#modal_clasificacion_completa').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var taxonId = button.data('taxon-id');
-        var modal = $(this);
-        modal.find('.modal-body').load('/explora-por-clasificacion?especie_id='+taxonId+'&fromShow=1').on('click', '.nodo-taxon', function (){
-            despliegaOcontrae(this);
-            $('#buscador-taxonomico').remove();
-        });
+        var modalBody = $(this).find('.modal-body');
+        modalBody.empty();
+        modalBody.load('/explora-por-clasificacion?especie_id='+taxonId+'&fromShow=1');
+    }).on('click', '.nodo-taxon', function (){
+        despliegaOcontrae(this);
     });
+
 });

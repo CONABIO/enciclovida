@@ -86,8 +86,8 @@ class BusquedasController < ApplicationController
         @taxones = Especie.arbol_reinos(22)  
       end 
     end
-    (render 'busquedas/clasificacion/por_clasificacion', :layout => false and return) if params['fromShow']
-    render 'busquedas/clasificacion/por_clasificacion'
+    (render 'busquedas/clasificacion/por_clasificacion', :layout => false, :locals => {conBuscador: false} and return) if params['fromShow']
+    render 'busquedas/clasificacion/por_clasificacion', :locals => {conBuscador: true}
   end
 
   # Devuelve las hojas de la categoria taxonomica con el nivel siguiente en cuestion
@@ -104,7 +104,6 @@ class BusquedasController < ApplicationController
       end 
     end
 
-    @ancestros = params[:ancestros].map(&:to_i) || []
     render 'busquedas/clasificacion/por_clasificacion_hojas'
   end
 

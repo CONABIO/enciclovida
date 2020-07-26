@@ -14,8 +14,7 @@ var despliegaOcontrae = function (elemento){
     $.ajax({
         url: "/explora-por-clasificacion/hojas",
         data: {
-            especie_id: elemento.data('taxonId'),
-            ancestros: taxones
+            especie_id: elemento.data('taxonId')
         }
     }).done(function (lista){
         if (lista != ''){
@@ -25,10 +24,3 @@ var despliegaOcontrae = function (elemento){
     });
 };
 
-
-/*
-$(document).ready(function (){
-    $('#arbol-taxonomico').on('click', '.nodo-taxon', function (){
-        despliegaOcontrae(this);
-    });
-});*/

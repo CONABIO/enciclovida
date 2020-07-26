@@ -370,11 +370,10 @@ module BusquedasHelper
 
     if hojas
       html << '</div>'
-      puts html.inspect
     else
       html
     end
-    html
+
   end
 
   def dameArbolInicialSinIndentar(taxones)
@@ -396,7 +395,6 @@ module BusquedasHelper
     return html unless @taxones
 
     @taxones.each do |taxon|
-      puts taxon.inspect
       html << iteraArbol(taxon, hojas=true, 'fa-caret-down')
     end
 
