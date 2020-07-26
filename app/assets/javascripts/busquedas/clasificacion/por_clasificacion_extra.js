@@ -1,36 +1,34 @@
-var despliegaOcontrae = function (elemento) {
-    //var parent = elemento.parent().parent();
-    var id = $(elemento).data('taxonId');
+var despliegaOcontrae = function (elemento){
+    var elemento = $(elemento)
     var siguiente_hoja = $(elemento).siblings('.arbol-taxon');
     var hijos = siguiente_hoja.length;
 
-    var icono_fuente = $(elemento).children('i');
+    var caret = elemento.children('i');
 
-    if (hijos > 0) {
-        console.log(siguiente_hoja);
+    if (hijos > 0){
         siguiente_hoja.remove();
-        $(icono_fuente).toggleClass("fa-caret-up", "fa-caret-down");
+        caret.toggleClass(["fa-caret-up", "fa-caret-down"]);
         return;
     }
 
-    $.ajax(
-        {
-            url: "/explora-por-clasificacion/hojas",
-            data: {
-                especie_id: id,
-                ancestros: taxones
-            }
-        }).done(function (lista) {
-            if (lista != '') {
-                $(elemento).parent().append(lista);
-                $(icono_fuente).toggleClass("fa-caret-up", "fa-caret-down");
-            }
-        });
+    $.ajax({
+        url: "/explora-por-clasificacion/hojas",
+        data: {
+            especie_id: elemento.data('taxonId'),
+            ancestros: taxones
+        }
+    }).done(function (lista){
+        if (lista != ''){
+            elemento.after(lista);
+            caret.toggleClass(["fa-caret-up", "fa-caret-down"]);
+        }
+    });
 };
 
 
-$(document).ready(function () {
-    $('#arbol-taxonomico').on('click', '.nodo-taxon', function () {
+/*
+$(document).ready(function (){
+    $('#arbol-taxonomico').on('click', '.nodo-taxon', function (){
         despliegaOcontrae(this);
     });
-});
+});*/

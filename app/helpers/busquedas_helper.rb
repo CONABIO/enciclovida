@@ -357,23 +357,24 @@ module BusquedasHelper
     if taxon.jres
       iconos_fuentes = ''
       taxon.jres["cons_amb_dist"].each do |fuente, titulo|
-        iconos_fuentes << "<span class='btn-title caracteristica-distribucion-ambiente-taxon h1 bg-ligth rounded' title='#{titulo}'><i class='#{fuente}-ev-icon'></i></span>"
+        iconos_fuentes << "<span class='btn-title caracteristica-distribucion-ambiente-taxon h2 bg-light rounded-pill' title='#{titulo}'><i class='#{fuente}-ev-icon'></i></span>"
       end  
     end
     
-    caret = "<i class='fa #{icono_fuente} h4 px-2'></i>".html_safe
+    caret = "<i class='fa #{icono_fuente} px-2'></i>".html_safe
     nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
     especies_url = "/busquedas/resultados?nivel=%3D&cat=7100&busqueda=avanzada&id=#{taxon.id}&por_pagina=50"
     especies = "<span>" + link_to("(#{taxon.conteo} especies)", especies_url, target: :_blank) + "</span>" if taxon.conteo > 0
-    span = "<button data-taxon-id='#{taxon.id}' type='button' class='btn btn-sm btn-block btn-outline-success border-0 clas-fila h5 mb-0 p-3 rounded-sm shadow-sm text-left text-info #{busqueda_orig} nodo-taxon'>#{caret} #{nombre} #{especies} #{iconos_fuentes}</button>"
+    span = "<button data-taxon-id='#{taxon.id}' type='button' class='btn btn-block btn-outline-success border-0 clas-fila my-0 px-3 py-3 rounded-sm shadow-sm text-left text-info #{busqueda_orig} nodo-taxon'>#{caret} #{nombre} #{especies} #{iconos_fuentes}</button>"
     html = "<div class='arbol-taxon ml-3'>#{span}"
 
     if hojas
       html << '</div>'
+      puts html.inspect
     else
       html
     end
-
+    html
   end
 
   def dameArbolInicialSinIndentar(taxones)
@@ -395,6 +396,7 @@ module BusquedasHelper
     return html unless @taxones
 
     @taxones.each do |taxon|
+      puts taxon.inspect
       html << iteraArbol(taxon, hojas=true, 'fa-caret-down')
     end
 

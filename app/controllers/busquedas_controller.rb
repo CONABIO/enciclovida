@@ -86,7 +86,7 @@ class BusquedasController < ApplicationController
         @taxones = Especie.arbol_reinos(22)  
       end 
     end
-
+    (render 'busquedas/clasificacion/por_clasificacion', :layout => false and return) if params['fromShow']
     render 'busquedas/clasificacion/por_clasificacion'
   end
 

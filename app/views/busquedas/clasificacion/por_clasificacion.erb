@@ -11,6 +11,9 @@
       // Asigna el soulmate a la caja nombre
       $(document).ready(function() {
           soulmateAsigna('busquedas/explora-por-clasificacion', 'clasificacion-nombre');
+          $('#arbol-taxonomico').on('click', '.nodo-taxon', function (){
+              despliegaOcontrae(this);
+          });
       });
       taxones = <%=raw @taxones.map(&:id) %>
   </script>
@@ -25,7 +28,7 @@
 <% end %>
 
 <div id="buscador-taxonomico" class="col-12 col-md-8 text-center mx-auto mb-3">
-  <%= text_field_tag :nombre, nil, :maxlength => 100, :placeholder => 'ej: Ajolote', :autocomplete => :off, :class => 'form-control form-control-lg', id: 'clasificacion-nombre', :value => params[:q].present? ? params[:q] : '' %>
+  <%= text_field_tag :nombre, nil, :maxlength => 100, :placeholder => params[:q].present? ? 'ej: ' + params[:q] : 'ej: Ajolote', :autocomplete => :off, :class => 'form-control form-control-lg', id: 'clasificacion-nombre', :value => params[:q].present? ? params[:q] : '' %>
 </div>
 
 <div id="arbol-taxonomico" class="col-12">

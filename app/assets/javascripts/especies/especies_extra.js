@@ -53,8 +53,8 @@ $(document).ready(function(){
         var button = $(event.relatedTarget);
         var taxonId = button.data('taxon-id');
         var modal = $(this);
-        modal.find('.modal-body').load('/explora-por-clasificacion?especie_id='+taxonId+'&fromShow=1', function(){
-            $(this).children('header, footer').remove();
+        modal.find('.modal-body').load('/explora-por-clasificacion?especie_id='+taxonId+'&fromShow=1').on('click', '.nodo-taxon', function (){
+            despliegaOcontrae(this);
             $('#buscador-taxonomico').remove();
         });
     });
