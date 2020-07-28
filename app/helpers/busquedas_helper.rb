@@ -379,7 +379,7 @@ module BusquedasHelper
     taxones.each do |taxon|
       nombre = tituloNombreCientifico(taxon)
       html << "<i class='fa fa-#{html.empty? ? 'ellipsis-h' : 'long-arrow-right'} text-secondary mx-1'></i>"
-      html << "<button data-toggle='modal' data-target='#modal_clasificacion_completa' data-taxon-id='#{taxon.id}' type='button' class='btn btn-sm btn-outline-info btn-title border text-left text-nowrap' title='Explorar la clasificación hasta este taxón...'>"
+      html << "<button data-toggle='modal' data-target='#modal_clasificacion_completa' data-taxon-id='#{taxon.id}' type='button' class='btn btn-sm btn-outline-info border text-left text-nowrap'>"
       html << nombre
       html << "</button>"
     end
