@@ -4,6 +4,7 @@ class Fichas::Taxon < Ficha
 	self.primary_key = 'especieId'
 
 	has_many :caracteristicasEspecies, :class_name => 'Fichas::Caracteristicasespecie', :foreign_key => 'especieId'
+	has_many :cat_preguntas, through: :caracteristicasEspecies, source: :cat_pregunta
 	has_many :conservacion, :class_name => 'Fichas::Conservacion', :foreign_key => 'especieId'
 	has_many :demografiaAmenazas, :class_name=> 'Fichas::Demografiaamenazas', :foreign_key => 'especieId'
 	has_many :distribuciones, :class_name => 'Fichas::Distribucion', :foreign_key => 'especieId'
@@ -59,40 +60,43 @@ class Fichas::Taxon < Ficha
 
 	# Los datos para armar la ficha de la DGCC
 	def dgcc
-		resumen = []
+		resumen = {}
 
 		# Descripcion
-		resumen << descEspecie.a_HTML if descEspecie.present?
+		resumen['Descripción'] = descEspecie.a_HTML if descEspecie.present?
 		
 		# Distribucion
 		if dist = distribuciones.first
-			resumen << dist.historicaPotencial.a_HTML if dist.historicaPotencial.present?  			
+			resumen['Distribución potencial'] = dist.historicaPotencial.a_HTML if dist.historicaPotencial.present?  			
 		end	
 
 		# Vegetacion
-		if vegetacion = observacionescaracteristicas.vegetacion_mundial.first
-			resumen << vegetacion.infoadicional.a_HTML
-		end	
+		vegetacion = observacionescaracteristicas.vegetacion_mundial.first
+		tipos_vegetacion = cat_preguntas.tipos_vegetacion.map(&:descn1)
+		if vegetacion || tipos_vegetacion.any?
+			resumen['Vegetación'] = vegetacion.infoadicional.a_HTML if vegetacion.present?
 
+			if tipos_vegetacion.any?
+				resumen['Vegetación'] << '<br/>' if vegetacion.infoadicional.present?
+				resumen['Vegetación'] << "Algunos tipos de vegetación donde se desarrolla son: #{tipos_vegetacion.join(', ')}."
+			end	
+		end
+		
 		# NOM
 		if nom = especie.catalogos.nom.first
-			resumen << "Se considera \"#{nom.descripcion}\" por la Norma Oficial Mexicana 059."
+			resumen['Categoría de riesgo'] = "Se considera \"#{nom.descripcion}\" por la Norma Oficial Mexicana 059."
 		end
 		
 		# Usos
 		if uso = historiaNatural
-			resumen << uso.descUsos.a_HTML if uso.descUsos.present?
+			resumen['Importancia cultural y usos'] = uso.descUsos.a_HTML if uso.descUsos.present?
 		end		
 
 		if referencias = referenciasBibliograficas.first
-			if referencias.referencia.present?
-				resumen << '<br/><br/><div class="mt-3 mb-1"><span><strong>Referencias</strong></span>'
-				resumen << referencias.referencia.a_HTML 
-				resumen << '</div>'
-			end
+			resumen['Referencias'] = referencias.referencia.a_HTML if referencias.referencia.present?
 		end
 
-		resumen.join(' ')
+		resumen
 	end
 
 end
