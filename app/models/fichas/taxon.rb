@@ -77,7 +77,7 @@ class Fichas::Taxon < Ficha
 			resumen['Vegetación'] = vegetacion.infoadicional.a_HTML if vegetacion.present?
 
 			if tipos_vegetacion.any?
-				resumen['Vegetación'] << '<br/>' if vegetacion.infoadicional.present?
+				resumen['Vegetación'] << "<br/>".html_safe if vegetacion.infoadicional.present?
 				resumen['Vegetación'] << "Algunos tipos de vegetación donde se desarrolla son: #{tipos_vegetacion.join(', ')}."
 			end	
 		end
