@@ -359,7 +359,7 @@ SCAT_NombreCient_valido SCAT_NOM-059 SCAT_IUCN SCAT_CITES SCAT_Distribucion SCAT
 
       validacion_interna_hash['SCAT_CatalogoDiccionario'] = taxon.sist_clas_cat_dicc
       validacion_interna_hash['SCAT_Fuente'] = taxon.fuente
-      validacion_interna_hash['ENCICLOVIDA'] = "http://www.enciclovida.mx/especies/#{taxon.id}"
+      validacion_interna_hash['ENCICLOVIDA'] = "https://enciclovida.mx/especies/#{taxon.id}"
 
     else  # Asociacion vacia, solo el error
       columnas.each do |columna|

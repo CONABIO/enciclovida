@@ -32,7 +32,7 @@ module ApplicationHelper
 
       case params[:render]
       when 'title'
-        nombre_cientifico.sanitize.gsub(/[<b><\/b>]/,'').html_safe
+        taxon.nombre_cientifico.sanitize.html_safe
       when 'link', 'link-inline'
         "<b><i>#{link_to nombre_cientifico.sanitize, especie_path(taxon), link_params}</i></b> #{taxon.nombre_autoridad} #{estatus}".html_safe
       when 'header'
@@ -47,7 +47,7 @@ module ApplicationHelper
 
     else   #vista general
       nombre_cientifico = nombre_cientifico.limpiar({tipo: 'show'})
-      nombre_comun = "<text class='text-nowrap'>#{nom_comun}</text>" if nom_comun.present?
+      nombre_comun = "<b>#{nom_comun}</b>" if nom_comun.present?
 
       case params[:render]
       when 'title'
@@ -65,7 +65,7 @@ module ApplicationHelper
       when 'link-inline'
         "#{nombre_comun} <b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
       when 'link-inline-clasificacion'
-        clasificacion = "<small class='border px-2 rounded text-capitalize'>#{taxon.nombre_categoria_taxonomica[0]}</small>"
+        clasificacion = "<small class='border px-2 rounded text-capitalize'>#{taxon.nombre_categoria_taxonomica}</small>"
         "#{clasificacion} <b>#{nombre_comun} <i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
       else
         "#{nombre_comun}#{'<br />' if nombre_comun.present?}#{nombre_cientifico}".html_safe
@@ -178,7 +178,7 @@ module ApplicationHelper
     return photo.native_page_url unless photo.native_page_url.blank?
     case photo.class.name
     when "FlickrPhoto"
-      "http://flickr.com/photos/#{photo.native_username}/#{photo.native_photo_id}"
+      "https://flickr.com/photos/#{photo.native_username}/#{photo.native_photo_id}"
     when "LocalPhoto"
       url_for(photo.observations.first)
     else

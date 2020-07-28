@@ -1,7 +1,9 @@
 <% #### Begins Contents for... #### %>
 <% content_for(:extrajs) do %>
   <script src="https://d3js.org/d3.v3.min.js"></script>
+  <%= javascript_include_tag 'busquedas/clasificacion/por_clasificacion_extra', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'especies/especies', 'data-turbolinks-track' => true %>
+
 
   <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
       opciones = <%=raw @datos.to_json %>;
@@ -82,7 +84,7 @@
         <div class="dropdown-divider"></div>
         <h6 class="dropdown-header">Consultar en <i class="fa fa-external-link-square"></i>:</h6>
         <%= link_to('Bioteca', "http://bioteca.biodiversidad.gob.mx/janium-bin/janium_login_opac.pl?scan&keyword=#{@especie.nombre_cientifico.limpiar.downcase}", target: '_blank', class: 'dropdown-item', title: 'Biblioteca digital de CONABIO', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
-        <%= link_to('BHL', "http://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}", target: '_blank', class: 'dropdown-item', title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
+        <%= link_to('BHL', "https://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}", target: '_blank', class: 'dropdown-item', title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
         <%= link_to(' Google Académico', "https://scholar.google.com.mx/scholar?hl=es&q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en Google Académico (Schoolar)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
         <%= link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
         <%= link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
