@@ -350,6 +350,9 @@ module BusquedasHelper
     soyHoja = taxon.conteo == 0
     icono_fuente = 'fa-genderless' if soyHoja
 
+    # Para saber de que reino viene
+    phylum_division = taxon.ancestry_ascendente_directo.split(',').include?('1') ? '1' : '0'
+
     busqueda_orig = inicial ? 'clas-fila-busqueda-orig' : ''
 
     if taxon.jres
@@ -361,7 +364,7 @@ module BusquedasHelper
     
     caret = "<i class='fa #{icono_fuente} px-2'></i>".html_safe
     nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
-    especies_url = "/busquedas/resultados?nivel=%3D&cat=7100&busqueda=avanzada&id=#{taxon.id}&por_pagina=50"
+    especies_url = "/busquedas/resultados?nivel=%3D&cat=7#{phylum_division}00&busqueda=avanzada&id=#{taxon.id}&por_pagina=50"
     especies = "<span>" + link_to("(#{taxon.conteo} especies)", especies_url, target: :_blank) + "</span>" if taxon.conteo > 0
     span = "<button data-taxon-id='#{taxon.id}' #{'data-hoja=true' if soyHoja} type='button' class='btn btn-block btn-outline-success border-0 clas-fila my-0 px-3 py-3 rounded-sm shadow-sm text-left text-info #{busqueda_orig} nodo-taxon'>#{caret} #{nombre} #{especies} #{iconos_fuentes}</button>"
     html = "<div class='arbol-taxon ml-3'>#{span}"
