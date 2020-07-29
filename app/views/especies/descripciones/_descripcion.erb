@@ -4,7 +4,7 @@
 
 <div class="<%= css_class %> w-100" id="taxon_description">
   <div class="form-group row">
-    <label for="from" class="col-12 col-md-3 col-form-label col-form-label-lg">Descripción de:</label>
+    <label for="from" class="col-12 col-md-3 col-form-label col-form-label-lg">Fuente:</label>
     <div class="col-12 col-md-9">
       <% if @descripcion.present? %>
         <%= select_tag :from, options_for_select(Api::Descripcion.opciones_select, :selected => @api), prompt: '- - Selecciona - -', :class => "form-control" %>

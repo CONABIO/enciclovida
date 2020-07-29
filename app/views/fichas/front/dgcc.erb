@@ -1,1 +1,8 @@
- <%= @ficha.html_safe %>
+ <% @ficha.each do |seccion, valor| %>
+    <%= '<br/>'.html_safe if seccion == 'Referencias' %>
+    <h4><b><%= seccion %></b></h4>
+    <p><%= valor.html_safe %></p>
+ <% end %>
+
+ <br/>
+ <br/>

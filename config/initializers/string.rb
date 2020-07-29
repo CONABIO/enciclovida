@@ -64,11 +64,11 @@ class String
     if self.present?
       # Verificar que sea texto lo que se va a analizar
       if self.is_a? String
-        puts self.inspect
         #Asegurar que el fragmento html tenga los "< / >"'s cerrados
         x = Nokogiri::HTML.fragment(self.gsub("\r\n",' '))
         x.css("div").each { |div|  div.name= "p";}
         x.xpath('@style|.//@style').remove
+        x.search("a").each {|node| node.replace(node.content) }
         x.to_html.html_safe
       else
         self.to_s
