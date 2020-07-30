@@ -8,7 +8,7 @@ class Fichas::AdminController < Fichas::FichasController
   end
 
   def show # Redireccionar a la vista front de la ficha
-    redirect_to "http://#{IP}:#{PORT}fichas/front/#{params[:id]}"
+    redirect_to "//#{IP}:#{PORT}fichas/front/#{params[:id]}"
   end
 
   def create

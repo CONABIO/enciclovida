@@ -91,10 +91,10 @@ class Api::Wikipedia < Api::Descripcion
     coder = HTMLEntities.new
     html.gsub!(/(data-)?videopayload=".+?"/m, '')
     decoded = coder.decode(html)
-    decoded.gsub!('href="//', 'href="http://')
-    decoded.gsub!('src="//', 'src="http://')
-    decoded.gsub!('href="/', 'href="http://en.wikipedia.org/')
-    decoded.gsub!('src="/', 'src="http://en.wikipedia.org/')
+    decoded.gsub!('href="//', 'href="https://')
+    decoded.gsub!('src="//', 'src="https://')
+    decoded.gsub!('href="/', 'href="https://en.wikipedia.org/')
+    decoded.gsub!('src="/', 'src="https://en.wikipedia.org/')
 
     if options[:strip_references]
       decoded.gsub!(/<sup .*?class=.*?reference.*?>.+?<\/sup>/, '')

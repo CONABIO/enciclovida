@@ -55,7 +55,7 @@ class String
 end
 
 # Restrict sphinx queries to charactersm, numbers, and simple punctuation
-# http://www.ruby-doc.org/core-2.0.0/Regexp.html#label-Character+Properties
+# https://www.ruby-doc.org/core-2.0.0/Regexp.html#label-Character+Properties
 def sanitize_sphinx_query(q)
   q.gsub(/[^\p{L}\s\.\'\-\d]+/, '').gsub(/\-/, '\-')
 end

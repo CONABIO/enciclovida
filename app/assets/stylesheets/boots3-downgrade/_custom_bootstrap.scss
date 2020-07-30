@@ -1,4 +1,4 @@
-/* El procedimiento para migrar del custom bootstrap  (http://getbootstrap.com/customize/)
+/* El procedimiento para migrar del custom bootstrap  (https://getbootstrap.com/customize/)
  * a Sass. hasta el momento es manual.
  * el script hallado en https://github.com/twbs/bootstrap-sass/blob/master/tasks/converter/less_conversion.rb
  * no funcionara en este caso ya que se basa en el repo de bootstrap oficial o alguno de sus commits,
@@ -6,7 +6,7 @@
  *************************************************************************************************************
  https://gist.github.com/anonymous/00b3ef0a356828d08cb44cdcc91f3336 (VERSIÓN CON LOS CAMBIOS MÁS RECIENTES AL 31/03/2016)
  *************************************************************************************************************
- * (modificar en http://getbootstrap.com/customize/?id=00b3ef0a356828d08cb44cdcc91f3336)
+ * (modificar en https://getbootstrap.com/customize/?id=00b3ef0a356828d08cb44cdcc91f3336)
  * jalarme un config.json de un bootstrap sin modificar
  * correrles un diff config_original.json config_custom.json
  * (también podría funcionar un common -13 config_original.json config_custom.json pero hay que revisar el orden de las lineas)
