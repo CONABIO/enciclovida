@@ -49,10 +49,6 @@
   <%= render :partial => 'shared_b4/footer_legal' %>
 </footer>
 
-<% if Rails.env.production? %>
-  <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
-<% end %>
-
 <%= yield :delayedjs %>
 
 </body>
