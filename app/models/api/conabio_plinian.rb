@@ -2,7 +2,7 @@ class Api::ConabioPlinian < Api::Conabio
 
   def initialize(opc = {})
     super(opc)
-    self.servidor = servidor || "http://#{IP}:#{PORT}"
+    self.servidor = servidor || "https://#{IP}:#{PORT}"
   end
 
   def nombre
