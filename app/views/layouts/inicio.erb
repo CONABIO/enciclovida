@@ -34,7 +34,7 @@
 </head>
 
 <body class="index">
-<%#= render :partial => 'shared_b4/ribbon'%>
+<%= render :partial => 'shared_b4/ribbon', locals: {mensaje: "¡Estamos estrenando <br /> bùsqueda por clasificación!" } %>
 <header class="container-fluid" style="background-image:url('/assets/portada/img_portada_video.png');">
   <%= render :partial => 'inicio/layout/brandBar' %>
 </header>
