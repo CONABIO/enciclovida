@@ -24,7 +24,7 @@ base: &base
   geoserver_descarga_url: http://www.conabio.gob.mx/informacion/explorer/cnb/wms?format=kmz&height=1024&width=1024&request=GetMap&service=wms
 
   # Servicio de busquedas por region
-  ssig_api: http://www.enciclovida.mx:9002
+  ssig_api: https://www.enciclovida.mx:9002
 
   # URL BDI y URL basico para imagen
   bdi_imagenes: http://bdi.conabio.gob.mx
@@ -56,8 +56,8 @@ base: &base
   password: tu-passwd
 
   # Servidor en produccion que tendra los kml y kmz, tienen que estar publicos
-  enciclovida_url: http://enciclovida.mx
-  enciclovida_api: http://api.enciclovida.mx
+  enciclovida_url: https://enciclovida.mx
+  enciclovida_api: https://api.enciclovida.mx
 
   # Cache de los servicios que guarda en disco
   cache:
@@ -106,7 +106,7 @@ base: &base
     domain_name: yoursite.org
 
   iucn:
-    api: http://apiv3.iucnredlist.org
+    api: https://apiv3.iucnredlist.org
     token: 999999999999999999999999999999999999999999999999
     timeout: 1
 
@@ -124,7 +124,7 @@ base: &base
     key: 9999999999999999999999999999
 
   tropicos:
-    api: http://services.tropicos.org/Name/
+    api: https://services.tropicos.org/Name/
     key: 9999999999999999999999999999999999
 
   janium:

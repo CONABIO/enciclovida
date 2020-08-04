@@ -21,7 +21,7 @@ class BDIService
   ALBUM_VIDEOS = ['5121-Video']
 
   def dameFotos(opts)
-    bdi = CONFIG.bdi_imagenes
+    bdi = CONFIG.enciclovida_url
     fotos = []
     jres = fotos_album(opts)
     return {:estatus => 'OK', :ultima => nil, :fotos => []} unless jres['data'].any?
@@ -47,7 +47,7 @@ class BDIService
 
   # Método para recuperar los videos
   def dame_videos(opts)
-    bdi = CONFIG.bdi_imagenes
+    bdi = CONFIG.site_url
     videos = []
     jres = videos_album(opts)
 
@@ -97,6 +97,8 @@ class BDIService
 
     begin
       res = Net::HTTP.start(uri.host, uri.port) {|http| http.request(req) }
+      puts res.body.class.inspect
+      puts res.body.inspect
       JSON.parse(res.body)
     rescue
       {'data' => []}

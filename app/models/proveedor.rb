@@ -539,7 +539,7 @@ class Proveedor < ActiveRecord::Base
 
     if opc[:inicio]
       self.kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-      self.kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
+      self.kml << "<kml xmlns=\"https://www.opengis.net/kml/2.2\">\n"
       self.kml << "<Document>\n"
 
       # Para las observaciones de grado cientifico, verde
@@ -681,7 +681,7 @@ class Proveedor < ActiveRecord::Base
     nombre = nombre_comun.present? ? "<b>#{nombre_comun}</b> <i>(#{nombre_cientifico})</i>" : "<i><b>#{nombre_cientifico}</b></i>"
 
     self.kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-    self.kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
+    self.kml << "<kml xmlns=\"https://www.opengis.net/kml/2.2\">\n"
     self.kml << "<Document>\n"
     self.kml << "<Style id=\"normalPlacemark\">\n"
     self.kml << "<IconStyle>\n"

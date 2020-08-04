@@ -14,7 +14,7 @@
   </script>
 
   <script src="https://d3js.org/d3.v3.min.js" data-turbolinks-track="true"></script>
-  <script src="http://d3js.org/topojson.v1.min.js" data-turbolinks-track="true"></script>
+  <script src="https://d3js.org/topojson.v1.min.js" data-turbolinks-track="true"></script>
   <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" data-turbolinks-track="true"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js" data-turbolinks-track="true"></script>
   <script src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup.js" data-turbolinks-track="true"></script>
@@ -62,10 +62,6 @@
 <footer class="legal">
   <%= render :partial => 'shared/footer_legal' %>
 </footer>
-
-<% if Rails.env.production? %>
-  <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
-<% end %>
 
 <%= yield :delayedjs %>
 
