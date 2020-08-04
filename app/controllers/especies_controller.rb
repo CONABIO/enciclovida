@@ -502,7 +502,7 @@ class EspeciesController < ApplicationController
 
   # La respuesta a la ficha en la app
   def descripcion_app
-    asigna_variables_descripcion
+    asigna_variables_descripcion(true)
     render 'especies/descripciones/descripcion_app', layout: 'descripcion_app'
   end
 
@@ -915,17 +915,17 @@ class EspeciesController < ApplicationController
     )
   end
 
-  def asigna_variables_descripcion
+  def asigna_variables_descripcion(app=false)
     if params[:from].present?
       begin
         desc = eval("Api::#{params[:from].camelize}")
-        @descripcion = desc.new(taxon: @especie).dame_descripcion
+        @descripcion = desc.new(taxon: @especie, app: app).dame_descripcion
         @api = params[:from]
       rescue
       end
     else
       begin
-        desc = Api::Descripcion.new(taxon: @especie).dame_descripcion
+        desc = Api::Descripcion.new(taxon: @especie, app: app).dame_descripcion
         @descripcion = desc[:descripcion]
         @api = desc[:api]
       rescue

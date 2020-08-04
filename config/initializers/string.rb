@@ -68,7 +68,6 @@ class String
         x = Nokogiri::HTML.fragment(self.gsub("\r\n",' '))
         x.css("div").each { |div|  div.name= "p";}
         x.xpath('@style|.//@style').remove
-        x.search("a").each {|node| node.replace(node.content) }
         x.to_html.html_safe
       else
         self.to_s
@@ -76,6 +75,24 @@ class String
     else
       ''
     end
+  end
+
+  # Quitamos toda etiqueda <a> con nokogiri
+  def quita_enlaces
+    # Verificar si hay información que mostrar
+    if self.present?
+      # Verificar que sea texto lo que se va a analizar
+      if self.is_a? String
+        #Asegurar que el fragmento html tenga los "< / >"'s cerrados
+        x = Nokogiri::HTML.fragment(self)
+        x.search("a").each {|node| node.replace(node.content) }
+        x.to_html.html_safe
+      else
+        self.to_s
+      end
+    else
+      ''
+    end    
   end
 
   # Quita el html de la cadena
