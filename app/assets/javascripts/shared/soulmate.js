@@ -109,7 +109,7 @@ var soulmateAsigna = function(tipo_busqueda, elem)
     };
 
     $('#' + elemento).soulmate({
-        url:            "https://"+ IP + ":" + PORT + "sm/search",
+        url:            SITE_URL + "sm/search",
         types:          TYPES,
         renderCallback: render,
         selectCallback: select,

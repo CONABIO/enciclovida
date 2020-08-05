@@ -2,7 +2,7 @@ class Api::ConabioTecnico < Api::Conabio
 
   def initialize(opc = {})
     super(opc)
-    self.servidor = servidor || "http://#{IP}:#{PORT}"
+    self.servidor = servidor || CONFIG.site_url
   end
 
   def nombre
