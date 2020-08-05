@@ -2,9 +2,8 @@ module CacheServices
 
   # REVISADO: Actualiza todos los servicios concernientes a un taxon, se empaqueto para que no estuviera en Especie
   def servicios
-    guarda_redis_servicio
-
     if Rails.env.production?
+      guarda_redis_servicio
       guarda_estadisticas_servicio
       guarda_observaciones_naturalista_servicio
       guarda_ejemplares_snib_servicio

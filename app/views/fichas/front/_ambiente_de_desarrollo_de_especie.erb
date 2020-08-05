@@ -4,11 +4,11 @@
     <% if @ecorregion.tiene_datos_amb? || @ecosistema.tiene_datos_amb? %>
       <div class="row text-center">
         <% if @ecorregion.descripcion.present? %>
-          <div class="col-md-6 ficaBordeSeparador"><h6>Ecorregion:</h6><p><%=@ecorregion.present? ? convierte_a_HTML(@ecorregion.descripcion) : (@sin_info_msj) %> </p></div>
+          <div class="col-md-6 ficaBordeSeparador"><h6>Ecorregion:</h6><p><%= @ecorregion.descripcion.a_HTML %> </p></div>
         <% end %>
 
         <% if @ecosistema.tipoecosistema.present? %>
-          <div class="col-md-6"><h6>Ecosistema:</h6><p><%=@ecosistema.present? ? convierte_a_HTML(@ecosistema.tipoecosistema) : (@sin_info_msj) %></p>
+          <div class="col-md-6"><h6>Ecosistema:</h6><p><%= @ecosistema.tipoecosistema.a_HTML %></p>
           </div>
         <% end %>
       </div>
@@ -88,7 +88,7 @@
 
             <% if @habitat.temperaturainicial.present? || @habitat.temperaturafinal.present? %>
               <h6>Temperatura</h6>
-              <p class="text-justify"><%= @habitat.temperaturainicial.a_HTML %> - <%=@habitat.temperaturafinal.a_HTML %></p>
+              <p class="text-justify"><%= @habitat.temperaturainicial.a_HTML if @habitat.temperaturainicial.present? %> - <%= @habitat.temperaturafinal.a_HTML if @habitat.temperaturafinal.present? %></p>
             <% end %>
             
             <% if @habitat.infoaddtemperatura.present? %>
@@ -98,7 +98,7 @@
 
             <% if @habitat.precipitacioninicial.present? || @habitat.precipitacionfinal.present? %>
               <h6>Precipitación</h6>
-              <p class="text-justify"><%= @habitat.precipitacioninicial.a_HTML%> - <%= @habitat.precipitacionfinal.a_HTML %></p>
+              <p class="text-justify"><%= @habitat.precipitacioninicial.a_HTML if @habitat.precipitacioninicial.present? %> - <%= @habitat.precipitacionfinal.a_HTML if @habitat.precipitacionfinal.present? %></p>
             <% end %>
             
             <% if @habitat.infoaddprecipitacion.present? %>
@@ -108,7 +108,7 @@
 
             <% if @habitat.humedadinicial.present? || @habitat.humedadfinal.present? %>
               <h6>Rango de humedad relativa</h6>
-              <p class="text-justify"><%= @habitat.humedadinicial.a_HTML %> - <%= @habitat.humedadfinal.a_HTML %></p>
+              <p class="text-justify"><%= @habitat.humedadinicial.a_HTML if @habitat.humedadinicial.present? %> - <%= @habitat.humedadfinal.a_HTML if @habitat.humedadfinal.present? %></p>
             <% end %>
 
             <% if @habitat.infoaddhumedad.present? %>
