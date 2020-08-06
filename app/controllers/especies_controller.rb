@@ -521,7 +521,11 @@ class EspeciesController < ApplicationController
     
   # Viene de la pestaña de la ficha
   def descripcion_catalogos
-    render 'especies/descripciones/descripcion_catalogos'
+    if params[:app]
+      render 'especies/descripciones/descripcion_catalogos_app'
+    else
+      render 'especies/descripciones/descripcion_catalogos'
+    end
   end
 
   # Devuelve las observaciones de naturalista en diferentes formatos

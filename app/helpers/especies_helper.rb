@@ -20,28 +20,31 @@ module EspeciesHelper
   end
 
   # REVISADO: Nombres comunes con su bibliografia como referencia
-  def dameNomComunesBiblio(taxon)
+  def dameNomComunesBiblio(taxon, opc={})
     html = ''
 
     def creaLista(nombre, opc={})
       # TODO: Poner las bibliografias en un modal, el actual esta roto
-      bibliografias = nombre.bibliografias.con_especie(opc[:taxon]).map(&:cita_completa)
       html = "<li>#{nombre.nombre_comun} <sub><i>#{nombre.lengua}</i></sub></li>"
 
-      if bibliografias.any?
-        biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
-        html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+      if !opc[:app]
+        bibliografias = nombre.bibliografias.con_especie(opc[:taxon]).map(&:cita_completa)
+        
+        if bibliografias.any?
+          biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
+          html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
+        end
       end
 
       html
     end
 
     taxon.nombres_comunes.distinct.order(:nombre_comun).each do |nom|
-      html << creaLista(nom, taxon: taxon)
+      html << creaLista(nom, opc.merge(taxon: taxon))
     end
 
-    "<p><strong>Nombres comunes</strong></p><ul>#{html}</ul>".html_safe
+    html.present? ? "<p><strong>Nombres comunes</strong></p><ul>#{html}</ul>".html_safe : html
   end
 
   # REVISADO: Otros atributos simples del modelo especie
@@ -69,17 +72,20 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
   end
 
   # REVISADO: La distribucion reportada en literatura, para el show de especies en la pestaña de catalogos
-  def dameDistribucionLiteratura(taxon)
-    def creaLista(regiones)
+  def dameDistribucionLiteratura(taxon, opc={})
+    def creaLista(regiones, opc={})
       lista = []
 
       regiones.each do |id, datos|
         lista << "<li>#{datos[:nombre]}</li>"
-        lista << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+        
+        if !opc[:app]
+          lista << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>" if datos[:observaciones].present?
+        end
 
         if datos[:reg_desc].any?
-          sub_reg = creaLista(datos[:reg_desc])
+          sub_reg = creaLista(datos[:reg_desc], opc)
           lista << sub_reg
         end
       end
@@ -89,7 +95,7 @@ title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>"
 
     regiones = taxon.regiones.select_observaciones.validas.distinct
     reg_asignadas = Region.regiones_asignadas(regiones)
-    "<p><strong>Distribución reportada en literatura</strong>#{creaLista(reg_asignadas)}</p>".html_safe
+    "<p><strong>Distribución reportada en literatura</strong>#{creaLista(reg_asignadas, opc)}</p>".html_safe
   end
 
   # REVISADO: Una misma funcion para sinonimos u homonimos
@@ -104,12 +110,14 @@ title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>"
       taxones.each do |taxon|
         html << "<li>#{tituloNombreCientifico(taxon, render: 'inline')}</li>"
 
-        bibliografias = taxon.bibliografias.map(&:cita_completa)
-
-        if bibliografias.any?
-          biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b.gsub("\"","'")}</li>" }.join('')}</ul>"
-          html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+        if !opciones[:app]
+          bibliografias = taxon.bibliografias.map(&:cita_completa)
+          
+          if bibliografias.any?
+            biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b.gsub("\"","'")}</li>" }.join('')}</ul>"
+            html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
+          end
         end
       end
 

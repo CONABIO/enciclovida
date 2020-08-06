@@ -17,7 +17,9 @@ class Api::ConabioTecnico < Api::Conabio
   private
 
   def buscar
-    solicita("especies/#{taxon.id}/descripcion_catalogos")
+    url = "especies/#{taxon.id}/descripcion_catalogos"
+    url << "?app=#{app}" if app
+    solicita(url)
   end
 
 end

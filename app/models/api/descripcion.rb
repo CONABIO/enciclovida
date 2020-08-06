@@ -22,7 +22,7 @@ class Api::Descripcion
   def dame_descripcion
     eval("DESCRIPCIONES_#{locale.to_s.gsub('-','_').upcase}").each do |descripcion|
       desc = eval("Api::#{descripcion.camelize}")
-      resp = desc.new(taxon: taxon).dame_descripcion
+      resp = desc.new(taxon: taxon, app: app).dame_descripcion
       return { api: descripcion, descripcion: app ? resp.to_s.quita_enlaces : resp } if resp
     end
 
