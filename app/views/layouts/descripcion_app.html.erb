@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es-MX" lang="es-MX">
+
+<head>
+    <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
+    <%= csrf_meta_tags %>
+
+    <style>
+        .margen-general {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <section id="content" class="container-fluid">
+        <div class="row main margen-general">
+            <%= yield %>
+        </div>
+    </section>
+
+</body>
+
+</html>

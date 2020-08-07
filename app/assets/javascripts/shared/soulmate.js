@@ -89,8 +89,16 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 $('#new_admin_catalogo').submit();
                 break;
             case 'admin/especie_catalogo':
-                $('#admin_especie_catalogo_especie_id').val(data.id);
-                $(elemento).val(data.nombre_cientifico);
+                if (data.estatus == "válido")
+                {
+                    $('#admin_especie_catalogo_especie_id').val(data.id);
+                    $('#' + elemento).val(data.nombre_cientifico);
+                } else {
+                    let data_valido = dameTaxonValido(data.id);
+                    $('#admin_especie_catalogo_especie_id').val(data_valido.IdNombre);
+                    $('#' + elemento).val(data_valido.TaxonCompleto);
+                }
+                
                 break;                
             case 'busquedas/explora-por-clasificacion':
                 window.location.replace('/explora-por-clasificacion?especie_id='  + data.id + '&q=' + data.nombre_cientifico);
@@ -104,7 +112,7 @@ var soulmateAsigna = function(tipo_busqueda, elem)
     };
 
     $('#' + elemento).soulmate({
-        url:            "http://"+ IP + ":" + PORT + "sm/search",
+        url:            SITE_URL + "sm/search",
         types:          TYPES,
         renderCallback: render,
         selectCallback: select,
@@ -140,7 +148,7 @@ var soulmateRegionAsigna = function(elem)
     };
 
     $('#' + elemento).soulmate({
-        url:            "http://"+ IP + ":" + PORT + "sm/search",
+        url:            SITE_URL + "sm/search",
         types:          ['estado','municipio','anp'],
         renderCallback: render,
         selectCallback: select,
@@ -149,4 +157,19 @@ var soulmateRegionAsigna = function(elem)
     });
 
     $('#' + elemento).attr('soulmate', 'true');
+};
+
+var dameTaxonValido = function(especie_id)
+{
+    let data_valio = null
+
+    $.ajax({
+            url: "/especies/" + especie_id + '.json',
+            async: false,
+            success: function(data) {
+                data_valido = data
+            }
+        });
+    
+    return data_valido;
 };

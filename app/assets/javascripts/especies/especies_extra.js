@@ -1,7 +1,4 @@
 $(document).ready(function(){
-    tooltip();
-    refreshMediaQueries();
-
     $('#navegacion a.load-tab').one('click',function(){
         var idPestaña = $(this).data('params') || this.getAttribute('href').replace('#','');
         var pestaña = '/especies/' + opciones.taxon + '/'+idPestaña;
@@ -10,13 +7,13 @@ $(document).ready(function(){
                 case 'media':
                     $('#mediaBDI_p').load('/especies/' + opciones.taxon + '/bdi-photos?type=photo', function () {
                         //$('#mediaBDI_v').load('/especies/' + opciones.taxon + '/bdi-videos?type=video', function () {
-                            $('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {
-                                $('#mediaCornell_v').load('/especies/' + opciones.taxon + '/media-cornell?type=video', function () {
-                                    $('#mediaCornell_a').load('/especies/' + opciones.taxon + '/media-cornell?type=audio',function () {
-                                        $('#mediaTropicos').load('/especies/' + opciones.taxon + '/media-tropicos');
-                                    });
+                        $('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {
+                            $('#mediaCornell_v').load('/especies/' + opciones.taxon + '/media-cornell?type=video', function () {
+                                $('#mediaCornell_a').load('/especies/' + opciones.taxon + '/media-cornell?type=audio',function () {
+                                    $('#mediaTropicos').load('/especies/' + opciones.taxon + '/media-tropicos');
                                 });
                             });
+                        });
                         //});
                     });
                     break;
@@ -46,10 +43,21 @@ $(document).ready(function(){
     });
     $("html,body").animate({scrollTop: 101}, 500);
 
-    $('#media, #contenedor_fotos').on('click','.paginado-media button:first-of-type, #especies-destacadas button:first-of-type',function(){
-        $(this).parent().animate({scrollLeft: "-=600px"}, 250);
+    $('#media, #contenedor_fotos, #arbol').on('click','.paginado-media button:first-of-type, #especies-destacadas button:first-of-type',function(){
+        $(this).parent().animate({scrollLeft: "-=400px"}, 200);
     });
-    $('#media, #contenedor_fotos').on('click','.paginado-media button:last-of-type, #especies-destacadas button:last-of-type',function(){
-        $(this).parent().animate({scrollLeft: "+=600px"}, 250);
+    $('#media, #contenedor_fotos, #arbol').on('click','.paginado-media button:last-of-type, #especies-destacadas button:last-of-type',function(){
+        $(this).parent().animate({scrollLeft: "+=400px"}, 200);
     });
+
+    $('#modal_clasificacion_completa').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var taxonId = button.data('taxon-id');
+        var modalBody = $(this).find('.modal-body');
+        modalBody.empty();
+        modalBody.load('/explora-por-clasificacion?especie_id='+taxonId+'&fromShow=1');
+    }).on('click', '.nodo-taxon', function (){
+        despliegaOcontrae(this);
+    });
+
 });

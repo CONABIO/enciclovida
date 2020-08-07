@@ -67,14 +67,11 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   z-index: 1;
 }
 #especies-destacadas div img{
-  min-height: 200px;
-  height: 30vh;
-  max-height: 250px;
+  min-height: 175px;
+  height: 27vh;
+  max-height: 225px;
 }
 
-#arbol > div > div:last-child{
-  display: none!important;
-}
 #navegacion .btn.btn-outline-primary{
   border-color: transparent!important;
   box-shadow: rgba(189, 0, 22, 0.1) 1px 1px 2px;
@@ -91,7 +88,7 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   color: #bd0016!important;
   padding: .5em;
 }
-.media-tabs, #especies-destacadas{
+.media-tabs, #especies-destacadas, #arbol{
   display: grid;
   position: relative;
 }
@@ -103,8 +100,8 @@ input:checked + .btn-basica, .btn-basica:hover, .btn-basica-activa {
   transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
 }
 .paginado-media button, #especies-destacadas button{z-index: 1;}
-.paginado-media button:first-of-type, #especies-destacadas button:first-of-type{left: -5px;}
-.paginado-media button:last-of-type, #especies-destacadas button:last-of-type{right: -5px;}
+.paginado-media button:first-of-type, #especies-destacadas button:first-of-type/*, #clasificacion button:first-of-type*/{left: -2px;}
+.paginado-media button:last-of-type, #especies-destacadas button:last-of-type/*, #clasificacion button:last-of-type*/{right: -2px;}
 
 #mediaCornell_a img{max-height: 180px;}
 .paginado-media img:hover{

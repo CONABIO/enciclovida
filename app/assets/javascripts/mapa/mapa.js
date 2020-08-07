@@ -9,20 +9,20 @@ var cargaMapa = function (id, overlay, opc)
     if (opc === undefined) opc = {};
 
     // El default de leaflet
-    var OSM_layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png',{
+    var OSM_layer = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png',{
         subdomains:['a','b','c'],
         zIndex: 1,
         noWrap: true
     });
 
     // Google terrain map layer
-    var GTM_layer = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
+    var GTM_layer = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
         subdomains:['mt0','mt1','mt2','mt3'],
         zIndex: 1,
         noWrap: true
     });
     // Google Hybrid
-    var GHM_layer = L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{
+    var GHM_layer = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{
         subdomains:['mt0','mt1','mt2','mt3'],
         zIndex: 1,
         noWrap: true

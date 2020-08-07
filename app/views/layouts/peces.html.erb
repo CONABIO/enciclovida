@@ -12,8 +12,7 @@
 
 
   <script type="text/javascript" data-turbolinks-track="true">
-      IP = "<%= IP %>";
-      PORT = "<%= PORT %>";
+      SITE_URL = "<%= CONFIG.site_url %>";
   </script>
 
 
@@ -48,10 +47,6 @@
   <%= render :partial => 'shared_b4/footer_social' %>
   <%= render :partial => 'shared_b4/footer_legal' %>
 </footer>
-
-<% if Rails.env.production? %>
-  <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
-<% end %>
 
 <%= yield :delayedjs %>
 

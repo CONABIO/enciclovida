@@ -153,7 +153,7 @@ class CategoriaTaxonomica < ActiveRecord::Base
       }
   }
 
-  def self.categorias_redis()
+  def self.categorias_redis
     # Orden en particular de como se despliegan las categorias en redis
     cat = %w(especie subespecie variedad subvariedad forma subforma
     Reino subreino superphylum
@@ -166,4 +166,10 @@ class CategoriaTaxonomica < ActiveRecord::Base
     categorias = cat.map{|cat| "'#{cat}'"}
     "[#{categorias.join(',')}]"
   end
+
+  def self.categorias_usos_redis
+    categorias = (%w(especie) + CATEGORIAS_INFRAESPECIES).map{|cat| "'#{cat}'"}
+    "[#{categorias.join(',')}]"
+  end
+
 end

@@ -45,7 +45,6 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
     @admin_especie_catalogo = Admin::EspecieCatalogo.new(admin_especie_catalogo_params)
 
     respond_to do |format|
-
       @admin_especie_catalogo.usuario = current_usuario.email
       if @admin_especie_catalogo.save
         format.html do
@@ -74,7 +73,6 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
   # PATCH/PUT /admin/especies_catalogos/1.json
   def update
     respond_to do |format|
-
       @admin_especie_catalogo.usuario = current_usuario.email
       if @admin_especie_catalogo.update(admin_especie_catalogo_params)
         format.html do
@@ -129,12 +127,12 @@ class Admin::EspeciesCatalogosController < Admin::AdminController
     if p["bibliografias_attributes"].present?
       p["bibliografias_attributes"].each do |kbiblio, biblio|
         next unless biblio.present?
+        biblio["usuario"] = usuario
         next unless biblio["id"].present?
         next unless biblio["catalogo_id"].present?
         next unless biblio["especie_id"].present?
         next unless biblio["bibliografia_id"].present?
         biblio["id"] = [biblio["catalogo_id"], biblio["especie_id"], biblio["bibliografia_id"]]
-        biblio["usuario"] = usuario
       end
     end
 

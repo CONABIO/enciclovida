@@ -4,37 +4,41 @@
     <%#= render partial: 'titulo' %>
   </div>
 
-  <div class="" id="clasiDescEsp">
+  <div id="clasiDescEsp">
     <div class="xSection row active">
       <div class="col-md-12">
-        <h5 class="text-primary">Clasificación y descripción</h5>
+        <h4 class="text-primary">Clasificación y descripción</h4>
       </div>
     </div>
     <%= render partial: 'clasificacion_y_descripcion_de_especie' %>
   </div>
 
-  <div class="" id="distribucionEspecie">
-    <div class="xSection row">
-      <div class="col-md-12">
-        <h5 class="text-primary">Distribución</h5>
+  <% if @distribucion.tiene_datos? || @endemica.tiene_datos? || @habitat.tiene_datos_dist? %>
+    <div id="distribucionEspecie">
+      <div class="xSection row">
+        <div class="col-md-12">
+          <h4 class="text-primary">Distribución</h4>
+        </div>
       </div>
+      <%= render partial: 'distribucione_de_la_especie' %>
     </div>
-    <%= render partial: 'distribucione_de_la_especie' %>
-  </div>
+  <% end %>
 
-  <div class="" id="ambienteDeEspecie">
-    <div class="xSection row">
-      <div class="col-md-12" >
-        <h5 class="text-primary">Ambiente</h5>
+  <% if @habitat.tiene_datos_amb? || @ecorregion.tiene_datos_amb? || @ecosistema.tiene_datos_amb? || @habitatAntropico.tiene_datos_amb? || @suelo.tiene_datos_amb? || @geoforma.tiene_datos_amb? %>
+    <div class="" id="ambienteDeEspecie">
+      <div class="xSection row">
+        <div class="col-md-12" >
+          <h4 class="text-primary">Ambiente</h4>
+        </div>
       </div>
+      <%= render partial: 'ambiente_de_desarrollo_de_especie' %>
     </div>
-    <%= render partial: 'ambiente_de_desarrollo_de_especie' %>
-  </div>
+  <% end %>
 
   <div class="" id="biologiaEspecie">
     <div class="xSection row">
       <div class="col-md-12" >
-        <h5 class="text-primary">Biología</h5>
+        <h4 class="text-primary">Biología</h4>
       </div>
     </div>
     <%= render partial: 'biologia_de_la_especie' %>
@@ -43,7 +47,7 @@
   <div class="" id="ecologiaDemografiaEspecie">
     <div class="xSection row">
       <div class="col-md-12" >
-        <h5 class="text-primary">Ecología</h5>
+        <h4 class="text-primary">Ecología</h4>
       </div>
     </div>
     <%= render partial: 'ecologia_y_demografia_especie' %>
@@ -52,7 +56,7 @@
   <div class="" id="geneticaEspecie">
     <div class="xSection row">
       <div class="col-md-12" >
-        <h5 class="text-primary">Genética</h5>
+        <h4 class="text-primary">Genética</h4>
       </div>
     </div>
     <%= render partial: 'genetica_de_la_especie' %>
@@ -61,7 +65,7 @@
   <div class="" id="importanciaEspecie">
     <div class="xSection row">
       <div class="col-md-12" >
-        <h5 class="text-primary">Importancia</h5>
+        <h4 class="text-primary">Importancia</h4>
       </div>
     </div>
     <%= render partial: 'importancia_de_la_especie' %>
@@ -71,7 +75,7 @@
 
     <div class="xSection row">
       <div class="col-md-12" >
-        <h5 class="text-primary">Conservación</h5>
+        <h4 class="text-primary">Conservación</h4>
       </div>
     </div>
     <%= render partial: 'estado_de_conservacion_de_la_especie' %>
@@ -81,7 +85,7 @@
 
     <div class="xSection row">
       <div class="col-md-12" >
-        <h5 class="text-primary">Especies prioritarias para la conservación</h5>
+        <h4 class="text-primary">Especies prioritarias para la conservación</h4>
       </div>
     </div>
     <%= render partial: 'especies_prioritarias_para_conservacion' %>
@@ -90,7 +94,7 @@
   <div class="" id="necesidadesDeInformacion">
     <div class="xSection row">
       <div class="col-md-12" >
-        <h5 class="text-primary">Necesidades de información</h5>
+        <h4 class="text-primary">Necesidades de información</h4>
       </div>
     </div>
     <%= render partial: 'necesidades_de_informacion' %>
@@ -99,7 +103,7 @@
   <div class="" id="metadatos">
     <div class="xSection row">
       <div class="col-md-12" >
-        <h5 class="text-primary">Metadatos</h5>
+        <h4 class="text-primary">Metadatos</h4>
       </div>
     </div>
     <%= render partial: 'metadatos' %>
@@ -108,7 +112,7 @@
   <div class="" id="referencias">
     <div class="xSection row">
       <div class="col-md-12" >
-        <h5 class="text-primary">Referencias</h5>
+        <h4 class="text-primary">Referencias</h4>
       </div>
     </div>
     <%= render partial: 'referencias' %>

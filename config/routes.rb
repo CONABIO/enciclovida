@@ -4,6 +4,7 @@ Buscador::Application.routes.draw do
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
   # Administracion de los catalogos
+=begin  
   namespace :admin do
     resources :catalogos do
       collection do
@@ -19,12 +20,13 @@ Buscador::Application.routes.draw do
       end
     end
     
-    resources :bibliografias do
+    resources :bibliografias, except: [:index, :show] do
       collection do
         get :autocompleta
       end
     end
   end
+=end
 
   # metamares, alias infoceanos
   if Rails.env.development?
@@ -113,6 +115,9 @@ Buscador::Application.routes.draw do
 
         # X. Necesidades de información
         get ':id/necesidadesDeInformacion' => 'fichas#necesidades_de_informacion'
+
+        # Para la ficha de la DGCC
+        get ':id/dgcc' => 'front#dgcc'
       end
     end
   end
@@ -214,7 +219,9 @@ Buscador::Application.routes.draw do
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
       get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
       get ':id/resumen-wikipedia' => 'especies#resumen_wikipedia'
+      get ':id/resumen-app' => 'especies#resumen_app'
       get ':id/descripcion' => 'especies#descripcion'
+      get ':id/descripcion-app' => 'especies#descripcion_app'
     end
   end
 

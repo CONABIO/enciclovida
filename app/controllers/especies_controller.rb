@@ -5,7 +5,7 @@ class EspeciesController < ApplicationController
                                          :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
                                          :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :resumen_wikipedia]
 
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion,
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion, :descripcion_app,
                                      :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
@@ -502,6 +502,12 @@ class EspeciesController < ApplicationController
     render 'especies/descripciones/descripcion'
   end
 
+  # La respuesta a la ficha en la app
+  def descripcion_app
+    asigna_variables_descripcion(true)
+    render 'especies/descripciones/descripcion_app', layout: 'descripcion_app'
+  end
+
   # Regresa el resumen de wikipedia en español o ingles
   def resumen_wikipedia
     opc = { taxon: @especie, locale: params[:locale] }
@@ -514,10 +520,14 @@ class EspeciesController < ApplicationController
 
     render json: { estatus: (resumen.present? ? true : false), sumamry: resumen }
   end
-
+    
   # Viene de la pestaña de la ficha
   def descripcion_catalogos
-    render 'especies/descripciones/descripcion_catalogos'
+    if params[:app]
+      render 'especies/descripciones/descripcion_catalogos_app'
+    else
+      render 'especies/descripciones/descripcion_catalogos'
+    end
   end
 
   # Devuelve las observaciones de naturalista en diferentes formatos
@@ -911,17 +921,17 @@ class EspeciesController < ApplicationController
     )
   end
 
-  def asigna_variables_descripcion
+  def asigna_variables_descripcion(app=false)
     if params[:from].present?
       begin
         desc = eval("Api::#{params[:from].camelize}")
-        @descripcion = desc.new(taxon: @especie).dame_descripcion
+        @descripcion = desc.new(taxon: @especie, app: app).dame_descripcion
         @api = params[:from]
       rescue
       end
     else
       begin
-        desc = Api::Descripcion.new(taxon: @especie).dame_descripcion
+        desc = Api::Descripcion.new(taxon: @especie, app: app).dame_descripcion
         @descripcion = desc[:descripcion]
         @api = desc[:api]
       rescue

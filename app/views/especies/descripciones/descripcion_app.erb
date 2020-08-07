@@ -1,0 +1,30 @@
+<% css_class = "clear taxon_description" %>
+<% wikipedia = %w(wikipedia_es wikipedia_en).include?(@api) %>
+<% css_class += " wikipedia_description" if wikipedia %>
+
+<div class="<%= css_class %> w-100" id="taxon_description">
+
+<h3>Fuente <%= eval("Api::#{@api.camelize}").new.nombre %></h3>
+
+  <% if @descripcion.blank? %>
+    <p class="nocontent meta">
+      <% if params[:from].present? %>
+        <% api = eval("Api::#{params[:from].camelize}").new.nombre %>
+        <%= t :sin_descripcion_en_x_para_y, x: api, y: @especie.nombre_cientifico %>
+      <% else %>
+        <%= t :sin_descripcion_para_y, y: @especie.nombre_cientifico %>
+      <% end %>
+    </p>
+  <% else %>
+    <% if wikipedia %>
+      <div id="section_SpokenWikipedia" class="infobox sisterproject plainlinks bg-warning"><strong>NOTA:</strong> La clasificación taxonómica de Wikpedia puede diferir de la que se considera en CONABIO</div>
+    <% end %>
+
+    <%=raw @descripcion %>
+  <% end %>
+</div>
+
+<br />
+<br />
+<br />
+<br />

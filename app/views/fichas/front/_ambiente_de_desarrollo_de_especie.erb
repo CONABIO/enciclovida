@@ -1,95 +1,136 @@
 <div class="row showInfo">
 
-  <div class="col-md-12">
-    <br>
-    <div class="row text-center" >
-      <div class="col-md-4 ficaBordeSeparador"><h6>Ambiente:</h6><p><%=@ecorregion.present? ? convierte_a_HTML(@ecorregion.descripcion) : (@sin_info_msj) %> </p></div>
-      <div class="col-md-4 ficaBordeSeparador"><h6>Ecorregion:</h6><p><%=@cat_eacorregionwwf.present? ? convierte_a_HTML(@cat_eacorregionwwf.TipoEcorregion) : (@sin_info_msj) %></p></div>
-      <div class="col-md-4"><h6>Ecosistema:</h6><p><%=@ecosistema.present? ? convierte_a_HTML(@ecosistema.tipoecosistema) : (@sin_info_msj) %></p></div>
-    </div>
-    <br>
+  <div class="col-md-12 mt-1">
+    <% if @ecorregion.tiene_datos_amb? || @ecosistema.tiene_datos_amb? %>
+      <div class="row text-center">
+        <% if @ecorregion.descripcion.present? %>
+          <div class="col-md-6 ficaBordeSeparador"><h6>Ecorregion:</h6><p><%= @ecorregion.descripcion.a_HTML %> </p></div>
+        <% end %>
 
-    <div class="row text-justify" >
-      <div class="col-md-8">
+        <% if @ecosistema.tipoecosistema.present? %>
+          <div class="col-md-6"><h6>Ecosistema:</h6><p><%= @ecosistema.tipoecosistema.a_HTML %></p>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
 
-        <h6>Tipos de vegetación</h6>
-        <ul>
-          <li>
-            <strong>Vegetación  en la que se desarrolla la especie: </strong>
-            <p class="text-justify"><%=@habitat.present? ? convierte_a_HTML(@habitat.tipoVegetacion) : (@sin_info_msj) %> </p>
-          </li>
-          <li>
-            <strong>Hábitats antrópicos: </strong>
-            <p class="text-justify"><%=@habitatAntropico.present? ? convierte_a_HTML(@habitatAntropico.descripcion) : (@sin_info_msj) %> </p>
+    <% if @habitat.tiene_datos_amb? || @habitatAntropico.tiene_datos_amb? || @suelo.tiene_datos_amb? || @geoforma.tiene_datos_amb? || @tipoClima.tiene_datos_amb? %>
+      <div class="row text-justify mt-1" >
+        
+        <% if @habitat.tiene_datos_amb? || @habitatAntropico.tiene_datos_amb? %>
+          <div class="col-md-8 mt-1">
+            <h6>Tipos de vegetación</h6>
+            <ul>
 
-            <ol>
+              <% if @habitat.tipoVegetacion.present? %>
+                <li>
+                  <strong>Vegetación en la que se desarrolla la especie: </strong>
+                  <p class="text-justify"><%= @habitat.tipoVegetacion.a_HTML %> </p>
+                </li>
+              <% end %>
+
               <li>
-                <%=@habitat.habitatAgropecuario == 'no' ? ("No se encuentra en hábitat agropecuario") : ("Si se encuentra en hábitat agropecuario")%>
+                <% if @habitatAntropico.tiene_datos_amb? %>
+                  <strong>Hábitats antrópicos: </strong>
+                  <p class="text-justify"><%= @habitatAntropico.descripcion.a_HTML %> </p>
+                <% end %>
+
+                <ol>
+                  <li>
+                    <%= @habitat.habitatAgropecuario == 'no' ? "No se encuentra en hábitat agropecuario" : "Se encuentra en hábitat agropecuario" %>
+                  </li>
+
+                  <li>
+                    <%=@habitat.zonaUrbana == 'no' ? "No se encuentra en zonas urbanas" : "Se encuentra en zonas urbanas" %>
+                  </li>
+
+                  <li>
+                    <%=@habitat.VegetacionSecundaria == 'no' ? "No se encuentra en vegetación secundaria" : "Se encuentra en vegetación secundaria" %>
+                  </li>
+                </ol>
               </li>
-              <li>
-                <%=@habitat.zonaUrbana == 'no' ? ("No se encuentra en zonas urbanas") : ("Si se encuentra en zonas urbanas")%>
-              </li>
-              <li>
-                <%=@habitat.VegetacionSecundaria == 'no' ? ("No se encuentra en vegetación secundaria") : ("Si se encuentra en vegetación secundaria")%>
-              </li>
-            </ol>
-          </li>
-          <li>
-            <strong>Tipo de vegetación secundaria</strong>
-            <p class="text-justify"><%=@habitat.present? ? convierte_a_HTML(@habitat.tipoVegetacionSecundaria) : (@sin_info_msj) %> </p>
-          </li>
-          <li>
-            <strong>Mencionar las especies asociadas</strong>
-            <br>
-          </li>
-        </ul>
-        <br>
 
-        <h6>Tipo de suelo en el que se desarrolla la especie</h6>
-        <p class="text-justify"><%=@habitat.present? ? convierte_a_HTML(@habitat.descripcionSuelo) : (@sin_info_msj) %> </p>
+              <% if @habitat.tipoVegetacionSecundaria.present? %>
+                <li>
+                  <strong>Tipo de vegetación secundaria</strong>
+                  <p class="text-justify"><%= @habitat.tipoVegetacionSecundaria.a_HTML %></p>
+                </li>
+              <% end %>
 
+            </ul>
+            
+            <% if @habitat.descripcionSuelo.present? %>
+              <h6>Tipo de suelo en el que se desarrolla la especie</h6>
+              <p class="text-justify"><%= @habitat.descripcionSuelo.a_HTML %></p>
+            <% end %>
 
-        <br>
+            <% if @habitat.descripcionSuelo.present? %>
+              <h6>Información adicional</h6>
+              <p class="text-justify"><%= @suelo.descripcion.a_HTML %></p>
+            <% end %>
 
-        <h6>Información adicional</h6>
-        <p class="text-justify"><%=@suelo.present? ? convierte_a_HTML(@suelo.descripcion) : (@sin_info_msj) %> </p>
-        <br>
+          </div>
+        <% end %>
+
+        <% if @tipoClima.tiene_datos_amb? || @habitat.tiene_datos_amb_mas_info? || @geoforma.tiene_datos_amb? %>
+          <div class="col-md-4 p-3 shadow-lg bg-white">
+            <h6 class="text-center text-info">Más información</h6>
+
+            <% if @tipoClima.clima.present? %>
+              <h6>Clima</h6>
+              <p class="text-justify"><%= @tipoClima.clima.a_HTML %></p>
+            <% end %>
+
+            <% if @habitat.climaAdicional.present? %>
+              <h5>Información adicional</h5>
+              <p class="text-justify"><%= @habitat.climaAdicional.a_HTML %></p>
+            <% end %>
+
+            <% if @habitat.temperaturainicial.present? || @habitat.temperaturafinal.present? %>
+              <h6>Temperatura</h6>
+              <p class="text-justify"><%= @habitat.temperaturainicial.a_HTML if @habitat.temperaturainicial.present? %> - <%= @habitat.temperaturafinal.a_HTML if @habitat.temperaturafinal.present? %></p>
+            <% end %>
+            
+            <% if @habitat.infoaddtemperatura.present? %>
+              <h5>Información adicional</h5>
+              <p class="text-justify"><%= @habitat.infoaddtemperatura.a_HTML %></p>
+            <% end %>
+
+            <% if @habitat.precipitacioninicial.present? || @habitat.precipitacionfinal.present? %>
+              <h6>Precipitación</h6>
+              <p class="text-justify"><%= @habitat.precipitacioninicial.a_HTML if @habitat.precipitacioninicial.present? %> - <%= @habitat.precipitacionfinal.a_HTML if @habitat.precipitacionfinal.present? %></p>
+            <% end %>
+            
+            <% if @habitat.infoaddprecipitacion.present? %>
+              <h5>Información adicional</h5>
+              <p class="text-justify"><%= @habitat.infoaddprecipitacion.a_HTML %></p>
+            <% end %>
+
+            <% if @habitat.humedadinicial.present? || @habitat.humedadfinal.present? %>
+              <h6>Rango de humedad relativa</h6>
+              <p class="text-justify"><%= @habitat.humedadinicial.a_HTML if @habitat.humedadinicial.present? %> - <%= @habitat.humedadfinal.a_HTML if @habitat.humedadfinal.present? %></p>
+            <% end %>
+
+            <% if @habitat.infoaddhumedad.present? %>
+              <h5>Información adicional</h5>
+              <p class="text-justify"><%= @habitat.infoaddhumedad.a_HTML %></p>
+            <% end %>
+
+            <% if @geoforma.descrpcion.present? %>
+              <h6>Geoforma</h6>
+              <p class="text-justify"><%= @geoforma.descrpcion.a_HTML %></p>
+            <% end %>
+
+            <% if @habitat.descripcionGeoforma.present? %>
+              <h5>Información adicional</h5>
+              <p class="text-justify"><%= @habitat.descripcionGeoforma.a_HTML %></p>
+            <% end %>
+
+          </div>
+        <% end %>
 
       </div>
+    <% end %>
 
-      <div class="col-md-4 p-3 shadow-lg bg-white">
-        <h6 class="text-center text-info">Más información</h6>
-
-        <h6>Clima</h6>
-        <p class="text-justify"><%=@habitat.present? ? convierte_a_HTML(@habitat.tipoClimaId) : (@sin_info_msj) %> </p>
-        <h5>Información adicional</h5>
-        <p class="text-justify"><%=@habitat.present? ? convierte_a_HTML(@habitat.climaAdicional) : (@sin_info_msj) %> </p>
-        <br>
-
-        <h6>Temperatura</h6>
-        <p class="text-justify"><%=@habitat.temperaturainicial%>  - <%=@habitat.temperaturafinal%> </p>
-        <h5>Información adicional</h5>
-        <p class="text-justify"><%=@habitat.present? ? convierte_a_HTML(@habitat.infoaddtemperatura) : (@sin_info_msj) %> </p>
-        <br>
-
-        <h6>Precipitación</h6>
-        <p class="text-justify"><%=@habitat.precipitacioninicial%>  - <%=@habitat.precipitacionfinal%></p>
-        <h5>Información adicional</h5>
-        <p class="text-justify"><%=@habitat.present? ? convierte_a_HTML(@habitat.infoaddprecipitacion) : (@sin_info_msj) %> </p>
-        <br>
-
-        <h6>Rango de humedad relativa</h6>
-        <p class="text-justify"><%=@habitat.humedadinicial%> - <%=@habitat.humedadfinal%></p>
-        <h5>Información adicional</h5>
-        <p class="text-justify"><%=@habitat.present? ? convierte_a_HTML(@habitat.infoaddhumedad) : (@sin_info_msj) %> </p>
-        <br>
-
-        <h6>Geoforma</h6>
-        <p class="text-justify"><%=@geoforma.present? ? convierte_a_HTML(@geoforma.descrpcion) : (@sin_info_msj) %> </p>
-        <h5>Información adicional</h5>
-        <p class="text-justify"><%=@habitat.present? ? convierte_a_HTML(@habitat.descripcionGeoforma) : (@sin_info_msj) %> </p>
-
-      </div>
-    </div>
   </div>
 </div>

@@ -149,13 +149,13 @@ class Fichas::FrontController < Fichas::FichasController
 
     @habitat = @taxon.habitats.first || Fichas::Habitat.new
     # III. Tipo de ambiente en donde se desarrolla la especie
-    @tipoClima = @habitat.tipoclima
-    @suelo = @habitat.suelo
-    @geoforma = @habitat.geoforma
-    @ecorregion = @habitat.ecorregion.first
-    @ecosistema = @habitat.ecosistema.first
+    @tipoClima = @habitat.tipoclima || Fichas::Tipoclima.new
+    @suelo = @habitat.suelo || Fichas::Suelo.new
+    @geoforma = @habitat.geoforma || Fichas::Geoforma.new
+    @ecorregion = @habitat.ecorregion.first || Fichas::Ficha_Ecorregion.new
+    @ecosistema = @habitat.ecosistema.first || Fichas::Ecosistema.new
     #@cat_eacorregionwwf = Cat_Ecorregionwwf.find_by(IdEcorregion: @ecorregion.ecorregionId)
-    @habitatAntropico = @habitat.habitatAntropico
+    @habitatAntropico = @habitat.habitatAntropico || Fichas::Habitatantropico.new
 
     # IV. Biología de la especie
     @demografiaAmenazas = @taxon.demografiaAmenazas.first || Fichas::Demografiaamenazas.new
@@ -229,6 +229,15 @@ class Fichas::FrontController < Fichas::FichasController
     end
   end
 
+  # La ficha de la DGCC
+  def dgcc
+    @ficha = @taxon.dgcc
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @ficha }
+    end
+  end
 
 
   private

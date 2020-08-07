@@ -10,8 +10,7 @@
 
   <script type="text/javascript" data-turbolinks-track="true">
       TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
-      IP = "<%= IP %>";
-      PORT = "<%= PORT %>";
+      SITE_URL = "<%= CONFIG.site_url %>";
   </script>
 
   <%= javascript_include_tag 'application_b3', 'data-turbolinks-track' => true %>
@@ -58,10 +57,6 @@
 </footer>
 
 <%= yield :extrajs_carrusel %>
-
-<% if Rails.env.production?  %>
-    <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
-<% end %>
 
 <%= yield :delayedjs %>
 </body>

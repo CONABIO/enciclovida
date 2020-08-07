@@ -10,9 +10,8 @@
   <%= javascript_include_tag 'admin/admin', 'data-turbolinks-track': true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
-      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
-      IP = "<%= IP %>";
-      PORT = "<%= PORT %>";
+      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_usos_redis %>");
+      SITE_URL = "<%= CONFIG.site_url %>";
   </script>
 
   <script type="text/javascript" data-turbolinks-track="true">

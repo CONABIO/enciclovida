@@ -2,7 +2,7 @@ class Api::ConabioPlinian < Api::Conabio
 
   def initialize(opc = {})
     super(opc)
-    self.servidor = servidor || "http://#{IP}:#{PORT}"
+    self.servidor = servidor || CONFIG.site_url
   end
 
   def nombre
@@ -18,8 +18,12 @@ class Api::ConabioPlinian < Api::Conabio
   private
 
   def buscar(q)
-    if Fichas::Taxon.where(IdCAT: q).first
-      solicita("fichas/front/#{q}")
+    if ficha = Fichas::Taxon.where(IdCAT: q).first
+      if ficha.tipoficha == 'DGCC'
+        solicita("fichas/front/#{q}/dgcc")
+      else
+        solicita("fichas/front/#{q}")  
+      end
     else
       nil
     end

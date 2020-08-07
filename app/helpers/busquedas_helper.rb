@@ -358,7 +358,7 @@ module BusquedasHelper
     html = ''
 
     @taxones.each do |taxon|
-      html << iteraArbol(taxon, false, 'fa-minus', true)
+      html << iteraArbol(taxon, false, 'fa-caret-up', true)
     end  
 
     html = "#{html}#{'</div>'*@taxones.length}"
@@ -366,26 +366,27 @@ module BusquedasHelper
   end 
 
   def iteraArbol(taxon, hojas, icono_fuente, inicial=false)
-    icono_fuente = 'fa-circle' if taxon.conteo == 0
-    
-    if @ancestros.present?
-      busqueda_orig = @ancestros.include?(taxon.id) ? 'clas-fila-busqueda-orig' : ''
-    end
-    busqueda_orig = 'clas-fila-busqueda-orig' if inicial
+    soyHoja = taxon.conteo == 0
+    icono_fuente = 'fa-genderless' if soyHoja
+
+    # Para saber de que reino viene
+    phylum_division = taxon.ancestry_ascendente_directo.split(',').include?('1') ? '1' : '0'
+
+    busqueda_orig = inicial ? 'clas-fila-busqueda-orig' : ''
 
     if taxon.jres
       iconos_fuentes = ''
       taxon.jres["cons_amb_dist"].each do |fuente, titulo|
-        iconos_fuentes << "<span class='btn-title caracteristica-distribucion-ambiente-taxon' tooltip-title='#{titulo}'><i class='#{fuente}-ev-icon'></i></span>"
+        iconos_fuentes << "<span class='btn-title caracteristica-distribucion-ambiente-taxon h2 bg-light rounded-pill' title='#{titulo}'><i class='#{fuente}-ev-icon'></i></span>"
       end  
     end
     
-    link = "#{link_to("<i class='fa #{icono_fuente} f-clas-plus'></i>".html_safe, '', :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link clas-plus')}"
+    caret = "<i class='fa #{icono_fuente} px-2'></i>".html_safe
     nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
-    especies_url = "/busquedas/resultados?nivel=%3D&cat=7100&busqueda=avanzada&id=#{taxon.id}&por_pagina=50"
-    especies = "<sup>" + link_to(taxon.conteo, especies_url, target: :_blank) + "</sup>" if taxon.conteo > 0
-    span = "<div class='clas-fila mt-2 mb-2 #{busqueda_orig}'>#{link} #{nombre} #{especies} #{iconos_fuentes}</div>"
-    html = "<div id='clas-div-#{taxon.id}' class='ml-3'>#{span}"
+    especies_url = "/busquedas/resultados?nivel=%3D&cat=7#{phylum_division}00&busqueda=avanzada&id=#{taxon.id}&por_pagina=50"
+    especies = "<span>" + link_to("(#{taxon.conteo} especies)", especies_url, target: :_blank) + "</span>" if taxon.conteo > 0
+    span = "<button data-taxon-id='#{taxon.id}' #{'data-hoja=true' if soyHoja} type='button' class='btn btn-block btn-outline-success border-0 clas-fila my-0 px-3 py-3 rounded-sm shadow-sm text-left text-info #{busqueda_orig} nodo-taxon'>#{caret} #{nombre} #{especies} #{iconos_fuentes}</button>"
+    html = "<div class='arbol-taxon ml-3'>#{span}"
 
     if hojas
       html << '</div>'
@@ -398,8 +399,11 @@ module BusquedasHelper
   def dameArbolInicialSinIndentar(taxones)
     html = ''
     taxones.each do |taxon|
-      nombre = tituloNombreCientifico(taxon, render: 'link')
-      html << "<div class='d-flex flex-column-reverse flex-lg-row flex-fill align-items-center border-bottom'><div class='text-capitalize p-2'>#{taxon.nombre_categoria_taxonomica}</div><div class='flex-fill text-center p-1' id='td_#{taxon.id}' >#{nombre}</div></div><div class='d-flex flex-fill d-lg-none align-items-center px-1 border-bottom'><i class='fa fa-chevron-right'></i></div>"
+      nombre = tituloNombreCientifico(taxon)
+      html << "<i class='fa fa-#{html.empty? ? 'ellipsis-h' : 'long-arrow-right'} text-secondary mx-1'></i>"
+      html << "<button data-toggle='modal' data-target='#modal_clasificacion_completa' data-taxon-id='#{taxon.id}' type='button' class='btn btn-sm btn-outline-info border text-left text-nowrap'>"
+      html << nombre
+      html << "</button>"
     end
 
     html.html_safe
@@ -411,7 +415,7 @@ module BusquedasHelper
     return html unless @taxones
 
     @taxones.each do |taxon|
-      html << iteraArbol(taxon, hojas=true, 'fa-plus')
+      html << iteraArbol(taxon, hojas=true, 'fa-caret-down')
     end
 
     html.html_safe
