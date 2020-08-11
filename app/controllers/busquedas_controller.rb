@@ -71,51 +71,34 @@ class BusquedasController < ApplicationController
   def por_clasificacion
     if I18n.locale.to_s == 'es-cientifico'
       if @especie
-        @taxones = Especie.arbol_inicial(@especie, 3)  
+        @taxones = Especie.arbol_inicial(@especie, 3)
       else
         @reinos = true
-        @taxones = Especie.arbol_reinos(3)  
-      end  
+        @taxones = Especie.arbol_reinos(3)
+      end
 
     else  # Vista general
       if @especie
-        @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)  
+        @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)
         consulta_redis
       else
         @reinos = true
-        @taxones = Especie.arbol_reinos(22)  
-      end 
+        @taxones = Especie.arbol_reinos(22)
+      end
     end
 
 
 
 
-      if params['fromShow']
-        render 'busquedas/clasificacion/por_clasificacion', :layout => false, :locals => {conBuscador: false}
-      else
+    if params['fromShow']
+      render 'busquedas/clasificacion/por_clasificacion', :layout => false, :locals => {conBuscador: false}
+    else
 
-=begin        hash_d3 = {}
-        #taxones = Especie.arbol_nodo_inicial_bis(@especie)
-        taxones = @taxones
-
-        taxones.reverse.each do |taxon|
-          if hash_d3.empty?
-            hash_d3 = taxon.as_json#.arbol_nodo_hash_bis
-          else  # El taxon anterior la pone como hija del taxon actual
-            parent = taxon.as_json#.arbol_nodo_hash_bis
-            parent[:children] = [hash_d3]
-            hash_d3 = parent
-          end
-        end
-=end
-
-        respond_to do |format|
-          format.html { render 'busquedas/clasificacion/por_clasificacion', :locals => {conBuscador: true} }
-          format.json { render 'busquedas/clasificacion/por_clasificacion.js.erb' }
-            #format.json { render json: hash_d3 }
-            #format.json { render json: @taxones }
-        end
+      respond_to do |format|
+        format.html { render 'busquedas/clasificacion/por_clasificacion', :locals => {conBuscador: true} }
+        format.json { render 'busquedas/clasificacion/por_clasificacion.js.erb' }
       end
+    end
 
   end
 
@@ -123,14 +106,14 @@ class BusquedasController < ApplicationController
   def por_clasificacion_hojas
     if I18n.locale.to_s == 'es-cientifico'
       if @especie
-        @taxones = Especie.arbol_hojas(@especie, 3, 'id_nombre_ascendente')  
-      end  
+        @taxones = Especie.arbol_hojas(@especie, 3, 'id_nombre_ascendente')
+      end
 
     else  # Vista general
       if @especie
         @taxones = Especie.arbol_hojas_obligatorias(@especie, 22, 'id_ascend_obligatorio')
         consulta_redis
-      end 
+      end
     end
 
     render 'busquedas/clasificacion/por_clasificacion_hojas'
@@ -151,14 +134,14 @@ class BusquedasController < ApplicationController
           json_redis["results"]["especie"].each do |especie|
             if especie["data"]["id"] == taxon.id
               taxon.jres = especie["data"]
-            end  
-          end  
-  
+            end
+          end
+
         rescue => e
           next
         end
-      end  
-    end   
+      end
+    end
   end
 
   # REVISADO: Los filtros de la busqueda avanzada y de los resultados
@@ -293,7 +276,7 @@ class BusquedasController < ApplicationController
                  #show_as_html: true,
                  header: {
                      html: {
-                     template: 'busquedas/checklist/header.html.erb'
+                         template: 'busquedas/checklist/header.html.erb'
                      },
                      line: true,
                      spacing: 5,
