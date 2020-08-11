@@ -86,8 +86,37 @@ class BusquedasController < ApplicationController
         @taxones = Especie.arbol_reinos(22)  
       end 
     end
-    (render 'busquedas/clasificacion/por_clasificacion', :layout => false, :locals => {conBuscador: false} and return) if params['fromShow']
-    render 'busquedas/clasificacion/por_clasificacion', :locals => {conBuscador: true}
+
+
+
+
+      if params['fromShow']
+        render 'busquedas/clasificacion/por_clasificacion', :layout => false, :locals => {conBuscador: false}
+      else
+
+=begin        hash_d3 = {}
+        #taxones = Especie.arbol_nodo_inicial_bis(@especie)
+        taxones = @taxones
+
+        taxones.reverse.each do |taxon|
+          if hash_d3.empty?
+            hash_d3 = taxon.as_json#.arbol_nodo_hash_bis
+          else  # El taxon anterior la pone como hija del taxon actual
+            parent = taxon.as_json#.arbol_nodo_hash_bis
+            parent[:children] = [hash_d3]
+            hash_d3 = parent
+          end
+        end
+=end
+
+        respond_to do |format|
+          format.html { render 'busquedas/clasificacion/por_clasificacion', :locals => {conBuscador: true} }
+          format.json { render 'busquedas/clasificacion/por_clasificacion.js.erb' }
+            #format.json { render json: hash_d3 }
+            #format.json { render json: @taxones }
+        end
+      end
+
   end
 
   # Devuelve las hojas de la categoria taxonomica con el nivel siguiente en cuestion
