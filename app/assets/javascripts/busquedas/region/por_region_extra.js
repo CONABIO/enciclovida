@@ -212,7 +212,7 @@ $(document).ready(function(){
     /**
      * Para los filtros default: distribucion y riesgo
      */
-    $('#b_avanzada').on('change', ".checkbox input", function()
+    $('#b_avanzada').on('change', "#edo_cons, #dist, #prior", function()
     {
         opciones.pagina_especies = 1;
         cargaEspecies();
