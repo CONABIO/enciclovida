@@ -89,11 +89,10 @@ class BusquedasController < ApplicationController
 
 
 
-
     if params['fromShow']
-      render 'busquedas/clasificacion/por_clasificacion', :layout => false, :locals => {conBuscador: false}
+      # Se debe especificar el nombre del archivo completo ya q al ser una llamada ajax, pide el JS por default
+      render 'busquedas/clasificacion/por_clasificacion.erb', :layout => false, :locals => {conBuscador: false}
     else
-
       respond_to do |format|
         format.html { render 'busquedas/clasificacion/por_clasificacion', :locals => {conBuscador: true} }
         format.json { render 'busquedas/clasificacion/por_clasificacion.js.erb' }
