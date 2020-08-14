@@ -5,26 +5,19 @@ class GeoAtopo
     return nil unless %w(estado municipio anp ecorregion).include?(region)
     Rails.logger.debug "[DEBUG] - Generando los topojson con region: #{region}"
 
-    ruta = Rails.root.join('public', 'topojson')
+    ruta = Rails.root.join('db', 'topojson')
     Dir.mkdir(ruta) unless File.exists?(ruta)
     geojson_todos = {type: 'FeatureCollection', features: []}  # Para todos loes estados o municipios juntos
 
-    "Geoportal::#{region.camelize}".constantize.campos_min.campos_geom.all.each do |reg|
-      Rails.logger.debug "[DEBUG] - Generando la región: #{reg.nombre_publico}"
-
-      # El query con bbox, no se hizo en el anterior query porque automaticamente trata de agrupar bbox
-      reg_bounds = "Geoportal::#{region.camelize}".constantize.bounds.find(reg.region_id)
-      bounds_split = reg_bounds.bounds.gsub(/[BOX()]/,'').split(',')
-      bounds_limite1 = bounds_split[0].split(' ')
-      bounds_limite2 = bounds_split[1].split(' ')
-      bounds = [bounds_limite1.reverse, bounds_limite2.reverse]
+    Geoportal.const_get(region.camelize).campos_min.campos_geom.all.each do |reg|
+      Rails.logger.debug "\t[DEBUG] - Generando la región: #{reg.nombre_publico}"
 
       geojson = {type: 'FeatureCollection', features: []}
-      feature = {type: 'Feature', properties:{region_id: reg.region_id, centroide: [reg.lat, reg.long]}, geometry: JSON.parse(reg.geojson)}
+      bounds = reg.bounds.gsub(/[BBOX()]/,'').split(',').map{ |a| a.split(' ').reverse.map{ |s|  s.to_f } }
+
+      feature = { type: 'Feature', properties: { region_id: reg.region_id, centroide: [reg.lat, reg.long], bounds: bounds }, geometry: JSON.parse(reg.geojson) }
       feature[:properties][:nombre_region] = reg.nombre_publico
-      feature[:properties][:bounds] = bounds
-      feature[:properties][:tipo] = reg.tipo
-      feature[:properties][:tipo_region] = reg.try(:tipo_region)
+
       geojson[:features] << feature
       geojson_todos[:features] << feature
 
@@ -40,7 +33,7 @@ class GeoAtopo
     # Convierte a topojson
     topojson_todos = dame_topojson_system({q: '1e4', p: '7e-5', i: archivo_geo_todos, o: archivo_topo_todos, tmp: archivo_tmp_todos})
     File.delete(archivo_geo_todos) if File.exist?(archivo_geo_todos)
-    Rails.logger.debug "[DEBUG] - Hubo un error al generar la region: #{archivo_topo_todos}" unless topojson_todos
+    Rails.logger.debug "\t[DEBUG] - Hubo un error al generar la region: #{archivo_topo_todos}" unless topojson_todos
 
   end
 
