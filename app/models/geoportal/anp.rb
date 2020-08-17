@@ -2,17 +2,13 @@ class Geoportal::Anp < GeoportalAbs
 
   self.table_name = 'anp'
 
-  alias_attribute :region_id, :anpid
+  alias_attribute :region_id, :gid
+  alias_attribute :nombre_region, :nombre
 
-  scope :campos_min, -> { select('anpid, nombre, cat_manejo').order(nombre: :asc) }
-  scope :centroide, -> { select('st_x(st_centroid(geom)) AS long, st_y(st_centroid(geom)) AS lat') }
-  scope :geojson_select, -> { select('ST_AsGeoJSON(geom) AS geojson') }
-  scope :bounds, -> { select('ST_Extent(geom) AS bounds') }
-  scope :campos_geom, -> { centroide.geojson_select }
-  scope :geojson, ->(region_id) { geojson_select.where(region_id: region_id) }
+  scope :campos_min, -> { select(:region_id, :nombre_region, :cat_manejo).order(nombre_region: :asc).group(:region_id) }
 
   def nombre_publico
-    nombre
+    nombre_region
   end
 
   def tipo
@@ -29,7 +25,7 @@ class Geoportal::Anp < GeoportalAbs
   def asigna_redis
     asigna_redis_id
     self.redis[:data] = {}
-    self.redis[:term] = nombre_publico.limpia.downcase
+    self.redis[:term] = I18n.transliterate(nombre_region.limpia.downcase)
     self.redis[:score] = 10
     self.redis[:data][:id] = region_id
     self.redis[:data][:nombre] = nombre_publico
@@ -42,8 +38,8 @@ class Geoportal::Anp < GeoportalAbs
   # Arma el ID de redis
   def asigna_redis_id
     # El 2 inicial es para saber que es un region
-    # El 2 en la segunda posicion denota que es un estado
-    # Y despues se ajusta a 8 digitos el numero de estado, para dar un total de 10 digitos
+    # El 2 en la segunda posicion denota que es una ANP
+    # Y despues se ajusta a 8 digitos, para dar un total de 10 digitos
     self.redis = {} unless redis.present?
     self.redis["id"] = "22#{region_id.to_s.rjust(8,'0')}".to_i
   end

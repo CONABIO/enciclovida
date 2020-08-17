@@ -2,16 +2,13 @@ class Geoportal::Municipio < GeoportalAbs
   
   self.primary_key = 'munid'
   alias_attribute :region_id, :munid
+  alias_attribute :nombre_region, :nom_mun
+  alias_attribute :nombre_estado, :nom_ent
 
-  scope :campos_min, -> { select('munid AS region_id, nom_mun AS nombre_region').order(nom_mun: :asc).group(:munid) }
-  scope :centroide, -> { select('st_x(st_centroid(geom)) AS long, st_y(st_centroid(geom)) AS lat') }
-  scope :bounds_select, -> { select('ST_Extent(geom) AS bounds') }
-  scope :geojson_select, -> { select('ST_AsGeoJSON(geom) AS geojson') }
-  scope :campos_geom, -> { centroide.geojson_select.bounds_select }
-  scope :geojson, ->(region_id) { geojson_select.where(munid: region_id) }
+  scope :campos_min, -> { select(:region_id, :nombre_region, :nombre_estado).order(nombre_region: :asc).group(:region_id) }
 
   def nombre_publico
-    "#{nom_mun}, #{I18n.t("estados.#{nom_ent.estandariza.gsub('-', '_')}")}"
+    "#{nombre_region}, #{I18n.t("estados.#{nombre_estado.estandariza.gsub('-', '_')}")}"
   end
 
   def tipo
@@ -24,7 +21,7 @@ class Geoportal::Municipio < GeoportalAbs
   def asigna_redis
     asigna_redis_id
     self.redis[:data] = {}
-    self.redis[:term] = I18n.transliterate(nom_mun.limpia.downcase)
+    self.redis[:term] = I18n.transliterate(nombre_region.limpia.downcase)
     self.redis[:score] = 100
     self.redis[:data][:id] = region_id
     self.redis[:data][:nombre] = nombre_publico
@@ -35,8 +32,8 @@ class Geoportal::Municipio < GeoportalAbs
   # Arma el ID de redis
   def asigna_redis_id
     # El 2 inicial es para saber que es un region
-    # El 1 en la segunda posicion denota que es un estado
-    # Y despues se ajusta a 8 digitos el numero de estado, para dar un total de 10 digitos
+    # El 1 en la segunda posicion denota que es un municipio
+    # Y despues se ajusta a 8 digitos, para dar un total de 10 digitos
     self.redis = {} unless redis.present?
     self.redis["id"] = "21#{region_id.to_s.rjust(8,'0')}".to_i
   end

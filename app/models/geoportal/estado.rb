@@ -5,10 +5,6 @@ class Geoportal::Estado < GeoportalAbs
   alias_attribute :nombre_region, :nom_ent
 
   scope :campos_min, -> { select(:region_id, :nombre_region).order(nombre_region: :asc).group(:region_id) }
-  scope :centroide, -> { select('st_x(st_centroid(geom)) AS long, st_y(st_centroid(geom)) AS lat') }
-  scope :bounds_select, -> { select('ST_Extent(geom) AS bounds') }
-  scope :geojson_select, -> { select('ST_AsGeoJSON(geom) AS geojson') }
-  scope :campos_geom, -> { centroide.geojson_select.bounds_select }
 
   def nombre_publico
     I18n.t("estados.#{nombre_region.estandariza.gsub('-', '_')}")

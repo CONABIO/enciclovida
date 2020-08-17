@@ -4,20 +4,40 @@ class Geoportal::Ecorregion < GeoportalAbs
   self.primary_key = 'gid'
 
   alias_attribute :region_id, :gid
+  alias_attribute :nombre_region, :desecon3
 
-  scope :campos_min, -> { select('gid, desecon1').order(desecon1: :asc) }
-  scope :centroide, -> { select('st_x(st_centroid(geom)) AS long, st_y(st_centroid(geom)) AS lat') }
-  scope :geojson_select, -> { select('ST_AsGeoJSON(geom) AS geojson') }
-  scope :bounds, -> { select('ST_Extent(geom) AS bounds') }
-  scope :campos_geom, -> { centroide.geojson_select }
-  scope :geojson, ->(region_id) { geojson_select.where(region_id: region_id) }
+  scope :campos_min, -> { select(:region_id, :nombre_region).order(nombre_region: :asc).group(:region_id) }
 
   def nombre_publico
-    desecon1
+    nombre_region
   end
 
   def tipo
-    'Región ecológica'
+    'Ecorregión'
+  end
+
+
+  private
+
+  def asigna_redis
+    asigna_redis_id
+    self.redis[:data] = {}
+    self.redis[:term] = I18n.transliterate(nombre_region.limpia.downcase)
+    self.redis[:score] = 10
+    self.redis[:data][:id] = region_id
+    self.redis[:data][:nombre] = nombre_publico
+    self.redis[:data][:tipo] = tipo
+
+    redis.deep_stringify_keys!
+  end
+
+  # Arma el ID de redis
+  def asigna_redis_id
+    # El 2 inicial es para saber que es un region
+    # El 3 en la segunda posicion denota que es una ecorregion
+    # Y despues se ajusta a 8 digitos, para dar un total de 10 digitos
+    self.redis = {} unless redis.present?
+    self.redis["id"] = "23#{region_id.to_s.rjust(8,'0')}".to_i
   end
 
 end

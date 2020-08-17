@@ -7,18 +7,17 @@ class GeoAtopo
 
     ruta = Rails.root.join('db', 'topojson')
     Dir.mkdir(ruta) unless File.exists?(ruta)
-    geojson_todos = {type: 'FeatureCollection', features: []}  # Para todos loes estados o municipios juntos
+    geojson_todos = { type: 'FeatureCollection', features: [] }  # Para todos loes estados o municipios juntos
 
     Geoportal.const_get(region.camelize).campos_min.campos_geom.all.each do |reg|
       Rails.logger.debug "\t[DEBUG] - Generando la región: #{reg.nombre_publico}"
 
-      geojson = {type: 'FeatureCollection', features: []}
+      #geojson = { type: 'FeatureCollection', features: [] }
       bounds = reg.bounds.gsub(/[BBOX()]/,'').split(',').map{ |a| a.split(' ').reverse.map{ |s|  s.to_f } }
 
-      feature = { type: 'Feature', properties: { region_id: reg.region_id, centroide: [reg.lat, reg.long], bounds: bounds }, geometry: JSON.parse(reg.geojson) }
-      feature[:properties][:nombre_region] = reg.nombre_publico
+      feature = { type: 'Feature', properties: { region_id: reg.region_id, nombre_region: reg.nombre_publico, centroide: [reg.lat, reg.long], bounds: bounds }, geometry: JSON.parse(reg.geojson) }
 
-      geojson[:features] << feature
+      #geojson[:features] << feature
       geojson_todos[:features] << feature
 
     end  # End cada region each

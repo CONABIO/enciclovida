@@ -5,6 +5,11 @@ class GeoportalAbs < ActiveRecord::Base
 
   attr_accessor :redis, :loader
 
+  scope :centroide, -> { select('st_x(st_centroid(geom)) AS long, st_y(st_centroid(geom)) AS lat') }
+  scope :bounds_select, -> { select('ST_Extent(geom) AS bounds') }
+  scope :geojson_select, -> { select('ST_AsGeoJSON(geom) AS geojson') }
+  scope :campos_geom, -> { centroide.geojson_select.bounds_select }
+
   def guarda_redis
     asigna_loader
     asigna_redis
