@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es"
-      xmlns:fb="http://www.facebook.com/2008/fbml"
-      xmlns:og="http://ogp.me/ns#">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es-MX" lang="es-MX">
 <head>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
-  <meta name="keywords" content="Busqueda por región, ubicación, zona, lugar, especies, estados, municipios, ANP, registros">
+  <meta name="keywords" content="Búsqueda por región, búsqueda por ubicación, búsqueda por zona, búsqueda por lugar, búsueda por especies, búsqueda por estados, búsqueda por municipios, búsqueda por ANP, registros geográficos">
   <title><%= yield :title %></title>
   <%= favicon_link_tag '/favicon.ico' %>
 
@@ -19,7 +17,7 @@
   <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js" data-turbolinks-track="true"></script>
   <script src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup.js" data-turbolinks-track="true"></script>
 
-  <%= javascript_include_tag 'application_b3', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'busquedas/region/por_region', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
@@ -30,40 +28,30 @@
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
   <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" />
-  <%= stylesheet_link_tag 'boots3-downgrade/busquedas/region/por_region', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'busquedas/region/por_region', 'data-turbolinks-track' => true %>
 
   <%= csrf_meta_tags %>
   <%= yield :extrahead %>
   <%= yield :extracss %>
   <%= yield :extrajs %>
 </head>
-<body>
 
 <%= yield :ribbon %>
 
-<!--header class="container-fluid">
-  <%#= render :partial => 'shared/brandBar' %>
-</header-->
-
-<header class="container-fluid">
-  <%= yield :extra_title_header %>
-</header>
-
 <section id="content" class="container-fluid">
-  <div class="row main">
+  <div class="row main bg-light">
     <%= yield %>
   </div>
 </section>
 
-<!--footer class="social">
-  <%#= render :partial => 'shared/footer_social' %>
-</footer-->
-
-<footer class="legal">
-  <%= render :partial => 'shared/footer_legal' %>
+<footer class="container-fluid">
+  <%= render :partial => 'shared_b4/footer_social' %>
+  <%= render :partial => 'shared_b4/footer_legal' %>
 </footer>
 
-<%= yield :delayedjs %>
+<%= yield :extrajs_carrusel %>
 
+<%= yield :delayedjs %>
 </body>
 </html>

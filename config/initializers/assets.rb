@@ -4,7 +4,7 @@ busquedas/avanzada/avanzada.js lib/scrolling.js busquedas/avanzada/basica.js
 especies/especies.js especies/fichas/fichas_extra.js especies/media/bdi.js especies/media/multimedia.js especies/comentarios/comentarios_extra.js
 busquedas.css carrusel.css especies/obligatorios.js
 busquedas/clasificacion/por_clasificacion.css busquedas/clasificacion/por_clasificacion_extra.js
-busquedas/region/por_region.js busquedas/region/por_region_extra.js
+busquedas/region/por_region.js busquedas/region/por_region_extra.js busquedas/region/por_region.css
 peces/peces.js peces/propiedades_extra.js peces/peces.css peces/propiedades_extra.css
 especies/mapa/mapa.js especies/mapa/mapa_delayed.js especies/mapa/mapa.css
 comentarios/comentarios.js

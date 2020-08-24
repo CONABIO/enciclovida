@@ -179,7 +179,7 @@ class BusquedaRegion < Busqueda
   # Asocia la información a desplegar en la vista, iterando los resultados
   def asocia_informacion_taxon
     return unless (resp[:resultados].present? && resp[:resultados].any?)
-    especies = Especie.datos_basicos(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].keys)
+    especies = Especie.select_basico(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).left_joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].keys)
 
     especies.each do |especie|
       self.taxones << { especie: especie, nregistros: resp[:resultados][especie.catalogo_id] }

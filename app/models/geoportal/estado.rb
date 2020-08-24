@@ -7,7 +7,7 @@ class Geoportal::Estado < GeoportalAbs
   scope :campos_min, -> { select(:region_id, :nombre_region).order(nombre_region: :asc).group(:region_id) }
 
   def nombre_publico
-    I18n.t("estados.#{nombre_region.estandariza.gsub('-', '_')}")
+    I18n.t("estados.#{nombre_region.estandariza}")
   end
 
   def tipo

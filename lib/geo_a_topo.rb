@@ -15,7 +15,7 @@ class GeoAtopo
       #geojson = { type: 'FeatureCollection', features: [] }
       bounds = reg.bounds.gsub(/[BBOX()]/,'').split(',').map{ |a| a.split(' ').reverse.map{ |s|  s.to_f } }
 
-      feature = { type: 'Feature', properties: { region_id: reg.region_id, nombre_region: reg.nombre_publico, centroide: [reg.lat, reg.long], bounds: bounds }, geometry: JSON.parse(reg.geojson) }
+      feature = { type: 'Feature', properties: { region_id: reg.region_id, nombre_region: reg.nombre_publico, tipo: reg.tipo, centroide: [reg.lat, reg.long], bounds: bounds }, geometry: JSON.parse(reg.geojson) }
 
       #geojson[:features] << feature
       geojson_todos[:features] << feature
