@@ -1,6 +1,6 @@
 $(document).ready(function() {
     // Inicia el mapa
-    cargaMapa('map', null, {pantalla_comp: true});
+    cargaMapa('map', { pantalla_comp: true });
 
     // Para cargar las observaciones de NaturaLista
     if (opciones.naturalista_url !== undefined)

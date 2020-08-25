@@ -26,9 +26,9 @@
       I18n.fallbacks = true;
   </script>
 
+  <%= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
   <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" />
-  <%= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
   <%= stylesheet_link_tag 'busquedas/region/por_region', 'data-turbolinks-track' => true %>
 
   <%= csrf_meta_tags %>
@@ -38,6 +38,11 @@
 </head>
 
 <%= yield :ribbon %>
+
+<header class="container-fluid">
+  <%= render :partial => 'shared_b4/brandBar' %>
+  <%= yield :extra_title_header %>
+</header>
 
 <section id="content" class="container-fluid">
   <div class="row main bg-light">
