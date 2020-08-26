@@ -28,6 +28,8 @@ var cargaEspecies = function()
         else
             $('#contenedor_especies_itera').empty().html(html);
 
+        ponTamaño();
+
     }).fail(function() {
         console.log('Hubo un fallo al cargar la lista de especies');
     });

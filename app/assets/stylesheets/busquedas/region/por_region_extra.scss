@@ -2,7 +2,9 @@ body{
   background-color: #ececec;
 }
 #map {
-  min-height: 480px;
+  /*min-height: 350px;*/
+  /*max-height: 400px;*/
+  height: auto;
   width: 100%;
 }
 .panel-resultados {

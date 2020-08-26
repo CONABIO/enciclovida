@@ -7,7 +7,7 @@ var cargaMapaYoverlays = function ()
     divisionANPOverlay = cargaDivision({tipo_region: 'anp'});
     divisionMunicipioOverlay = cargaDivision({tipo_region: 'municipio'});
 
-    cargaMapa('map', { overlay: { "División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay, "División municipal": divisionMunicipioOverlay }, pantalla_comp : true, collapsed: false, position: 'topright' });
+    cargaMapa('map', { overlay: { "División estatal": divisionEstadoOverlay, "División por ANP": divisionANPOverlay, "División municipal": divisionMunicipioOverlay }, pantalla_comp : true, collapsed: true, position: 'topright' });
     divisionEstadoOverlay.addTo(map);  // carga de inicio la division estatal
 
     // Esto se tiene que solucionar de no cargarla desde un inicio

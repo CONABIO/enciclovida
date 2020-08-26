@@ -7,25 +7,47 @@
     </div>
   <% end %>
 
-  <div class="row" id="contenedor_especies_itera" class="col-12">
-    <% @resp[:taxones].each do |taxon| %>
-      <% t = taxon[:especie] %>
-      <div class="col-3">
-        <div class="thumbnail img-responsive">
+  <div class="row" id="contenedor_especies_itera">
+    <% if I18n.locale.to_s != 'es-cientifico' %>
+      <% @resp[:taxones].each do |t| %>
+        <% taxon = t[:especie] %>
 
-          <% if t.foto_principal.present? %>
-            <img src="<%= t.foto_principal %>" alt="<%= t.nombre_cientifico %>">
-          <% else %>
-            <i class="ev1-ev-icon"></i>
-          <% end %>
-
-          <div class="caption">
-            <%= tituloNombreCientifico(t, { render: 'link' }, { target: :_blank }) %>
-            <hr />
-            <a href="#" class="btn btn-primary boton-especie-registros" especie_id="<%= t.id %>" role="button" snib_registros="<%= taxon[:snib_registros] %>" nombre_comun="<%= t.nombre_comun_principal %>" nombre_cientifico="<%= t.nombre_cientifico %>">Ver <%= taxon[:nregistros] %> registro(s)</a>
+        <% if taxon.foto_principal.present? %>
+          <div class="col-3 my-2 px-1">
+            <div class="row no-gutters">
+              <div class="result-img-container col-12">
+                <%= link_to image_tag(taxon.foto_principal, class: 'img-fluid'), especie_path(taxon), target: "_self" %>
+              </div>
+              <div class="result-nombre-container col-12 px-1">
+                <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_self"}).html_safe %>
+              </div>
+            </div>
           </div>
+
+        <% else %>
+          <div class="col-3 my-3 px-1">
+            <div class="row justify-content-center no-gutters">
+              <div class="result-img-container col-6">
+                <%= link_to "<i class='ev1-ev-icon'></i>".html_safe, especie_path(taxon), target: "_self" %>
+              </div>
+              <div class="result-nombre-container col-12 px-1">
+                <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_self"}).html_safe %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+    <% else %>
+      <% @resp[:taxones].each do |taxon| %>
+        <div class="col-12 ml-5">
+          <span class='datos_busqueda-<%= taxon.id %>'>
+            <div>
+              <%= tituloNombreCientifico(taxon, render: 'link', target: "_self").html_safe %>
+            </div>
+          </span>
         </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
 
