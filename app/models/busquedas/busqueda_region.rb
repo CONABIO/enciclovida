@@ -2,7 +2,7 @@ class BusquedaRegion < Busqueda
 
   attr_accessor :resp, :query
 
-  ESPECIES_POR_PAGINA = 5.freeze
+  ESPECIES_POR_PAGINA = 8.freeze
 
   def initialize
     self.taxones = []
@@ -13,7 +13,7 @@ class BusquedaRegion < Busqueda
   # Regresa un listado de especies por pagina, de acuerdo a la region y los filtros seleccionados
   def especies
     if params[:region_id].present?
-      dame_especies_regiones
+      especies_por_region
       return unless resp[:estatus]
 
       resultados_region = resp[:resultados]  # Los resultados de los caules saldra la respuesta (cache)
@@ -51,6 +51,9 @@ class BusquedaRegion < Busqueda
       end
 
     else
+      especies_por_region
+      return unless resp[:estatus]
+      
       dame_especies_filtros
       return unless resp[:estatus]
 
@@ -63,16 +66,17 @@ class BusquedaRegion < Busqueda
   end
 
   # Consulta los querys guardados en cache o los consulta al vuelo
-  def dame_especies_regiones
-    self.resp = Rails.cache.fetch("especies_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region)) do
-      url = "#{CONFIG.enciclovida_api}/especies/region/#{params[:tipo_region]}/#{params[:region_id]}"
-      respuesta_especies_regiones(url)
-    end
+  def especies_por_region
+    geo = Geoportal::Snib.new
+    geo.tipo_region = params[:tipo_region].estandariza
+    geo.region_id = params[:region_id]
+    geo.especies_por_region
+    self.resp = geo.resp
   end
 
   # Borra el cache de las especies por region
-  def borra_cache_especies_regiones
-    Rails.cache.delete("especies_#{params[:tipo_region]}_#{params[:region_id]}") if Rails.cache.exist?("especies_#{params[:tipo_region]}_#{params[:region_id]}")
+  def borra_cache_especies_por_region
+    Rails.cache.delete("br_#{params[:tipo_region]}_#{params[:region_id]}") if Rails.cache.exist?("br_#{params[:tipo_region]}_#{params[:region_id]}")
   end
 
 
@@ -98,8 +102,23 @@ class BusquedaRegion < Busqueda
     end
   end
 
-  # Una vez leyendo la lista del cache, le aplico los filtros que el usuario haya escogido
+  # REVISADO: Regresa la busqueda avanzada
   def dame_especies_filtros
+    self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional, :scat).distinct
+
+    #paginado_y_offset
+    estatus
+    #solo_publicos
+    estado_conservacion
+    tipo_distribucion
+    uso
+    #ambiente
+    #region
+
+  end
+
+  # Una vez leyendo la lista del cache, le aplico los filtros que el usuario haya escogido
+  def dame_especies_filtros_espera
     # Para la nom, iucn o cites
     if params[:edo_cons].present? && params[:edo_cons].any?
       params[:edo_cons] = params[:edo_cons].map(&:to_i)
