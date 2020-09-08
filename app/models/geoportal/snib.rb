@@ -27,7 +27,11 @@ class Geoportal::Snib < GeoportalAbs
     resp = Geoportal::Snib.select('idnombrecatvalido, COUNT(*) AS nregistros').where("idnombrecatvalido <> '' AND especievalidabusqueda <> '' AND comentarioscatvalido LIKE 'Validado completamente con CAT.%'").group(:idnombrecatvalido).order('nregistros DESC')
     resp = resp.where("#{campo_tipo_region}=#{region_id}") if campo_tipo_region.present?
 
-    { estatus: true, resultados: resp.map{ |r| {r.idnombrecatvalido => r.nregistros} }.reduce({}, :merge) }
+    if resp.any?
+      { estatus: true, resultados: resp.map{ |r| {r.idnombrecatvalido => r.nregistros} }.reduce({}, :merge) }
+    else
+      { estatus: false, msg: 'Sin resultados en esta región' }
+    end
   end  
 
   # Regresa la llave foranea dependiendo el tipo de region

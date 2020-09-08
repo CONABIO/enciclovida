@@ -1,6 +1,6 @@
 class BusquedaRegion < Busqueda
 
-  attr_accessor :resp, :query
+  attr_accessor :resp, :query, :idcats
 
   ESPECIES_POR_PAGINA = 8.freeze
 
@@ -16,7 +16,7 @@ class BusquedaRegion < Busqueda
       especies_por_region
       return unless resp[:estatus]
 
-      resultados_region = resp[:resultados]  # Los resultados de los caules saldra la respuesta (cache)
+      resultados_region = resp[:resultados]  # Los resultados de los cuales saldra la respuesta (cache)
 
       if tiene_filtros?
         pagina_original = params[:pagina]
@@ -53,12 +53,9 @@ class BusquedaRegion < Busqueda
     else
       especies_por_region
       return unless resp[:estatus]
-      
-      dame_especies_filtros
-      return unless resp[:estatus]
-
+      especies_filtros
+      especies_por_pagina
       asocia_informacion_taxon
-      return unless resp[:estatus]
 
       self.resp[:taxones] = taxones
       self.resp[:resultados] = nil
@@ -103,8 +100,9 @@ class BusquedaRegion < Busqueda
   end
 
   # REVISADO: Regresa la busqueda avanzada
-  def dame_especies_filtros
-    self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional, :scat).distinct
+  def especies_filtros
+    return unless tiene_filtros?
+    self.taxones = Especie.select(:id).select("#{Scat.attribute_alias(:catalogo_id)}").joins(:scat).distinct
 
     #paginado_y_offset
     estatus
@@ -114,11 +112,10 @@ class BusquedaRegion < Busqueda
     uso
     #ambiente
     #region
-
   end
 
   # Una vez leyendo la lista del cache, le aplico los filtros que el usuario haya escogido
-  def dame_especies_filtros_espera
+  def dame_especies_filtros
     # Para la nom, iucn o cites
     if params[:edo_cons].present? && params[:edo_cons].any?
       params[:edo_cons] = params[:edo_cons].map(&:to_i)
@@ -198,6 +195,7 @@ class BusquedaRegion < Busqueda
   # Asocia la información a desplegar en la vista, iterando los resultados
   def asocia_informacion_taxon
     return unless (resp[:resultados].present? && resp[:resultados].any?)
+    self.taxones = []
     especies = Especie.select_basico(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).left_joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].keys)
 
     especies.each do |especie|
@@ -246,6 +244,24 @@ class BusquedaRegion < Busqueda
       self.resp[:estatus] = false
       self.resp[:msg] = 'No hay más especies'
     end
+  end
+
+  # Devuelve las especies de acuerdo al numero de pagina y por pagina definido
+  def especies_por_pagina
+    return unless resp[:estatus]
+    self.por_pagina = params[:por_pagina] || ESPECIES_POR_PAGINA
+    self.pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+    offset = (pagina-1)*por_pagina
+    limit = (pagina*por_pagina)-1
+
+    if taxones.any?  # Quiere decir que tuvo algun filtro
+      ids = taxones.map(&:catalogo_id) & resp[:resultados].keys
+      idcats = resp[:resultados].delete_if { |k,v| !ids.include?(v) }.to_a
+    else  # Es la pagina inicial de busquedas por region
+      idcats = resp[:resultados].to_a
+    end
+    
+    self.resp[:resultados] = idcats[offset..limit].to_h
   end
 
 end
