@@ -24,6 +24,14 @@ class BusquedasRegionesController < ApplicationController
     @resp = br.resp
   end
 
+  # Regresa los ejemplares de acuerdo a la region seleccionada
+  def ejemplares
+  end
+
+  # Regresa las observaciones de naturalista dentro del SNIB de acuerdo a la region seleccioanda
+  def observaciones
+  end
+
   # Devuelve los municipios por el estado seleccionado
   def municipios_por_estado
     resp = {}

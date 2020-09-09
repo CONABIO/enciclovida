@@ -119,7 +119,7 @@ $(document).ready(function(){
     /**
      * Para los filtros default: distribucion y riesgo
      */
-    $('#busqueda_region').on('change', "input", function()
+    $('#busqueda_region').on('change', "input, select", function()
     {
         opciones.filtros.pagina = 1;
         $('#pagina').val(opciones.filtros.pagina);

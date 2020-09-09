@@ -141,11 +141,12 @@ Buscador::Application.routes.draw do
   get 'exoticas-invasoras-paginado' => 'paginas#exoticas_invasoras_paginado'
 
   # Busquedas por region
-  get 'explora-por-ubicacion' => 'busquedas_regiones#ubicacion'
+  #get 'explora-por-ubicacion' => 'busquedas_regiones#ubicacion'
   get 'explora-por-region' => 'busquedas_regiones#por_region'
   get 'explora-por-region/especies' => 'busquedas_regiones#especies'
+  get 'explora-por-region/ejemplares' => 'busquedas_regiones#ejemplares'
+  get 'explora-por-region/observaciones' => 'busquedas_regiones#observaciones'
   get 'explora-por-region/descarga-taxa' => 'busquedas_regiones#descarga_taxa'
-  get 'explora-por-region/conteo-por-grupo' => 'busquedas_regiones#conteo_por_grupo'
 
   # Paginas del inicio
   get "inicio/comentarios"
