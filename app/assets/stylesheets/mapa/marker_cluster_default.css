@@ -3,17 +3,18 @@ Los estilos del cluster group, inclui este porque es personalizado
  */
 .div-cluster-snib, .div-cluster-naturalista {
     background-clip: padding-box;
-    border-radius: 20px;
+    border-radius: 30%;
 }
 
 .div-cluster-snib div, .div-cluster-naturalista div {
-    width: 30px;
-    height: 30px;
-    margin-left: 5px;
-    margin-top: 5px;
+    width: 34px;
+    height: 34px;
+    margin-left: 3px;
+    margin-top: 3px;
     text-align: center;
-    border-radius: 15px;
-    font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
+    border-radius: 30%;
+    font-size: 1.25rem;
+    font-weight: bolder;
 }
 
 .div-cluster-snib span, .div-cluster-naturalista span {

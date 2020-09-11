@@ -59,7 +59,7 @@ var leyendaSnib = function()
     );
 
     snib_control.addOverlay(noCampoLayer,
-        '<i class="fa fa-map-flag div-icon-snib"></i>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
+        '<i class="fa fa-flag div-icon-snib"></i>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
     );
 };
 

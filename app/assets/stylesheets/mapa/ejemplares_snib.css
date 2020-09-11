@@ -1,10 +1,11 @@
 /**
 El estilo de los ejemplares del snib
 **/
-.div-icon-snib {
-    color: #800000;
-    font-size: 1.8em;
-}
+.div-icon-snib{font-size: 2rem; text-shadow: 2px 2px 1px #fafafa;}
+.div-icon-snib .fa-map-marker, .div-icon-snib.fa-map-marker{color: #333333;}/*Especímenes en colecciones*/
+.div-icon-snib .feather-ev-icon, .div-icon-snib.feather-ev-icon{color: #1c5002;}/*aVerAves*/
+.div-icon-snib .bone-ev-icon, .div-icon-snib.bone-ev-icon{color: #4c2800;}/*Fósiles*/
+.div-icon-snib .fa-flag, .div-icon-snib.fa-flag{color: #800000;}/*Localidad no de campo*/
 
 /**
 El estilo del contorno del circulo
