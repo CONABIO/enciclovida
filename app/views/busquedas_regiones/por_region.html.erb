@@ -20,7 +20,9 @@
       opciones.filtros = {};
       opciones.filtros.pagina = 1;
 
-      cargaMapaYoverlays();
+      cargaMapa('map', { pantalla_comp : true, collapsed: true, position: 'topright' });
+      cargaRegistros();
+      //cargaMapaYoverlays();
   </script>
 <% end %>
 

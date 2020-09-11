@@ -38,8 +38,7 @@ var cargaMapa = function (id, opc)
     });
     */
 
-    //var place = [23.79162789, -102.04376221];
-    var place = [46.953387, 2.892341];
+    var place = [23.79162789, -102.04376221];
 
     map = L.map(id, {
         zoomControl: false,
@@ -66,7 +65,7 @@ var cargaMapa = function (id, opc)
         titleCancel: 'Salir de pantalla completa'
     });
 
-    map.setView(place, 7);  // Default place and zoom
+    map.setView(place, 4);  // Default place and zoom
 
     // Para poner las capas iniciales de los mapas
     var baseMaps = {
