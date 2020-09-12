@@ -109,7 +109,7 @@ $(document).ready(function(){
      * Cuando selecciona una especie
      */
     $('#contenedor_especies').on('click', '.boton-especie-registros', function(){
-        cargaEjemplaresSnib($(this).attr('snib_registros'));
+        cargaRegistros('/explora-por-region/ejemplares?' + $('#busqueda_region').serialize().replace("&especie_id=", "") + '&especie_id=' + $(this).attr('catalogo_id'));
         opciones.especie_id = $(this).attr('especie_id');
         opciones.nombre_comun = $(this).attr('nombre_comun');
         opciones.nombre_cientifico = $(this).attr('nombre_cientifico');

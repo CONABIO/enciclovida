@@ -17,7 +17,7 @@
             <div class="row no-gutters">
               <div class="result-img-container col-12">
                 <%= image_tag(taxon.foto_principal, class: 'img-fluid') %>
-                <button class="btn btn-primary boton-especie-registros" especie_id="<%= taxon.id %>" snib_registros="<%= t[:snib_registros] %>"><%= number_with_delimiter(t[:nregistros], delimiter: ',') %></button>
+                <button class="btn btn-primary boton-especie-registros" catalogo_id="<%= "13807AVES" %>" especie_id="<%= taxon.id %>" snib_registros="<%= t[:snib_registros] %>"><%= number_with_delimiter(t[:nregistros], delimiter: ',') %></button>
               </div>
               <div class="result-nombre-container col-12 px-1">
                 <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_self"}).html_safe %>

@@ -1,7 +1,7 @@
 class BusquedasRegionesController < ApplicationController
 
   skip_before_action :verify_authenticity_token, :set_locale
-  layout false, only: [:especies]
+  layout false, only: [:especies, :ejemplares]
 
   # Registros con un radio alreadedor de tu ubicación
   def ubicacion
@@ -24,12 +24,13 @@ class BusquedasRegionesController < ApplicationController
     @resp = br.resp
   end
 
-  # Regresa los ejemplares de acuerdo a la region seleccionada
+  # Regresa todos los registros de la especie seleccionada
   def ejemplares
-  end
+    snib = Geoportal::Snib.new
+    snib.params = params
+    snib.ejemplares
 
-  # Regresa las observaciones de naturalista dentro del SNIB de acuerdo a la region seleccioanda
-  def observaciones
+    render json: snib.resp
   end
 
   # Devuelve los municipios por el estado seleccionado

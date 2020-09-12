@@ -1,9 +1,5 @@
-snibLayers = L.layerGroup();
-snibLay = L.layerGroup();
-snibLayers2 = { 'totales': 0 };
-
-// Asigna los nombres para las leyendas
-colecciones = { "0": "Especimenes en colecciones", "1": "Observaciones de AverAves", "2": "Fósiles" };
+snibLayer = L.layerGroup();
+infoLayers = { 'totales': 0 };
 
 /**
  * La simbologia dentro del mapa
@@ -12,69 +8,93 @@ var leyenda = function()
 {
     var snibControl = L.control.layers({}, {}, {collapsed: true, position: 'bottomright'}).addTo(map);
 
-    snibControl.addOverlay(snibLayers,
-        '<b>Ejemplares del SNIB</b><br />(museos, colectas y proyectos) <sub>' + snibLayers2["totales"] + '</sub>'
+    snibControl.addOverlay(snibLayer,
+        '<b>Ejemplares del SNIB</b><br />(museos, colectas y proyectos) <sub>' + infoLayers["totales"] + '</sub>'
     );
 
-    snibControl.addOverlay(snibLayers2["0"]["layer"],
-        '<i class="fa fa-map-marker div-icon-snib"></i>Especímenes en colecciones <sub>' + snibLayers2["0"]["totales"] + '</sub>'
-    );
+    if(infoLayers[1] !== undefined)
+    {
+        snibControl.addOverlay(infoLayers[1]["layer"],
+        '<i class="fa fa-map-marker div-icon-snib"></i>Especímenes en colecciones <sub>' + infoLayers[1]["totales"] + '</sub>'
+        );
+    }
 
-    snibControl.addOverlay(snibLayers2["1"]["layer"],
-        '<span aria-hidden="true" class="feather-ev-icon div-icon-snib"></span>Observaciones de aVerAves <sub>' + snibLayers2["1"]["totales"] + '</sub>'
-    );
+    if(infoLayers[2] !== undefined)
+    {
+        snibControl.addOverlay(infoLayers[2]["layer"],
+            '<span aria-hidden="true" class="feather-ev-icon div-icon-snib"></span>Observaciones de aVerAves <sub>' + infoLayers[2]["totales"] + '</sub>'
+        );
+    }
 
-    snibControl.addOverlay(snibLayers2["2"]["layer"],
-        '<span aria-hidden="true" class="bone-ev-icon div-icon-snib"></span>Fósiles <sub>' + snibLayers2["2"]["totales"] + '</sub>'
-    );
+    if(infoLayers[3] !== undefined)
+    {
+        snibControl.addOverlay(infoLayers[3]["layer"],
+            '<span aria-hidden="true" class="bone-ev-icon div-icon-snib"></span>Fósiles <sub>' + infoLayers[3]["totales"] + '</sub>'
+        );
+    }
 
-    /*snib_control.addOverlay(noCampoLayer,
-        '<i class="fa fa-map-flag div-icon-snib"></i>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
-    );*/
+    if(infoLayers[4] !== undefined)
+    {
+        snib_control.addOverlay(infoLayers[4]["layer"],
+            '<i class="fa fa-map-flag div-icon-snib"></i>Localidad no de campo <sub>' + infoLayers[4]["totales"] + '</sub>'
+        );
+    }
+
+    if(infoLayers[5] !== undefined)
+    {
+        snib_control.addOverlay(infoLayers[5]["layer"],
+            '<i class="div-icon-snib"></i>Naturalista <sub>' + infoLayers[5]["totales"] + '</sub>'
+        );
+    }
 };
 
 /**
  * Carga todos los registros del SNIB en una misma integracion
  */
-var cargaRegistros = function()
+var cargaRegistros = function(url)
 {
     loader = new PIXI.Loader();
     loader
-        .add('plane', '/imagenes/app/mapa/plane.png')
+        /*.add('plane', '/imagenes/app/mapa/plane.png')
         .add('focusPlane', '/imagenes/app/mapa/focus-plane.png')
         .add('circle', '/imagenes/app/mapa/circle.png')
         .add('focusCircle', '/imagenes/app/mapa/focus-circle.png')
         .add('bicycle', '/imagenes/app/mapa/bicycle.png')
-        .add('focusBicycle', '/imagenes/app/mapa/focus-bicycle.png');
-        //.add('markerIcon', '/imagenes/app/mapa/marker-icon.png')
-        //.add('markerIconFocus', '/imagenes/app/mapa/marker-icon-focus.png');
-    document.addEventListener("DOMContentLoaded", function() {
+        .add('focusBicycle', '/imagenes/app/mapa/focus-bicycle.png');*/
+        .add('defaultMarker', '/imagenes/app/mapa/default-marker.png')
+        .add('defaultMarkerFocus', '/imagenes/app/mapa/default-marker-focus.png');
+        //document.addEventListener("DOMContentLoaded", function() {
         loader.load(function(loader, resources) {
-            //var textures = [resources.markerIcon.texture];
-            //var focusTextures = [resources.markerIconFocus.texture];
+            
+            textures = [resources.defaultMarker.texture];
+            focusTextures = [resources.defaultMarkerFocus.texture];
 
-            textures = [resources.plane.texture, resources.circle.texture, resources.bicycle.texture];
-            focusTextures = [resources.focusPlane.texture, resources.focusCircle.texture, resources.focusBicycle.texture];
+            //textures = [resources.plane.texture, resources.circle.texture, resources.bicycle.texture];
+            //focusTextures = [resources.focusPlane.texture, resources.focusCircle.texture, resources.focusBicycle.texture];
             legend = document.querySelector('div.legend.geometry');
             legendContent = legend.querySelector('.content');
 
-            getJSON('/geodatos/36150/observaciones_Quiscalus_mexicanus_mapa.json', function(markers) {
-                if(markers[0][0] !== undefined) cualColeccion(markers[0], "0");
-                if(markers[1][0] !== undefined) cualColeccion(markers[1], "1");
-                if(markers[2][0] !== undefined) cualColeccion(markers[2], "2");
-                
-                if (snibLayers2["totales"] > 0)
+            getJSON(url, function(markers) {
+
+                if (markers["estatus"])
                 {
-                    snibLayers.addTo(map);
-                    leyenda();
-                    $('div.leaflet-control-layers label div input').first().remove();
-                }
+                    //var colecciones = [1,2,3,4,5];
+                    var colecciones = [5];
+                    colecciones.forEach(function(coleccion){
+                        if(markers["resultados"][coleccion] !== undefined && markers["resultados"][coleccion][0] !== undefined) 
+                            cualColeccion(markers["resultados"][coleccion], coleccion);
+                    });   
+
+                    if (infoLayers["totales"] > 0)
+                    {
+                        snibLayer.addTo(map);
+                        leyenda();
+                        $('div.leaflet-control-layers label div input').first().remove();
+                    } 
+                }    
             });
         });    
-    });
-
-    
-
+    //});
 };
 
 /**
@@ -109,12 +129,14 @@ var cualColeccion = function(markers, coleccion)
                 prevZoom = zoom;
                 markers.forEach(function(marker) {
                     var coords = project([marker[1], marker[0]]);
-                    var markerSprite = new PIXI.Sprite(textures[marker[3]]);
-                    markerSprite.textureIndex = marker[3];
+                    //var markerSprite = new PIXI.Sprite(textures[marker[3]]);
+                    //markerSprite.textureIndex = marker[3];
+                    var markerSprite = new PIXI.Sprite(textures[0]);
+                    markerSprite.textureIndex = 0;
                     markerSprite.x0 = coords.x;
                     markerSprite.y0 = coords.y;
                     markerSprite.anchor.set(0.5, 0.5);
-                    markerSprite.tint = 8388608; // color de conabio en decimal
+                    markerSprite.tint = 16771584; //8388608; // color de conabio en decimal
                     container.addChild(markerSprite);
                     markerSprites.push(markerSprite);
                     markerSprite.legend = marker[2];
@@ -228,15 +250,11 @@ var cualColeccion = function(markers, coleccion)
         });
     })();
 
-    snibLayers.addLayer(pixiLayer);
-
-    //subgroup = L.featureGroup.subGroup(snibLayers, pixiLayer);
-    //coleccionesLayer.addLayer(colecciones);
-
-    snibLayers2[coleccion] = {}
-    snibLayers2[coleccion]["layer"] = pixiLayer;
-    snibLayers2[coleccion]["totales"] = markers.length;
-    snibLayers2["totales"] += snibLayers2[coleccion]["totales"];
+    snibLayer.addLayer(pixiLayer);
+    infoLayers[coleccion] = {}
+    infoLayers[coleccion]["layer"] = pixiLayer;
+    infoLayers[coleccion]["totales"] = markers.length;
+    infoLayers["totales"] += infoLayers[coleccion]["totales"];
 };
 
 var getJSON = function(url, successHandler, errorHandler) {

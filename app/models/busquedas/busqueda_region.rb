@@ -24,11 +24,10 @@ class BusquedaRegion < Busqueda
 
   # Consulta los querys guardados en cache o los consulta al vuelo
   def especies_por_region
-    geo = Geoportal::Snib.new
-    geo.tipo_region = params[:tipo_region].estandariza
-    geo.region_id = params[:region_id]
-    geo.especies_por_region
-    self.resp = geo.resp
+    snib = Geoportal::Snib.new
+    snib.params = params
+    snib.especies
+    self.resp = snib.resp
   end
 
   # Borra el cache de las especies por region
