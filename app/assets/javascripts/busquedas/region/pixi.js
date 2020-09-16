@@ -1,6 +1,10 @@
 snibLayer = L.layerGroup();
 infoLayers = { 'totales': 0 };
 
+function getRandom(min, max) {
+    return min + Math.random() * (max - min);
+}
+
 /**
  * La simbologia dentro del mapa
  */
@@ -35,14 +39,14 @@ var leyenda = function()
 
     if(infoLayers[4] !== undefined)
     {
-        snib_control.addOverlay(infoLayers[4]["layer"],
+        snibControl.addOverlay(infoLayers[4]["layer"],
             '<i class="fa fa-map-flag div-icon-snib"></i>Localidad no de campo <sub>' + infoLayers[4]["totales"] + '</sub>'
         );
     }
 
     if(infoLayers[5] !== undefined)
     {
-        snib_control.addOverlay(infoLayers[5]["layer"],
+        snibControl.addOverlay(infoLayers[5]["layer"],
             '<i class="div-icon-snib"></i>Naturalista <sub>' + infoLayers[5]["totales"] + '</sub>'
         );
     }
@@ -53,7 +57,7 @@ var leyenda = function()
  */
 var cargaRegistros = function(url)
 {
-    loader = new PIXI.Loader();
+    loader = new PIXI.loaders.Loader();
     loader
         /*.add('plane', '/imagenes/app/mapa/plane.png')
         .add('focusPlane', '/imagenes/app/mapa/focus-plane.png')
@@ -63,7 +67,7 @@ var cargaRegistros = function(url)
         .add('focusBicycle', '/imagenes/app/mapa/focus-bicycle.png');*/
         .add('defaultMarker', '/imagenes/app/mapa/default-marker.png')
         .add('defaultMarkerFocus', '/imagenes/app/mapa/default-marker-focus.png');
-        //document.addEventListener("DOMContentLoaded", function() {
+    //document.addEventListener("DOMContentLoaded", function() {
         loader.load(function(loader, resources) {
             
             textures = [resources.defaultMarker.texture];
@@ -74,15 +78,17 @@ var cargaRegistros = function(url)
             legend = document.querySelector('div.legend.geometry');
             legendContent = legend.querySelector('.content');
 
+
             getJSON(url, function(markers) {
 
                 if (markers["estatus"])
                 {
                     //var colecciones = [1,2,3,4,5];
-                    var colecciones = [5];
+                    var colecciones = [1];
                     colecciones.forEach(function(coleccion){
                         if(markers["resultados"][coleccion] !== undefined && markers["resultados"][coleccion][0] !== undefined) 
-                            cualColeccion(markers["resultados"][coleccion], coleccion);
+                            //cualColeccion(markers["resultados"][coleccion], coleccion);
+                            cualColeccion([[-98.98, 21.2078056, 6142080], [-98.98, 21.21, 6142081]], coleccion);
                     });   
 
                     if (infoLayers["totales"] > 0)
@@ -102,7 +108,7 @@ var cargaRegistros = function(url)
  * @param {*} markers 
  * @param {*} coleccion 
  */
-var cualColeccion = function(markers, coleccion)
+/*var cualColeccion = function(markers, coleccion)
 {        
     var pixiLayer = (function() {
         var firstDraw = true;
@@ -250,6 +256,108 @@ var cualColeccion = function(markers, coleccion)
         });
     })();
 
+    snibLayer.addLayer(pixiLayer);
+    infoLayers[coleccion] = {}
+    infoLayers[coleccion]["layer"] = pixiLayer;
+    infoLayers[coleccion]["totales"] = markers.length;
+    infoLayers["totales"] += infoLayers[coleccion]["totales"];
+};*/
+
+/**
+ * Carga ellayer de acuerdo a la coleccion especificada
+ * @param {*} markers 
+ * @param {*} coleccion 
+ */
+var cualColeccion = function(markers, coleccion)
+{        
+    var easing = BezierEasing(0, 0, 0.25, 1);
+
+    var pixiLayer = (function() {
+        var zoomChangeTs = null;
+        var pixiContainer = new PIXI.Container();
+        var innerContainer = new PIXI.particles.ParticleContainer(markers.length, {vertices: true});
+        // add properties for our patched particleRenderer:
+        innerContainer.texture = textures[0];
+        innerContainer.baseTexture = textures[0].baseTexture;
+        innerContainer.anchor = {x: 0.5, y: 1};
+
+        pixiContainer.addChild(innerContainer);
+        var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        var initialScale;
+        
+        return L.pixiOverlay(function(utils, event) {
+            var zoom = utils.getMap().getZoom();
+            var container = utils.getContainer();
+            var renderer = utils.getRenderer();
+            var project = utils.latLngToLayerPoint;
+            var getScale = utils.getScale;
+            var invScale = 1 / getScale();
+
+            if (event.type === 'add') {
+                var origin = project([(14.54 + 32.38) / 2, (-117.67 + -85.29) / 2]);
+                innerContainer.x = origin.x;
+                innerContainer.y = origin.y;
+                //initialScale = invScale / 8;
+                //innerContainer.localScale = initialScale;
+                var localScale = zoom >= 8 ? 1 / getScale(zoom) : 16;
+                innerContainer.localScale = localScale;
+
+                markers.forEach(function(marker) {
+                    var coords = project([marker[1], marker[0]]);
+
+                    innerContainer.addChild({
+                        x: coords.x - origin.x,
+                        y: coords.y - origin.y,
+                    });
+                });
+            }
+
+            if (event.type === 'zoomanim') {
+                var targetZoom = event.zoom;
+                if (targetZoom >= 8 || zoom >= 8) {
+                    zoomChangeTs = 0;
+                    var targetScale = targetZoom >= 8 ? 1 / getScale(event.zoom) : initialScale;
+                    innerContainer.currentScale = innerContainer.localScale;
+                    innerContainer.targetScale = targetScale;
+                }
+                return;
+            }
+
+            if (event.type === 'redraw') {
+                var delta = event.delta;
+                if (zoomChangeTs !== null) {
+                    var duration = 17;
+                    zoomChangeTs += delta;
+                    var lambda = zoomChangeTs / duration;
+                  if (lambda > 1) {
+                      lambda = 1;
+                      zoomChangeTs = null;
+                  }
+                  lambda = easing(lambda);
+                  innerContainer.localScale = innerContainer.currentScale + lambda * (innerContainer.targetScale - innerContainer.currentScale);
+                } else {return;}
+            }
+
+            renderer.render(container);
+            
+        }, pixiContainer, {
+            doubleBuffering: doubleBuffering,
+            destroyInteractionManager: true
+        });
+    })();
+
+    var ticker = new PIXI.ticker.Ticker();
+    ticker.add(function(delta) {
+        pixiLayer.redraw({type: 'redraw', delta: delta});
+    });
+    map.on('zoomstart', function() {
+        ticker.start();
+    });
+    map.on('zoomend', function() {
+        ticker.stop();
+    });
+    map.on('zoomanim', pixiLayer.redraw, pixiLayer);
+    
     snibLayer.addLayer(pixiLayer);
     infoLayers[coleccion] = {}
     infoLayers[coleccion]["layer"] = pixiLayer;
