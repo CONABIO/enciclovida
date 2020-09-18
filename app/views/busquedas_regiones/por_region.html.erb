@@ -21,8 +21,6 @@
       opciones.filtros.pagina = 1;
 
       cargaMapa('map', { pantalla_comp : true, collapsed: true, position: 'topright' });
-      //cargaRegistros();
-      //cargaMapaYoverlays();
   </script>
 <% end %>
 
@@ -33,7 +31,6 @@
 <div class="row">
   <div id="contenedor_mapa" class="col-6">
     <%= render partial: 'sidebar' %>
-    <!--div id="map" style="position: relative; outline: none;" class="cartes leaflet-container leaflet-fade-anim leaflet-grab leaflet-touch-drag" tabindex="0"></div-->
 
     <div id="map" style="" class="cartes col-12">
 	    <div class="legend geometry top center hide">
@@ -46,8 +43,6 @@
 
   <div class="col-6" id="contenedor_especies"></div>  
 </div>
-
-
 
 <button type="button" class="btn pull-right" data-toggle="modal" data-target="#modal-descargas-region">
   Descargar &nbsp;<span class="glyphicon glyphicon-save"></span>
