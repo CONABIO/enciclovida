@@ -59,36 +59,29 @@ var cargaRegistros = function(url)
 {
     loader = new PIXI.loaders.Loader();
     loader
-        /*.add('plane', '/imagenes/app/mapa/plane.png')
-        .add('focusPlane', '/imagenes/app/mapa/focus-plane.png')
-        .add('circle', '/imagenes/app/mapa/circle.png')
-        .add('focusCircle', '/imagenes/app/mapa/focus-circle.png')
-        .add('bicycle', '/imagenes/app/mapa/bicycle.png')
-        .add('focusBicycle', '/imagenes/app/mapa/focus-bicycle.png');*/
-        .add('defaultMarker', '/imagenes/app/mapa/default-marker.png')
-        .add('defaultMarkerFocus', '/imagenes/app/mapa/default-marker-focus.png');
+        .add('colectas', '/imagenes/app/mapa/colectas.png')
+        .add('averaves', '/imagenes/app/mapa/averaves.png')
+        .add('fosiles', '/imagenes/app/mapa/fosiles.png')
+        .add('nodecampo', '/imagenes/app/mapa/nodecampo.png')
+        .add('naturalista', '/imagenes/app/mapa/naturalista.png')
     //document.addEventListener("DOMContentLoaded", function() {
         loader.load(function(loader, resources) {
-            
-            textures = [resources.defaultMarker.texture];
-            focusTextures = [resources.defaultMarkerFocus.texture];
+            textures = [null, resources.colectas.texture, resources.averaves.texture, resources.fosiles.texture, resources.nodecampo.texture, resources.naturalista.texture];
+            //focusTextures = [resources.defaultMarkerFocus.texture];
 
-            //textures = [resources.plane.texture, resources.circle.texture, resources.bicycle.texture];
-            //focusTextures = [resources.focusPlane.texture, resources.focusCircle.texture, resources.focusBicycle.texture];
-            legend = document.querySelector('div.legend.geometry');
-            legendContent = legend.querySelector('.content');
-
+            //legend = document.querySelector('div.legend.geometry');
+            //legendContent = legend.querySelector('.content');
 
             getJSON(url, function(markers) {
 
                 if (markers["estatus"])
                 {
-                    //var colecciones = [1,2,3,4,5];
-                    var colecciones = [1];
+                    var colecciones = [1,2,3,4,5];
+                    //var colecciones = [1];
                     colecciones.forEach(function(coleccion){
                         if(markers["resultados"][coleccion] !== undefined && markers["resultados"][coleccion][0] !== undefined) 
-                            //cualColeccion(markers["resultados"][coleccion], coleccion);
-                            cualColeccion([[-98.98, 21.2078056, 6142080], [-98.98, 21.21, 6142081]], coleccion);
+                            cualColeccion(markers["resultados"][coleccion], coleccion);
+                            //cualColeccion([[-98.98, 21.2078056, 6142080], [-98.98, 21.21, 6142081]], coleccion);
                     });   
 
                     if (infoLayers["totales"] > 0)
@@ -271,15 +264,14 @@ var cargaRegistros = function(url)
 var cualColeccion = function(markers, coleccion)
 {        
     var easing = BezierEasing(0, 0, 0.25, 1);
-
     var pixiLayer = (function() {
         var zoomChangeTs = null;
         var pixiContainer = new PIXI.Container();
         var innerContainer = new PIXI.particles.ParticleContainer(markers.length, {vertices: true});
         // add properties for our patched particleRenderer:
-        innerContainer.texture = textures[0];
-        innerContainer.baseTexture = textures[0].baseTexture;
-        innerContainer.anchor = {x: 0.5, y: 1};
+        innerContainer.texture = textures[coleccion];
+        innerContainer.baseTexture = textures[coleccion].baseTexture;
+        innerContainer.anchor = {x: 0.5, y: .5};
 
         pixiContainer.addChild(innerContainer);
         var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -301,13 +293,25 @@ var cualColeccion = function(markers, coleccion)
                 //innerContainer.localScale = initialScale;
                 var localScale = zoom >= 8 ? 1 / getScale(zoom) : 16;
                 innerContainer.localScale = localScale;
-
+                //innerContainer.setInteractive = true
+                
                 markers.forEach(function(marker) {
                     var coords = project([marker[1], marker[0]]);
+
+                    /*var markerSprite = new PIXI.Sprite(textures[0]);
+                    markerSprite.textureIndex = 0;
+                    markerSprite.x = coords.x - origin.x;
+                    markerSprite.y = coords.y - origin.y;
+                    markerSprite.anchor.set(0.5, 0.5);
+                    markerSprite.tint = 16771584; 
+                    //markerSprite.interactive = true;
+                    */
 
                     innerContainer.addChild({
                         x: coords.x - origin.x,
                         y: coords.y - origin.y,
+                        name: 'calonsooooooooooooooooooooo!!!',
+                        label: 'caonso1',
                     });
                 });
             }
@@ -337,6 +341,22 @@ var cualColeccion = function(markers, coleccion)
                   innerContainer.localScale = innerContainer.currentScale + lambda * (innerContainer.targetScale - innerContainer.currentScale);
                 } else {return;}
             }
+
+            //var self = this;
+            //map.on('click', L.Util.throttle(function(e) {
+                //console.log(e);
+                /*var marker = findMarker(e.latlng);
+                if (marker) {
+                    L.DomUtil.addClass(self._container, 'leaflet-interactive');
+                } else {
+                    L.DomUtil.removeClass(self._container, 'leaflet-interactive');
+                }*/
+            //}, 32))
+
+            /*console.log(map.getMinZoom())   
+            console.log(map.getMaxZoom())
+            console.log(utils.getScale(4))
+            console.log(window.solveCollision([], {r0: rInit, zoom: z}))*/
 
             renderer.render(container);
             
