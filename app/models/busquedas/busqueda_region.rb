@@ -43,7 +43,7 @@ class BusquedaRegion < Busqueda
     estado_conservacion
     tipo_distribucion
     uso
-    #ambiente
+    ambiente
   end
 
   # Asocia la información a desplegar en la vista, iterando los resultados
@@ -73,7 +73,7 @@ class BusquedaRegion < Busqueda
 
   # Regresa true or false
   def tiene_filtros?
-    (params[:grupo].present? && params[:grupo].any?) || (params[:dist].present? && params[:dist].any?) || (params[:edo_cons].present? && params[:edo_cons].present?)
+    (params[:grupo].present? && params[:grupo].any?) || (params[:dist].present? && params[:dist].any?) || (params[:edo_cons].present? && params[:edo_cons].any?) || (params[:uso].present? && params[:uso].any?) || (params[:ambiente].present? && params[:ambiente].present?)
   end
 
   # Devuelve las especies de acuerdo al numero de pagina y por pagina definido

@@ -62,7 +62,7 @@ class Geoportal::Snib < GeoportalAbs
 
   # Regresa todos los ejemplares de la especie seleccionada, de una forma simplificada
   def consulta_ejemplares_por_region
-    resultados = Geoportal::Snib.select(:id, :latitud, :longitud, :tipocoleccion).where(idnombrecatvalido: params[:catalogo_id])
+    resultados = Geoportal::Snib.select(:id, :latitud, :longitud, :tipocoleccion).where(idnombrecatvalido: params[:especie_id])
     resultados = resultados.where("#{campo_tipo_region}=#{params[:region_id]}") if campo_tipo_region.present?
     return { estatus: false, msg: 'Sin resultados' } unless resultados.any?
     

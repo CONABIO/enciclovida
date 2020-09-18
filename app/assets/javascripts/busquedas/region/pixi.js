@@ -1,10 +1,6 @@
 snibLayer = L.layerGroup();
 infoLayers = { 'totales': 0 };
 
-function getRandom(min, max) {
-    return min + Math.random() * (max - min);
-}
-
 /**
  * La simbologia dentro del mapa
  */
@@ -55,45 +51,51 @@ var leyenda = function()
 /**
  * Carga todos los registros del SNIB en una misma integracion
  */
-var cargaRegistros = function(url)
+var cargaEjemplares = function(url)
 {
     loader = new PIXI.loaders.Loader();
+    //loader.destroy()
     loader
         .add('colectas', '/imagenes/app/mapa/colectas.png')
         .add('averaves', '/imagenes/app/mapa/averaves.png')
         .add('fosiles', '/imagenes/app/mapa/fosiles.png')
         .add('nodecampo', '/imagenes/app/mapa/nodecampo.png')
         .add('naturalista', '/imagenes/app/mapa/naturalista.png')
-    //document.addEventListener("DOMContentLoaded", function() {
-        loader.load(function(loader, resources) {
-            textures = [null, resources.colectas.texture, resources.averaves.texture, resources.fosiles.texture, resources.nodecampo.texture, resources.naturalista.texture];
-            //focusTextures = [resources.defaultMarkerFocus.texture];
+    loader.load(function(loader, resources) {
+        textures = [null, resources.colectas.texture, resources.averaves.texture, resources.fosiles.texture, resources.nodecampo.texture, resources.naturalista.texture];
+        //focusTextures = [resources.defaultMarkerFocus.texture];
 
-            //legend = document.querySelector('div.legend.geometry');
-            //legendContent = legend.querySelector('.content');
+        //legend = document.querySelector('div.legend.geometry');
+        //legendContent = legend.querySelector('.content');
 
-            getJSON(url, function(markers) {
+        getJSON(url, function(markers) {
 
-                if (markers["estatus"])
+            if (markers["estatus"])
+            {
+                var colecciones = [1,2,3,4,5];
+                //var colecciones = [1];
+                colecciones.forEach(function(coleccion){
+                    if(markers["resultados"][coleccion] !== undefined && markers["resultados"][coleccion][0] !== undefined) 
+                        porColeccion(markers["resultados"][coleccion], coleccion);
+                        //cualColeccion([[-98.98, 21.2078056, 6142080], [-98.98, 21.21, 6142081]], coleccion);
+                });   
+
+                if (infoLayers["totales"] > 0)
                 {
-                    var colecciones = [1,2,3,4,5];
-                    //var colecciones = [1];
-                    colecciones.forEach(function(coleccion){
-                        if(markers["resultados"][coleccion] !== undefined && markers["resultados"][coleccion][0] !== undefined) 
-                            cualColeccion(markers["resultados"][coleccion], coleccion);
-                            //cualColeccion([[-98.98, 21.2078056, 6142080], [-98.98, 21.21, 6142081]], coleccion);
-                    });   
+                    snibLayer.addTo(map);
+                    leyenda();
+                    $('div.leaflet-control-layers label div input').first().remove();
+                } 
+            }    
+        });
+    });
+    
+    //loader.destroy()
+};
 
-                    if (infoLayers["totales"] > 0)
-                    {
-                        snibLayer.addTo(map);
-                        leyenda();
-                        $('div.leaflet-control-layers label div input').first().remove();
-                    } 
-                }    
-            });
-        });    
-    //});
+var borraEjemeplares = function()
+{
+    this.loader.destroy();
 };
 
 /**
@@ -101,7 +103,7 @@ var cargaRegistros = function(url)
  * @param {*} markers 
  * @param {*} coleccion 
  */
-/*var cualColeccion = function(markers, coleccion)
+/*var porColeccion = function(markers, coleccion)
 {        
     var pixiLayer = (function() {
         var firstDraw = true;
@@ -261,7 +263,7 @@ var cargaRegistros = function(url)
  * @param {*} markers 
  * @param {*} coleccion 
  */
-var cualColeccion = function(markers, coleccion)
+var porColeccion = function(markers, coleccion)
 {        
     var easing = BezierEasing(0, 0, 0.25, 1);
     var pixiLayer = (function() {

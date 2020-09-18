@@ -13,6 +13,8 @@ class BusquedasRegionesController < ApplicationController
     @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
     @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
     @prioritarias = Catalogo.prioritarias
+    @usos = Catalogo.usos
+    @ambientes = Catalogo.ambientes
   end
 
   # Servicio para consultar las especies pr region, contempla filtros y cache

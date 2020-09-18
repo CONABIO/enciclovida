@@ -4,6 +4,7 @@
     <div class="sidebar-tabs">
       <ul role="tablist">
         <li><a href="#busqueda-region-tab" role="tab"><i class="fa fa-search"></i></a></li>
+        <li><a href="#grupos-tab" role="tab"><i class="aves-ev-icon" style="font-size: 1.5em;"></i></a></li>
         <li><a href="#filtros-tab" role="tab"><i class="fa fa-filter"></i></a></li>
       </ul>
 
@@ -14,7 +15,7 @@
 
     <div class="sidebar-content">
       <div class="sidebar-pane" id="busqueda-region-tab">
-        <h1 class="sidebar-header">
+        <h1 class="sidebar-header mb-4">
           Busqueda por especie o región
           <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
         </h1>
@@ -31,16 +32,26 @@
         <%= text_field_tag :region, params.present? ? params[:nombre] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control input-lg' %>
       </div>
 
-      <div class="sidebar-pane" id="filtros-tab">
-        <h1 class="sidebar-header">Filtros adicionales<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+      <div class="sidebar-pane" id="grupos-tab">
+        <h1 class="sidebar-header mb-4">Filtros adicionales<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
         <h4>Grupo taxonómico</h4>
         <%= checkboxGruposIconicosSnib.html_safe %>
+      </div>
+
+      <div class="sidebar-pane" id="filtros-tab">
+        <h1 class="sidebar-header mb-4">Filtros adicionales<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
 
         <h4>Categorías de riesgo y comercio internacional</h4>
         <%= checkboxEstadoConservacion.html_safe %>
 
         <h4>Tipo de distribución</h4>
         <%= checkboxTipoDistribucion.html_safe %>
+
+        <h4>Usos</h4>
+        <%= selectUsos.html_safe %>
+
+        <h4>Ambiente</h4>
+        <%= selectAmbiente.html_safe %>
       </div>
 
     </div>

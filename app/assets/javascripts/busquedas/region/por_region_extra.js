@@ -36,6 +36,38 @@ var cargaEspecies = function()
 };
 
 /**
+ * Habilita o deshabilitas las regiones para posteriormente cargar la indicada, viene del soulmate
+ */
+var administraRegiones = function (tipo_region, region_id)
+{
+    $('#region_id').attr('value', region_id);
+    $('#tipo_region').val(tipo_region);
+    colapsaBarra();  // colapsa la barrar lateral, para mayor comodidad
+
+    /*switch(tipo)
+    {
+        case 'estado':
+            if (map.hasLayer(divisionANPOverlay)) map.removeLayer(divisionANPOverlay);
+            if (map.hasLayer(divisionMunicipioOverlay)) map.removeLayer(divisionMunicipioOverlay);
+            if (!map.hasLayer(divisionEstadoOverlay)) map.addLayer(divisionEstadoOverlay);
+            break;
+        case 'municipio':
+            if (map.hasLayer(divisionANPOverlay)) map.removeLayer(divisionANPOverlay);
+            if (map.hasLayer(divisionEstadoOverlay)) map.removeLayer(divisionEstadoOverlay);
+            if (!map.hasLayer(divisionMunicipioOverlay)) map.addLayer(divisionMunicipioOverlay);
+            break;
+        case 'anp':
+            if (map.hasLayer(divisionEstadoOverlay)) map.removeLayer(divisionEstadoOverlay);
+            if (map.hasLayer(divisionMunicipioOverlay)) map.removeLayer(divisionMunicipioOverlay);
+            if (!map.hasLayer(divisionANPOverlay)) map.addLayer(divisionANPOverlay);
+            break;
+    }*/
+
+    cargaEspecies();
+    //cargaRegion(opciones.datos[tipo][region_id].properties);
+};
+
+/**
  * Asigna algunos valores antes de cargar la region con topojson
  * @param valor
  */
@@ -109,7 +141,7 @@ $(document).ready(function(){
      * Cuando selecciona una especie
      */
     $('#contenedor_especies').on('click', '.boton-especie-registros', function(){
-        cargaRegistros('/explora-por-region/ejemplares?' + $('#busqueda_region').serialize().replace("&especie_id=", "") + '&especie_id=' + $(this).attr('catalogo_id'));
+        cargaEjemplares('/explora-por-region/ejemplares?' + $('#busqueda_region').serialize().replace("&especie_id=", "") + '&especie_id=' + $(this).attr('catalogo_id'));
         opciones.especie_id = $(this).attr('especie_id');
         opciones.nombre_comun = $(this).attr('nombre_comun');
         opciones.nombre_cientifico = $(this).attr('nombre_cientifico');
@@ -119,7 +151,7 @@ $(document).ready(function(){
     /**
      * Para los filtros default: distribucion y riesgo
      */
-    $('#busqueda_region').on('change', "input, select", function()
+    $('#busqueda_region').on('change', "#edo_cons, #dist, #grupo, #uso, #ambiente", function()
     {
         opciones.filtros.pagina = 1;
         $('#pagina').val(opciones.filtros.pagina);

@@ -141,10 +141,9 @@ var soulmateRegionAsigna = function(elem)
 
     var select = function(term, data, type)
     {
-        $('#' + elemento).val(term);
+        $('#' + elemento).val(data.nombre);
         $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
         administraRegiones(type, data.id);
-        colapsaBarra();
     };
 
     $('#' + elemento).soulmate({
