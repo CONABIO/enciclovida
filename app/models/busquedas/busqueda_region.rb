@@ -30,11 +30,6 @@ class BusquedaRegion < Busqueda
     self.resp = snib.resp
   end
 
-  # Borra el cache de las especies por region
-  def borra_cache_especies_por_region
-    Rails.cache.delete("br_#{params[:tipo_region]}_#{params[:region_id]}") if Rails.cache.exist?("br_#{params[:tipo_region]}_#{params[:region_id]}")
-  end
-
 
   private
 

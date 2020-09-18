@@ -19,6 +19,11 @@ class Geoportal::Snib < GeoportalAbs
       consulta_especies_por_region
     end
   end
+
+    # Borra el cache de las especies por region
+    def borra_cache_especies
+      Rails.cache.delete("br_#{params[:tipo_region]}_#{params[:region_id]}") if Rails.cache.exist?("br_#{params[:tipo_region]}_#{params[:region_id]}")
+    end
   
   # Regresa todos los ejemplares que coincidan con el tipo de region,region id y idcat
   def ejemplares
@@ -48,7 +53,7 @@ class Geoportal::Snib < GeoportalAbs
     resultados = Geoportal::Snib.select('idnombrecatvalido, COUNT(*) AS nregistros').where("idnombrecatvalido <> '' AND especievalidabusqueda <> '' AND comentarioscatvalido LIKE 'Validado completamente con CAT.%'").group(:idnombrecatvalido).order('nregistros DESC')
     resultados = resultados.where("#{campo_tipo_region}=#{params[:region_id]}") if campo_tipo_region.present?
 
-    if resultados.any?
+    if resultados.length > 0
       { estatus: true, resultados: resultados.map{ |r| {r.idnombrecatvalido => r.nregistros} }.reduce({}, :merge) }
     else
       { estatus: false, msg: 'Sin resultados en esta región' }
