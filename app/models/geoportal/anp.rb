@@ -8,7 +8,7 @@ class Geoportal::Anp < GeoportalAbs
   scope :campos_min, -> { select(:region_id, :nombre_region, :cat_manejo).order(nombre_region: :asc).group(:region_id) }
 
   def nombre_publico
-    nombre_region
+    "#{nombre_region}, #{tipo_region}"
   end
 
   def tipo
@@ -25,12 +25,10 @@ class Geoportal::Anp < GeoportalAbs
   def asigna_redis
     asigna_redis_id
     self.redis[:data] = {}
-    self.redis[:term] = I18n.transliterate(nombre_region.limpia.downcase)
+    self.redis[:term] = I18n.transliterate(nombre_publico.limpia.downcase)
     self.redis[:score] = 10
     self.redis[:data][:id] = region_id
     self.redis[:data][:nombre] = nombre_publico
-    self.redis[:data][:tipo] = tipo
-    self.redis[:data][:tipo_region] = tipo_region
 
     redis.deep_stringify_keys!
   end
