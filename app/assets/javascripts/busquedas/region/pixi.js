@@ -288,6 +288,7 @@ var porColeccion = function(markers, coleccion)
             var invScale = 1 / getScale();
 
             if (event.type === 'add') {
+                console.log('entro a add')
                 var origin = project([(14.54 + 32.38) / 2, (-117.67 + -85.29) / 2]);
                 innerContainer.x = origin.x;
                 innerContainer.y = origin.y;
@@ -319,10 +320,12 @@ var porColeccion = function(markers, coleccion)
             }
 
             if (event.type === 'zoomanim') {
+                console.log('zoom: ' + event.zoom)
                 var targetZoom = event.zoom;
                 if (targetZoom >= 8 || zoom >= 8) {
+                    console.log('zoom >= 8')
                     zoomChangeTs = 0;
-                    var targetScale = targetZoom >= 8 ? 1 / getScale(event.zoom) : initialScale;
+                    var targetScale = targetZoom >= 4 ? 1 / getScale(event.zoom) : initialScale;
                     innerContainer.currentScale = innerContainer.localScale;
                     innerContainer.targetScale = targetScale;
                 }
@@ -332,6 +335,7 @@ var porColeccion = function(markers, coleccion)
             if (event.type === 'redraw') {
                 var delta = event.delta;
                 if (zoomChangeTs !== null) {
+                    //console.log('zoomchangets no es nulo:' + zoomChangeTs)
                     var duration = 17;
                     zoomChangeTs += delta;
                     var lambda = zoomChangeTs / duration;
