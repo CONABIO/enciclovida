@@ -1,8 +1,18 @@
- <% @ficha.each do |seccion, valor| %>
-    <%= '<br/>'.html_safe if seccion == 'Referencias' %>
-    <h4><b><%= seccion %></b></h4>
-    <p><%= valor.html_safe %></p>
- <% end %>
+<% @ficha.each do |seccion, valor| %>
+  <%= '<br/>'.html_safe if seccion == 'Referencias' %>
+  <h4><b><%= seccion %></b></h4>
+  <p><%= valor.html_safe %></p>
+<% end %>
 
- <br/>
- <br/>
+<h4><b>Metadatos</b></h4>
+<ul>
+  <li><p><strong>Autor: </strong> <%=@responsable.present? ? convierte_a_HTML(@responsable.nombre) : (@sin_info_msj)%> <%=@responsable.present? ? convierte_a_HTML(@responsable.apellido) : (@sin_info_msj)%></p></li>
+  <li><p><strong>Grupo especializado: </strong> <%=@puesto.present? ? convierte_a_HTML(@puesto.nombrePuesto) : (@sin_info_msj)%> </p></li>
+  <li><p><strong>Institución afiliación: </strong> <%=@organizacion.present? ? convierte_a_HTML(@organizacion.nombre) : (@sin_info_msj)%></p></li>
+  <li><p><strong>Nombre completo del responsable de la captura de los datos: </strong><%=@asociado.present? ? convierte_a_HTML(@asociado.rol ) : (@sin_info_msj)%></p></li>
+  <li><p><strong>Puesto y afiliación: </strong><%=@asociado.present? ? convierte_a_HTML(@asociado.tipoAsociacion) : (@sin_info_msj)%></p></li>
+</ul>
+
+
+<br/>
+<br/>
