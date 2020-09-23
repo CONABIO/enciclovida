@@ -59,14 +59,13 @@ class BusquedaRegion < Busqueda
   
   # Por si escribio un nombre pero no lo selecciono de la lista de redis
   def por_nombre
-    return unless (params[:nombre].present? && (params[:especie_id].present? && !(params[:nivel].present? && params[:cat].present?)))
+    return unless (params[:nombre].present? && params[:especie_id].blank?)
     self.taxones = taxones.caso_nombre_comun_y_cientifico(params[:nombre].strip).left_joins(:nombres_comunes)
   end
 
   # REVISADO: Saca los hijos de las categorias taxonomica que especifico , de acuerdo con el especie_id que escogio
   def categoria_por_nivel
     return unless (params[:especie_id] && params[:cat].present? && params[:nivel].present?)
-
     begin
       self.taxon = Especie.find(params[:especie_id])
     rescue
@@ -82,9 +81,9 @@ class BusquedaRegion < Busqueda
 
   # Asocia la información a desplegar en la vista, iterando los resultados
   def asocia_informacion_taxon
-    return unless (resp[:resultados].present? && resp[:resultados].any?)
     self.taxones = []
-    especies = Especie.select_basico(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).left_joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].keys)
+    return unless (resp[:resultados].present? && resp[:resultados].any?)
+    especies = Especie.select_basico(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].keys)
 
     especies.each do |especie|
       self.taxones << { especie: especie, nregistros: resp[:resultados][especie.catalogo_id] }
