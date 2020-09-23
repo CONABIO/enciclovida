@@ -35,6 +35,13 @@ var cargaEspecies = function()
     });
 };
 
+var cargaUnaEspecie = function()
+{
+    cargaEspecies();
+    colapsaBarra();
+    //dameEjemplaresSnib(data);
+};
+
 /**
  * Habilita o deshabilitas las regiones para posteriormente cargar la indicada, viene del soulmate
  */
@@ -126,7 +133,7 @@ var colapsaBarra  =function()
 /**
  * Asigna los datos del taxon para posteriormente ocuparlos en los ejemplares
  */
-var dameEjemplaresSnib = function(datos)
+/*var dameEjemplaresSnib = function(datos)
 {
     opciones.especie_id = datos.id;
     opciones.nombre_comun = datos.nombre_comun;
@@ -134,7 +141,7 @@ var dameEjemplaresSnib = function(datos)
     $('#especie_id').attr('value', datos.id);
     cargaEjemplaresSnib('/especies/' + datos.id + '/ejemplares-snib.json?mapa=1');
     colapsaBarra();
-};
+};*/
 
 $(document).ready(function(){
     /**
@@ -153,6 +160,46 @@ $(document).ready(function(){
      */
     $('#busqueda_region').on('change', "#edo_cons, #dist, #grupo, #uso, #ambiente", function()
     {
+        opciones.filtros.pagina = 1;
+        $('#pagina').val(opciones.filtros.pagina);
+        cargaEspecies();
+    });
+
+    /**
+     * Para cuando se escoge un grupo en la busqueda por region
+     */
+    $('#busqueda_region').on('change', "input:radio", function()
+    {
+        // El ID del grupo iconico
+        var id_gi = $(this).val();
+        $('#especie_id').val(id_gi);
+        $('#nivel').val('=');
+    
+        // Para asignar la categoria de acuerdo al grupo
+        switch(id_gi) {
+            case '22653':
+            case '22655':
+            case '22647':
+            case '22654':
+            case '213482':
+            case '22987':
+            case '22651':
+            case '22650':
+            case '66500':
+            case '16912':
+            case '40672':
+            case '56646':
+            case '40658':
+            case '66499':
+            case '129550':
+            case '40659':
+            case '40657':
+                $('#cat').val('7100');
+                break;
+            default:
+                $('#cat').val('7000');
+        }
+
         opciones.filtros.pagina = 1;
         $('#pagina').val(opciones.filtros.pagina);
         cargaEspecies();

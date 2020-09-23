@@ -37,13 +37,47 @@ class BusquedaRegion < Busqueda
   def especies_filtros
     return unless tiene_filtros?
     self.taxones = Especie.select(:id).select("#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id").joins(:scat).distinct
-
-    estatus
+    por_especie_id
+    por_nombre
+    #estatus
     #solo_publicos
     estado_conservacion
     tipo_distribucion
     uso
     ambiente
+
+    #return unless por_id_o_nombre
+    categoria_por_nivel
+  end
+
+  # REVISADO: Por si selecciono una especie de redis
+  def por_especie_id
+    # Tiene mas importancia si escogio por id
+    return unless (params[:especie_id].present? && !(params[:nivel].present? && params[:cat].present?))
+    self.taxones = taxones.where(id: params[:especie_id])
+  end
+  
+  # Por si escribio un nombre pero no lo selecciono de la lista de redis
+  def por_nombre
+    return unless (params[:nombre].present? && (params[:especie_id].present? && !(params[:nivel].present? && params[:cat].present?)))
+    self.taxones = taxones.caso_nombre_comun_y_cientifico(params[:nombre].strip).left_joins(:nombres_comunes)
+  end
+
+  # REVISADO: Saca los hijos de las categorias taxonomica que especifico , de acuerdo con el especie_id que escogio
+  def categoria_por_nivel
+    return unless (params[:especie_id] && params[:cat].present? && params[:nivel].present?)
+
+    begin
+      self.taxon = Especie.find(params[:especie_id])
+    rescue
+      return
+    end
+    
+    # Aplica el query para los descendientes
+    self.taxones = taxones.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,#{taxon.id},%'")
+
+    # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al nivel
+    self.taxones = taxones.nivel_categoria(params[:nivel], params[:cat]).joins(:categoria_taxonomica)
   end
 
   # Asocia la información a desplegar en la vista, iterando los resultados
@@ -73,7 +107,7 @@ class BusquedaRegion < Busqueda
 
   # Regresa true or false
   def tiene_filtros?
-    (params[:grupo].present? && params[:grupo].any?) || (params[:dist].present? && params[:dist].any?) || (params[:edo_cons].present? && params[:edo_cons].any?) || (params[:uso].present? && params[:uso].any?) || (params[:ambiente].present? && params[:ambiente].present?)
+    params[:especie_id].present? || params[:nombre].present? || (params[:grupo].present? && params[:grupo].any?) || (params[:dist].present? && params[:dist].any?) || (params[:edo_cons].present? && params[:edo_cons].any?) || (params[:uso].present? && params[:uso].any?) || (params[:ambiente].present? && params[:ambiente].present?)
   end
 
   # Devuelve las especies de acuerdo al numero de pagina y por pagina definido
@@ -84,15 +118,20 @@ class BusquedaRegion < Busqueda
     offset = (pagina-1)*por_pagina
     limit = (pagina*por_pagina)-1
 
-    if taxones.any?  # Quiere decir que tuvo algun filtro
+    if tiene_filtros?
       ids = taxones.map(&:catalogo_id) & resp[:resultados].keys
       idcats = ids.map{ |id| [id, resp[:resultados][id]] }.sort_by(&:last).reverse
-    else  # Es la pagina inicial de busquedas por region
+    else  # es la primera pagina
       idcats = resp[:resultados].to_a
     end
     
     self.totales = idcats.length
-    self.resp[:resultados] = idcats[offset..limit].to_h
+    
+    if totales > 0
+      self.resp[:resultados] = idcats[offset..limit].to_h
+    else
+      self.resp[:resultados] = {}
+    end
   end
 
 end
