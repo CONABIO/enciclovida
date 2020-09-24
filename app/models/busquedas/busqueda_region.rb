@@ -1,12 +1,13 @@
 class BusquedaRegion < Busqueda
 
-  attr_accessor :resp
+  attr_accessor :resp, :num_ejemplares
 
   ESPECIES_POR_PAGINA = 8.freeze
 
   def initialize
     self.taxones = []
     self.totales = 0
+    self.num_ejemplares = 0
   end
 
   # Regresa un listado de especies por pagina, de acuerdo a la region y los filtros seleccionados
@@ -19,6 +20,7 @@ class BusquedaRegion < Busqueda
 
     self.resp[:taxones] = taxones
     self.resp[:totales] = totales
+    self.resp[:num_ejemplares] = num_ejemplares
     self.resp[:resultados] = nil
   end
 
@@ -87,18 +89,6 @@ class BusquedaRegion < Busqueda
 
     especies.each do |especie|
       self.taxones << { especie: especie, nregistros: resp[:resultados][especie.catalogo_id] }
-
-      if params[:region_id].present? && params[:tipo_region].present?
-        self.taxones.last.merge!({ snib_registros: "#{CONFIG.enciclovida_api}/especie/snib/ejemplares?idnombrecatvalido=#{especie.catalogo_id}&region_id=#{params[:region_id]}&tipo_region=#{params[:tipo_region]}&mapa=true" })
-      else
-        carpeta = Rails.root.join('public', 'geodatos', especie.id.to_s)
-        nombre = carpeta.join("ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa")
-        archivo = "#{nombre}.json"
-        archivo_url = "#{CONFIG.site_url}geodatos/#{especie.id}/#{"ejemplares_#{especie.nombre_cientifico.limpiar.gsub(' ','_')}_mapa.json"}"
-
-        next unless File.exist?(archivo)
-        self.taxones.last.merge!({ snib_registros: archivo_url })
-      end
     end
 
     self.taxones = taxones.sort_by{ |t| t[:nregistros] }.reverse
@@ -125,6 +115,7 @@ class BusquedaRegion < Busqueda
     end
     
     self.totales = idcats.length
+    self.num_ejemplares = idcats.sum {|r| r[1] }
     
     if totales > 0
       self.resp[:resultados] = idcats[offset..limit].to_h

@@ -2,7 +2,10 @@
 
   <% if @resp[:totales].present? && params[:pagina].to_i == 1 %>
     <div class="col-12">
-      <h3><strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies</h3>
+      <h3>
+        <strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
+        | <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros
+      </h3>
       <div class="pull-right fa fa-arrow-right" id="carga-mas-especies"></div>
     </div>
   <% end %>
