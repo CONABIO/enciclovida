@@ -545,18 +545,16 @@ class Proveedor < ActiveRecord::Base
       # Para las observaciones de grado cientifico, verde
       self.kml << "<Style id=\"Placemark_cientifico\">\n"
       self.kml << "<IconStyle>\n"
-      self.kml << "<Icon>\n"
-      self.kml << "<href>#{CONFIG.enciclovida_url}/assets/app/placemarks/verde.png</href>\n"
-      self.kml << "</Icon>\n"
+      self.kml << "<color>00ff00</color>\n"
+      self.kml << "<scale>3</scale>\n"
       self.kml << "</IconStyle>\n"
       self.kml << "</Style>\n"
 
       # Para las observaciones de grado casual, amarillo
       self.kml << "<Style id=\"Placemark_casual\">\n"
       self.kml << "<IconStyle>\n"
-      self.kml << "<Icon>\n"
-      self.kml << "<href>#{CONFIG.enciclovida_url}/assets/app/placemarks/amarillo.png</href>\n"
-      self.kml << "</Icon>\n"
+      self.kml << "<color>ffff99</color>\n"
+      self.kml << "<scale>3</scale>\n"
       self.kml << "</IconStyle>\n"
       self.kml << "</Style>\n"
     end
@@ -685,9 +683,8 @@ class Proveedor < ActiveRecord::Base
     self.kml << "<Document>\n"
     self.kml << "<Style id=\"normalPlacemark\">\n"
     self.kml << "<IconStyle>\n"
-    self.kml << "<Icon>\n"
-    self.kml << "<href>#{CONFIG.enciclovida_url}/assets/app/placemarks/rojo.png</href>\n"
-    self.kml << "</Icon>\n"
+    self.kml << "<color>ff0000</color>\n"
+    self.kml << "<scale>3</scale>\n"
     self.kml << "</IconStyle>\n"
     self.kml << "</Style>\n"
 
