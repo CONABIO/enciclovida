@@ -29,8 +29,8 @@ class GeoAtopo
     # Escribe a disco el archivo geojson
     File.write(archivo_geo_todos, geojson_todos.to_json)
 
-    # Convierte a topojson
-    topojson_todos = dame_topojson_system({q: '1e4', p: '7e-5', i: archivo_geo_todos, o: archivo_topo_todos, tmp: archivo_tmp_todos})
+    # Convierte a topojson y simplifica, originalmente q tenia un valor de: 1e4
+    topojson_todos = dame_topojson_system({q: '0', p: '7e-5', i: archivo_geo_todos, o: archivo_topo_todos, tmp: archivo_tmp_todos})
     File.delete(archivo_geo_todos) if File.exist?(archivo_geo_todos)
     Rails.logger.debug "\t[DEBUG] - Hubo un error al generar la region: #{archivo_topo_todos}" unless topojson_todos
 

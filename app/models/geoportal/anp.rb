@@ -2,7 +2,7 @@ class Geoportal::Anp < GeoportalAbs
 
   self.table_name = 'anp'
 
-  alias_attribute :region_id, :gid
+  alias_attribute :region_id, :anpid
   alias_attribute :nombre_region, :nombre
 
   scope :campos_min, -> { select(:region_id, :nombre_region, :cat_manejo).order(nombre_region: :asc).group(:region_id) }
