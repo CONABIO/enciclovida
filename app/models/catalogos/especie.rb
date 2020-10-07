@@ -36,7 +36,7 @@ class Especie < ActiveRecord::Base
                 :x_serie, :x_subserie, :x_especie, :x_subespecie, :x_variedad, :x_subvariedad, :x_forma, :x_subforma,
                 :x_subreino, :x_superphylum, :x_phylum, :x_subphylum, :x_superclase, :x_subterclase, :x_grado, :x_infraclase,
                 :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
-                :x_infraphylum, :x_epiclase, :x_supercohorte, :x_cohorte, :x_subcohorte, :x_grupo_especies, :x_raza, :x_estirpe,
+                :x_infraphylum, :x_epiclase, :x_supercohorte, :x_cohorte, :x_subcohorte, :hibrido, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden, :x_infraserie,
                 :x_nombre_autoridad, :x_nombre_autoridad_infraespecie, :x_suprafamilia  # Para que en el excel sea mas facil la consulta
   :x_distancia
