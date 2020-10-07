@@ -5,7 +5,7 @@ class GeoAtopo
     return nil unless %w(estado municipio anp ecorregion).include?(region)
     Rails.logger.debug "[DEBUG] - Generando los topojson con region: #{region}"
 
-    ruta = Rails.root.join('db', 'topojson')
+    ruta = Rails.root.join('public', 'topojson')
     Dir.mkdir(ruta) unless File.exists?(ruta)
     geojson_todos = { type: 'FeatureCollection', features: [] }  # Para todos loes estados o municipios juntos
 
@@ -22,7 +22,7 @@ class GeoAtopo
 
     end  # End cada region each
 
-    archivo_topo_todos = ruta.join("#{region}.json")
+    archivo_topo_todos = ruta.join("#{region}.topojson")
     archivo_geo_todos = ruta.join('collection.json')
     archivo_tmp_todos = ruta.join("#{region}_tmp.json")
 
@@ -34,15 +34,6 @@ class GeoAtopo
     File.delete(archivo_geo_todos) if File.exist?(archivo_geo_todos)
     Rails.logger.debug "\t[DEBUG] - Hubo un error al generar la region: #{archivo_topo_todos}" unless topojson_todos
 
-  end
-
-  # Regresa en formato topojson
-  def dame_topojson(collection)
-    source = open('./lib/assets/topojson.js').read
-    ExecJS.runtime = ExecJS::Runtimes::Node
-    context = ExecJS.compile(source)
-
-    context.eval("topojson.topology({collection: #{collection} }, 1e4)")
   end
 
   # Devuelve el topojson con un comando de linux

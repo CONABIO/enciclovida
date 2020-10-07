@@ -8,7 +8,7 @@ class Geoportal::Municipio < GeoportalAbs
   scope :campos_min, -> { select(:region_id, :nombre_region, :nombre_estado).order(nombre_region: :asc).group(:region_id) }
 
   def nombre_publico
-    "#{nombre_region}, #{I18n.t("estados.#{nombre_estado.estandariza.gsub('-', '_')}")}"
+    "#{nombre_region}, #{I18n.t("estados.#{nombre_estado.estandariza}")}"
   end
 
   def tipo
