@@ -286,4 +286,5 @@ $(document).ready(function(){
     // Inicializa la carga inicial de las especies
     opciones.filtros.pagina = 1;
     cargaEspecies();
+    variablesIniciales();
 });

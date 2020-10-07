@@ -7,20 +7,20 @@
   <%= favicon_link_tag '/favicon.ico' %>
 
   <%= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
-   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
    crossorigin=""/>
-  <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" />
+  <!--link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" /-->
   <%= stylesheet_link_tag 'busquedas/region/por_region', 'data-turbolinks-track' => true %>
-  <link rel="stylesheet" href="https://manubb.github.io/Leaflet.PixiOverlay/css/leaflet.css" />
-  <link rel="stylesheet" href="https://manubb.github.io/Leaflet.PixiOverlay/css/carte.css" />
+  <!--link rel="stylesheet" href="https://manubb.github.io/Leaflet.PixiOverlay/css/leaflet.css" />
+  <link rel="stylesheet" href="https://manubb.github.io/Leaflet.PixiOverlay/css/carte.css" /-->
 
   <script type="text/javascript" data-turbolinks-track="true">
-      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
+      TYPES = ["especie"];
       SITE_URL = "<%= CONFIG.site_url %>";
   </script>
 
-  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <!--script src="https://d3js.org/d3.v6.min.js"></script-->
   <!--script src="https://unpkg.com/topojson@3" data-turbolinks-track="true"></script-->
 
    <!-- Make sure you put this AFTER Leaflet's CSS -->

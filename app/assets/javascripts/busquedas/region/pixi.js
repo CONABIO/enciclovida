@@ -1,13 +1,53 @@
-snibLayer = L.layerGroup();
-infoLayers = { 'totales': 0 };
+/**
+ * Variables para poder cargar la visualizacion con PIXI
+ */
+var variablesIniciales = function()
+{
+    // El obejto inical de PIXI
+    loader = new PIXI.loaders.Loader();
+    loader
+        .add('colectas', '/imagenes/app/mapa/colectas.png')
+        .add('averaves', '/imagenes/app/mapa/averaves.png')
+        .add('fosiles', '/imagenes/app/mapa/fosiles.png')
+        .add('nodecampo', '/imagenes/app/mapa/nodecampo.png')
+        .add('naturalista', '/imagenes/app/mapa/naturalista.png');
+    ya_cargo = false;
+};
 
 /**
- * La simbologia dentro del mapa
+ * Hace limpieza de las variables para poder desplegar distintas visualizaciones
+ */
+var configuraVariables = function()
+{
+    if (ya_cargo) limpiaMapa();
+    inicializaVariables();
+    ya_cargo = true;
+};
+
+/**
+ * Limpia e inicializa las variables de los layer y el control
+ */
+var inicializaVariables = function()
+{
+    snibLayer = L.layerGroup();  // Layer papa que tiene las capas
+    infoLayers = { 'totales': 0 };  // Tiene los conteos por layer
+    snibControl = L.control.layers({}, {}, {collapsed: true, position: 'bottomright'}).addTo(map);
+};
+
+/**
+ * Limpia los layer y el control
+ */
+var limpiaMapa = function()
+{
+    map.removeLayer(snibLayer);
+    map.removeControl(snibControl);
+};
+
+/**
+ * La simbologia personalizada dentro del mapa
  */
 var leyenda = function()
 {
-    var snibControl = L.control.layers({}, {}, {collapsed: true, position: 'bottomright'}).addTo(map);
-
     snibControl.addOverlay(snibLayer,
         '<b>Ejemplares del SNIB</b><br />(museos, colectas y proyectos) <sub>' + infoLayers["totales"] + '</sub>'
     );
@@ -53,23 +93,13 @@ var leyenda = function()
  */
 var cargaEjemplares = function(url)
 {
-    loader = new PIXI.loaders.Loader();
-    //loader.destroy()
-    loader
-        .add('colectas', '/imagenes/app/mapa/colectas.png')
-        .add('averaves', '/imagenes/app/mapa/averaves.png')
-        .add('fosiles', '/imagenes/app/mapa/fosiles.png')
-        .add('nodecampo', '/imagenes/app/mapa/nodecampo.png')
-        .add('naturalista', '/imagenes/app/mapa/naturalista.png')
+    configuraVariables();
     loader.load(function(loader, resources) {
         textures = [null, resources.colectas.texture, resources.averaves.texture, resources.fosiles.texture, resources.nodecampo.texture, resources.naturalista.texture];
         //focusTextures = [resources.defaultMarkerFocus.texture];
-
         //legend = document.querySelector('div.legend.geometry');
         //legendContent = legend.querySelector('.content');
-
         getJSON(url, function(markers) {
-
             if (markers["estatus"])
             {
                 var colecciones = [1,2,3,4,5];
@@ -89,8 +119,6 @@ var cargaEjemplares = function(url)
             }    
         });
     });
-    
-    //loader.destroy()
 };
 
 var borraEjemeplares = function()
@@ -288,7 +316,7 @@ var porColeccion = function(markers, coleccion)
             var invScale = 1 / getScale();
 
             if (event.type === 'add') {
-                console.log('entro a add')
+                //console.log('entro a add')
                 var origin = project([(14.54 + 32.38) / 2, (-117.67 + -85.29) / 2]);
                 innerContainer.x = origin.x;
                 innerContainer.y = origin.y;
@@ -320,10 +348,10 @@ var porColeccion = function(markers, coleccion)
             }
 
             if (event.type === 'zoomanim') {
-                console.log('zoom: ' + event.zoom)
+                //console.log('zoom: ' + event.zoom)
                 var targetZoom = event.zoom;
                 if (targetZoom >= 8 || zoom >= 8) {
-                    console.log('zoom >= 8')
+                    //console.log('zoom >= 8')
                     zoomChangeTs = 0;
                     var targetScale = targetZoom >= 4 ? 1 / getScale(event.zoom) : initialScale;
                     innerContainer.currentScale = innerContainer.localScale;

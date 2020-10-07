@@ -39,12 +39,11 @@ var cargaMapa = function (id, opc)
     */
 
     var place = [23.79162789, -102.04376221];
-    //var place = [ 48.838565,  2.449264526367];
     
     map = L.map(id, {
         zoomControl: false,
         doubleClickZoom: false,
-        minZoom: 4,
+        minZoom: 5,
         layers: [     // Existe un bug poniendo primero los layers de google
             //OSM_layer,
             GHM_layer,
@@ -67,7 +66,6 @@ var cargaMapa = function (id, opc)
     });
 
     map.setView(place, 4);  // Default place and zoom
-    //map.setView(place, 13);  // Default place and zoom
 
     // Para poner las capas iniciales de los mapas
     var baseMaps = {
@@ -88,5 +86,4 @@ var cargaMapa = function (id, opc)
 
     //Para asegurarnos que siempre se genere el mapa con el mínimo markup posible
     ponTamaño();
-
 };
