@@ -49,15 +49,15 @@ class BusquedaRegion < Busqueda
     ambiente
 
     #return unless por_id_o_nombre
-    categoria_por_nivel
+    #categoria_por_nivel
   end
 
   # REVISADO: Por si selecciono una especie de redis
-  def por_especie_id
+  #def por_especie_id
     # Tiene mas importancia si escogio por id
-    return unless (params[:especie_id].present? && !(params[:nivel].present? && params[:cat].present?))
-    self.taxones = taxones.where(id: params[:especie_id])
-  end
+  #  return unless (params[:especie_id].present? && !(params[:nivel].present? && params[:cat].present?))
+  #  self.taxones = taxones.where(id: params[:especie_id])
+  #end
   
   # Por si escribio un nombre pero no lo selecciono de la lista de redis
   def por_nombre
@@ -66,19 +66,22 @@ class BusquedaRegion < Busqueda
   end
 
   # REVISADO: Saca los hijos de las categorias taxonomica que especifico , de acuerdo con el especie_id que escogio
-  def categoria_por_nivel
-    return unless (params[:especie_id] && params[:cat].present? && params[:nivel].present?)
+  def por_especie_id
+    return unless params[:especie_id].present?
     begin
       self.taxon = Especie.find(params[:especie_id])
     rescue
       return
     end
     
-    # Aplica el query para los descendientes
-    self.taxones = taxones.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,#{taxon.id},%'")
+    if taxon.especie_o_inferior?  # Manda directo el taxon
+      self.taxones = taxones.where(id: params[:especie_id])
+    else  # Aplica el query para los descendientes
+      self.taxones = taxones.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,#{taxon.id},%'")
 
-    # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al nivel
-    self.taxones = taxones.nivel_categoria(params[:nivel], params[:cat]).joins(:categoria_taxonomica)
+      # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al nivel
+      self.taxones = taxones.where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} IN (?)", ["especie"]).joins(:categoria_taxonomica)
+    end
   end
 
   # Asocia la información a desplegar en la vista, iterando los resultados

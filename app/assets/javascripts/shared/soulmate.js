@@ -135,7 +135,7 @@ var soulmateRegionAsigna = function(elem)
 
     var render = function(term, data)
     {
-        var html = '<h5>' + data.nombre + '</h5>';
+        var html = '<h5>' + data.nombre_region + '</h5>';
         if (data.tipo_region != undefined) html+= "<sub>" + data.tipo_region + "</sub>";
 
         return html;
@@ -143,9 +143,9 @@ var soulmateRegionAsigna = function(elem)
 
     var select = function(term, data, type)
     {
-        $('#' + elemento).val(data.nombre);
         $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
-        administraRegiones(type, data.id);
+        var prop = { region_id: data.region_id, tipo_region: type, nombre_region: data.nombre_region, bounds: data.bounds }
+        seleccionaRegion(prop);
     };
 
     $('#' + elemento).soulmate({

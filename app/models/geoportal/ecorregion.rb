@@ -19,18 +19,6 @@ class Geoportal::Ecorregion < GeoportalAbs
 
   private
 
-  def asigna_redis
-    asigna_redis_id
-    self.redis[:data] = {}
-    self.redis[:term] = I18n.transliterate(nombre_region.limpia.downcase)
-    self.redis[:score] = 10
-    self.redis[:data][:id] = region_id
-    self.redis[:data][:nombre] = nombre_publico
-    self.redis[:data][:tipo] = tipo
-
-    redis.deep_stringify_keys!
-  end
-
   # Arma el ID de redis
   def asigna_redis_id
     # El 2 inicial es para saber que es un region

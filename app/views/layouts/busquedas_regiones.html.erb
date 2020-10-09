@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://manubb.github.io/Leaflet.PixiOverlay/css/carte.css" /-->
 
   <script type="text/javascript" data-turbolinks-track="true">
-      TYPES = ["especie"];
+      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
       SITE_URL = "<%= CONFIG.site_url %>";
   </script>
 

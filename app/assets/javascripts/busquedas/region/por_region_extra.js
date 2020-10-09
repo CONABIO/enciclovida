@@ -51,7 +51,7 @@ var seleccionaRegion = function(prop)
     if ($('#region_id').val() == prop.region_id) return;
     $('#region_id').val(prop.region_id);
     $('#region').val(prop.nombre_region);
-    $('#tipo_region').val(prop.tipo.toLowerCase());
+    $('#tipo_region').val(prop.tipo_region.toLowerCase());
 
     opciones.filtros.pagina = 1;
     $('#pagina').val(opciones.filtros.pagina);

@@ -5,7 +5,7 @@ namespace :geoportal do
   namespace :redis do
     desc "Genera/actualiza los estados en la base de redis"
     task estado: :environment do
-      Geoportal::Estado.all.each do |estado|
+      Geoportal::Estado.campos_min.campos_geom.all.each do |estado|
         estado.borra_redis
         estado.guarda_redis
       end
@@ -13,7 +13,7 @@ namespace :geoportal do
 
     desc "Genera/actualiza los municipios en la base de redis"
     task municipio: :environment do
-      Geoportal::Municipio.all.each do |municipio|
+      Geoportal::Municipio.campos_min.campos_geom.all.each do |municipio|
         municipio.borra_redis
         municipio.guarda_redis
       end
@@ -21,7 +21,7 @@ namespace :geoportal do
 
     desc "Genera/actualiza las ANPs en la base de redis"
     task anp: :environment do
-      Geoportal::Anp.all.each do |anp|
+      Geoportal::Anp.campos_min.campos_geom.all.each do |anp|
         anp.borra_redis
         anp.guarda_redis
       end
@@ -32,7 +32,7 @@ namespace :geoportal do
       regiones = %w(estado municipio anp)
       
       regiones.each do |region|
-        Geoportal.const_get(region.camelize).all.each do |reg|
+        Geoportal.const_get(region.camelize).campos_min.campos_geom.all.each do |reg|
           reg.borra_redis
           reg.guarda_redis
         end
