@@ -43,82 +43,22 @@ var cargaUnaEspecie = function()
 };
 
 /**
- * Habilita o deshabilitas las regiones para posteriormente cargar la indicada, viene del soulmate
- */
-var administraRegiones = function (tipo_region, region_id)
-{
-    $('#region_id').attr('value', region_id);
-    $('#tipo_region').val(tipo_region);
-    colapsaBarra();  // colapsa la barrar lateral, para mayor comodidad
-
-    /*switch(tipo)
-    {
-        case 'estado':
-            if (map.hasLayer(divisionANPOverlay)) map.removeLayer(divisionANPOverlay);
-            if (map.hasLayer(divisionMunicipioOverlay)) map.removeLayer(divisionMunicipioOverlay);
-            if (!map.hasLayer(divisionEstadoOverlay)) map.addLayer(divisionEstadoOverlay);
-            break;
-        case 'municipio':
-            if (map.hasLayer(divisionANPOverlay)) map.removeLayer(divisionANPOverlay);
-            if (map.hasLayer(divisionEstadoOverlay)) map.removeLayer(divisionEstadoOverlay);
-            if (!map.hasLayer(divisionMunicipioOverlay)) map.addLayer(divisionMunicipioOverlay);
-            break;
-        case 'anp':
-            if (map.hasLayer(divisionEstadoOverlay)) map.removeLayer(divisionEstadoOverlay);
-            if (map.hasLayer(divisionMunicipioOverlay)) map.removeLayer(divisionMunicipioOverlay);
-            if (!map.hasLayer(divisionANPOverlay)) map.addLayer(divisionANPOverlay);
-            break;
-    }*/
-
-    cargaEspecies();
-    //cargaRegion(opciones.datos[tipo][region_id].properties);
-};
-
-/**
  * Asigna algunos valores antes de cargar la region con topojson
- * @param valor
+ * @param prop
  */
 var seleccionaRegion = function(prop)
 {
-    var region_id = parseInt(prop.region_id);
-    $('#region_id').val(region_id);
+    if ($('#region_id').val() == prop.region_id) return;
+    $('#region_id').val(prop.region_id);
     $('#region').val(prop.nombre_region);
     $('#tipo_region').val(prop.tipo.toLowerCase());
 
-    //$('#svg-division-municipal').remove();
     opciones.filtros.pagina = 1;
     $('#pagina').val(opciones.filtros.pagina);
 
+    map.flyToBounds(prop.bounds);
     cargaEspecies();
-    cargaRegion(opciones.datos[prop.tipo.toLowerCase()][region_id].properties);
-};
-
-/**
- * Pone los municipios correspondientes, selecciona el valor y carga la region
- * @param valor
- */
-var seleccionaMunicipio = function(region_id)
-{
-    if (region_id == '')
-    {
-        opciones.municipio_seleccionado = null;
-        opciones.tipo_region_seleccionado = 'estado';
-
-    } else {
-        $('#region_municipio').val(region_id);
-        opciones.municipio_seleccionado = region_id;
-        opciones.tipo_region_seleccionado = 'municipio';
-        cargaRegion(opciones.datos[opciones.estado_seleccionado].municipios[region_id].properties);
-    }
-};
-
-/**
- * El nombre de la region cuanso se pasa el mouse por encima
- * @param prop
- */
-var nombreRegion = function(prop)
-{
-    $('#contenedor-subtitulo-busqueda-region').html(prop.nombre_region);
+    colapsaBarra();  // colapsa la barrar lateral, para mayor comodidad
 };
 
 /**
@@ -267,6 +207,9 @@ $(document).ready(function(){
     // Para inicializar la barra lateral del mapa
     L.control.sidebar('sidebar').addTo(map);
 
+    control_capas = L.control.layers({}).addTo(map);
+
+
     // Para asignar el redis adecuado de acuerdo a la caja de texto
     $('#busqueda-region-tab').on('focus', '#nombre, #region', function() {
         if ($(this).attr('soulmate') == "true") return;
@@ -287,4 +230,5 @@ $(document).ready(function(){
     opciones.filtros.pagina = 1;
     cargaEspecies();
     variablesIniciales();
+    despliegaRegiones();
 });
