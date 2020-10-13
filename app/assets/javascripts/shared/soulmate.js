@@ -143,7 +143,7 @@ var soulmateRegionAsigna = function(elem)
 
     var select = function(term, data, type)
     {
-        $('ul#soulmate').hide();    // esconde el autocomplete cuando escoge uno
+        $('ul#soulmate').hide();  // Esconde el autocomplete cuando escoge uno
         var prop = { region_id: data.region_id, tipo_region: type, nombre_region: data.nombre_region, bounds: data.bounds }
         seleccionaRegion(prop);
     };

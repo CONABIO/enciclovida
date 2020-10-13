@@ -2,12 +2,8 @@ body{
   background-color: #ececec;
 }
 #map {
-  /*min-height: 350px;*/
-  /*max-height: 400px;*/
-  /*height: auto;
-  width: 100%;*/
-
-  height: 1200px;
+  min-height: 600px;
+  max-height: 600px;
   width: 1200px;
 }
 .panel-resultados {
@@ -110,4 +106,10 @@ div.checkbox.explora_por{
   padding: 5px;
   border-radius: 5px;
   opacity: .6;
+}
+
+#contenedor_especies_itera div.result-img-container img {
+    object-fit: cover;
+    height: 12rem;
+    width: 100%;
 }

@@ -80,6 +80,7 @@ var cargaRegion = function(region)
             meshAlphaScale.clamp(true);
             var tree = new RBush();
             focus = null;
+            mousehover = null;
             var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             var mesh, circMesh;
             return L.pixiOverlay(function (utils) {
@@ -129,7 +130,7 @@ var cargaRegion = function(region)
                         geojson.features.forEach(function (feature, index) {
                             var alpha, color;
                             color = 0xffffff;
-                            alpha = 0.4;
+                            alpha = 0.3;
                             var bounds;
                             
                             if (feature.geometry.type === 'Polygon') {
@@ -341,6 +342,8 @@ var cargaRegion = function(region)
                                             fillOpacity: .1,
                                             fillColor: '#FFFFFF',
                                             stroke: true,
+                                            color: '#104C5B',
+                                            weight: 2,
                                         };
                                     },
                                     interactive: false
@@ -350,14 +353,35 @@ var cargaRegion = function(region)
                             }
                         }
 
+                        function mouseHoverFeature(feat) {
+                            if (mousehover) mousehover.removeFrom(utils.getMap());
+                            if (feat) {
+                                mousehover = L.geoJSON(feat, {
+                                    coordsToLatLng: utils.layerPointToLatLng,
+                                    style: function (feature) {
+                                        return {
+                                            fillOpacity: .1,
+                                            fillColor: '#FFFFFF',
+                                            stroke: true,
+                                            color: 'black',
+                                            weight: 2,
+                                        };
+                                    },
+                                    interactive: false
+                                });
+                                mousehover.addTo(utils.getMap());
+                            }
+                        }
+
                         // Quitando eventos y selecciones previas antes de poner los nuevos
                         utils.getMap().off("click");
                         utils.getMap().off("mousemove");
                         if (focus) focus.removeFrom(utils.getMap());
+                        if (mousehover) mousehover.removeFrom(utils.getMap());
 
                         utils.getMap().on('click', function (e) {
                             var feat = findFeature(e.latlng);
-                            focusFeature(feat);
+                            if (feat != undefined) focusFeature(feat);
                         });
 
                         utils.getMap().on('mousemove', L.Util.throttle(function (e) {
@@ -365,13 +389,20 @@ var cargaRegion = function(region)
                             if (feat) {
                                 var x = e.originalEvent.x + 10, y = e.originalEvent.y - 40; 
                                 $('#nombre-region-hover').html(feat.properties.nombre_region).css({ 'left': x + 'px', 'top': y + 'px' }).show();
-                                //focusFeature(feat);
+                                mouseHoverFeature(feat);
                                 L.DomUtil.addClass(self._container, 'leaflet-interactive');
                             } else {
                                 $('#nombre-region-hover').hide();
+                                if (mousehover) mousehover.removeFrom(utils.getMap());
                                 L.DomUtil.removeClass(self._container, 'leaflet-interactive');
                             }
                         }, 32));
+
+                        utils.getMap().on('mouseout', L.Util.throttle(function (e) {
+                            $('#nombre-region-hover').hide();
+                            if (mousehover) mousehover.removeFrom(utils.getMap());
+                        }, 32));
+
                     })();
                 }
                 firstDraw = false;
