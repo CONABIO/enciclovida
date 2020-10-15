@@ -83,6 +83,7 @@ var cargaMapa = function (id, opc)
     
     if (opc.zoom === undefined) opc.zoom = true;
     if (opc.zoom) map.addControl(zoom);
+    var hash = new L.Hash(map);
 
     //Para asegurarnos que siempre se genere el mapa con el mínimo markup posible
     ponTamaño();
