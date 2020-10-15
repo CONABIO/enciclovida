@@ -35,7 +35,7 @@ var setPaddingHeader = function(){
 
 $(document).ready(function(){
     tv, playerDefaults = {autoplay: 0, autohide: 1, modestbranding: 0, rel: 0, showinfo: 0, controls: 0, disablekb: 1, enablejsapi: 0, iv_load_policy: 3};
-    vid = [{'videoId': 'RBVRckQ8omU', 'startSeconds': 0, 'suggestedQuality': 'hd720'}];
+    vid = [{'videoId': 'RBVRckQ8omU', 'startSeconds': 0, 'suggestedQuality': 'hd480'}];
 
     setPaddingHeader();
     if( !(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) ) {
@@ -44,12 +44,6 @@ $(document).ready(function(){
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-        //evento q hace q las especies destacadas se contraigan de manera "suave" (solo activarlo en desktop en movil no tiene caso)
-        /*$('#especies-destacadas .col').mouseenter(function(){
-            $( this ).addClass('col-5');
-        }).mouseleave(function(){
-            $( this ).removeClass('col-5');
-        });*/
         $('#especies-destacadas .col').hover(function(){$(this).toggleClass('col-5')});
         $('#especies-destacadas').hover(function(){$('#especies-destacadas div.col:first-of-type').toggleClass('col-4')});
     }

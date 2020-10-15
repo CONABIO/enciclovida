@@ -539,23 +539,23 @@ class Proveedor < ActiveRecord::Base
 
     if opc[:inicio]
       self.kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-      self.kml << "<kml xmlns=\"https://www.opengis.net/kml/2.2\">\n"
+      self.kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
       self.kml << "<Document>\n"
 
       # Para las observaciones de grado cientifico, verde
       self.kml << "<Style id=\"Placemark_cientifico\">\n"
-      self.kml << "<IconStyle>\n"
+      self.kml << "<IconStyle><scale>1.5</scale>\n"
       self.kml << "<Icon>\n"
-      self.kml << "<href>#{CONFIG.enciclovida_url}/assets/app/placemarks/verde.png</href>\n"
+      self.kml << "<href>https://maps.google.com/mapfiles/kml/paddle/grn-blank.png</href>\n"
       self.kml << "</Icon>\n"
       self.kml << "</IconStyle>\n"
       self.kml << "</Style>\n"
 
       # Para las observaciones de grado casual, amarillo
       self.kml << "<Style id=\"Placemark_casual\">\n"
-      self.kml << "<IconStyle>\n"
+      self.kml << "<IconStyle><scale>1.5</scale>\n"
       self.kml << "<Icon>\n"
-      self.kml << "<href>#{CONFIG.enciclovida_url}/assets/app/placemarks/amarillo.png</href>\n"
+      self.kml << "<href>https://maps.google.com/mapfiles/kml/paddle/ylw-blank.png</href>\n"
       self.kml << "</Icon>\n"
       self.kml << "</IconStyle>\n"
       self.kml << "</Style>\n"
@@ -681,12 +681,12 @@ class Proveedor < ActiveRecord::Base
     nombre = nombre_comun.present? ? "<b>#{nombre_comun}</b> <i>(#{nombre_cientifico})</i>" : "<i><b>#{nombre_cientifico}</b></i>"
 
     self.kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-    self.kml << "<kml xmlns=\"https://www.opengis.net/kml/2.2\">\n"
+    self.kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
     self.kml << "<Document>\n"
     self.kml << "<Style id=\"normalPlacemark\">\n"
-    self.kml << "<IconStyle>\n"
+    self.kml << "<IconStyle><scale>1.5</scale>\n"
     self.kml << "<Icon>\n"
-    self.kml << "<href>#{CONFIG.enciclovida_url}/assets/app/placemarks/rojo.png</href>\n"
+    self.kml << "<href>https://maps.google.com/mapfiles/kml/paddle/red-blank.png</href>\n"
     self.kml << "</Icon>\n"
     self.kml << "</IconStyle>\n"
     self.kml << "</Style>\n"

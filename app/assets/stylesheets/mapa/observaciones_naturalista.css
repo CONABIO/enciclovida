@@ -3,7 +3,8 @@ El estilo de las observaciones
 **/
 .div-icon-naturalista {
     color: #529214;
-    font-size: 1.8em;
+    font-size: 2rem;
+    text-shadow: 4px 4px 5px #000000;
 }
 
 /**
