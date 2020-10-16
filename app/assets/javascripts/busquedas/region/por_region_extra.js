@@ -3,7 +3,7 @@
  * @param prop, parametros adicionales
  * @returns {string}
  */
-var parametros = function(prop)
+var asignaParametros = function(prop)
 {
     var params_generales = { region_id: $('#region_id').val(), pagina: opciones.filtro.pagina, especie_id: $('#espcie_id').val() };
 
@@ -11,6 +11,31 @@ var parametros = function(prop)
         params_generales = Object.assign({},params_generales, prop);
 
     return $('#b_region').serialize() + '&' + $.param(params_generales);
+};
+
+/**
+ * Asigna los filtros iniciales de acuerdo a los parametros de la pagina
+ */
+var asignaFiltros = function(filtros)
+{
+    // Escogio de grupo iconico
+    /*if (filtros.id != undefined && filtros.nombre == undefined)
+    {
+        $('#id_gi_' + filtros.id).prop('checked', true);
+        $('#id').val(filtros.id);
+    } else if (filtros.id != undefined && filtros.nombre != undefined) {  // escogio un nombre
+        $('#id').val(filtros.id);
+        $('#nombre').val(filtros.nombre);
+    } else if (filtros.nombre != undefined){  // Solo escribio pero no escogio nombre
+        por_nombre();
+        $('#nombre').val(filtros.nombre);
+    }*/
+
+    if (filtros.edo_cons != undefined) $('#edo_cons').val(filtros.edo_cons);
+    if (filtros.dist != undefined) $('#dist').val(filtros.dist);
+    if (filtros.uso != undefined) $('#uso').val(filtros.uso);
+    if (filtros.prior != undefined) $('#prior').val(filtros.prior);
+    if (filtros.ambiente != undefined) $('#ambiente').val(filtros.ambiente);
 };
 
 /**
@@ -27,7 +52,6 @@ var cargaEspecies = function()
             $('#contenedor_especies').empty().html(html);
         else
             $('#contenedor_especies_itera').empty().html(html);
-
         ponTamaño();
 
     }).fail(function() {
@@ -39,7 +63,6 @@ var cargaUnaEspecie = function()
 {
     cargaEspecies();
     colapsaBarra();
-    //dameEjemplaresSnib(data);
 };
 
 /**
@@ -50,7 +73,7 @@ var seleccionaRegion = function(prop)
 {
     if ($('#region_id').val() == prop.region_id) return;
     $('#region_id').val(prop.region_id);
-    $('#region').val(prop.nombre_region);
+    $('#nombre_region').val(prop.nombre_region);
     $('#tipo_region').val(prop.tipo_region.toLowerCase());
 
     opciones.filtros.pagina = 1;
@@ -90,8 +113,8 @@ $(document).ready(function(){
     $('#contenedor_especies').on('click', '.boton-especie-registros', function(){
         cargaEjemplares('/explora-por-region/ejemplares?' + $('#busqueda_region').serialize().replace("&especie_id=", "") + '&especie_id=' + $(this).attr('catalogo_id'));
         opciones.especie_id = $(this).attr('especie_id');
-        opciones.nombre_comun = $(this).attr('nombre_comun');
-        opciones.nombre_cientifico = $(this).attr('nombre_cientifico');
+        //opciones.nombre_comun = $(this).attr('nombre_comun');
+        //opciones.nombre_cientifico = $(this).attr('nombre_cientifico');
         return false;
     });
 
@@ -204,19 +227,12 @@ $(document).ready(function(){
         return false;
     });
 
-    // Para inicializar la barra lateral del mapa
-    L.control.sidebar('sidebar').addTo(map);
-
-    control_capas = L.control.layers({}).addTo(map);
-
-
     // Para asignar el redis adecuado de acuerdo a la caja de texto
-    $('#busqueda-region-tab').on('focus', '#nombre, #region', function() {
+    $('#busqueda-region-tab').on('focus', '#nombre_especie, #nombre_region', function() {
         if ($(this).attr('soulmate') == "true") return;
-
+        
         var tipo_busqueda = $(this).attr('id');
-
-        if (tipo_busqueda == 'nombre') soulmateAsigna('busqueda_region', this.id);
+        if (tipo_busqueda == 'nombre_especie') soulmateAsigna('busqueda_region', this.id);
         else soulmateRegionAsigna(this.id);
     });
 
@@ -227,7 +243,12 @@ $(document).ready(function(){
     });
 
     // Inicializa la carga inicial de las especies
+    // Para inicializar la barra lateral del mapa
+    L.control.sidebar('sidebar').addTo(map);
+    control_capas = L.control.layers({}).addTo(map);
     opciones.filtros.pagina = 1;
+    console.log(opciones)
+    asignaFiltros(opciones.filtros);
     cargaEspecies();
     variablesIniciales();
     despliegaRegiones();

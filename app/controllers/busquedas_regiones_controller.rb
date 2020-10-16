@@ -31,6 +31,7 @@ class BusquedasRegionesController < ApplicationController
     @prioritarias = Catalogo.prioritarias
     @usos = Catalogo.usos
     @ambientes = Catalogo.ambientes
+    asigna_filtros
   end
 
   # Servicio para consultar las especies pr region, contempla filtros y cache
@@ -104,6 +105,30 @@ class BusquedasRegionesController < ApplicationController
 
     else  # Por si no puso un correo valido
       render json: {estatus: false, msg: 'El correo no es válido.'}
+    end
+  end
+
+
+  private
+
+  # REVISADO: Parametros para poner en los filtros y saber cual escogio
+  def asigna_filtros
+    @asigna_filtros = {}
+
+    params.each do |k,v|
+      # Evitamos valores vacios
+      next unless v.present?
+
+      case k
+      when 'edo_cons', 'dist', 'prior', 'estatus', 'uso', 'ambiente'
+        if @asigna_filtros[k].present?
+          @asigna_filtros[k] << v.map{ |x| x.parameterize if x.present?}
+        else
+          @asigna_filtros[k] = v.map{ |x| x.parameterize if x.present?}
+        end
+      else
+        next
+      end
     end
   end
 

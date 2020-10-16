@@ -334,6 +334,7 @@ var cargaRegion = function(region)
 
                         function focusFeature(feat) {
                             if (focus) focus.removeFrom(utils.getMap());
+                            console.log(feat)
                             if (feat) {
                                 focus = L.geoJSON(feat, {
                                     coordsToLatLng: utils.layerPointToLatLng,
