@@ -22,7 +22,7 @@ class Catalogo < ActiveRecord::Base
   scope :prioritarias, -> { where(nivel1: 4, nivel2: 4).where("#{attribute_alias(:nivel3)} > 0") }
   scope :ambientes, -> { where(nivel1: 2, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: AMBIENTE_EQUIV_MARINO) }
   scope :usos, -> { where(id: USOS).order(:descripcion) }
-  scope :evaluacion_conabio, -> { where(nivel1: 4, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: EVALUACION) }
+  scope :evaluacion_conabio, -> { where(nivel1: 4, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where("#{attribute_alias(:nivel3)} < 4") }
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
   USOS = [1216, 1217, 464, 1058, 465, 468, 469, 470, 471, 1055, 1057, 1056]
@@ -62,8 +62,7 @@ class Catalogo < ActiveRecord::Base
     iucn = [iucn[0],iucn[1],iucn[2],iucn[3],iucn[4]]  # Orden propuesto por cgalindo
     cites = self.cites
 
-    eval = self.evaluacion_conabio
-    evaluacion_conabio = [eval[3],eval[0],eval[4],eval[1],eval[6],eval[5],eval[7]]
+    evaluacion_conabio = self.evaluacion_conabio
     evaluacion_conabio.each do |eval|
       eval.sigla = eval.descripcion.split('(')[1].gsub(')','')
       eval.descripcion = eval.descripcion + ' Evaluación CONABIO'
