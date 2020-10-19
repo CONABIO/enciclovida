@@ -231,8 +231,7 @@ $(document).ready(function(){
 
     // Cuando le da clic en recargar
     $('#sidebar').on('click','#recarga-tab',function () {
-        location.reload();
-        return false;
+        window.location.href = '/explora-por-region';
     });
 
     // Inicializa la carga inicial de las especies
