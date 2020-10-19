@@ -53,16 +53,18 @@ module BusquedasHelper
 
   # REVISADO: Filtros para categorías de riesgo y comercio internacional
   def checkboxEstadoConservacion(opciones={})
+    selected = (params[:edo_cons].present? && params[:edo_cons].any?) ? params[:edo_cons] : []
     opc = @@opciones.merge(opciones)
     options = @nom_cites_iucn_todos.map{ |k,v| [t(k), v.map{ |val| [val.descripcion.gsub('-eval',''), val.id, { class: "#{val.descripcion.estandariza}-ev-icon f-fuentes" }] }] }
-    select_tag('edo_cons', grouped_options_for_select(options), opc)
+    select_tag('edo_cons', grouped_options_for_select(options, selected), opc)
   end
 
   # REVISADO: Filtros para Tipos de distribuciónes
   def checkboxTipoDistribucion(opciones={})
+    selected = (params[:dist].present? && params[:dist].any?) ? params[:dist] : []
     opc = @@opciones.merge(opciones)
     options = @distribuciones.map{ |d| [d.descripcion, d.id, { class: "#{d.descripcion.estandariza}-ev-icon f-fuentes" }] }
-    select_tag('dist', options_for_select(options), opc)
+    select_tag('dist', options_for_select(options, selected), opc)
   end
 
   # REVISADO: Filtros para Especies prioritarias para la conservación
@@ -78,15 +80,17 @@ module BusquedasHelper
   end
 
   def selectUsos(opciones={})
+    selected = (params[:uso].present? && params[:uso].any?) ? params[:uso] : []
     opc = @@opciones.merge(opciones)
     options = @usos.map{ |u| [u.descripcion, "#{u.nivel1}-#{u.nivel2}-#{u.nivel3}-#{u.nivel4}-#{u.nivel5}-#{u.nivel6}-#{u.nivel7}", { class: "f-fuentes" }] }
-    select_tag('uso', options_for_select(options), opc)
+    select_tag('uso', options_for_select(options, selected), opc)
   end
 
   def selectAmbiente(opciones={})
+    selected = (params[:ambiente].present? && params[:ambiente].any?) ? params[:ambiente] : []
     opc = @@opciones.merge(opciones)
     options = @ambientes.map{ |a| [a.descripcion, a.id, { class: "#{a.descripcion.estandariza}-ev-icon f-fuentes" }] }
-    select_tag('ambiente', options_for_select(options), opc)
+    select_tag('ambiente', options_for_select(options, selected), opc)
   end
 
   def selectRegiones(opciones={})

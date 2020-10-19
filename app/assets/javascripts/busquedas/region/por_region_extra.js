@@ -3,14 +3,12 @@
  * @param prop, parametros adicionales
  * @returns {string}
  */
-var asignaParametros = function(prop)
+var asignaParametros = function()
 {
-    var params_generales = { region_id: $('#region_id').val(), pagina: opciones.filtro.pagina, especie_id: $('#espcie_id').val() };
-
-    if (prop != undefined)
-        params_generales = Object.assign({},params_generales, prop);
-
-    return $('#b_region').serialize() + '&' + $.param(params_generales);
+    var params = $('#busqueda_region').serialize();
+    var url = new URL(window.location.href);
+    var url_parametros = url.origin + url.pathname + '?' + params + url.hash
+    history.replaceState({}, '', url_parametros)
 };
 
 /**
@@ -30,12 +28,6 @@ var asignaFiltros = function(filtros)
         por_nombre();
         $('#nombre').val(filtros.nombre);
     }*/
-
-    if (filtros.edo_cons != undefined) $('#edo_cons').val(filtros.edo_cons);
-    if (filtros.dist != undefined) $('#dist').val(filtros.dist);
-    if (filtros.uso != undefined) $('#uso').val(filtros.uso);
-    if (filtros.prior != undefined) $('#prior').val(filtros.prior);
-    if (filtros.ambiente != undefined) $('#ambiente').val(filtros.ambiente);
 };
 
 /**
@@ -125,6 +117,7 @@ $(document).ready(function(){
     {
         opciones.filtros.pagina = 1;
         $('#pagina').val(opciones.filtros.pagina);
+        asignaParametros();
         cargaEspecies();
     });
 
@@ -247,7 +240,6 @@ $(document).ready(function(){
     L.control.sidebar('sidebar').addTo(map);
     control_capas = L.control.layers({}).addTo(map);
     opciones.filtros.pagina = 1;
-    console.log(opciones)
     asignaFiltros(opciones.filtros);
     cargaEspecies();
     variablesIniciales();
