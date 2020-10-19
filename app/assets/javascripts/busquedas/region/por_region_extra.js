@@ -35,6 +35,7 @@ var asignaFiltros = function(filtros)
  */
 var cargaEspecies = function()
 {
+    asignaParametros();
     $.ajax({
         url: '/explora-por-region/especies',
         method: 'GET',
@@ -117,7 +118,6 @@ $(document).ready(function(){
     {
         opciones.filtros.pagina = 1;
         $('#pagina').val(opciones.filtros.pagina);
-        asignaParametros();
         cargaEspecies();
     });
 
