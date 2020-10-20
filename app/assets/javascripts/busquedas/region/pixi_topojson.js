@@ -381,17 +381,33 @@ var cargaRegion = function(region)
 
                         utils.getMap().on('click', function (e) {
                             var feat = findFeature(e.latlng);
-                            console.log(feat);
                             if (feat != undefined) focusFeature(feat);
                         });
 
                         utils.getMap().on('mousemove', L.Util.throttle(function (e) {
                             var feat = findFeature(e.latlng);
                             if (feat) {
-                                var x = e.originalEvent.x + 10, y = e.originalEvent.y - 40; 
-                                $('#nombre-region-hover').html(feat.properties.nombre_region).css({ 'left': x + 'px', 'top': y + 'px' }).show();
-                                mouseHoverFeature(feat);
-                                L.DomUtil.addClass(self._container, 'leaflet-interactive');
+                                if (focus == undefined) {
+                                    var x = e.originalEvent.x + 10, y = e.originalEvent.y - 40; 
+                                    $('#nombre-region-hover').html(feat.properties.nombre_region).css({ 'left': x + 'px', 'top': y + 'px' }).show();
+                                    mouseHoverFeature(feat);
+                                    L.DomUtil.addClass(self._container, 'leaflet-interactive');
+                                    
+                                } else {
+                                    var index_layer = Object.keys(focus._layers)[0]
+                                    var region_id = focus._layers[index_layer].feature.properties.region_id;
+                                    
+                                    if (region_id == feat.properties.region_id) {
+                                        $('#nombre-region-hover').hide();
+                                        if (mousehover) mousehover.removeFrom(utils.getMap());
+                                        L.DomUtil.removeClass(self._container, 'leaflet-interactive');
+                                    } else {
+                                        var x = e.originalEvent.x + 10, y = e.originalEvent.y - 40; 
+                                        $('#nombre-region-hover').html(feat.properties.nombre_region).css({ 'left': x + 'px', 'top': y + 'px' }).show();
+                                        mouseHoverFeature(feat);
+                                        L.DomUtil.addClass(self._container, 'leaflet-interactive');
+                                    }
+                                }
                             } else {
                                 $('#nombre-region-hover').hide();
                                 if (mousehover) mousehover.removeFrom(utils.getMap());
