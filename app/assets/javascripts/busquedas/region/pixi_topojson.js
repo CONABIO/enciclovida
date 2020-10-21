@@ -66,6 +66,9 @@ var despliegaRegiones = function () {
 
 var cargaRegion = function(region)
 {
+    focus = null;
+    mousehover = null;
+
     getJSON('topojson/' + region + '.topojson', function (topo) {
         layers[region] = (function () {
             var firstDraw = true;
@@ -79,8 +82,8 @@ var cargaRegion = function(region)
             .range([0.6, 1]);
             meshAlphaScale.clamp(true);
             var tree = new RBush();
-            focus = null;
-            mousehover = null;
+            //focus = null;
+            //mousehover = null;
             var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             var mesh, circMesh;
             return L.pixiOverlay(function (utils) {
@@ -373,11 +376,29 @@ var cargaRegion = function(region)
                             }
                         }
 
+                        function setSelectedRegion()
+                        {
+                            let params = (new URL(window.location.href)).searchParams;
+                            let region_id = params.get('region_id')
+
+                            function findFeatureById(item)
+                            {
+                                if (item.feature.properties.region_id == region_id)
+                                    return true;
+                                else return false;
+                            }
+                            
+                            if (region_id == undefined) return;
+                            let feat = tree.all().find(findFeatureById, region_id);
+                            if (feat != undefined) focusFeature(feat.feature)
+                        }
+
                         // Quitando eventos y selecciones previas antes de poner los nuevos
                         utils.getMap().off("click");
                         utils.getMap().off("mousemove");
                         if (focus) focus.removeFrom(utils.getMap());
                         if (mousehover) mousehover.removeFrom(utils.getMap());
+                        setSelectedRegion();
 
                         utils.getMap().on('click', function (e) {
                             var feat = findFeature(e.latlng);
@@ -398,9 +419,10 @@ var cargaRegion = function(region)
                                     var region_id = focus._layers[index_layer].feature.properties.region_id;
                                     
                                     if (region_id == feat.properties.region_id) {
-                                        $('#nombre-region-hover').hide();
                                         if (mousehover) mousehover.removeFrom(utils.getMap());
                                         L.DomUtil.removeClass(self._container, 'leaflet-interactive');
+                                        var x = e.originalEvent.x + 10, y = e.originalEvent.y - 40; 
+                                        $('#nombre-region-hover').html(feat.properties.nombre_region).css({ 'left': x + 'px', 'top': y + 'px' }).show();
                                     } else {
                                         var x = e.originalEvent.x + 10, y = e.originalEvent.y - 40; 
                                         $('#nombre-region-hover').html(feat.properties.nombre_region).css({ 'left': x + 'px', 'top': y + 'px' }).show();
