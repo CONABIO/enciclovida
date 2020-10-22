@@ -5,7 +5,9 @@
  */
 var asignaParametros = function()
 {
-    var params = $('#busqueda_region').serialize();
+    var params = $("#busqueda_region input").filter(function () {
+        return !!this.value;
+    }).serialize();
     var url = new URL(window.location.href);
     var url_parametros = url.origin + url.pathname + '?' + params + url.hash
     history.replaceState({}, '', url_parametros)
@@ -39,7 +41,9 @@ var cargaEspecies = function()
     $.ajax({
         url: '/explora-por-region/especies',
         method: 'GET',
-        data: $('#busqueda_region').serialize()
+        data: $("#busqueda_region input").filter(function () {
+            return !!this.value;
+        }).serialize()
     }).done(function(html) {
         if (opciones.filtros.pagina == 1)
             $('#contenedor_especies').empty().html(html);
@@ -104,7 +108,9 @@ $(document).ready(function(){
      * Cuando selecciona una especie
      */
     $('#contenedor_especies').on('click', '.boton-especie-registros', function(){
-        cargaEjemplares('/explora-por-region/ejemplares?' + $('#busqueda_region').serialize().replace("&especie_id=", "") + '&especie_id=' + $(this).attr('catalogo_id'));
+        cargaEjemplares('/explora-por-region/ejemplares?' + $("#busqueda_region input").filter(function () {
+            return !!this.value;
+        }).serialize().replace("&especie_id=", "") + '&especie_id=' + $(this).attr('catalogo_id'));
         opciones.especie_id = $(this).attr('especie_id');
         //opciones.nombre_comun = $(this).attr('nombre_comun');
         //opciones.nombre_cientifico = $(this).attr('nombre_cientifico');

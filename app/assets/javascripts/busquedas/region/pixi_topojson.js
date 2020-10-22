@@ -57,7 +57,9 @@ var despliegaRegiones = function () {
 
     var regiones = ["estado", "municipio", "anp"];
     layers = {};
-    //var regiones = ["estado"];
+    let params = (new URL(window.location.href)).searchParams;
+    layers.region_id = params.get('region_id');
+    layers.tipo_region = params.get('tipo_region') || 'estado';
 
     regiones.forEach(function(region){
         cargaRegion(region);
@@ -378,26 +380,34 @@ var cargaRegion = function(region)
 
                         function setSelectedRegion()
                         {
-                            let params = (new URL(window.location.href)).searchParams;
-                            let region_id = params.get('region_id')
-
                             function findFeatureById(item)
                             {
-                                if (item.feature.properties.region_id == region_id)
+                                if (item.feature.properties.region_id == layers.region_id)
                                     return true;
                                 else return false;
                             }
                             
-                            if (region_id == undefined) return;
-                            let feat = tree.all().find(findFeatureById, region_id);
+                            if (layers.region_id == undefined) return;
+                            let feat = tree.all().find(findFeatureById, layers.region_id);
                             if (feat != undefined) focusFeature(feat.feature)
                         }
 
-                        // Quitando eventos y selecciones previas antes de poner los nuevos
-                        utils.getMap().off("click");
-                        utils.getMap().off("mousemove");
-                        if (focus) focus.removeFrom(utils.getMap());
-                        if (mousehover) mousehover.removeFrom(utils.getMap());
+                        function cleanEventVars() {
+                            utils.getMap().off("click");
+                            utils.getMap().off("mousemove");
+                            if (focus) focus.removeFrom(utils.getMap());
+                            if (mousehover) mousehover.removeFrom(utils.getMap());
+
+                            let i = 0;
+                            utils.getMap().eachLayer(function(layer){ 
+                                i += 1; 
+                                //console.log(layer)
+                            });
+
+                            //console.log(i)
+                        }
+
+                        cleanEventVars();
                         setSelectedRegion();
 
                         utils.getMap().on('click', function (e) {
@@ -459,13 +469,15 @@ var cargaRegion = function(region)
         switch (region) {
             case 'estado':
                 control_capas.addBaseLayer(layers[region], 'División estatal');
-                layers[region].addTo(map);
+                if (layers.tipo_region == region) layers[region].addTo(map);
                 break;
             case 'municipio':
                 control_capas.addBaseLayer(layers[region], 'División municipal');
+                if (layers.tipo_region == region) layers[region].addTo(map);
                 break;
             case 'anp':
                 control_capas.addBaseLayer(layers[region], 'División por ANP');
+                if (layers.tipo_region == region) layers[region].addTo(map);
                 break;                    
         }
     });
