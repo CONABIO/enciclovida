@@ -5,7 +5,7 @@ class BusquedaAvanzada < Busqueda
   # REVISADO: Regresa la busqueda avanzada
   def resultados_avanzada
     paginado_y_offset
-    estatus
+    estatus unless params[:checklist] == '1'
     solo_publicos
     estado_conservacion
     tipo_distribucion
@@ -57,7 +57,8 @@ class BusquedaAvanzada < Busqueda
 
   def checklist
     # Saca todos los IDS con los criterios y los ancestros
-    ids_checklist = taxones.where(estatus: 2).select_ancestry.map{ |t| t.ancestry.split(',') }.flatten.uniq!
+    self.taxones = taxones.where(estatus: 2) if params[:f_check].present? && params[:f_check].include?('val')
+    ids_checklist = taxones.select_ancestry.map{ |t| t.ancestry.split(',') }.flatten.uniq!
     self.taxones = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional).datos_checklist.categorias_checklist.where(id: ids_checklist)
 
     # Saca el conteo de los taxones en las 7 categorias principales
@@ -85,9 +86,6 @@ class BusquedaAvanzada < Busqueda
     if !params[:f_check].include?('val') && !params[:f_check].include?('interac')
       self.taxones = taxones.includes(especies_estatus: [:especie])
     end
-
-
-
   end
 
 end

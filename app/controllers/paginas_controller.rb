@@ -27,7 +27,7 @@ class PaginasController < ApplicationController
     opciones_posibles
     opciones_seleccionadas
 
-    file = File.dirname(__FILE__) << '/../../public/exoticas-invasoras.csv'
+    file = File.dirname(__FILE__) << '/../../public/exoticas_invasoras/exoticas-invasoras.csv'
     exoticas_url = '/pdfs/exoticas_invasoras/'
     instrumentos_url = '/pdfs/exoticas_invasoras/instrumentos_legales/'
     exoticas_dir = File.dirname(__FILE__) << '/../../public' << exoticas_url
@@ -49,8 +49,17 @@ class PaginasController < ApplicationController
       pdf = false
       datos = []
 
-      if row['enciclovida_id'].present?
-        t = Especie.find(row['enciclovida_id'])
+      t = if row['enciclovida_id'].present?
+            begin
+              Especie.find(row['enciclovida_id'])
+            rescue
+              nil
+            end
+          else  
+            nil
+          end
+
+      if t
         datos << t.adicional.try(:foto_principal)
         datos << t
 
@@ -125,11 +134,11 @@ class PaginasController < ApplicationController
   def opciones_posibles
     @select = {}
     @select[:grupos] = ['Algas y protoctistas', 'Anfibios', 'Arácnidos', 'Aves', 'Crustáceos', 'Hongos', 'Insectos', 'Mamíferos', 'Moluscos', 'Otros invertebrados', 'Peces', 'Plantas', 'Reptiles', 'Virus y bacterias']
-    @select[:origenes] = ['Criptogénica', 'Exótica', 'Nativa']
-    @select[:presencias] = ['Ausente', 'Confinado', 'Indeterminada', 'Por confirmar', 'Presente']
+    @select[:origenes] = ['Criptogénica', 'Exótica', 'Nativa', 'Nativa/Exótica', 'Se desconoce']
+    @select[:presencias] = ['Ausente', 'Confinado', 'Indeterminada', 'Por confirmar', 'Presente', 'Se desconoce']
     @select[:instrumentos_legales] = ['Acuerdo enfermedades y plagas SAGARPA 2016', 'Acuerdo especies exóticas SEMARNAT', 'MOD NOM-005-FITO-1995', 'NOM-016-SEMARNAT-2013', 'NOM-043-FITO-1999']
-    @select[:ambientes] = ['Dulceacuícola', 'Marino', 'Parásito', 'Parásito Dulceacuícola', 'Parásito Marino', 'Párasito Terrestre', 'Salobre', 'Terrestre']  # Se necesita estandarizar
-    @select[:estatus] = ['Invasora']
+    @select[:ambientes] = ['Dulceacuícola', 'Marino', 'Salobre', 'Terrestre', 'Se desconoce']  # Se necesita estandarizar
+    @select[:estatus] = ['Invasora', 'No invasora']
     @select[:fichas] = ['Sí', 'No']
   end
 
