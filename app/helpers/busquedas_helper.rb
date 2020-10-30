@@ -111,26 +111,52 @@ module BusquedasHelper
   end
 
   # Para las descargas
-  def campoCorreo(recurso)
+  def campoCorreo(tipo_descarga='')
+    return if tipo_descarga == 'checklist'
     html = ''
 
     if usuario_signed_in?
-      html << text_field_tag('correo-' + recurso, current_usuario.email, class: 'form-control d-none', placeholder: 'correo ...')
+      html << hidden_field_tag('correo', current_usuario.email)
     else
-      html << label_tag('correo-'+recurso, 'Correo electrónico ', class: 'control-label')
-      html << text_field_tag('correo-'+recurso, nil, class: 'form-control', placeholder: 'correo ...')
+      html << label_tag('correo', 'Correo electrónico ', class: 'control-label')
+      html << text_field_tag('correo', nil, class: 'form-control', placeholder: 'correo ...')
     end
 
-    html
+    html.html_safe
   end
 
   # El boton de las descargas
-  def botonDescarga(recurso, checklist = false)
-    if usuario_signed_in? || checklist
-      "<button type='button' class='btn btn-success' id='boton-descarga-#{recurso}'>Enviar</button>"
+  def botonDescarga(tipo_descarga)
+    if usuario_signed_in? || tipo_descarga == 'checklist'
+      "<button type='button' class='btn btn-success boton-descarga'>Enviar</button>".html_safe  
     else
-      "<button type='button' class='btn btn-success' id='boton-descarga-#{recurso}' disabled='disabled'>Enviar</button>"
+      "<button type='button' class='btn btn-success boton-descarga' >Enviar</button>".html_safe
     end
+  end
+
+  # Los checkbox para que el usuario decida que descargar, se ocupa en descarga de busqueda basica, avanzada, por region y el checklist
+  def camposDescarga(tipo_descarga=nil)
+    checkbox = ''
+    campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', amb: 'Ambiente', nom_com: 'Nombres comunes', biblio: 'Bibliografía' }
+    
+    case tipo_descarga
+    when 'basica'
+    when 'avanzada'
+      campos.merge!({ taxa_sup: 'Taxonomía superior', url_ev: 'URL de la especie en enciclovida' })
+    when 'region'
+      campos.merge!({ num_reg: 'Número de registros', taxa_sup: 'Taxonomía superior', url_ev: 'URL de la especie en enciclovida' })
+    when 'checklist'
+      campos.merge!({ val: 'Solo válidos/aceptados', dist: 'Distribución (reportada en literatura)', residencia: 'Categoría de residencia (aves)', formas: 'Formas de crecimiento (plantas)', interac: 'Interacciones biológicas' })  
+    end
+    
+    campos.each do |valor, label|
+      checkbox << "<div class='custom-control custom-switch'>"
+      checkbox << check_box_tag('f_desc[]', valor, false, class: 'custom-control-input', id: "f_desc_#{valor}")
+      checkbox << "<label class = 'custom-control-label' for='f_desc_#{valor}'>#{label}</label>"
+      checkbox << "</div>"
+    end
+
+    checkbox.html_safe
   end
 
   # Despliega el checklist
@@ -345,7 +371,7 @@ module BusquedasHelper
   # Los checkbox para que el usuario decida que descargar
   def campoDescargaChecklist
     campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', dist: 'Distribución (reportada en literatura)', amb: 'Ambiente', val: 'Solo válidos/aceptados', nom_com: 'Nombres comunes', biblio: 'Bibliografía', residencia: 'Categoría de residencia (aves)', formas: 'Formas de crecimiento (plantas)', interac: 'Interacciones biológicas' }
-    checkBoxes = '<h6>Selecciona los campos a desplegar en el checklist</h6>'
+    checkBoxes = '<h6>Selecciona los campos a desplegr en el checklist</h6>'
 
     campos.each do |valor, label|
       checkBoxes << "<div class='custom-control custom-switch'>"
