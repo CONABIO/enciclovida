@@ -30,7 +30,7 @@ class Pmc::PecesController < Pmc::PmcController
       end
     end
 
-    @doc = @doc.to_html.force_encoding('UTF-8').gsub('Ã¡','á').gsub('Ã©','é').gsub('Ã','í').gsub('í³','ó').gsub('íº','ú').gsub('í','Á')
+    @doc = @doc.to_html.gsub('&Atilde;&iexcl;','á').gsub('&Atilde;&copy;','é').gsub('&Atilde;&shy;','í').gsub('&Atilde;&sup3;','ó').gsub('&Atilde;&ordm;','ú').gsub('&Atilde;&#129;','Á').gsub('<img src="/peces/imagenes/aplicacion/bp.png" width="6" height="6">','')
   end
 
   # Busqueda por pez y marisco
