@@ -1,40 +1,27 @@
 <%= form_tag explora_por_region_especies_path, :method => :get, :class => 'form-horizontal', :id => :busqueda_region do %>
+  <div class="col d-flex justify-content-center">
+    <%= text_field_tag :nombre_especie, params.present? ? params[:nombre_especie] : nil, :maxlength => 255, :placeholder => 'Nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-lg mr-5 mb-2' %>
+    <%= hidden_field_tag :especie_id, params.present? ? params[:especie_id] : nil %>
+    <%= hidden_field_tag :pagina, params.present? && params[:pagina].present? ? params[:pagina] : 1 %>
+    <%= hidden_field_tag :nivel, params.present? && params[:nivel].present? ? params[:nivel] : nil %>
+    <%= hidden_field_tag :cat, params.present? && params[:cat].present? ? params[:cat] : nil %>
+    
+    <%= text_field_tag :nombre_region, params.present? ? params[:nombre_region] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control input-lg mb-2' %>
+    <%= hidden_field_tag :region_id, params.present? ? params[:region_id] : nil %>
+    <%= hidden_field_tag :tipo_region, params.present? ? params[:tipo_region] : nil %>
+  </div>
 
   <div id="sidebar" class="sidebar collapsed">
     <div class="sidebar-tabs">
       <ul role="tablist">
-        <li><a href="#busqueda-region-tab" role="tab"><i class="fa fa-search"></i></a></li>
         <li><a href="#grupos-tab" role="tab"><i class="aves-ev-icon" style="font-size: 1.5em;"></i></a></li>
         <li><a href="#filtros-tab" role="tab"><i class="fa fa-filter"></i></a></li>
-      </ul>
-
-      <ul role="tablist">
         <li><a href="#settings" role="tab" id="recarga-tab"><i class="fa fa-refresh"></i></a></li>
       </ul>
     </div>
 
     <div class="sidebar-content">
-      <div class="sidebar-pane" id="busqueda-region-tab">
-        <h1 class="sidebar-header mb-4">
-          Busqueda por especie o región
-          <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
-        </h1>
-
-        <h4>Busca por nombre común o científico</h4>
-        <%= hidden_field_tag :especie_id, params.present? ? params[:especie_id] : nil %>
-        <%= text_field_tag :nombre_especie, params.present? ? params[:nombre_especie] : nil, :maxlength => 255, :placeholder => 'Nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-lg' %>
-        
-        <%= hidden_field_tag :pagina, params.present? && params[:pagina].present? ? params[:pagina] : 1 %>
-        <%#= hidden_field_tag :nivel, params.present? && params[:nivel].present? ? params[:nivel] : nil %>
-        <%#= hidden_field_tag :cat, params.present? && params[:cat].present? ? params[:cat] : nil %>
-        
-        <hr />
-        <h4>Busca por estado, municipio o ANP</h4>
-        <%= hidden_field_tag :region_id, params.present? ? params[:region_id] : nil %>
-        <%= text_field_tag :nombre_region, params.present? ? params[:nombre_region] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control input-lg' %>
-        <%= hidden_field_tag :tipo_region, params.present? ? params[:tipo_region] : nil %>
-      </div>
-
+      
       <div class="sidebar-pane" id="grupos-tab">
         <h1 class="sidebar-header mb-4">Filtros adicionales<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
         <h4>Grupo taxonómico</h4>

@@ -56,12 +56,6 @@ var cargaEspecies = function()
     });
 };
 
-var cargaUnaEspecie = function()
-{
-    cargaEspecies();
-    colapsaBarra();
-};
-
 /**
  * Asigna algunos valores antes de cargar la region con topojson
  * @param prop
@@ -227,9 +221,10 @@ $(document).ready(function(){
     });
 
     // Para asignar el redis adecuado de acuerdo a la caja de texto
-    $('#busqueda-region-tab').on('focus', '#nombre_especie, #nombre_region', function() {
+    $('#busqueda_region').on('focus', '#nombre_especie, #nombre_region', function() {
         if ($(this).attr('soulmate') == "true") return;
-        
+        $(this).attr('soulmate', 'true');
+
         var tipo_busqueda = $(this).attr('id');
         if (tipo_busqueda == 'nombre_especie') soulmateAsigna('busqueda_region', this.id);
         else soulmateRegionAsigna(this.id);

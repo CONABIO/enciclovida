@@ -1,25 +1,29 @@
 <% if @resp[:estatus] %>
   <% if @resp[:totales].present? && params[:pagina].to_i == 1 %>
-    <div class="col-12">
-      <h3>
-        <strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
-        | <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros
-      </h3>
-        
-      <% if @resp[:totales] > 0 %>
-        <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
-        
-        <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Descargas
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <%= link_to("Lista de especies en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-region', 'onclick': "$('#modal-descarga-region').modal('toggle');return false;", class: 'dropdown-item') %>
-            <%#= link_to("Guía de campo en PDF", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
+    <div class="row">
+      <div class="col-9">
+        <h3>
+          <strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
+          | <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros
+        </h3>
+      </div>
+
+      <div class="col-3">
+        <% if @resp[:totales] > 0 %>
+          <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
+          
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Descargas
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <%= link_to("Lista de especies en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-region', 'onclick': "$('#modal-descarga-region').modal('toggle');return false;", class: 'dropdown-item') %>
+              <%#= link_to("Guía de campo en PDF", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
+            </div>
           </div>
-        </div>
-      <% end %>
-      
+        <% end %>
+
+      </div>
     </div>
   <% end %>
 

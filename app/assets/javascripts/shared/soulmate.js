@@ -69,9 +69,10 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 $('#pmc_pez_especie_id').attr('value', data.id);
                 break;
             case 'busqueda_region':
+                console.log('acaso aca?')
                 $('#especie_id').attr('value', data.id);
                 $('#' + elemento).val(data.nombre_cientifico);
-                cargaUnaEspecie();
+                cargaEspecies();
                 break;
             case 'soloAsigna':
                 $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
@@ -156,8 +157,6 @@ var soulmateRegionAsigna = function(elem)
         minQueryLength: 2,
         maxResults:     10
     });
-
-    $('#' + elemento).attr('soulmate', 'true');
 };
 
 var dameTaxonValido = function(especie_id)
