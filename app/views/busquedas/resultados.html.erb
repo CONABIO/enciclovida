@@ -1,4 +1,5 @@
 <% content_for(:extrajs) do %>
+  <%= javascript_include_tag 'jquery-ui', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'lib/scrolling', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'busquedas/avanzada/basica', 'data-turbolinks-track' => true %>
 
@@ -39,9 +40,6 @@
 <% content_for(:title) do %>
   <%= @titulo='Resultados' %>
 <% end %>
-<%- content_for(:extracss) do -%>
-  <%= stylesheet_link_tag "busquedas/avanzada/avanzada", media: "all", "data-turbolinks-track" => true %>
-<%- end -%>
 
 <% if notice.present? %>
   <div class="alert alert-warning col-12" role="alert"><%= notice %></div>
@@ -70,7 +68,7 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <%= link_to("Datos en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-avanzada', 'onclick': "$('#modal-descarga-avanzada').modal('toggle');return false;", class: 'dropdown-item') %>
-          <%= link_to("Lista/checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
+          <%= link_to("Lista/checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') if params[:busqueda] == 'avanzada' %>
         </div>
       </div>
     <% end %>
@@ -114,6 +112,6 @@
 
 <% if @totales > 0 %>
   <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@totales, delimiter: ','), tipo_descarga: 'avanzada' } %>
-  <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@totales, delimiter: ','), tipo_descarga: 'checklist' } %>
+  <%= render(partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@totales, delimiter: ','), tipo_descarga: 'checklist' }) if params[:busqueda] == 'avanzada' %>
 <% end %>
 

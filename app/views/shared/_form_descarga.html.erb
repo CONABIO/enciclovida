@@ -1,5 +1,5 @@
 <%# Es necesario pasar 2 variables "totales" (numero de resultados a descargar) y "tipo_descarga" (basica, avanzada, region, checklist) %>
-<%= javascript_include_tag 'busquedas/region/descargas' %>
+<%= javascript_include_tag 'busquedas/region/descargas' if params[:controller] == 'busquedas_regiones' %>
 
 <div class="modal fade" id="modal-descarga-<%= tipo_descarga %>" tabindex="-1" role="dialog" aria-labelledby="modal-descarga-label">
   <div class="modal-dialog" role="document">
