@@ -31,6 +31,7 @@ class Lista < ActiveRecord::Base
   COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombre_comun_principal x_nombres_comunes x_categoria_taxonomica
                         x_estatus x_tipo_distribucion
                         cita_nomenclatural nombre_autoridad)
+  COLUMNAS_BASICAS = %w(id nombre_cientifico x_categoria_taxonomica x_estatus)                        
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
 
   def after_initialize
@@ -57,14 +58,18 @@ class Lista < ActiveRecord::Base
 
   # Para crear el excel con los datos
   def to_excel(opts={})
+    asigna_columnas_extra
     xlsx = RubyXL::Workbook.new
     sheet = xlsx[0]
     sheet.sheet_name = 'Resultados'
     fila = 1  # Para no sobreescribir la cabecera
     columna = 0
-    cols = columnas_array if columnas_array.present?  # Para no sobreescribir el atributo original columnas
-    cols = columnas.split(',') if columnas.present?
-
+    
+    cols = if columnas_array.present?
+              columnas_array
+           else
+              columnas.split(',') if columnas.present?
+           end
 
     # Para la cabecera
     cols.each do |a|
@@ -233,6 +238,10 @@ class Lista < ActiveRecord::Base
         cites = taxon.catalogos.cites.distinct
         next unless cites.any?
         self.taxon.x_cites = cites[0].descripcion
+      when 'x_ambiente'
+        ambiente = taxon.catalogos.ambientes
+        next unless ambiente.any?
+        self.taxon.x_ambiente = ambiente.map(&:descripcion).join(', ')
       when 'x_naturalista_fotos'
         next unless adicional = taxon.adicional
         if proveedor = taxon.proveedor
@@ -241,6 +250,11 @@ class Lista < ActiveRecord::Base
       when 'x_bdi_fotos'
         next unless adicional = taxon.adicional
         self.taxon.x_bdi_fotos = "#{CONFIG.site_url}especies/#{taxon.id}/bdi-photos" if adicional.foto_principal.present?
+      when 'x_bibliografia'
+        biblio = taxon.bibliografias
+        self.taxon.x_bibliografia = biblio.map(&:cita_completa).join(', ')
+      when 'x_url_ev'
+        self.taxon.x_url_ev = "#{CONFIG.site_url}especies/#{taxon.id}-#{taxon.nombre_cientifico.estandariza}"
       else
         next
       end  # End switch
@@ -273,6 +287,29 @@ class Lista < ActiveRecord::Base
 
   def quita_repetidos
     self.cadena_especies = cadena_especies.split(',').compact.uniq.join(',') if cadena_especies.present?
+  end
+
+  def asigna_columnas_extra
+    return unless columnas.present?
+    self.columnas_array = columnas.split(',')
+    
+    if columnas_array.include?('x_cat_riesgo')
+      self.columnas_array = columnas_array << COLUMNAS_RIESGO_COMERCIO
+      self.columnas_array.delete('x_cat_riesgo')
+    end
+    
+    if columnas_array.include?('x_taxa_sup')
+      self.columnas_array = columnas_array << COLUMNAS_CATEGORIAS_PRINCIPALES
+      self.columnas_array.delete('x_taxa_sup')
+    end
+    
+    if columnas_array.include?('x_col_basicas')
+      self.columnas_array = columnas_array << COLUMNAS_BASICAS
+      self.columnas_array.delete('x_col_basicas')
+    end
+
+    self.columnas_array = columnas_array.flatten
+    self.columnas = columnas_array.join(',')
   end
 
 end

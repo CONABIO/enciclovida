@@ -311,8 +311,8 @@ class BusquedasController < ApplicationController
   # REVISADO: La descarga de taxa en busqueda basica o avanzada
   def descargar_taxa_excel
     lista = Lista.new
-    columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
-    lista.columnas = columnas.join(',')
+    columnas = params[:f_desc].join(',')
+    lista.columnas = columnas
     lista.formato = 'xlsx'
     lista.cadena_especies = request.original_url
     lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job

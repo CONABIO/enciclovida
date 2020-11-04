@@ -57,8 +57,8 @@ class BusquedaAvanzada < Busqueda
 
   def checklist
     # Saca todos los IDS con los criterios y los ancestros
-    self.taxones = taxones.where(estatus: 2) if params[:f_desc].present? && params[:f_desc].include?('val')
-    ids_checklist = taxones.select_ancestry.map{ |t| t.ancestry.split(',') }.flatten.uniq!
+    self.taxones = taxones.where(estatus: 2) if params[:f_desc].present? && params[:f_desc].include?('x_estatus')  
+    ids_checklist = taxones.select_ancestry.map{ |t| t.ancestry.split(',') }.flatten.reject(&:empty?).uniq!
     self.taxones = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional).datos_checklist.categorias_checklist.where(id: ids_checklist)
 
     # Saca el conteo de los taxones en las 7 categorias principales
@@ -68,22 +68,22 @@ class BusquedaAvanzada < Busqueda
 
     params[:f_desc].each do |campo|
       case campo
-      when 'tipo_dist'
+      when 'x_tipo_distribucion'
         self.taxones = taxones.includes(:tipos_distribuciones)
-      when 'cat_riesgo', 'amb', 'formas', 'residencia'
+      when 'x_cat_riesgo', 'x_ambiente', 'x_formas', 'x_residencia'
         self.taxones = taxones.includes(:catalogos)
-      when 'dist'
+      when 'x_distribucion'
         self.taxones = taxones.includes(:regiones)
-      when 'nom_com'
+      when 'x_nombres_comunes'
         self.taxones = taxones.includes(:nombres_comunes)
-      when 'biblio'
+      when 'x_bibliografia'
         self.taxones = taxones.includes(:bibliografias)
-      when 'interac'
+      when 'x_interaccion'
         self.taxones = taxones.includes(:regiones, especies_estatus: [especie: [:regiones]])
       end
     end
 
-    if !params[:f_desc].include?('val') && !params[:f_desc].include?('interac')
+    if !params[:f_desc].include?('x_estatus') && !params[:f_desc].include?('x_interaccion')
       self.taxones = taxones.includes(especies_estatus: [:especie])
     end
   end

@@ -478,6 +478,8 @@ es:
       nombre_cientifico: Nombre científico
       sis_clas_cat_dicc: Sistema de clasificación, catalogo o diccionario
       updated_at: Fecha de última modificación
+      x_ambiente: 'Ambiente'
+      x_bibliografia : 'Bibliografía'
       x_bdi_fotos: Fotos del Banco de Imágenes - CONABIO
       x_categoria_taxonomica: Categoria taxonómica
       x_cites: Comercio Internacional (CITES)
@@ -491,7 +493,9 @@ es:
       x_nombres_comunes: Nombres comúnes
       x_snib_id: Identificador del SNIB
       x_snib_reino: Reino en el SNIB
+      x_taxa_sup: 'Taxonomía superior'
       x_tipo_distribucion: Tipo distribución
+      x_url_ev: 'URL Enciclovida'
     categorias:
       x_reino: Reino
       x_division: división

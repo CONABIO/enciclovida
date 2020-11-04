@@ -14,7 +14,7 @@
         </p>
 
         <div class="form-group has-feedback">
-          <%= form_with(url: '', method: 'get', id: "form-descarga-#{tipo_descarga}") do %>
+          <%= form_with(url: '', method: 'get') do %>
             <div class="col-12 mb-3">
               <%= campoCorreo(tipo_descarga) %><br />
               <%= camposDescarga(tipo_descarga) %>

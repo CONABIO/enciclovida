@@ -116,10 +116,10 @@ module BusquedasHelper
     html = ''
 
     if usuario_signed_in?
-      html << hidden_field_tag('correo', current_usuario.email)
+      html << hidden_field_tag('correo', current_usuario.email, id: nil)
     else
       html << label_tag('correo', 'Correo electrónico ', class: 'control-label')
-      html << text_field_tag('correo', nil, class: 'form-control', placeholder: 'correo ...')
+      html << text_field_tag('correo', nil, class: 'form-control', placeholder: 'correo ...', id: nil)
     end
 
     html.html_safe
@@ -130,30 +130,36 @@ module BusquedasHelper
     if usuario_signed_in? || tipo_descarga == 'checklist'
       "<button type='button' class='btn btn-success boton-descarga'>Enviar</button>".html_safe  
     else
-      "<button type='button' class='btn btn-success boton-descarga' >Enviar</button>".html_safe
+      "<button type='button' class='btn btn-success boton-descarga' disabled='disabled'>Enviar</button>".html_safe
     end
   end
 
   # Los checkbox para que el usuario decida que descargar, se ocupa en descarga de busqueda basica, avanzada, por region y el checklist
   def camposDescarga(tipo_descarga=nil)
     checkbox = ''
-    campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', amb: 'Ambiente', nom_com: 'Nombres comunes', biblio: 'Bibliografía' }
+    campos = { x_tipo_distribucion: 'Tipo de distribución', x_cat_riesgo: 'Categorías de riesgo y comercio internacional', x_ambiente: 'Ambiente', x_nombres_comunes: 'Nombres comunes', x_bibliografia: 'Bibliografía' }
     
     case tipo_descarga
     when 'basica'
     when 'avanzada'
-      campos.merge!({ taxa_sup: 'Taxonomía superior', url_ev: 'URL de la especie en enciclovida' })
+      campos.merge!({ x_col_basicas: 'Columnas basicas', x_taxa_sup: 'Taxonomía superior', x_url_ev: 'URL de la especie en enciclovida' })
     when 'region'
-      campos.merge!({ num_reg: 'Número de registros', taxa_sup: 'Taxonomía superior', url_ev: 'URL de la especie en enciclovida' })
+      campos.merge!({ x_col_basicas: 'Columnas basicas', x_taxa_sup: 'Taxonomía superior', x_url_ev: 'URL de la especie en enciclovida', x_num_reg: 'Número de registros' })
     when 'checklist'
-      campos.merge!({ val: 'Solo válidos/aceptados', dist: 'Distribución (reportada en literatura)', residencia: 'Categoría de residencia (aves)', formas: 'Formas de crecimiento (plantas)', interac: 'Interacciones biológicas' })  
+      campos.merge!({ x_estatus: 'Solo válidos/aceptados', x_distribucion: 'Distribución (reportada en literatura)', x_residencia: 'Categoría de residencia (aves)', x_formas: 'Formas de crecimiento (plantas)', x_interaccion: 'Interacciones biológicas' })  
     end
     
     campos.each do |valor, label|
-      checkbox << "<div class='custom-control custom-switch'>"
-      checkbox << check_box_tag('f_desc[]', valor, false, class: 'custom-control-input', id: "f_desc_#{valor}")
-      checkbox << "<label class = 'custom-control-label' for='f_desc_#{valor}'>#{label}</label>"
-      checkbox << "</div>"
+      if valor.to_s == 'x_col_basicas'
+        checkbox << check_box_tag('f_desc[]', valor, true, style: 'display: none;', id: "f_#{tipo_descarga}_#{valor}")
+      else
+        checkbox << "<div class='custom-control custom-switch'>"
+        checkbox << check_box_tag('f_desc[]', valor, false, class: "custom-control-input", id: "f_#{tipo_descarga}_#{valor}")
+        checkbox << "<label class='custom-control-label' for='f_#{tipo_descarga}_#{valor}'>#{label}</label>"
+        checkbox << "</div>"
+      end
+
+      
     end
 
     checkbox.html_safe
@@ -189,8 +195,8 @@ module BusquedasHelper
 
   # Devuelve los nombres comunes agrupados por lengua, solo de catalogos
   def nombresComunesChecklist(taxon)
-    return unless params[:f_check].present?
-    return unless params[:f_check].include?('nom_com')
+    return unless params[:f_desc].present?
+    return unless params[:f_desc].include?('x_nombres_comunes')
 
     nombres = taxon.dame_nombres_comunes_catalogos
     return '' unless nombres.any?
@@ -211,12 +217,12 @@ module BusquedasHelper
     sinonimos_basonimo = {sinonimos: [], basonimo: [], hospedero: [], parasito: []}
 
     estatus_permitidos = []
-    if params[:f_check].present? && !params[:f_check].include?('val')
+    if params[:f_desc].present? && !params[:f_desc].include?('x_estatus')
       estatus_permitidos << 1
       estatus_permitidos << 2
     end
 
-    if params[:f_check].present? && params[:f_check].include?('interac')
+    if params[:f_desc].present? && params[:f_desc].include?('x_interaccion')
       estatus_permitidos << 7
     end
 
@@ -273,7 +279,7 @@ module BusquedasHelper
 
   # Regresa el tipo de distribucion
   def tipoDistribucionChecklist(taxon)
-    if params[:f_check].present? && params[:f_check].include?('tipo_dist')
+    if params[:f_desc].present? && params[:f_desc].include?('x_tipo_distribucion')
       taxon.tipos_distribuciones.map(&:descripcion).uniq
     end
   end
@@ -286,10 +292,10 @@ module BusquedasHelper
     tipo_dist = tipoDistribucionChecklist(taxon)
     res[:catalogos] = tipo_dist if tipo_dist
 
-    catalogos_permitidos << 4 if params[:f_check].present? && params[:f_check].include?('cat_riesgo')
-    catalogos_permitidos << 2 if params[:f_check].present? && params[:f_check].include?('amb')
-    catalogos_permitidos << 16 if params[:f_check].present? && params[:f_check].include?('residencia')
-    catalogos_permitidos << 18 if params[:f_check].present? && params[:f_check].include?('formas')
+    catalogos_permitidos << 4 if params[:f_desc].present? && params[:f_desc].include?('x_cat_riesgo')
+    catalogos_permitidos << 2 if params[:f_desc].present? && params[:f_desc].include?('x_ambiente')
+    catalogos_permitidos << 16 if params[:f_desc].present? && params[:f_desc].include?('x_residencia')
+    catalogos_permitidos << 18 if params[:f_desc].present? && params[:f_desc].include?('x_formas')
 
     if catalogos_permitidos.any?
       taxon.catalogos.each do |catalogo|
@@ -327,8 +333,8 @@ module BusquedasHelper
   end
 
   def distribucionChecklist(taxon, seccion=true)
-    return unless params[:f_check].present?
-    return unless params[:f_check].include?('dist') || params[:f_check].include?('interac')
+    return unless params[:f_desc].present?
+    return unless params[:f_desc].include?('x_distribucion') || params[:f_desc].include?('x_interaccion')
 
     regiones = taxon.regiones.map{ |r| t("estados_siglas.#{r.nombre_region.estandariza}") if r.tipo_region_id == 2 }.flatten.compact.sort
     return regiones unless seccion
@@ -337,8 +343,8 @@ module BusquedasHelper
 
   # Va imprimiendo los numeros de las bibliografias de los nombres cientificos
   def bibliografiaNombreChecklist(taxon)
-    return unless params[:f_check].present?
-    return unless params[:f_check].include?('biblio')
+    return unless params[:f_desc].present?
+    return unless params[:f_desc].include?('x_bibliografia')
     referencias = []
 
     taxon.bibliografias.each do |bibliografia|
@@ -355,8 +361,8 @@ module BusquedasHelper
 
   # Imprime las bibliografias al final
   def bibliografiasChecklist
-    return unless params[:f_check].present?
-    return unless params[:f_check].include?('biblio')
+    return unless params[:f_desc].present?
+    return unless params[:f_desc].include?('x_bibliografia')
     return unless @bibliografias.any?
 
     html = "<h5 class='etiqueta-checklist'>Bibliografía</h5>"
@@ -366,21 +372,6 @@ module BusquedasHelper
     end
 
     html.html_safe
-  end
-
-  # Los checkbox para que el usuario decida que descargar
-  def campoDescargaChecklist
-    campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', dist: 'Distribución (reportada en literatura)', amb: 'Ambiente', val: 'Solo válidos/aceptados', nom_com: 'Nombres comunes', biblio: 'Bibliografía', residencia: 'Categoría de residencia (aves)', formas: 'Formas de crecimiento (plantas)', interac: 'Interacciones biológicas' }
-    checkBoxes = '<h6>Selecciona los campos a desplegr en el checklist</h6>'
-
-    campos.each do |valor, label|
-      checkBoxes << "<div class='custom-control custom-switch'>"
-      checkBoxes << check_box_tag('f_check[]', valor, false, class: 'custom-control-input', id: "f_check_#{valor}")
-      checkBoxes << "<label class = 'custom-control-label' for='f_check_#{valor}'>#{label}</label>"
-      checkBoxes << "</div>"
-    end
-
-    checkBoxes.html_safe
   end
   
   def dameArbolInicial

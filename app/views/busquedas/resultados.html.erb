@@ -69,7 +69,7 @@
           Descargas
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <%= link_to("Datos en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-lista', 'onclick': "$('#modal-descarga-lista').modal('toggle');return false;", class: 'dropdown-item') %>
+          <%= link_to("Datos en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-avanzada', 'onclick': "$('#modal-descarga-avanzada').modal('toggle');return false;", class: 'dropdown-item') %>
           <%= link_to("Lista/checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
         </div>
       </div>
@@ -112,7 +112,8 @@
 
 </div>
 
-<%= render partial: 'busquedas/form_descarga_lista' if @totales > 0 %>
-<%= render partial: 'busquedas/form_descarga_checklist' if @totales > 0 %>
-
+<% if @totales > 0 %>
+  <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@totales, delimiter: ','), tipo_descarga: 'avanzada' } %>
+  <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@totales, delimiter: ','), tipo_descarga: 'checklist' } %>
+<% end %>
 
