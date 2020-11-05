@@ -212,7 +212,7 @@ $(document).ready(function(){
     });
 
     /**
-     * Esta funcion se sustituirá por el scrolling
+     * Carga las siguientes especies
      */
     $('#contenedor_especies').on('click', '#carga-siguientes-especies', function(){
         opciones.filtros.pagina++;
@@ -225,9 +225,8 @@ $(document).ready(function(){
     $('#busqueda_region').on('focus', '#nombre_especie, #nombre_region', function() {
         if ($(this).attr('soulmate') == "true") return;
         $(this).attr('soulmate', 'true');
-
-        var tipo_busqueda = $(this).id;
-        if (tipo_busqueda == 'nombre_especie') soulmateAsigna('busqueda_region', this.id);
+        
+        if (this.id == 'nombre_especie') soulmateAsigna('busqueda_region', this.id);
         else soulmateRegionAsigna(this.id);
     });
 

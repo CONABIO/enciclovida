@@ -72,8 +72,10 @@
     <% end %>
   </div>
   
-  <%= link_to "<i class='fa fa-arrow-left btn btn-info' id='carga-anteriores-especies'></i>".html_safe if @resp['carga-anteriores-especies'] %>
-  <%= link_to "<i class='fa fa-arrow-right btn btn-info' id='carga-siguientes-especies'></i>".html_safe if @resp['carga-siguientes-especies'] %>
+  <div class="col-12 text-center mt-2">
+    <%= link_to "<i class='fa fa-arrow-left btn btn-info' id='carga-anteriores-especies'></i>".html_safe if @resp['carga-anteriores-especies'] %>
+    <%= link_to "<i class='fa fa-arrow-right btn btn-info' id='carga-siguientes-especies'></i>".html_safe if @resp['carga-siguientes-especies'] %>
+  <div>
 
   <script>
       $(document).ready(function(){
