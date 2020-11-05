@@ -45,7 +45,9 @@ var serializeParametros = function()
  */
 var cargaEspecies = function()
 {
+    $('#pagina').val(opciones.filtros.pagina);
     cambiaURLParametros();
+
     $.ajax({
         url: '/explora-por-region/especies',
         method: 'GET',
@@ -71,8 +73,6 @@ var seleccionaRegion = function(prop)
     $('#tipo_region').val(prop.tipo_region.toLowerCase());
 
     opciones.filtros.pagina = 1;
-    $('#pagina').val(opciones.filtros.pagina);
-
     map.flyToBounds(prop.bounds);
     cargaEspecies();
     colapsaBarra();  // colapsa la barrar lateral, para mayor comodidad
@@ -118,7 +118,6 @@ $(document).ready(function(){
     $('#busqueda_region').on('change', "#edo_cons, #dist, #grupo, #uso, #ambiente", function()
     {
         opciones.filtros.pagina = 1;
-        $('#pagina').val(opciones.filtros.pagina);
         cargaEspecies();
     });
 
@@ -158,7 +157,6 @@ $(document).ready(function(){
         }
 
         opciones.filtros.pagina = 1;
-        $('#pagina').val(opciones.filtros.pagina);
         cargaEspecies();
     });
 
@@ -212,13 +210,14 @@ $(document).ready(function(){
     });
 
     /**
-     * Carga las siguientes especies
+     * Carga las anteriores especies
      */
-    $('#contenedor_especies').on('click', '#carga-siguientes-especies', function(){
-        opciones.filtros.pagina++;
-        $('#pagina').val(opciones.filtros.pagina);
+    $('#contenedor_especies').on('click', '#carga-anteriores-especies, #carga-siguientes-especies', function(event){
+        if (this.id == 'carga-anteriores-especies') opciones.filtros.pagina--;
+        else opciones.filtros.pagina++;
+        //opciones.filtros.pagina--;
         cargaEspecies();
-        return false;
+        event.preventDefault();
     });
 
     // Para asignar el redis adecuado de acuerdo a la caja de texto
