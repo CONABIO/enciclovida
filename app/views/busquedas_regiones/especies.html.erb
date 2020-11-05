@@ -1,5 +1,5 @@
 <% if @resp[:estatus] %>
-  <% if @resp[:totales].present? && params[:pagina].to_i == 1 %>
+  <% if @resp[:totales].present? %>
     <div class="row">
       <div class="col-9">
         <h3>
@@ -27,7 +27,7 @@
     </div>
   <% end %>
 
-  <div class="row" id="contenedor_especies_itera">
+  <div class="row">
     <% if I18n.locale.to_s != 'es-cientifico' %>
       <% @resp[:taxones].each do |t| %>
         <% taxon = t[:especie] %>
@@ -48,7 +48,7 @@
         <% else %>
           <div class="col-3 my-3 px-1">
             <div class="row justify-content-center no-gutters">
-              <div class="result-img-container col-6">
+              <div class="result-img-container col-12">
                 <%= link_to "<i class='ev1-ev-icon'></i>".html_safe, especie_path(taxon), target: "_self" %>
               </div>
               <div class="result-nombre-container col-12 px-1">
@@ -71,10 +71,9 @@
       <% end %>
     <% end %>
   </div>
-
-  <% if @resp[:totales].present? && params[:pagina].to_i == 1 %>
-    <div class="pull-right fa fa-arrow-right" id="carga-mas-especies"></div>
-  <% end %>
+  
+  <%= link_to "<i class='fa fa-arrow-left btn btn-info' id='carga-anteriores-especies'></i>".html_safe if @resp['carga-anteriores-especies'] %>
+  <%= link_to "<i class='fa fa-arrow-right btn btn-info' id='carga-siguientes-especies'></i>".html_safe if @resp['carga-siguientes-especies'] %>
 
   <script>
       $(document).ready(function(){

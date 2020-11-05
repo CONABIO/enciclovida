@@ -1,13 +1,11 @@
 /**
- * Devuelve los parametros de acuerdo a los filtros, grupo, region y paginado
+ * Devuelve los parametros de acuerdo a los filtros, grupo, region y paginado y los refleja en la URL
  * @param prop, parametros adicionales
  * @returns {string}
  */
-var asignaParametros = function()
+var cambiaURLParametros = function()
 {
-    var params = $("#busqueda_region input").filter(function () {
-        return !!this.value;
-    }).serialize();
+    var params = serializeParametros();
     var url = new URL(window.location.href);
     var url_parametros = url.origin + url.pathname + '?' + params + url.hash
     history.replaceState({}, '', url_parametros)
@@ -33,22 +31,27 @@ var asignaFiltros = function(filtros)
 };
 
 /**
+ * Serializa los parametros de acuerdo a los filtros y quita los vacios
+ */
+var serializeParametros = function()
+{
+    return $("#busqueda_region input, #busqueda_region select").filter(function () {
+        return !!this.value;
+    }).serialize();
+};
+
+/**
  * Consulta el servicio nodejs para sacar el listado de especies por region
  */
 var cargaEspecies = function()
 {
-    asignaParametros();
+    cambiaURLParametros();
     $.ajax({
         url: '/explora-por-region/especies',
         method: 'GET',
-        data: $("#busqueda_region input").filter(function () {
-            return !!this.value;
-        }).serialize()
+        data: serializeParametros()
     }).done(function(html) {
-        if (opciones.filtros.pagina == 1)
-            $('#contenedor_especies').empty().html(html);
-        else
-            $('#contenedor_especies_itera').empty().html(html);
+        $('#contenedor_especies').empty().html(html);
         ponTamaño();
 
     }).fail(function() {
@@ -102,9 +105,7 @@ $(document).ready(function(){
      * Cuando selecciona una especie
      */
     $('#contenedor_especies').on('click', '.boton-especie-registros', function(){
-        cargaEjemplares('/explora-por-region/ejemplares?' + $("#busqueda_region input").filter(function () {
-            return !!this.value;
-        }).serialize().replace("&especie_id=", "") + '&especie_id=' + $(this).attr('catalogo_id'));
+        cargaEjemplares('/explora-por-region/ejemplares?' + serializeParametros().replace("&especie_id=", "") + '&especie_id=' + $(this).attr('catalogo_id'));
         opciones.especie_id = $(this).attr('especie_id');
         //opciones.nombre_comun = $(this).attr('nombre_comun');
         //opciones.nombre_cientifico = $(this).attr('nombre_cientifico');
@@ -213,7 +214,7 @@ $(document).ready(function(){
     /**
      * Esta funcion se sustituirá por el scrolling
      */
-    $('#contenedor_especies').on('click', '#carga-mas-especies', function(){
+    $('#contenedor_especies').on('click', '#carga-siguientes-especies', function(){
         opciones.filtros.pagina++;
         $('#pagina').val(opciones.filtros.pagina);
         cargaEspecies();
@@ -225,7 +226,7 @@ $(document).ready(function(){
         if ($(this).attr('soulmate') == "true") return;
         $(this).attr('soulmate', 'true');
 
-        var tipo_busqueda = $(this).attr('id');
+        var tipo_busqueda = $(this).id;
         if (tipo_busqueda == 'nombre_especie') soulmateAsigna('busqueda_region', this.id);
         else soulmateRegionAsigna(this.id);
     });

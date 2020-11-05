@@ -22,6 +22,16 @@ class BusquedaRegion < Busqueda
     self.resp[:totales] = totales
     self.resp[:num_ejemplares] = num_ejemplares
     self.resp[:resultados] = nil
+
+    # Para desplegar las flechas de siguiente o anterior
+    if totales > 0
+      if totales > ESPECIES_POR_PAGINA*params[:pagina].to_i
+        self.resp['carga-siguientes-especies'] = true
+      end  
+      if params[:pagina].to_i > 1
+        self.resp['carga-anteriores-especies'] = true
+      end  
+    end
   end
 
   # Consulta los querys guardados en cache o los consulta al vuelo
