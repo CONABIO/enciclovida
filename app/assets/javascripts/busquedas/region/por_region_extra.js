@@ -104,12 +104,12 @@ $(document).ready(function(){
     /**
      * Cuando selecciona una especie
      */
-    $('#contenedor_especies').on('click', '.boton-especie-registros', function(){
+    $('#contenedor_especies').on('click', '.boton-especie-registros', function(event){
         cargaEjemplares('/explora-por-region/ejemplares?' + serializeParametros().replace("&especie_id=", "") + '&especie_id=' + $(this).attr('catalogo_id'));
         opciones.especie_id = $(this).attr('especie_id');
         //opciones.nombre_comun = $(this).attr('nombre_comun');
         //opciones.nombre_cientifico = $(this).attr('nombre_cientifico');
-        return false;
+        event.preventDefault();
     });
 
     /**
@@ -215,7 +215,6 @@ $(document).ready(function(){
     $('#contenedor_especies').on('click', '#carga-anteriores-especies, #carga-siguientes-especies', function(event){
         if (this.id == 'carga-anteriores-especies') opciones.filtros.pagina--;
         else opciones.filtros.pagina++;
-        //opciones.filtros.pagina--;
         cargaEspecies();
         event.preventDefault();
     });
