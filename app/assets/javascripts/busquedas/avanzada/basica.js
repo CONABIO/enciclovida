@@ -59,13 +59,13 @@ $(document).ready(function(){
                 $('#modal-descarga-avanzada').modal('toggle');
 
                 if (resp.estatus == 1)
-                    $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
+                    $('#notice').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
                 else
-                    $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
+                    $('#notice').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
 
             }).fail(function(){
                 $('#modal-descarga-avanzada').modal('toggle');
-                $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
+                $('#notice').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
             });
 
         } else
@@ -73,7 +73,7 @@ $(document).ready(function(){
     });
 
     // Para la validacion del correo en la descarga de la lista
-    dameValidacionCorreo('avanzada', '#notice-avanzada');
+    dameValidacionCorreo('avanzada', '#notice');
 
     // Para validar una ultima vez cuando paso la validacion del boton y quiere descragar el checklist
     $('#modal-descarga-checklist').on('click', '.boton-descarga', function(){
@@ -88,10 +88,9 @@ $(document).ready(function(){
         if (campos.length > 0) url = url + '&' + campos.join('&');
 
         $('#modal-descarga-checklist').modal('toggle');
-        //$('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
         window.open(url,'_blank');
     });
 
     // Para la validacion del correo en la descarga del checklist
-    dameValidacionCorreo('checklist', '#notice-avanzada');    
+    dameValidacionCorreo('checklist', '#notice');    
 });

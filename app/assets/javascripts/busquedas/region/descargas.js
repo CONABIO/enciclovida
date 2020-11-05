@@ -1,19 +1,36 @@
-// Incluir en donde se genera el contenido dinamico
 $(document).ready(function(){
-    $('#modal-descarga-region').on('click', '.boton-descarga', function(){
-        //var correo = $('#correo-lista').val();
-        /*var url = $('#modal-menu-checklist').attr('url');
+    // Incluir en donde se genera el contenido dinamico
+    $('#modal-descarga-region').on('click', '.boton-descarga', function(event){
+        var correo = $('#modal-descarga-region input[name=correo]').val();
+        var form_serialize = $('#modal-descarga-region form').serialize();
 
-        var campos = [];
-        $.each($('#form-checklist').serializeArray(), function (index, json) {
-            if (json.name == 'f_desc[]')
-                campos.push(json.name + '=' + json.value);
-        });
+        if(correoValido(correo))
+        {
+            $.ajax({
+                url: '/explora-por-region/especies.xlsx',
+                type: 'GET',
+                dataType: "json",
+                data: serializeParametros() + '&' + form_serialize
+            }).done(function(resp) {
+                $('#modal-descarga-region').modal('toggle');
 
-        if (campos.length > 0) url = url + '&' + campos.join('&');
+                if (resp.estatus)
+                    $('#notice').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
+                else
+                    $('#notice').empty().html('Lo sentimos no se pudo procesar tu petición, verifica tus filtros y correo.').removeClass('d-none').slideDown(600);
 
-        $('#modal-descarga').modal('toggle');
-        $('#notice-busqueda').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
-        window.open(url,'_blank');*/
+            }).fail(function(){
+                $('#modal-descarga-region').modal('toggle');
+                $('#notice').empty().html('Lo sentimos no se pudo procesar tu petición, verifica tus filtros y correo.').removeClass('d-none').slideDown(600);
+            });
+
+        } else {
+            $('#modal-descarga-region').modal('toggle');
+            $('#notice').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
+            event.preventDefault();
+        }
     });
+
+    // Para la validacion del correo en la descarga de la lista
+    dameValidacionCorreo('region', '#notice');
 });

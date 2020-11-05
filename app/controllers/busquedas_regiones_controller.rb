@@ -38,9 +38,18 @@ class BusquedasRegionesController < ApplicationController
   def especies
     br = BusquedaRegion.new
     br.params = params
-    br.especies
 
-    @resp = br.resp
+    respond_to do |format|
+      format.html do 
+        br.especies
+        @resp = br.resp 
+      end
+      format.xlsx do
+        br.original_url = request.original_url
+        br.descarga_taxa_excel
+        render json: br.resp 
+      end
+    end
   end
 
   # Regresa todos los registros de la especie seleccionada

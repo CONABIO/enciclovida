@@ -144,7 +144,7 @@ module BusquedasHelper
     when 'avanzada'
       campos.merge!({ x_col_basicas: 'Columnas basicas', x_taxa_sup: 'Taxonomía superior', x_url_ev: 'URL de la especie en enciclovida' })
     when 'region'
-      campos.merge!({ x_col_basicas: 'Columnas basicas', x_taxa_sup: 'Taxonomía superior', x_url_ev: 'URL de la especie en enciclovida', x_num_reg: 'Número de registros' })
+      campos = { x_num_reg: 'Número de registros' }.merge(campos.merge!({ x_col_basicas: 'Columnas basicas', x_taxa_sup: 'Taxonomía superior', x_url_ev: 'URL de la especie en enciclovida' }))
     when 'checklist'
       campos.merge!({ x_estatus: 'Solo válidos/aceptados', x_distribucion: 'Distribución (reportada en literatura)', x_residencia: 'Categoría de residencia (aves)', x_formas: 'Formas de crecimiento (plantas)', x_interaccion: 'Interacciones biológicas' })  
     end

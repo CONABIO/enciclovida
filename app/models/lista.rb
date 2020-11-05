@@ -2,7 +2,7 @@ class Lista < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.ev}.listas"
 
-  attr_accessor :taxones, :taxon, :columnas_array
+  attr_accessor :taxones, :taxon, :columnas_array, :hash_especies
   validates :nombre_lista, :presence => true, :uniqueness => true
   before_update :quita_repetidos
 
@@ -58,7 +58,7 @@ class Lista < ActiveRecord::Base
 
   # Para crear el excel con los datos
   def to_excel(opts={})
-    asigna_columnas_extra
+    asigna_columnas_extra  # Para columnas que tienen un grupo de columnas
     xlsx = RubyXL::Workbook.new
     sheet = xlsx[0]
     sheet.sheet_name = 'Resultados'
@@ -83,8 +83,8 @@ class Lista < ActiveRecord::Base
     if opts[:es_busqueda]  # Busqueda basica o avanzada
       r = Especie.find_by_sql(opts[:busqueda])
       datos_descarga(r)
-    elsif opts[:ubicaciones]  # Descarga taxa de ubicaciones
-      r = Especie.where(id: cadena_especies.split(','))
+    elsif opts[:region]  # Descarga taxa de la busqueda por region
+      r = Especie.joins(:scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", hash_especies.keys)
       datos_descarga(r)
     end
 
@@ -185,10 +185,10 @@ class Lista < ActiveRecord::Base
   def asigna_datos
     return unless taxon.present?
 
-    if columnas.present?
-      cols = columnas.split(',')
-    elsif columnas_array.present?
-      cols = columnas_array
+    cols = if columnas_array.present?
+      columnas_array
+    else
+      columnas.split(',') if columnas.present?
     end
 
     cols.each do |col|
@@ -255,6 +255,8 @@ class Lista < ActiveRecord::Base
         self.taxon.x_bibliografia = biblio.map(&:cita_completa).join(', ')
       when 'x_url_ev'
         self.taxon.x_url_ev = "#{CONFIG.site_url}especies/#{taxon.id}-#{taxon.nombre_cientifico.estandariza}"
+      when 'x_num_reg'
+        self.taxon.x_num_reg = hash_especies[taxon.scat.catalogo_id]
       else
         next
       end  # End switch
@@ -290,8 +292,10 @@ class Lista < ActiveRecord::Base
   end
 
   def asigna_columnas_extra
-    return unless columnas.present?
-    self.columnas_array = columnas.split(',')
+    return unless columnas.present? || columnas_array.present?
+    if columnas_array.blank? && columnas.present?
+      self.columnas_array = columnas.split(',')
+    end
     
     if columnas_array.include?('x_cat_riesgo')
       self.columnas_array = columnas_array << COLUMNAS_RIESGO_COMERCIO

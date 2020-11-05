@@ -106,7 +106,7 @@ $(document).ready(function(){
      */
     $('#contenedor_especies').on('click', '.boton-especie-registros', function(event){
         cargaEjemplares('/explora-por-region/ejemplares?' + serializeParametros().replace("&especie_id=", "") + '&especie_id=' + $(this).attr('catalogo_id'));
-        opciones.especie_id = $(this).attr('especie_id');
+        //opciones.especie_id = $(this).attr('especie_id');
         //opciones.nombre_comun = $(this).attr('nombre_comun');
         //opciones.nombre_cientifico = $(this).attr('nombre_cientifico');
         event.preventDefault();
@@ -161,55 +161,6 @@ $(document).ready(function(){
     });
 
     /**
-     * Para enviar la descarga o que se envie correo
-     */
-    $(document).on('keyup', '#correo', function(){
-        if( !correoValido($(this).val()) )
-        {
-            $(this).parent().addClass("has-error");
-            $(this).parent().removeClass("has-success");
-
-            $(this).siblings("span:first").addClass("glyphicon-remove");
-            $(this).siblings("span:first").removeClass("glyphicon-ok");
-            $('#boton_enviar_descarga').attr('disabled', 'disabled')
-        } else {
-            $(this).parent().removeClass("has-error");
-            $(this).parent().addClass("has-success");
-            $(this).siblings("span:first").addClass("glyphicon-ok");
-            $(this).siblings("span:first").removeClass("glyphicon-remove");
-            $('#boton_enviar_descarga').removeAttr('disabled')
-        }
-    });
-
-    /**
-     * Para validar una ultima vez cuando paso la validacion del boton
-     */
-    $(document).on('click', '#boton_enviar_descarga', function(){
-        var correo = $('#correo').val();
-
-        if(correoValido(correo))
-        {
-            $.ajax({
-                url: '/explora-por-region/descarga-taxa',
-                type: 'GET',
-                dataType: "json",
-                data: parametros({correo: correo})
-            }).done(function(resp) {
-                if (resp.estatus == 1)
-                {
-                    $('#estatus_descargar_taxa').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados que seleccionaste.');
-                } else
-                    $('#estatus_descargar_taxa').empty().html(resp.msg);
-
-            }).fail(function(){
-                $('#estatus_descargar_taxa').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.');
-            });
-
-        } else
-            $('#estatus_descargar_taxa').empty().html('El correo no parece válido, por favor verifica.');
-    });
-
-    /**
      * Carga las anteriores especies
      */
     $('#contenedor_especies').on('click', '#carga-anteriores-especies, #carga-siguientes-especies', function(event){
@@ -233,12 +184,12 @@ $(document).ready(function(){
         window.location.href = '/explora-por-region';
     });
 
-    // Inicializa la carga inicial de las especies
     // Para inicializar la barra lateral del mapa
     L.control.sidebar('sidebar').addTo(map);
     control_capas = L.control.layers({}).addTo(map);
     opciones.filtros.pagina = 1;
     asignaFiltros(opciones.filtros);
+    // Inicializa la carga inicial de las especies
     cargaEspecies();
     variablesIniciales();
     despliegaRegiones();

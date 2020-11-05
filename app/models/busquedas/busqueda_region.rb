@@ -1,6 +1,6 @@
 class BusquedaRegion < Busqueda
 
-  attr_accessor :resp, :num_ejemplares
+  attr_accessor :resp, :num_ejemplares, :original_request
 
   ESPECIES_POR_PAGINA = 8.freeze
 
@@ -42,6 +42,44 @@ class BusquedaRegion < Busqueda
     self.resp = snib.resp
   end
 
+  # Manda a llamar al modelo lista para la descarga
+  def descarga_taxa_excel
+    unless Usuario::CORREO_REGEX.match(params[:correo])
+      self.resp = resp.merge({ estatus: false, msg: 'Favor de verificar el correo' })
+      return
+    end
+
+    especies_por_region
+    return unless resp[:estatus]
+    especies_filtros
+    especies_por_pagina(especies_excel: true)  # Para que regrese todas las especies que coincidieron
+    
+    unless resp[:estatus] && totales > 0
+      self.resp = resp.merge({ estatus: false, msg: 'Error en la consulta. Favor de verificar tus filtros' })
+      return
+    end
+
+    lista = Lista.new
+    #columnas = params[:f_desc].join(',')
+    lista.columnas_array = params[:f_desc]
+    lista.formato = 'xlsx'
+    lista.cadena_especies = original_url
+    lista.hash_especies = resp[:resultados]
+    lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
+    # El nombre de la lista es cuando la solicito? y el correo
+    lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
+
+    url_limpia = original_url.gsub('/especies.xlsx?','?')
+    if Rails.env.production?
+      lista.delay(queue: 'descargar_taxa').to_excel({ region: true, correo: params[:correo], original_url: url_limpia }) if lista.save
+    else  # Para develpment o test
+      lista.to_excel({ region: true, correo: params[:correo], original_url: url_limpia }) if lista.save
+    end
+
+    self.resp[:resultados] = nil
+    self.resp.merge({ estatus: true, msg: nil })
+  end
+
 
   private
 
@@ -61,13 +99,6 @@ class BusquedaRegion < Busqueda
     #return unless por_id_o_nombre
     #categoria_por_nivel
   end
-
-  # REVISADO: Por si selecciono una especie de redis
-  #def por_especie_id
-    # Tiene mas importancia si escogio por id
-  #  return unless (params[:especie_id].present? && !(params[:nivel].present? && params[:cat].present?))
-  #  self.taxones = taxones.where(id: params[:especie_id])
-  #end
   
   # Por si escribio un nombre pero no lo selecciono de la lista de redis
   def por_nombre
@@ -113,7 +144,7 @@ class BusquedaRegion < Busqueda
   end
 
   # Devuelve las especies de acuerdo al numero de pagina y por pagina definido
-  def especies_por_pagina
+  def especies_por_pagina(opc={})
     return unless resp[:estatus]
     self.por_pagina = params[:por_pagina] || ESPECIES_POR_PAGINA
     self.pagina = params[:pagina].present? ? params[:pagina].to_i : 1
@@ -131,7 +162,11 @@ class BusquedaRegion < Busqueda
     self.num_ejemplares = idcats.sum {|r| r[1] }
     
     if totales > 0
-      self.resp[:resultados] = idcats[offset..limit].to_h
+      if opc[:especies_excel]
+        self.resp[:resultados] = idcats.to_h
+      else
+        self.resp[:resultados] = idcats[offset..limit].to_h
+      end
     else
       self.resp[:resultados] = {}
     end

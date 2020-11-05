@@ -17,7 +17,7 @@
             Descargas
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <%= link_to("Lista de especies en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-region', 'onclick': "$('#modal-descarga-region').modal('toggle');return false;", class: 'dropdown-item') %>
+              <%= link_to("Lista en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-region', 'onclick': "$('#modal-descarga-region').modal('toggle');return false;", class: 'dropdown-item') %>
               <%#= link_to("Guía de campo en PDF", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
             </div>
           </div>
@@ -37,7 +37,9 @@
             <div class="row no-gutters">
               <div class="result-img-container col-12">
                 <%= image_tag(taxon.foto_principal, class: 'img-fluid') %>
-                <button class="btn btn-primary boton-especie-registros" catalogo_id="<%= taxon.catalogo_id %>" especie_id="<%= taxon.id %>"><%= number_with_delimiter(t[:nregistros], delimiter: ',') %></button>
+                <button class="btn btn-info boton-especie-registros" catalogo_id="<%= taxon.catalogo_id %>">
+                  <%= number_with_delimiter(t[:nregistros], delimiter: ',') %>
+                </button>
               </div>
               <div class="result-nombre-container col-12 px-1">
                 <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_self"}).html_safe %>
@@ -73,8 +75,8 @@
   </div>
   
   <div class="col-12 text-center mt-2">
-    <%= @resp['carga-anteriores-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-info', id: 'carga-anteriores-especies') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-dark disabled') %>
-    <%= @resp['carga-siguientes-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-info', id: 'carga-siguientes-especies') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-dark disabled') %>
+    <%= @resp['carga-anteriores-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-info', id: 'carga-anteriores-especies', title: 'Anterior') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-dark disabled') %>
+    <%= @resp['carga-siguientes-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-info', id: 'carga-siguientes-especies', title: 'Siguiente') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-dark disabled') %>
   <div>
 
   <script>
