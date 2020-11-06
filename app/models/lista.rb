@@ -84,7 +84,7 @@ class Lista < ActiveRecord::Base
       r = Especie.find_by_sql(opts[:busqueda])
       datos_descarga(r)
     elsif opts[:region]  # Descarga taxa de la busqueda por region
-      r = Especie.joins(:scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", hash_especies.keys)
+      r = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", hash_especies.keys).includes(:tipos_distribuciones, :catalogos, :adicional, :nombres_comunes, :bibliografias, :scat)
       datos_descarga(r)
     end
 
@@ -170,11 +170,11 @@ class Lista < ActiveRecord::Base
   end
 
   # Para asignar los datos de una consulta de resultados, hacia un excel o csv, el recurso puede ser un string o un objeto
-  def datos_descarga(taxones)
-    return unless taxones.any?
+  def datos_descarga(taxa)
+    return unless taxa.any?
     self.taxones = []
 
-    taxones.each do |taxon|
+    taxa.each do |taxon|
       self.taxon = taxon
       asigna_datos
       self.taxones << taxon
@@ -219,29 +219,69 @@ class Lista < ActiveRecord::Base
       when 'x_estatus'
         self.taxon.x_estatus = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
       when 'x_nombres_comunes'
-        nombres_comunes = taxon.nombres_comunes.order(:nombre_comun).map{|nom| "#{nom.nombre_comun.capitalize} (#{nom.lengua})"}.uniq
+        nombres_comunes = taxon.nombres_comunes.map{ |nom| nom.nombre_comun.capitalize }.uniq.sort
         next unless nombres_comunes.any?
-        self.taxon.x_nombres_comunes = nombres_comunes.join(',')
+        self.taxon.x_nombres_comunes = nombres_comunes.join(', ')
       when 'x_tipo_distribucion'
         tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
         next unless tipos_distribuciones.any?
         self.taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
-      when 'x_nom'
-        nom = taxon.catalogos.nom.distinct
+      when 'x_nom'  # TODO: homologar las demas descargas
+        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
+          nom = []
+          taxon.catalogos.each do |catalogo|
+            if catalogo.nivel1 == 4 && catalogo.nivel2 == 1
+              nom << catalogo
+            end
+          end
+        else
+          nom = taxon.catalogos.nom.distinct
+        end
+
         next unless nom.any?
-        self.taxon.x_nom = nom[0].descripcion
-      when 'x_iucn'
-        iucn = taxon.catalogos.iucn.distinct
+        self.taxon.x_nom = nom.map(&:descripcion).join(', ')
+      when 'x_iucn'  # TODO: homologar las demas descargas
+        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
+          iucn = []
+          taxon.catalogos.each do |catalogo|
+            if catalogo.nivel1 == 4 && catalogo.nivel2 == 2
+              iucn << catalogo
+            end
+          end
+        else
+          iucn = taxon.catalogos.iucn.distinct
+        end
+
         next unless iucn.any?
-        self.taxon.x_iucn = iucn[0].descripcion
-      when 'x_cites'
-        cites = taxon.catalogos.cites.distinct
+        self.taxon.x_iucn = iucn.map(&:descripcion).join(', ')
+      when 'x_cites'  # TODO: homologar las demas descargas
+        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
+          cites = []
+          taxon.catalogos.each do |catalogo|
+            if catalogo.nivel1 == 4 && catalogo.nivel2 == 3
+              cites << catalogo
+            end
+          end
+        else
+          cites = taxon.catalogos.cites.distinct
+        end
+
         next unless cites.any?
-        self.taxon.x_cites = cites[0].descripcion
-      when 'x_ambiente'
-        ambiente = taxon.catalogos.ambientes
+        self.taxon.x_cites = cites.map(&:descripcion).join(', ')        
+      when 'x_ambiente'  # TODO: homologar las demas descargas
+        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
+          ambiente = []
+          taxon.catalogos.each do |catalogo|
+            if catalogo.nivel1 == 2
+              ambiente << catalogo
+            end
+          end
+        else
+          ambiente = taxon.catalogos.ambientes
+        end
+
         next unless ambiente.any?
-        self.taxon.x_ambiente = ambiente.map(&:descripcion).join(', ')
+        self.taxon.x_ambiente = ambiente.map(&:descripcion).join(', ')        
       when 'x_naturalista_fotos'
         next unless adicional = taxon.adicional
         if proveedor = taxon.proveedor
@@ -252,7 +292,7 @@ class Lista < ActiveRecord::Base
         self.taxon.x_bdi_fotos = "#{CONFIG.site_url}especies/#{taxon.id}/bdi-photos" if adicional.foto_principal.present?
       when 'x_bibliografia'
         biblio = taxon.bibliografias
-        self.taxon.x_bibliografia = biblio.map(&:cita_completa).join(', ')
+        self.taxon.x_bibliografia = biblio.map(&:cita_completa).join("\n")
       when 'x_url_ev'
         self.taxon.x_url_ev = "#{CONFIG.site_url}especies/#{taxon.id}-#{taxon.nombre_cientifico.estandariza}"
       when 'x_num_reg'
