@@ -49,41 +49,41 @@ var limpiaMapa = function()
 var leyenda = function()
 {
     snibControl.addOverlay(snibLayer,
-        '<b>Ejemplares del SNIB</b><br />(museos, colectas y proyectos) <sub>' + infoLayers["totales"] + '</sub>'
+        '<b>Ejemplares del SNIB</b><br />(museos, colectas, proyectos) <sub>' + infoLayers["totales"] + '</sub>'
     );
 
     if(infoLayers[1] !== undefined)
     {
         snibControl.addOverlay(infoLayers[1]["layer"],
-        '<i class="fa fa-map-marker div-icon-snib"></i>Especímenes en colecciones <sub>' + infoLayers[1]["totales"] + '</sub>'
+        '<img src="/imagenes/app/mapa/colectas.png"> Especímenes en colecciones <sub>' + infoLayers[1]["totales"] + '</sub>'
         );
     }
 
     if(infoLayers[2] !== undefined)
     {
         snibControl.addOverlay(infoLayers[2]["layer"],
-            '<span aria-hidden="true" class="feather-ev-icon div-icon-snib"></span>Observaciones de aVerAves <sub>' + infoLayers[2]["totales"] + '</sub>'
+            '<img src="/imagenes/app/mapa/averaves.png"> Observaciones de aVerAves <sub>' + infoLayers[2]["totales"] + '</sub>'
         );
     }
 
     if(infoLayers[3] !== undefined)
     {
         snibControl.addOverlay(infoLayers[3]["layer"],
-            '<span aria-hidden="true" class="bone-ev-icon div-icon-snib"></span>Fósiles <sub>' + infoLayers[3]["totales"] + '</sub>'
+            '<img src="/imagenes/app/mapa/fosiles.png"> Fósiles <sub>' + infoLayers[3]["totales"] + '</sub>'
         );
     }
 
     if(infoLayers[4] !== undefined)
     {
         snibControl.addOverlay(infoLayers[4]["layer"],
-            '<i class="fa fa-map-flag div-icon-snib"></i>Localidad no de campo <sub>' + infoLayers[4]["totales"] + '</sub>'
+            '<img src="/imagenes/app/mapa/nodecampo.png"> Localidad no de campo <sub>' + infoLayers[4]["totales"] + '</sub>'
         );
     }
 
     if(infoLayers[5] !== undefined)
     {
         snibControl.addOverlay(infoLayers[5]["layer"],
-            '<i class="div-icon-snib"></i>Naturalista <sub>' + infoLayers[5]["totales"] + '</sub>'
+            '<img src="/imagenes/app/mapa/naturalista.png"> Naturalista <sub>' + infoLayers[5]["totales"] + '</sub>'
         );
     }
 };

@@ -6,13 +6,10 @@ class Geoportal::Snib < GeoportalAbs
 
   # Regresa todas las especies que coincidan con el tipo de region y id seleccionado
   def especies
-    if params[:tipo_region].present? && params[:region_id].present?
-      tipo_region_a_llave_foranea
-
-      unless (campo_tipo_region.present? && params[:region_id].present?)
-        self.resp = { estatus: false, msg: 'Revisar tipo_region y/o region_id' }  
-        return
-      end
+    tipo_region_a_llave_foranea
+    unless campo_tipo_region.present?
+      self.resp = { estatus: false, msg: 'Revisar tipo_region' }  
+      return
     end
 
     self.resp = Rails.cache.fetch("br_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region)) do
@@ -20,24 +17,21 @@ class Geoportal::Snib < GeoportalAbs
     end
   end
 
-    # Borra el cache de las especies por region
-    def borra_cache_especies
-      Rails.cache.delete("br_#{params[:tipo_region]}_#{params[:region_id]}") if Rails.cache.exist?("br_#{params[:tipo_region]}_#{params[:region_id]}")
-    end
-  
+  # Borra el cache de las especies por region
+  def borra_cache_especies
+    Rails.cache.delete("br_#{params[:tipo_region]}_#{params[:region_id]}") if Rails.cache.exist?("br_#{params[:tipo_region]}_#{params[:region_id]}")
+  end
+
   # Regresa todos los ejemplares que coincidan con el tipo de region,region id y idcat
   def ejemplares
-    if params[:tipo_region].present? && params[:region_id].present?
-      tipo_region_a_llave_foranea
-
-      unless (campo_tipo_region.present? && params[:region_id].present?)
-        self.resp = { estatus: false, msg: 'Revisar tipo_region y/o region_id' }  
-        return
-      end
+    tipo_region_a_llave_foranea
+    unless campo_tipo_region.present?
+      self.resp = { estatus: false, msg: 'Revisar tipo_region' }  
+      return
     end
     
     # Hace el query en vivo, ya que es una cantidad relativamente pequeña de ejemplares
-    if campo_tipo_region.present?  
+    if campo_tipo_region.present? && params[:region_id].present? 
       self.resp = consulta_ejemplares_por_region
     else  # Lo guarda en cache
       self.resp = Rails.cache.fetch("br_#{params[:especie_id]}_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region)) do
@@ -51,7 +45,12 @@ class Geoportal::Snib < GeoportalAbs
 
   def consulta_especies_por_region
     resultados = Geoportal::Snib.select('idnombrecatvalido, COUNT(*) AS nregistros').where("idnombrecatvalido <> '' AND especievalidabusqueda <> '' AND comentarioscatvalido LIKE 'Validado completamente con CAT.%'").group(:idnombrecatvalido).order('nregistros DESC')
-    resultados = resultados.where("#{campo_tipo_region}=#{params[:region_id]}") if campo_tipo_region.present?
+    
+    if campo_tipo_region.present? && params[:region_id].present?
+      resultados = resultados.where("#{campo_tipo_region}=#{params[:region_id]}")
+    elsif campo_tipo_region.present?  # Cuando es el conteo general por alguna division politica
+      resultados = resultados.where("#{campo_tipo_region} IS NOT NULL") 
+    end
 
     if resultados.length > 0
       { estatus: true, resultados: resultados.map{ |r| {r.idnombrecatvalido => r.nregistros} }.reduce({}, :merge) }
@@ -63,10 +62,16 @@ class Geoportal::Snib < GeoportalAbs
   # Regresa todos los ejemplares de la especie seleccionada, de una forma simplificada
   def consulta_ejemplares_por_region
     resultados = Geoportal::Snib.select(:id, :latitud, :longitud, :tipocoleccion).where(idnombrecatvalido: params[:especie_id])
-    resultados = resultados.where("#{campo_tipo_region}=#{params[:region_id]}") if campo_tipo_region.present?
+
+    if campo_tipo_region.present? && params[:region_id].present?
+      resultados = resultados.where("#{campo_tipo_region}=#{params[:region_id]}")
+    elsif campo_tipo_region.present?  # Cuando son los registros de alguna division politica en particular
+      resultados = resultados.where("#{campo_tipo_region} IS NOT NULL") 
+    end
+
     return { estatus: false, msg: 'Sin resultados' } unless resultados.any?
-    
     ejemplares = {}
+
     resultados.each do |r|
       ejemplares[r.tipocoleccion] = [] unless ejemplares[r.tipocoleccion].present?
       ejemplares[r.tipocoleccion] << [r.longitud, r.latitud, r.id]
