@@ -7,10 +7,6 @@ class Geoportal::Snib < GeoportalAbs
   # Regresa todas las especies que coincidan con el tipo de region y id seleccionado
   def especies
     tipo_region_a_llave_foranea
-    unless campo_tipo_region.present?
-      self.resp = { estatus: false, msg: 'Revisar tipo_region' }  
-      return
-    end
 
     self.resp = Rails.cache.fetch("br_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region)) do
       consulta_especies_por_region
@@ -25,10 +21,6 @@ class Geoportal::Snib < GeoportalAbs
   # Regresa todos los ejemplares que coincidan con el tipo de region,region id y idcat
   def ejemplares
     tipo_region_a_llave_foranea
-    unless campo_tipo_region.present?
-      self.resp = { estatus: false, msg: 'Revisar tipo_region' }  
-      return
-    end
     
     # Hace el query en vivo, ya que es una cantidad relativamente pequeña de ejemplares
     if campo_tipo_region.present? && params[:region_id].present? 
