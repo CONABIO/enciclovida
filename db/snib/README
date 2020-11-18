@@ -1,0 +1,31 @@
+==Para actualizar la busqueda por región una vez que el SNIB actualizó la versión==
+IMPORTANTE: Toda accion que requiera un comando .sql se debe checar el archivo "atualizar_base_SNIB.sql" y correrlo por separado
+con el usuario postgres y preferentemente desde el servidor enciclovida.
+
+1. Acceso y permisos
+    1.1 Crear la estructura de la base en el servidor postgres de enciclovida para que Emmanuel suba la base actualizada a enciclovida.
+        pg_restore -h localhost -U postgres -d geoportal -j 5 -v -C /home/enciclovida/buscador/db/respaldos/geoportal/geoportal_tmp.dump
+    1.2 Dar permisos a la base geoportal_tmp a emmanuel
+        1.2.1 En caso que no recuerde su usuario reiniciar su contraseña
+2. Verificacion de tablas y columnas
+    2.1 Verificar que existen las tablas y columnas 
+        2.1.1 En caso de que no exita anpid en la tabla anp, renombrar la columna gid por anpid
+3. Crear una tabla solo con los registros y las columnas que se utilizan
+4. Crear una llave primaria con un id consecutivo, se mamo con su cadena codificada como ID
+5. Crear los indices
+6. Campos nuevos
+    6.1 Crear el campos nuevos
+    6.2 Llenar el campo con los distintos tipocoleccion: 1=coleccion, 2=averaves, 3=fosiles, 4=localidad no de campo, 5=naturalista 
+7. Renombrar las tablas snib y snib_dev para poder correr el proceso en rails
+8. Correr script para que todas las infraespecies quden con el mismo idnombrecatvalido que la especie en cuestion
+    OJO: catalogocentralizado debe de estar lo más actualizado posible
+    En la consola de rails: Geoportal::Snib.actualiza_idnombrecatvalido
+9. Crear un respaldo
+    pg_dump -h localhost -U postgres -t estados -t municipios -t anp -t ecorregiones -t snib -t snib_ev -Fc -O -x geoportal_tmp > /home/enciclovida/buscador/db/respaldos/geoportal/geoportal_aaaa_mm_dd.dump
+7. Borrar las tablas que no se ocupan de la base geoportal_tmp
+8. Borra la base geoportal
+9. Renombrar la base geoportal_tmp por geoportal
+10. Correr los procesos para los caches de las especies por cada region
+11. Generar las regiones en redis
+12. Probar
+13. Listo!

@@ -32,6 +32,35 @@ class Geoportal::Snib < GeoportalAbs
     end
   end
   
+  # Actualiza el idnombrecatvalido de las infraespecies para cambiarlo por su especie correspondiente y asigna la especie valida de acuerdo a catalogocentralizado
+  def self.actualiza_idnombrecatvalido
+    ids = Geoportal::Snib.all.select(:idnombrecatvalido).group(:idnombrecatvalido).map(&:idnombrecatvalido)
+    ids_count = ids.length
+    Rails.logger.debug "Taxones a correr: #{ids_count}"
+
+    ids.each_with_index do |catalogo_id, index|
+      Rails.logger.debug "Index: #{index+1} de #{ids_count}"
+      next unless scat = Scat.where(catalogo_id: catalogo_id).first
+      next unless t = scat.especie
+      infraespecies = %w(subespecie variedad raza forma)
+
+      if infraespecies.include?(t.categoria_taxonomica.nombre_categoria_taxonomica)
+        next unless especie = Especie.joins(:categoria_taxonomica).where(id: t.ancestry_ascendente_obligatorio.split(',').reject { |c| c.empty? }).
+        where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)}='especie'").first
+        especie = especie.dame_taxon_valido
+      else
+        next if t.estatus == 2
+        especie = t.dame_taxon_valido
+      end
+      
+      next unless especie
+      next unless scat = especie.scat
+      Rails.logger.debug "Original: #{catalogo_id} ---> #{scat.catalogo_id}"
+      Geoportal::Snib.where(idnombrecatvalido: catalogo_id).update_all(idnombrecatvalido: scat.catalogo_id)
+
+    end
+  end
+
 
   private
 
