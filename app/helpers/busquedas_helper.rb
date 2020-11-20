@@ -442,4 +442,55 @@ module BusquedasHelper
     html.html_safe
   end
 
+  # Asigna los filtros de las especies en la busqueda por region
+  def filtrosEspecies(params)
+    html = ''
+
+    if params[:especie_id].present?  # Grupos iconicos
+      grupo_ids = (@animales + @plantas).map{ |d| [d.id, d.nombre_comun_principal] }.to_h 
+
+      if grupo_ids.key?(params[:especie_id].to_i)
+        html << "<span class='#{grupo_ids[params[:especie_id].to_i].estandariza}-ev-icon f-fuentes-reg mx-2' title='#{grupo_ids[params[:especie_id].to_i]}'></span>"
+      end
+    end
+
+    if params[:dist].present? && params[:dist].any?  # Tipo de distribucion
+      dist = @distribuciones.map{ |d| [d.id, d.descripcion] }.to_h 
+      ids = params[:dist].map(&:to_i) & dist.keys
+
+      ids.each do |i|
+        html << "<span class='#{dist[i].estandariza}-ev-icon f-fuentes-reg' title='#{dist[i]}'></span>"
+      end
+    end
+
+    if params[:edo_cons].present? && params[:edo_cons].any?  # Especies en riesgo y comercio int.
+      edo_cons = @nom_cites_iucn_todos.values.flatten.map{ |e| [e.id, e.descripcion] }.to_h 
+      ids = params[:edo_cons].map(&:to_i) & edo_cons.keys
+
+      ids.each do |i|
+        html << "<span class='#{edo_cons[i].estandariza}-ev-icon f-fuentes-reg' title='#{edo_cons[i]}'></span>"
+      end
+    end
+
+    if params[:ambiente].present? && params[:ambiente].any?  # Ambiente
+      ambiente = @ambientes.map{ |a| [a.id, a.descripcion] }.to_h 
+      ids = params[:ambiente].map(&:to_i) & ambiente.keys
+
+      ids.each do |i|
+        html << "<span class='#{ambiente[i].estandariza}-ev-icon f-fuentes-reg' title='#{ambiente[i]}'></span>"
+      end
+    end
+
+    if params[:uso].present? && params[:uso].any?  # Usos
+      uso = @usos.map{ |u| ["#{u.nivel1}-#{u.nivel2}-#{u.nivel3}-#{u.nivel4}-#{u.nivel5}-#{u.nivel6}-#{u.nivel7}", u.descripcion] }.to_h 
+      ids = params[:uso] & uso.keys
+
+      ids.each do |i|
+        html << "<i class='btn-title mx-2' title='#{uso[i]}'>#{uso[i]}</i>"
+      end
+    end
+
+    html.present? ? "Tus filtros: #{html} <hr />".html_safe : html.html_safe
+  end
+
 end

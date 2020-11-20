@@ -40,7 +40,30 @@ class BusquedasRegionesController < ApplicationController
     br.params = params
 
     respond_to do |format|
-      format.html do 
+      format.html do
+        
+        animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
+        @animales = []
+        animales.each do |animal|
+          if index = Busqueda::GRUPOS_ANIMALES.index(animal.nombre_cientifico)
+            @animales[index] = animal
+          end
+        end
+
+        plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
+        @plantas = []
+        plantas.each do |planta|
+          if index = Busqueda::GRUPOS_PLANTAS.index(planta.nombre_cientifico)
+            @plantas[index] = planta
+          end
+        end
+
+        @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
+        @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
+        @prioritarias = Catalogo.prioritarias
+        @usos = Catalogo.usos
+        @ambientes = Catalogo.ambientes
+
         br.especies
         @resp = br.resp 
       end

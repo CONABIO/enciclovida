@@ -1,3 +1,7 @@
+<div class="row">
+  <div class="col text-right" id="filtros-especies"><%= params.inspect %><%= filtrosEspecies(params) %></div>
+</div>
+
 <% if @resp[:estatus] %>
   <% if @resp[:totales].present? %>
     <div class="row">
@@ -9,7 +13,7 @@
       </div>
 
       <div class="col-3">
-        <% if @resp[:totales] > 0 %>
+        <% if @resp[:totales] > 0 && @resp[:totales] < 62000 %>
           <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
           
           <div class="dropdown">

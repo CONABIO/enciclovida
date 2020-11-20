@@ -65,7 +65,7 @@ class Geoportal::Snib < GeoportalAbs
   private
 
   def consulta_especies_por_region
-    resultados = Geoportal::Snib.select('idnombrecatvalido, COUNT(*) AS nregistros').where("idnombrecatvalido <> '' AND especievalidabusqueda <> '' AND comentarioscatvalido LIKE 'Validado completamente con CAT.%'").group(:idnombrecatvalido).order('nregistros DESC')
+    resultados = Geoportal::Snib.select('idnombrecatvalido, COUNT(*) AS nregistros').group(:idnombrecatvalido).order('nregistros DESC')
     
     if campo_tipo_region.present? && params[:region_id].present?
       resultados = resultados.where("#{campo_tipo_region}=#{params[:region_id]}")
