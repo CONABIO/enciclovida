@@ -52,17 +52,24 @@ var leyenda = function()
         '<b>Ejemplares del SNIB</b><br />(museos, colectas, proyectos) <sub>' + infoLayers["totales"] + '</sub>'
     );
 
-    if(infoLayers[1] !== undefined)
-    {
-        snibControl.addOverlay(infoLayers[1]["layer"],
-        '<img src="/imagenes/app/mapa/colectas.png"> Especímenes en colecciones <sub>' + infoLayers[1]["totales"] + '</sub>'
-        );
-    }
-
     if(infoLayers[2] !== undefined)
     {
         snibControl.addOverlay(infoLayers[2]["layer"],
             '<img src="/imagenes/app/mapa/averaves.png"> Observaciones de aVerAves <sub>' + infoLayers[2]["totales"] + '</sub>'
+        );
+    }
+
+    if(infoLayers[5] !== undefined)
+    {
+        snibControl.addOverlay(infoLayers[5]["layer"],
+            '<img src="/imagenes/app/mapa/naturalista.png"> Naturalista <sub>' + infoLayers[5]["totales"] + '</sub>'
+        );
+    }
+
+    if(infoLayers[1] !== undefined)
+    {
+        snibControl.addOverlay(infoLayers[1]["layer"],
+        '<img src="/imagenes/app/mapa/colectas.png"> Especímenes en colecciones <sub>' + infoLayers[1]["totales"] + '</sub>'
         );
     }
 
@@ -77,13 +84,6 @@ var leyenda = function()
     {
         snibControl.addOverlay(infoLayers[4]["layer"],
             '<img src="/imagenes/app/mapa/nodecampo.png"> Localidad no de campo <sub>' + infoLayers[4]["totales"] + '</sub>'
-        );
-    }
-
-    if(infoLayers[5] !== undefined)
-    {
-        snibControl.addOverlay(infoLayers[5]["layer"],
-            '<img src="/imagenes/app/mapa/naturalista.png"> Naturalista <sub>' + infoLayers[5]["totales"] + '</sub>'
         );
     }
 };
