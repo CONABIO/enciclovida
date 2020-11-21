@@ -107,9 +107,9 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
 
   # REVISADO: Por si selecciono un grupo iconico, eligio del autocomplete un taxon o escribio un nombre
   def por_id_o_nombre
-    if params[:id].present?  # Tiene mas importancia si escogio por id
+    if params[:id].present? || params[:id_gi].present?  # Tiene mas importancia si escogio por id
       begin
-        self.taxon = Especie.find(params[:id])
+        self.taxon = Especie.find(params[:id].present? ? params[:id] : params[:id_gi])
         true
       rescue
         self.taxones = Especie.none

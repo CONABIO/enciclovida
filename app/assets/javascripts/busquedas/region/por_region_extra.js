@@ -12,25 +12,6 @@ var cambiaURLParametros = function()
 };
 
 /**
- * Asigna los filtros iniciales de acuerdo a los parametros de la pagina
- */
-var asignaFiltros = function(filtros)
-{
-    // Escogio de grupo iconico
-    /*if (filtros.id != undefined && filtros.nombre == undefined)
-    {
-        $('#id_gi_' + filtros.id).prop('checked', true);
-        $('#id').val(filtros.id);
-    } else if (filtros.id != undefined && filtros.nombre != undefined) {  // escogio un nombre
-        $('#id').val(filtros.id);
-        $('#nombre').val(filtros.nombre);
-    } else if (filtros.nombre != undefined){  // Solo escribio pero no escogio nombre
-        por_nombre();
-        $('#nombre').val(filtros.nombre);
-    }*/
-};
-
-/**
  * Serializa los parametros de acuerdo a los filtros y quita los vacios
  */
 var serializeParametros = function()
@@ -188,7 +169,6 @@ $(document).ready(function(){
     L.control.sidebar('sidebar').addTo(map);
     control_capas = L.control.layers({}).addTo(map);
     opciones.filtros.pagina = 1;
-    asignaFiltros(opciones.filtros);
     // Inicializa la carga inicial de las especies
     cargaEspecies();
     variablesIniciales();

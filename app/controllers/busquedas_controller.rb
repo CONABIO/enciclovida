@@ -14,7 +14,7 @@ class BusquedasController < ApplicationController
 
   # REVISADO: Los filtros de la busqueda avanzada
   def avanzada
-    filtros_iniciales
+    cache_filtros_ev
   end
 
   # REVISADO: Los resultados de busqueda basica o avanzada
@@ -87,8 +87,6 @@ class BusquedasController < ApplicationController
       end
     end
 
-
-
     if params['fromShow']
       # Se debe especificar el nombre del archivo completo ya q al ser una llamada ajax, pide el JS por default
       render 'busquedas/clasificacion/por_clasificacion.erb', :layout => false, :locals => {conBuscador: false}
@@ -141,34 +139,6 @@ class BusquedasController < ApplicationController
         end
       end
     end
-  end
-
-  # REVISADO: Los filtros de la busqueda avanzada y de los resultados
-  def filtros_iniciales
-    @reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
-
-    animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
-    @animales = []
-    animales.each do |animal|
-      if index = Busqueda::GRUPOS_ANIMALES.index(animal.nombre_cientifico)
-        @animales[index] = animal
-      end
-    end
-
-    plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
-    @plantas = []
-    plantas.each do |planta|
-      if index = Busqueda::GRUPOS_PLANTAS.index(planta.nombre_cientifico)
-        @plantas[index] = planta
-      end
-    end
-
-    @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
-    @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
-    @prioritarias = Catalogo.prioritarias
-    @usos = Catalogo.usos
-    @ambientes = Catalogo.ambientes
-    @regiones = Region.dame_regiones_filtro
   end
 
   # TODO: falta ver el funcionamiento del checklist; ¿talves contempalr la tabla plana?
@@ -297,8 +267,8 @@ class BusquedasController < ApplicationController
           @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
         end
       else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
-        filtros_iniciales
-        set_filtros
+        cache_filtros_ev
+        #set_filtros
 
         format.html { render action: 'resultados' }
         format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categroria: @por_categoria.present? ? @por_categoria : [] } }

@@ -9,29 +9,8 @@ class BusquedasRegionesController < ApplicationController
 
   # /explora-por-region
   def por_region
-    animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
-    @animales = []
-    animales.each do |animal|
-      if index = Busqueda::GRUPOS_ANIMALES.index(animal.nombre_cientifico)
-        @animales[index] = animal
-      end
-    end
-
-    plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
-    @plantas = []
-    plantas.each do |planta|
-      if index = Busqueda::GRUPOS_PLANTAS.index(planta.nombre_cientifico)
-        @plantas[index] = planta
-      end
-    end
-    
     @no_render_busqueda_basica = true
-    @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
-    @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
-    @prioritarias = Catalogo.prioritarias
-    @usos = Catalogo.usos
-    @ambientes = Catalogo.ambientes
-    asigna_filtros
+    cache_filtros_ev
   end
 
   # Servicio para consultar las especies pr region, contempla filtros y cache
@@ -41,29 +20,7 @@ class BusquedasRegionesController < ApplicationController
 
     respond_to do |format|
       format.html do
-        
-        animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
-        @animales = []
-        animales.each do |animal|
-          if index = Busqueda::GRUPOS_ANIMALES.index(animal.nombre_cientifico)
-            @animales[index] = animal
-          end
-        end
-
-        plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
-        @plantas = []
-        plantas.each do |planta|
-          if index = Busqueda::GRUPOS_PLANTAS.index(planta.nombre_cientifico)
-            @plantas[index] = planta
-          end
-        end
-
-        @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
-        @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
-        @prioritarias = Catalogo.prioritarias
-        @usos = Catalogo.usos
-        @ambientes = Catalogo.ambientes
-
+        cache_filtros_ev
         br.especies
         @resp = br.resp 
       end
@@ -137,30 +94,6 @@ class BusquedasRegionesController < ApplicationController
 
     else  # Por si no puso un correo valido
       render json: {estatus: false, msg: 'El correo no es válido.'}
-    end
-  end
-
-
-  private
-
-  # REVISADO: Parametros para poner en los filtros y saber cual escogio
-  def asigna_filtros
-    @asigna_filtros = {}
-
-    params.each do |k,v|
-      # Evitamos valores vacios
-      next unless v.present?
-
-      case k
-      when 'edo_cons', 'dist', 'prior', 'estatus', 'uso', 'ambiente'
-        if @asigna_filtros[k].present?
-          @asigna_filtros[k] << v.map{ |x| x.parameterize if x.present?}
-        else
-          @asigna_filtros[k] = v.map{ |x| x.parameterize if x.present?}
-        end
-      else
-        next
-      end
     end
   end
 

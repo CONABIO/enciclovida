@@ -27,8 +27,6 @@
   <% content_for(:delayedjs) do %>
     <script type="text/javascript">
         $(document).ready(function(){
-            asignaFiltros(<%=raw @setParams.to_json %>);
-
             <% if params[:id].present? && params[:nivel].present? && params[:cat].present? %>
             cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
             <% end %>

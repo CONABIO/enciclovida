@@ -17,8 +17,7 @@
       opciones.solo_coordenadas = true;
       opciones.datos = {};
       opciones.datos.taxones = {};
-      //opciones.filtros = {};
-      opciones.filtros = <%=raw @asigna_filtros.to_json %>;
+      opciones.filtros = {};
       opciones.filtros.pagina = 1;
       cargaMapa('map', { pantalla_comp : true, collapsed: true, position: 'topright' });
   </script>

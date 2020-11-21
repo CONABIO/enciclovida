@@ -9,7 +9,7 @@
   <div class="form-group row" id="por_nombre">
     <div class="col">
       <h6><strong>Nombre común o científico</strong></h6>
-      <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
+      <%= text_field_tag :nombre, params[:nombre].present? ? params[:nombre] : nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control' %>
     </div>
   </div>
 
@@ -20,7 +20,7 @@
     </div>
   </div>
 
-  <%= hidden_field_tag :id, nil %>
+  <%= hidden_field_tag :id, params[:id].present? ? params[:id] : nil %>
   <%= hidden_field_tag :busqueda, :avanzada %>
 </div>
 
@@ -57,7 +57,7 @@
 
 <div class="col-md">
   <h6><strong>Distribución (reportada en literatura)</strong></h6>
-  <%= selectRegiones.html_safe %>
+  <%= selectDistribuciones.html_safe %>
 </div>
 
 <div class="col-md">
@@ -67,5 +67,5 @@
 
 <div class="col-md">
     <h6><strong>Resultados por página:</strong></h6>
-    <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
+    <%= selctPorPagina.html_safe %>
 </div>
