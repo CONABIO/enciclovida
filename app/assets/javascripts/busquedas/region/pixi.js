@@ -323,7 +323,8 @@ var porColeccion = function(markers, coleccion)
                 //initialScale = invScale / 8;
                 //innerContainer.localScale = initialScale;
                 //var localScale = zoom >= 8 ? 1 / getScale(zoom) : 16;
-                var localScale = 1 / getScale(zoom);
+                //console.log(.5 / getScale(zoom))
+                var localScale = .6 / getScale(zoom);
                 innerContainer.localScale = localScale;
                 //innerContainer.setInteractive = true
                 
@@ -352,7 +353,7 @@ var porColeccion = function(markers, coleccion)
                 var targetZoom = event.zoom;
                 if (targetZoom >= 5 || zoom >= 5) {
                     zoomChangeTs = 0;
-                    var targetScale = targetZoom >= 4 ? 1 / getScale(event.zoom) : initialScale;
+                    var targetScale = targetZoom >= 5 ? .8 / getScale(event.zoom) : .8 / getScale(event.zoom);
                     innerContainer.currentScale = innerContainer.localScale;
                     innerContainer.targetScale = targetScale;
                 }
