@@ -96,9 +96,6 @@ var cargaEjemplares = function(url)
     configuraVariables();
     loader.load(function(loader, resources) {
         textures = [null, resources.colectas.texture, resources.averaves.texture, resources.fosiles.texture, resources.nodecampo.texture, resources.naturalista.texture];
-        //focusTextures = [resources.defaultMarkerFocus.texture];
-        //legend = document.querySelector('div.legend.geometry');
-        //legendContent = legend.querySelector('.content');
         getJSON(url, function(markers) {
             if (markers["estatus"])
             {
@@ -131,166 +128,6 @@ var borraEjemeplares = function()
  * @param {*} markers 
  * @param {*} coleccion 
  */
-/*var porColeccion = function(markers, coleccion)
-{        
-    var pixiLayer = (function() {
-        var firstDraw = true;
-        var prevZoom;
-        var markerSprites = [];
-        var frame = null;
-        var focus = null;
-        var pixiContainer = new PIXI.Container();
-        var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        
-        return L.pixiOverlay(function(utils) {
-            var zoom = utils.getMap().getZoom();
-            if (frame) {
-                cancelAnimationFrame(frame);
-                frame = null;
-            }
-            var container = utils.getContainer();
-            var renderer = utils.getRenderer();
-            var project = utils.latLngToLayerPoint;
-            var scale = utils.getScale();
-            var invScale = 1 / scale;
-            
-            if (firstDraw) {
-                prevZoom = zoom;
-                markers.forEach(function(marker) {
-                    var coords = project([marker[1], marker[0]]);
-                    //var markerSprite = new PIXI.Sprite(textures[marker[3]]);
-                    //markerSprite.textureIndex = marker[3];
-                    var markerSprite = new PIXI.Sprite(textures[0]);
-                    markerSprite.textureIndex = 0;
-                    markerSprite.x0 = coords.x;
-                    markerSprite.y0 = coords.y;
-                    markerSprite.anchor.set(0.5, 0.5);
-                    markerSprite.tint = 16771584; //8388608; // color de conabio en decimal
-                    container.addChild(markerSprite);
-                    markerSprites.push(markerSprite);
-                    markerSprite.legend = marker[2];
-                });
-
-                var quadTrees = {};
-                for (var z = map.getMinZoom(); z <= map.getMaxZoom(); z++) {
-                    var rInit = ((z <= 7) ? 10 : 24) / utils.getScale(z);
-                    quadTrees[z] = window.solveCollision(markerSprites, {r0: rInit, zoom: z});
-                }
-
-                function findMarker(ll) {
-                    var layerPoint = project(ll);
-                    var quadTree = quadTrees[utils.getMap().getZoom()];
-                    var marker;
-                    var rMax = quadTree.rMax;
-                    var found = false;
-                    quadTree.visit(function(quad, x1, y1, x2, y2) {
-                        if (!quad.length) {
-                            var dx = quad.data.x - layerPoint.x;
-                            var dy = quad.data.y - layerPoint.y;
-                            var r = quad.data.scale.x * 16;
-                            if (dx * dx + dy * dy <= r * r) {
-                                marker = quad.data;
-                                found = true;
-                            }
-                        }
-                        return found || x1 > layerPoint.x + rMax || x2 + rMax < layerPoint.x || y1 > layerPoint.y + rMax || y2 + rMax < layerPoint.y;
-                    });
-                    return marker;
-                }
-                
-                map.on('click', function(e) {
-                    var redraw = false;
-                    if (focus) {
-                        focus.texture = textures[focus.textureIndex];
-                        focus = null;
-                        L.DomUtil.addClass(legend, 'hide');
-                        legendContent.innerHTML = '';
-                        redraw = true;
-                    }
-                    
-                    var marker = findMarker(e.latlng);
-                    if (marker) {
-                        marker.texture = focusTextures[marker.textureIndex];
-                        focus = marker;
-                        legendContent.innerHTML = marker.legend;
-                        L.DomUtil.removeClass(legend, 'hide');
-                        redraw = true;
-                    }
-                    if (redraw) utils.getRenderer().render(container);
-                });
-                
-                var self = this;
-                map.on('mousemove', L.Util.throttle(function(e) {
-                    var marker = findMarker(e.latlng);
-                    if (marker) {
-                        L.DomUtil.addClass(self._container, 'leaflet-interactive');
-                    } else {
-                        L.DomUtil.removeClass(self._container, 'leaflet-interactive');
-                    }
-                }, 32));
-            }
-            
-            if (firstDraw || prevZoom !== zoom) {
-                markerSprites.forEach(function(markerSprite) {
-                    var position = markerSprite.cache[zoom];
-                    if (firstDraw) {
-                        markerSprite.x = position.x;
-                        markerSprite.y = position.y;
-                        markerSprite.scale.set((position.r * scale < 16) ? position.r / 16 : invScale);
-                    } else {
-                        markerSprite.currentX = markerSprite.x;
-                        markerSprite.currentY = markerSprite.y;
-                        markerSprite.targetX = position.x;
-                        markerSprite.targetY = position.y;
-                        markerSprite.currentScale = markerSprite.scale.x;
-                        markerSprite.targetScale = (position.r * scale < 16) ? position.r / 16 : invScale;
-                    }
-                });
-            }
-
-            var start = null;
-            var delta = 250;
-            function animate(timestamp) {
-                var progress;
-                if (start === null) start = timestamp;
-                progress = timestamp - start;
-                var lambda = progress / delta;
-                if (lambda > 1) lambda = 1;
-                lambda = lambda * (0.4 + lambda * (2.2 + lambda * -1.6));
-                markerSprites.forEach(function(markerSprite) {
-                    markerSprite.x = markerSprite.currentX + lambda * (markerSprite.targetX - markerSprite.currentX);
-                    markerSprite.y = markerSprite.currentY + lambda * (markerSprite.targetY - markerSprite.currentY);
-                    markerSprite.scale.set(markerSprite.currentScale + lambda * (markerSprite.targetScale - markerSprite.currentScale));
-                });
-                renderer.render(container);
-                if (progress < delta) {
-                frame = requestAnimationFrame(animate);
-                }
-            }
-            if (!firstDraw && prevZoom !== zoom) {
-                frame = requestAnimationFrame(animate);
-            }
-            firstDraw = false;
-            prevZoom = zoom;
-            renderer.render(container);
-        }, pixiContainer, {
-            doubleBuffering: doubleBuffering,
-            destroyInteractionManager: true
-        });
-    })();
-
-    snibLayer.addLayer(pixiLayer);
-    infoLayers[coleccion] = {}
-    infoLayers[coleccion]["layer"] = pixiLayer;
-    infoLayers[coleccion]["totales"] = markers.length;
-    infoLayers["totales"] += infoLayers[coleccion]["totales"];
-};*/
-
-/**
- * Carga ellayer de acuerdo a la coleccion especificada
- * @param {*} markers 
- * @param {*} coleccion 
- */
 var porColeccion = function(markers, coleccion)
 {        
     var easing = BezierEasing(0, 0, 0.25, 1);
@@ -298,14 +135,13 @@ var porColeccion = function(markers, coleccion)
         var zoomChangeTs = null;
         var pixiContainer = new PIXI.Container();
         var innerContainer = new PIXI.particles.ParticleContainer(markers.length, {vertices: true});
-        // add properties for our patched particleRenderer:
         innerContainer.texture = textures[coleccion];
         innerContainer.baseTexture = textures[coleccion].baseTexture;
         innerContainer.anchor = {x: 0.5, y: .5};
 
         pixiContainer.addChild(innerContainer);
         var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        var initialScale;
+        //var initialScale;
         
         return L.pixiOverlay(function(utils, event) {
             var zoom = utils.getMap().getZoom();
@@ -316,37 +152,26 @@ var porColeccion = function(markers, coleccion)
             var invScale = 1 / getScale();
 
             if (event.type === 'add') {
-                //console.log('entro a add')
                 var origin = project([(14.54 + 32.38) / 2, (-117.67 + -85.29) / 2]);
                 innerContainer.x = origin.x;
                 innerContainer.y = origin.y;
-                //initialScale = invScale / 8;
-                //innerContainer.localScale = initialScale;
-                //var localScale = zoom >= 8 ? 1 / getScale(zoom) : 16;
-                //console.log(.5 / getScale(zoom))
                 var localScale = .6 / getScale(zoom);
                 innerContainer.localScale = localScale;
-                //innerContainer.setInteractive = true
-                
+
                 markers.forEach(function(marker) {
                     var coords = project([marker[1], marker[0]]);
-
-                    /*var markerSprite = new PIXI.Sprite(textures[0]);
-                    markerSprite.textureIndex = 0;
-                    markerSprite.x = coords.x - origin.x;
-                    markerSprite.y = coords.y - origin.y;
-                    markerSprite.anchor.set(0.5, 0.5);
-                    markerSprite.tint = 16771584; 
-                    //markerSprite.interactive = true;
-                    */
 
                     innerContainer.addChild({
                         x: coords.x - origin.x,
                         y: coords.y - origin.y,
-                        name: 'calonsooooooooooooooooooooo!!!',
-                        label: 'caonso1',
+                        id: marker[2],
                     });
                 });
+
+                tree = d3.quadtree().addAll(innerContainer.children.map(p => [p.x, p.y, p.id]));
+					map.on('click', function(e) {
+							findMarker(e)
+				});
             }
 
             if (event.type === 'zoomanim') {
@@ -363,7 +188,6 @@ var porColeccion = function(markers, coleccion)
             if (event.type === 'redraw') {
                 var delta = event.delta;
                 if (zoomChangeTs !== null) {
-                    //console.log('zoomchangets no es nulo:' + zoomChangeTs)
                     var duration = 17;
                     zoomChangeTs += delta;
                     var lambda = zoomChangeTs / duration;
@@ -376,24 +200,14 @@ var porColeccion = function(markers, coleccion)
                 } else {return;}
             }
 
-            //var self = this;
-            //map.on('click', L.Util.throttle(function(e) {
-                //console.log(e);
-                /*var marker = findMarker(e.latlng);
-                if (marker) {
-                    L.DomUtil.addClass(self._container, 'leaflet-interactive');
-                } else {
-                    L.DomUtil.removeClass(self._container, 'leaflet-interactive');
-                }*/
-            //}, 32))
-
-            /*console.log(map.getMinZoom())   
-            console.log(map.getMaxZoom())
-            console.log(utils.getScale(4))
-            console.log(window.solveCollision([], {r0: rInit, zoom: z}))*/
+            function findMarker(e){
+                var origin = project([(14.54 + 32.38) / 2, (-117.67 + -85.29) / 2]);
+                var coords = project(e.latlng);
+                console.log(1 / getScale(event.zoom))
+                console.log(tree.find(coords.x - origin.x, coords.y - origin.y, 1 / getScale(event.zoom)))
+            }
 
             renderer.render(container);
-            
         }, pixiContainer, {
             doubleBuffering: doubleBuffering,
             destroyInteractionManager: true
