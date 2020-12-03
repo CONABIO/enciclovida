@@ -93,6 +93,7 @@ var inicializaVariables = function () {
   snibControl = L.control
     .layers({}, {}, { collapsed: true, position: "bottomright" })
     .addTo(map);
+  marker = undefined;
 };
 
 /**
@@ -161,6 +162,52 @@ var leyenda = function () {
 };
 
 /**
+ * Regresa la informacion del ejemplar
+ */
+var createMarker = function () {
+  getJSON("/explora-por-region/ejemplar?ejemplar_id=" + opciones.filtros.marker[2], function(resp){
+    if (resp.estatus) {
+      var data = resp.resultados[0];
+      var info = infoPopup(data)
+      if (marker != undefined) marker.removeFrom(map);
+      marker = L.marker([data.latitud, data.longitud]).addTo(map)
+      .bindPopup(info)
+      .openPopup();
+    }
+  });
+}
+
+var infoPopup = function(data)
+{
+    // var nombre_comun = '';
+    // if (opciones.nombre_comun !== undefined) var nombre_comun = '<h4 class="text-center">' + opciones.nombre_comun + '</h4>';
+    // var nombre = nombre_comun + '<h4 class="text-center"><a href="/especies/' + opciones.especie_id + '"><i>' + opciones.nombre_cientifico + '</i></a></h4>';
+
+    // contenido += "" + nombre + "<br />";
+    
+    contenido = "<strong>Localidad:</strong> " + data.localidad + "<br />";
+    contenido += "<strong>Municipio: </strong>" + data.municipiomapa + "<br />";
+    contenido += "<strong>Estado: </strong>" + data.estadomapa + "<br />";
+    contenido += "<strong>País: </strong>" + data.paismapa + "<br />";
+    contenido += "<strong>Fecha: </strong>" + data.fechacolecta + "<br />";
+    contenido += "<strong>Colector: </strong>" + data.colector + "<br />";
+    contenido += "<strong>Colección: </strong>" + data.coleccion + "<br />";
+    contenido += "<strong>Institución: </strong>" + data.institucion + "<br />";
+    contenido += "<strong>País de la colección: </strong>" + data.paiscoleccion + "<br />";
+
+    //if (data.proyecto.length > 0 && data.urlproyecto.length > 0)
+    //    contenido += "<strong>Proyecto: </strong><a href='" + data.urlproyecto + "' target='_blank'>" + data.proyecto + "</a><br />";
+
+    contenido += "<strong>Más información: </strong><a href='" + data.urlejemplar + "' target='_blank'>consultar</a><br />";
+
+    //Para enviar un comentario acerca de un ejemplar en particular
+    contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" +
+        data.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a><br />";
+
+    return "<dl class='dl-horizontal'>" + contenido + "</dl>";
+};
+
+/**
  * Carga todos los registros del SNIB en una misma integracion
  */
 var cargaEjemplares = function (url) {
@@ -182,26 +229,22 @@ var cargaEjemplares = function (url) {
         
         var colecciones = [1, 2, 3, 4, 5];
         tree_complete = []
-        tree=[];
+        tree = [];
+        
         colecciones.forEach(function (coleccion) {
-            if (
-              markers["resultados"][coleccion] !== undefined &&
-              markers["resultados"][coleccion][0] !== undefined
-            ) {
-              porColeccion(markers["resultados"][coleccion], coleccion);
-            } else {
-              if (coleccion == 5) {  // si es la ultima iteracion asigno tree
-                tree = d3
-                  .quadtree()
-                  .addAll(tree_complete.map((p) => [p.x, p.y, p.id]));
-              }
-            }
-            });
+          if (
+            markers["resultados"][coleccion] !== undefined &&
+            markers["resultados"][coleccion][0] !== undefined
+          ) {
+            porColeccion(markers["resultados"][coleccion], coleccion);
+          }
             
-            if (infoLayers["totales"] > 0) {
-                snibLayer.addTo(map);
-                leyenda();
-                $("div.leaflet-control-layers label div input").first().remove();
+        });
+            
+        if (infoLayers["totales"] > 0) {
+            snibLayer.addTo(map);
+            leyenda();
+            $("div.leaflet-control-layers label div input").first().remove();
         }
       }
     });
@@ -244,15 +287,8 @@ var porColeccion = function (markers, coleccion) {
         var invScale = 1 / getScale();
 
         if (event.type === "add") {
-          
           initialScale = markerScale(zoom);
-          
-          //console.log(zoom)
-          //console.log(invScale)
-          //console.log(initialScale)
-          //var localScale = .6 / getScale(zoom);
           innerContainer.localScale = initialScale;
-          //innerContainer.localScale = localScale;
 
           markers.forEach(function (marker) {
             var coords = project([marker[1], marker[0]]);
@@ -264,56 +300,42 @@ var porColeccion = function (markers, coleccion) {
             });
           });
 
-          tree_complete = tree_complete.concat(innerContainer.children)
-
-          if (coleccion == 5) {  // Si es la ultima iteracion, asigno tree
-            tree = d3
-              .quadtree()
-              .addAll(tree_complete.map((p) => [p.x, p.y, p.id]));
-          } 
+          tree_complete = tree_complete.concat(innerContainer.children);
+          tree = d3
+            .quadtree()
+            .addAll(tree_complete.map((p) => [p.x, p.y, p.id]));
 
           if (opciones.pixi.click == undefined) {
             map.on("click", function (e) {
-              findMarker(e);
+              var m = findMarker(e);
+              opciones.filtros.marker = m;
+              createMarker();
             });
             opciones.pixi.click = true;
           }
 
           if (opciones.pixi.mousemove == undefined) {
-            map.on("mousemove", L.Util.throttle(function(e) {
-              var marker = findMarker(e);
-              if (marker) {
-                $('#map canvas').addClass("leaflet-interactive");
-              } else {
-                $('#map canvas').removeClass("leaflet-interactive");
-              }
-            }, 32));
+            map.on(
+              "mousemove",
+              L.Util.throttle(function (e) {
+                var marker = findMarker(e);
+                if (marker) {
+                  $("#map canvas").addClass("leaflet-interactive");
+                } else {
+                  $("#map canvas").removeClass("leaflet-interactive");
+                }
+              }, 32)
+            );
             opciones.pixi.mousemove = true;
           }
         }
 
         if (event.type === "zoomanim") {
-          // var targetZoom = event.zoom;
-          // if (targetZoom >= 16 || zoom >= 16) {
-          // //if (targetZoom >= 5 || zoom >= 5) {
-          //     zoomChangeTs = 0;
-          //     var targetScale = targetZoom >= 16 ? 1 / getScale(event.zoom) : initialScale;
-          //     //var targetScale = targetZoom >= 5 ? .8 / getScale(event.zoom) : .8 / getScale(event.zoom);
-          //     innerContainer.currentScale = innerContainer.localScale;
-          //     innerContainer.targetScale = targetScale;
-          // }
-          // return;
-
-          console.log(event.zoom)
           var targetZoom = event.zoom;
-          //if (targetZoom >= 16 || zoom >= 16) {
-          //if (targetZoom >= 5 || zoom >= 5) {
           zoomChangeTs = 0;
           var targetScale = markerScale(targetZoom);
-          //var targetScale = targetZoom >= 5 ? .8 / getScale(event.zoom) : .8 / getScale(event.zoom);
           innerContainer.currentScale = innerContainer.localScale;
           innerContainer.targetScale = targetScale;
-          //}
           return;
         }
 
@@ -339,7 +361,6 @@ var porColeccion = function (markers, coleccion) {
 
         function findMarker(e) {
           var coords = project(e.latlng);
-          console.log(tree.find(coords.x, coords.y, markerScale(event.zoom)*10))
           return tree.find(coords.x, coords.y, markerScale(event.zoom)*10);
         }
 
