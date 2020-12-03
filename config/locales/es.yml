@@ -1,4 +1,11 @@
 es:
+  anps_tipos:
+    apfyf: Áreas de protección de flora y fauna
+    aprn: Áreas de protección de recursos naturales
+    mn: Monumentos naturales
+    pn: Parques nacionales
+    rb: Reservas de la biosfera
+    sant: Santuarios
   ambiente:
     marino:
       icono: marino.png
@@ -471,20 +478,25 @@ es:
       nombre_cientifico: Nombre científico
       sis_clas_cat_dicc: Sistema de clasificación, catalogo o diccionario
       updated_at: Fecha de última modificación
+      x_ambiente: Ambiente
+      x_bibliografia : Bibliografía
       x_bdi_fotos: Fotos del Banco de Imágenes - CONABIO
       x_categoria_taxonomica: Categoria taxonómica
       x_cites: Comercio Internacional (CITES)
-      x_estatus: Estatus del nombre científico
+      x_estatus: Estatus
       x_foto_principal: Foto principal
       x_iucn: Unión Internacional para la Conservación de la Naturaleza (IUCN)
       x_naturalista_id: Identificador NaturaLista
       x_naturalista_fotos: Fotos de Naturalista
       x_nom: Norma Oficial Mexicana NOM-059
       x_nombre_comun_principal: Nombre común principal
+      x_num_reg: Número de registros
       x_nombres_comunes: Nombres comúnes
       x_snib_id: Identificador del SNIB
       x_snib_reino: Reino en el SNIB
+      x_taxa_sup: Taxonomía superior
       x_tipo_distribucion: Tipo distribución
+      x_url_ev: 'URL Enciclovida'
     categorias:
       x_reino: Reino
       x_division: división

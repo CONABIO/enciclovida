@@ -26,9 +26,9 @@ class Especie < ActiveRecord::Base
   alias_attribute :updated_at, :FechaModificacion
 
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
-  attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
-                :x_naturalista_obs, :x_snib_registros, :x_geoportal_mapa,
-                :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion, :x_distribucion,
+  attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica, :x_url_ev, 
+                :x_naturalista_obs, :x_snib_registros, :x_geoportal_mapa, :x_num_reg,
+                :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion, :x_distribucion, :x_ambiente,
                 :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista, :x_nombres_comunes_catalogos, :x_nombres_comunes_todos,
                 :x_fotos, :x_foto_principal, :x_square_url, :x_fotos_principales, :x_fotos_totales, :x_naturalista_fotos, :x_bdi_fotos,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
@@ -38,7 +38,7 @@ class Especie < ActiveRecord::Base
                 :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
                 :x_infraphylum, :x_epiclase, :x_supercohorte, :x_cohorte, :x_subcohorte, :x_hibrido, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden, :x_infraserie,
-                :x_nombre_autoridad, :x_nombre_autoridad_infraespecie, :x_suprafamilia  # Para que en el excel sea mas facil la consulta
+                :x_bibliografia, :x_nombre_autoridad, :x_nombre_autoridad_infraespecie, :x_suprafamilia  # Para que en el excel sea mas facil la consulta
   :x_distancia
   alias_attribute :x_nombre_cientifico, :nombre_cientifico
   attr_accessor :e_geodata, :e_nombre_comun_principal, :e_foto_principal, :e_nombres_comunes, :e_categoria_taxonomica,
@@ -148,6 +148,9 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Scope para cargar las hojas del arbol
   scope :arbol_hojas, ->(taxon, estadistica_id, ascendente) { arbol_select.solo_publicos.where("#{attribute_alias(ascendente)}=#{taxon.id}").where.not(id: taxon.id).where("estadistica_id=?",estadistica_id).order(nombre_cientifico: :asc) }
   scope :arbol_hojas_obligatorias, ->(taxon, estadistica_id, ascendente) { arbol_hojas(taxon, estadistica_id, ascendente).solo_cat_obligatorias.where(estatus: 2) }
+
+  # Scopes de estadisticas
+  scope :conteo_estadisticas, ->(estadisticas, conteo) { left_joins(:estadisticas).where("estadistica_id IN (#{estadisticas})").where("conteo #{conteo} 0") }
 
   CON_REGION = [19, 50]
 

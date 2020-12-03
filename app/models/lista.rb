@@ -2,7 +2,7 @@ class Lista < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.ev}.listas"
 
-  attr_accessor :taxones, :taxon, :columnas_array
+  attr_accessor :taxones, :taxon, :columnas_array, :hash_especies
   validates :nombre_lista, :presence => true, :uniqueness => true
   before_update :quita_repetidos
 
@@ -31,6 +31,7 @@ class Lista < ActiveRecord::Base
   COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombre_comun_principal x_nombres_comunes x_categoria_taxonomica
                         x_estatus x_tipo_distribucion
                         cita_nomenclatural nombre_autoridad)
+  COLUMNAS_BASICAS = %w(id nombre_cientifico x_categoria_taxonomica x_estatus)                        
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
 
   def after_initialize
@@ -57,14 +58,18 @@ class Lista < ActiveRecord::Base
 
   # Para crear el excel con los datos
   def to_excel(opts={})
+    asigna_columnas_extra  # Para columnas que tienen un grupo de columnas
     xlsx = RubyXL::Workbook.new
     sheet = xlsx[0]
     sheet.sheet_name = 'Resultados'
     fila = 1  # Para no sobreescribir la cabecera
     columna = 0
-    cols = columnas_array if columnas_array.present?  # Para no sobreescribir el atributo original columnas
-    cols = columnas.split(',') if columnas.present?
-
+    
+    cols = if columnas_array.present?
+              columnas_array
+           else
+              columnas.split(',') if columnas.present?
+           end
 
     # Para la cabecera
     cols.each do |a|
@@ -78,8 +83,8 @@ class Lista < ActiveRecord::Base
     if opts[:es_busqueda]  # Busqueda basica o avanzada
       r = Especie.find_by_sql(opts[:busqueda])
       datos_descarga(r)
-    elsif opts[:ubicaciones]  # Descarga taxa de ubicaciones
-      r = Especie.where(id: cadena_especies.split(','))
+    elsif opts[:region]  # Descarga taxa de la busqueda por region
+      r = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", hash_especies.keys).includes(:tipos_distribuciones, :catalogos, :adicional, :nombres_comunes, :bibliografias, :scat)
       datos_descarga(r)
     end
 
@@ -165,11 +170,11 @@ class Lista < ActiveRecord::Base
   end
 
   # Para asignar los datos de una consulta de resultados, hacia un excel o csv, el recurso puede ser un string o un objeto
-  def datos_descarga(taxones)
-    return unless taxones.any?
+  def datos_descarga(taxa)
+    return unless taxa.any?
     self.taxones = []
 
-    taxones.each do |taxon|
+    taxa.each do |taxon|
       self.taxon = taxon
       asigna_datos
       self.taxones << taxon
@@ -180,10 +185,10 @@ class Lista < ActiveRecord::Base
   def asigna_datos
     return unless taxon.present?
 
-    if columnas.present?
-      cols = columnas.split(',')
-    elsif columnas_array.present?
-      cols = columnas_array
+    cols = if columnas_array.present?
+      columnas_array
+    else
+      columnas.split(',') if columnas.present?
     end
 
     cols.each do |col|
@@ -214,25 +219,69 @@ class Lista < ActiveRecord::Base
       when 'x_estatus'
         self.taxon.x_estatus = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
       when 'x_nombres_comunes'
-        nombres_comunes = taxon.nombres_comunes.order(:nombre_comun).map{|nom| "#{nom.nombre_comun.capitalize} (#{nom.lengua})"}.uniq
+        nombres_comunes = taxon.nombres_comunes.map{ |nom| nom.nombre_comun.capitalize }.uniq.sort
         next unless nombres_comunes.any?
-        self.taxon.x_nombres_comunes = nombres_comunes.join(',')
+        self.taxon.x_nombres_comunes = nombres_comunes.join(', ')
       when 'x_tipo_distribucion'
         tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
         next unless tipos_distribuciones.any?
         self.taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
-      when 'x_nom'
-        nom = taxon.catalogos.nom.distinct
+      when 'x_nom'  # TODO: homologar las demas descargas
+        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
+          nom = []
+          taxon.catalogos.each do |catalogo|
+            if catalogo.nivel1 == 4 && catalogo.nivel2 == 1
+              nom << catalogo
+            end
+          end
+        else
+          nom = taxon.catalogos.nom.distinct
+        end
+
         next unless nom.any?
-        self.taxon.x_nom = nom[0].descripcion
-      when 'x_iucn'
-        iucn = taxon.catalogos.iucn.distinct
+        self.taxon.x_nom = nom.map(&:descripcion).join(', ')
+      when 'x_iucn'  # TODO: homologar las demas descargas
+        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
+          iucn = []
+          taxon.catalogos.each do |catalogo|
+            if catalogo.nivel1 == 4 && catalogo.nivel2 == 2
+              iucn << catalogo
+            end
+          end
+        else
+          iucn = taxon.catalogos.iucn.distinct
+        end
+
         next unless iucn.any?
-        self.taxon.x_iucn = iucn[0].descripcion
-      when 'x_cites'
-        cites = taxon.catalogos.cites.distinct
+        self.taxon.x_iucn = iucn.map(&:descripcion).join(', ')
+      when 'x_cites'  # TODO: homologar las demas descargas
+        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
+          cites = []
+          taxon.catalogos.each do |catalogo|
+            if catalogo.nivel1 == 4 && catalogo.nivel2 == 3
+              cites << catalogo
+            end
+          end
+        else
+          cites = taxon.catalogos.cites.distinct
+        end
+
         next unless cites.any?
-        self.taxon.x_cites = cites[0].descripcion
+        self.taxon.x_cites = cites.map(&:descripcion).join(', ')        
+      when 'x_ambiente'  # TODO: homologar las demas descargas
+        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
+          ambiente = []
+          taxon.catalogos.each do |catalogo|
+            if catalogo.nivel1 == 2
+              ambiente << catalogo
+            end
+          end
+        else
+          ambiente = taxon.catalogos.ambientes
+        end
+
+        next unless ambiente.any?
+        self.taxon.x_ambiente = ambiente.map(&:descripcion).join(', ')        
       when 'x_naturalista_fotos'
         next unless adicional = taxon.adicional
         if proveedor = taxon.proveedor
@@ -241,6 +290,13 @@ class Lista < ActiveRecord::Base
       when 'x_bdi_fotos'
         next unless adicional = taxon.adicional
         self.taxon.x_bdi_fotos = "#{CONFIG.site_url}especies/#{taxon.id}/bdi-photos" if adicional.foto_principal.present?
+      when 'x_bibliografia'
+        biblio = taxon.bibliografias
+        self.taxon.x_bibliografia = biblio.map(&:cita_completa).join("\n")
+      when 'x_url_ev'
+        self.taxon.x_url_ev = "#{CONFIG.site_url}especies/#{taxon.id}-#{taxon.nombre_cientifico.estandariza}"
+      when 'x_num_reg'
+        self.taxon.x_num_reg = hash_especies[taxon.scat.catalogo_id]
       else
         next
       end  # End switch
@@ -273,6 +329,31 @@ class Lista < ActiveRecord::Base
 
   def quita_repetidos
     self.cadena_especies = cadena_especies.split(',').compact.uniq.join(',') if cadena_especies.present?
+  end
+
+  def asigna_columnas_extra
+    return unless columnas.present? || columnas_array.present?
+    if columnas_array.blank? && columnas.present?
+      self.columnas_array = columnas.split(',')
+    end
+    
+    if columnas_array.include?('x_cat_riesgo')
+      self.columnas_array = columnas_array << COLUMNAS_RIESGO_COMERCIO
+      self.columnas_array.delete('x_cat_riesgo')
+    end
+    
+    if columnas_array.include?('x_taxa_sup')
+      self.columnas_array = columnas_array << COLUMNAS_CATEGORIAS_PRINCIPALES
+      self.columnas_array.delete('x_taxa_sup')
+    end
+    
+    if columnas_array.include?('x_col_basicas')
+      self.columnas_array = columnas_array << COLUMNAS_BASICAS
+      self.columnas_array.delete('x_col_basicas')
+    end
+
+    self.columnas_array = columnas_array.flatten
+    self.columnas = columnas_array.join(',')
   end
 
 end

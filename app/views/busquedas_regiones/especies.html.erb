@@ -1,0 +1,94 @@
+<div class="row">
+  <div class="col text-right" id="filtros-especies"><%= filtrosEspecies(params) %></div>
+</div>
+
+<% if @resp[:estatus] %>
+  <% if @resp[:totales].present? %>
+    <div class="row">
+      <div class="col-9">
+        <h3>
+          <strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
+          | <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros
+        </h3>
+      </div>
+
+      <div class="col-3">
+        <% if @resp[:totales] > 0 && @resp[:totales] < 62000 %>
+          <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
+          
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Descargas
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <%= link_to("Lista en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-region', 'onclick': "$('#modal-descarga-region').modal('toggle');return false;", class: 'dropdown-item') %>
+              <%#= link_to("Guía de campo en PDF", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
+            </div>
+          </div>
+        <% end %>
+
+      </div>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <% if I18n.locale.to_s != 'es-cientifico' %>
+      <% @resp[:taxones].each do |t| %>
+        <% taxon = t[:especie] %>
+
+        <% if taxon.foto_principal.present? %>
+          <div class="col-3 my-2 px-1">
+            <div class="row no-gutters">
+              <div class="result-img-container col-12">
+                <%= image_tag(taxon.foto_principal, class: 'img-fluid') %>
+                <button class="btn btn-info boton-especie-registros" catalogo_id="<%= taxon.catalogo_id %>">
+                  <%= number_with_delimiter(t[:nregistros], delimiter: ',') %>
+                </button>
+              </div>
+              <div class="result-nombre-container col-12 px-1">
+                <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_self"}).html_safe %>
+              </div>
+            </div>
+          </div>
+
+        <% else %>
+          <div class="col-3 my-3 px-1">
+            <div class="row justify-content-center no-gutters">
+              <div class="result-img-container col-12">
+                <%= link_to "<i class='ev1-ev-icon'></i>".html_safe, especie_path(taxon), target: "_self" %>
+              </div>
+              <div class="result-nombre-container col-12 px-1">
+                <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_self"}).html_safe %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+    <% else %>
+      <% @resp[:taxones].each do |taxon| %>
+        <div class="col-12 ml-5">
+          <span class='datos_busqueda-<%= taxon.id %>'>
+            <div>
+              <%= tituloNombreCientifico(taxon, render: 'link', target: "_self").html_safe %>
+            </div>
+          </span>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+  
+  <div class="col-12 text-center mt-2">
+    <%= @resp['carga-anteriores-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-info', id: 'carga-anteriores-especies', title: 'Anterior') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-dark disabled') %>
+    <%= @resp['carga-siguientes-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-info', id: 'carga-siguientes-especies', title: 'Siguiente') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-dark disabled') %>
+  <div>
+
+  <script>
+      $(document).ready(function(){
+          var resp = <%=raw @resp.to_json %>;
+      });
+  </script>
+
+<% else %>
+  <p><%= @resp[:msg] %></p>
+<% end %>

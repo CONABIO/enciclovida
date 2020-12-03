@@ -68,67 +68,33 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
     end
   end
 
-  # Para las estadisticas dinamicas
   def busca_estadisticas
-    if params[:controller]=='estadisticas'
+    return unless params[:controller]=='estadisticas'
 
-      # Si se definió condición para conteo de valores:
-      conteo = '> 0'
-      if params["tipoResultado"].present?
-        case params["tipoResultado"]
-          when 'mayorCero'
-            conteo = '> 0'
-          when 'cero'
-            conteo = '= 0'
-          when 'mayorIgualCero'
-            conteo = '>= 0'
-          else
-            conteo = '> 0'
-        end
-      end
-
-      # Construir la clausula WHERE a partir de los parámetros
-      estadisticas_a_mostrar = []
-      # Si se definieron las estadísticas
-      if params["showEstadisticas"].present?
-        estadisticas_a_mostrar = params["showEstadisticas"]
-      else
-        # Si no, mostrar todas
-        Estadistica.all.each do |estadistica|
-          next if Estadistica::ESTADISTICAS_QUE_NO.index(estadistica.id)
-          estadisticas_a_mostrar << estadistica.id
-        end
-      end
-
-      el_where = "("
-      flag = false
-      estadisticas_a_mostrar.each do |estadistica|
-        unless flag
-          el_where << "enciclovida.especies_estadistica.estadistica_id = #{estadistica}"
-          flag = true
-        else
-          el_where << " OR enciclovida.especies_estadistica.estadistica_id = #{estadistica}"
-        end
-      end
-      el_where << ")"
-      # Agregarle el filtro de conteo
-      el_where << " AND enciclovida.especies_estadistica.conteo #{conteo} "
-
-      # EJECUTAR QUERY con el WHERE CONSTRUIDO
-      resultados = taxones.joins(:especie_estadisticas).distinct.where(el_where).group(:estadistica_id).size
-
-      # Iteramos los resultados y guardamos
-      self.estadisticas = {}
-      resultados.each do |clave, valor|
-        nombre_estd = Estadistica.where("id = #{clave}").first.descripcion_estadistica
-        conteo_estd = valor
-        self.estadisticas[clave] = {
-            'nombre_estadistica': nombre_estd,
-            'conteo': conteo_estd
-        }
-      end
+    case params["tipoResultado"]
+    when 'mayorCero'
+      conteo = '>'
+    when 'cero'
+      conteo = '='
+    when 'mayorIgualCero'
+      conteo = '>='
+    else
+      conteo = '>'
     end
 
+    # Si se definieron las estadísticas
+    estadisticas_a_mostrar = if params["showEstadisticas"].present?
+                               params["showEstadisticas"]
+                             else
+                               Estadistica::ESTADISTICAS_A_MOSTRAR
+                             end
+
+    # Extraer los taxones en hash
+    self.taxones = taxones.conteo_estadisticas(estadisticas_a_mostrar.join(','), conteo)
+    resultados = taxones.select('estadistica_id, descripcion_estadistica, COUNT(estadistica_id) AS conteo').group(:estadistica_id, :descripcion_estadistica)
+
+    self.estadisticas = resultados.map{ |e| { e.estadistica_id => { nombre_estadistica: e.descripcion_estadistica, conteo: e.conteo }}}
+    self.totales = taxones.count
   end
 
   # REVISADO: filtros de categorias de riesgo, nivel de prioridad
@@ -141,9 +107,9 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
 
   # REVISADO: Por si selecciono un grupo iconico, eligio del autocomplete un taxon o escribio un nombre
   def por_id_o_nombre
-    if params[:id].present?  # Tiene mas importancia si escogio por id
+    if params[:id].present? || params[:id_gi].present?  # Tiene mas importancia si escogio por id
       begin
-        self.taxon = Especie.find(params[:id])
+        self.taxon = Especie.find(params[:id].present? ? params[:id] : params[:id_gi])
         true
       rescue
         self.taxones = Especie.none

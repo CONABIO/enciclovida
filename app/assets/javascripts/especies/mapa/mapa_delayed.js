@@ -1,9 +1,9 @@
 $(document).ready(function() {
     // Inicia el mapa
-    cargaMapa('map');
+    cargaMapa('map', { pantalla_comp: true });
 
     // Para cargar las observaciones de NaturaLista
-    if (opciones.naturalista_url != undefined)
+    if (opciones.naturalista_url !== undefined)
         cargaObservacionesNaturalista(opciones.naturalista_url);
 
     // Para cargar los registros del SNIB
@@ -11,7 +11,7 @@ $(document).ready(function() {
         cargaEjemplaresSnib(opciones.snib_url);
 
     // Para cargar las capas del geoserver
-    if (opciones.geoserver_url != undefined)
+    if (opciones.geoserver_url !== undefined)
         cargaCapasGeoserver(opciones.geoserver_url);
 
     $(window).resize(function () {

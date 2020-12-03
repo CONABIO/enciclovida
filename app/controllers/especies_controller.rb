@@ -45,8 +45,10 @@ class EspeciesController < ApplicationController
       format.html do
 
         @datos = {}
+        @datos[:nombre_cientifico] = @especie.nombre_cientifico
+
         if adicional = @especie.adicional
-          @datos[:nombre_comun_principal] =  adicional.nombre_comun_principal
+          @datos[:nombre_comun] =  adicional.nombre_comun_principal
           @datos[:nombres_comunes] =  adicional.nombres_comunes
         end
 
@@ -602,7 +604,7 @@ class EspeciesController < ApplicationController
 
       respond_to do |format|
         format.json do
-          resp = p.ejemplares_snib('.json')
+          resp = p.ejemplares_snib('.json', params[:mapa].present? ? true : false)
 
           headers['Access-Control-Allow-Origin'] = '*'
           headers['Access-Control-Allow-Methods'] = 'GET'

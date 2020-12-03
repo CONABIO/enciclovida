@@ -95,16 +95,20 @@ var scrolling_page = function(objeto, por_pagina, url)
     });
 };
 
+/**
+ * Para validar el correo del lado del cliente 
+ * @param {*} recurso 
+ * @param {*} notice 
+ */
 var dameValidacionCorreo = function(recurso, notice)
-{
-    // Para validar en vivo el correo
-    $('#modal-descarga-' + recurso).on('keyup', '#correo-' + recurso, function(){
+{  
+    $('#modal-descarga-' + recurso).on('keyup', 'input[name=correo]', function(){
         $(notice).empty().addClass('hidden');
 
         if( !correoValido($(this).val()) )
-            $('#boton-descarga-' + recurso).attr('disabled', 'disabled');
+            $('#modal-descarga-' + recurso + ' .boton-descarga').attr('disabled', 'disabled');
         else
-            $('#boton-descarga-' + recurso).removeAttr('disabled');
+            $('#modal-descarga-' + recurso + ' .boton-descarga').removeAttr('disabled');
     });
 };
 

@@ -73,7 +73,7 @@ class EnviaCorreo < Devise::Mailer
       return correos.join(',')
     else
       correos.keep_if do |c|
-        c.include?("ggonzalez") || c.include?("calonso") || c.include?("albertoglezba") || c.include?("mailinator")
+        c.include?("ggonzalez") || c.include?("calonso") || c.include?("albertoglezba") || c.include?("mailinator") || c.include?("conabio.gob.mx")
       end
       correos << CONFIG.correo_admin unless correos.any?
       return correos.join(',')
