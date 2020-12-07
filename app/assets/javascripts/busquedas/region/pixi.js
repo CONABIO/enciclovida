@@ -165,6 +165,7 @@ var leyenda = function () {
  * Regresa la informacion del ejemplar
  */
 var createMarker = function () {
+  console.log(opciones)
   getJSON("/explora-por-region/ejemplar?ejemplar_id=" + opciones.filtros.marker[2], function(resp){
     if (resp.estatus) {
       var data = resp.resultados[0];

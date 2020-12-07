@@ -10,13 +10,7 @@
 
 <% content_for(:delayedjs) do %>
   <script data-turbolinks-track="true">
-      especies = null;
-      especies_con_filtro = null;
-
       opciones = {};
-      opciones.solo_coordenadas = true;
-      opciones.datos = {};
-      opciones.datos.taxones = {};
       opciones.filtros = {};
       opciones.filtros.pagina = 1;
       cargaMapa('map', { pantalla_comp : true, collapsed: true, position: 'topright' });
