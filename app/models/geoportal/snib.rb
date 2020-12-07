@@ -31,6 +31,17 @@ class Geoportal::Snib < GeoportalAbs
       end
     end
   end
+
+  # Regresa la información asociada a un ejemplar por medio de su ID
+  def ejemplar
+    if params[:ejemplar_id].present?
+      if ejemplar = Geoportal::Snib.where(id: params[:ejemplar_id]).first
+        self.resp = { estatus: true, resultados: [ejemplar] }
+      else
+        self.resp = { estatus: false, msg: 'No se encontro información con el ID proporcionado' }
+      end
+    end
+  end
   
   # Actualiza el idnombrecatvalido de las infraespecies para cambiarlo por su especie correspondiente y asigna la especie valida de acuerdo a catalogocentralizado
   def self.actualiza_idnombrecatvalido

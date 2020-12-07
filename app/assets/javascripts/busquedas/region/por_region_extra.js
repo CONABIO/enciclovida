@@ -68,28 +68,16 @@ var colapsaBarra  =function()
     $('#sidebar .sidebar-tabs li').removeClass('active');
 };
 
-/**
- * Asigna los datos del taxon para posteriormente ocuparlos en los ejemplares
- */
-/*var dameEjemplaresSnib = function(datos)
-{
-    opciones.especie_id = datos.id;
-    opciones.nombre_comun = datos.nombre_comun;
-    opciones.nombre_cientifico = datos.nombre_cientifico;
-    $('#especie_id').attr('value', datos.id);
-    cargaEjemplaresSnib('/especies/' + datos.id + '/ejemplares-snib.json?mapa=1');
-    colapsaBarra();
-};*/
-
 $(document).ready(function(){
     /**
      * Cuando selecciona una especie
      */
     $('#contenedor_especies').on('click', '.boton-especie-registros', function(event){
-        cargaEjemplares('/explora-por-region/ejemplares?' + serializeParametros().replace("&especie_id=", "") + '&especie_id=' + $(this).attr('catalogo_id'));
-        //opciones.especie_id = $(this).attr('especie_id');
-        //opciones.nombre_comun = $(this).attr('nombre_comun');
-        //opciones.nombre_cientifico = $(this).attr('nombre_cientifico');
+        $('#especie-container-' + opciones.filtros.catalogo_id).removeClass('border-selected-especie');
+        opciones.filtros.catalogo_id = $(this).attr('catalogo_id');
+        opciones.filtros.especie_id = $(this).attr('catalogo_id');
+        $('#especie-container-' + opciones.filtros.catalogo_id).addClass('border-selected-especie');
+        cargaEjemplares('/explora-por-region/ejemplares?' + serializeParametros() + '&especie_id=' + opciones.filtros.catalogo_id);
         event.preventDefault();
     });
 

@@ -10,7 +10,7 @@ SELECT anpid, nombre, cat_manejo, geom FROM anp LIMIT 1;
 SELECT gid, desecon3, geom FROM ecorregiones LIMIT 1;  -- aun no se ocupa
 SELECT idejemplar, idnombrecatvalido, especievalidabusqueda, comentarioscatvalido, entid, munid, anpid, ecorid, latitud, 
 longitud, localidad, municipiomapa, estadomapa, paismapa, categoriataxonomica, fechacolecta, colector, coleccion, probablelocnodecampo, 
-ejemplarfosil, institucion, paiscoleccion, proyecto, urlejemplar, urlorigen FROM snib LIMIT 1;
+ejemplarfosil, institucion, paiscoleccion, proyecto, urlproyecto, urlejemplar, urlorigen FROM snib LIMIT 1;
 
 -- 2.1.1
 ALTER TABLE anp RENAME COLUMN gid TO anpid;
@@ -18,7 +18,7 @@ ALTER TABLE anp RENAME COLUMN gid TO anpid;
 -- 3.
 SELECT idejemplar, idnombrecatvalido, especievalidabusqueda, comentarioscatvalido, entid, munid, anpid, ecorid, latitud, 
 longitud, localidad, municipiomapa, estadomapa, paismapa, categoriataxonomica, fechacolecta, colector, coleccion, probablelocnodecampo, 
-ejemplarfosil, institucion, paiscoleccion, proyecto, urlejemplar, urlorigen
+ejemplarfosil, institucion, paiscoleccion, proyecto, urlproyecto, urlejemplar, urlorigen
 INTO TABLE snib_ev 
 FROM snib 
 WHERE idnombrecatvalido <> '' AND especievalidabusqueda <> '' AND comentarioscatvalido LIKE 'Validado completamente con CAT.%';

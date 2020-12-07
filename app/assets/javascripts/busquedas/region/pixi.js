@@ -1,441 +1,417 @@
 /**
  * Variables para poder cargar la visualizacion con PIXI
  */
-var variablesIniciales = function()
-{
-    // El obejto inical de PIXI
-    loader = new PIXI.loaders.Loader();
-    loader
-        .add('colectas', '/imagenes/app/mapa/colectas.png')
-        .add('averaves', '/imagenes/app/mapa/averaves.png')
-        .add('fosiles', '/imagenes/app/mapa/fosiles.png')
-        .add('nodecampo', '/imagenes/app/mapa/nodecampo.png')
-        .add('naturalista', '/imagenes/app/mapa/naturalista.png');
-    ya_cargo = false;
+var variablesIniciales = function () {
+  // El obejto inical de PIXI
+  loader = new PIXI.loaders.Loader();
+  loader
+    .add("colectas", "/imagenes/app/mapa/colectas.png")
+    .add("averaves", "/imagenes/app/mapa/averaves.png")
+    .add("fosiles", "/imagenes/app/mapa/fosiles.png")
+    .add("nodecampo", "/imagenes/app/mapa/nodecampo.png")
+    .add("naturalista", "/imagenes/app/mapa/naturalista.png");
+
+  // variable global para no repetir js ni eventos
+  opciones.pixi = {};
+  opciones.pixi.tiene_var_iniciales = false;
+};
+
+/**
+ * Escala del marcador de acuerdo al zoom
+ * @param {*} invScale
+ * @param {*} zoom
+ */
+var markerScale = function (zoom) {
+  switch (zoom) {
+    case 5:
+      scale = 45.25; //invScale / (zoom-3);
+      break;
+    case 6:
+      scale = 30.16; //invScale / (zoom-4.5);
+      break;
+    case 7:
+      scale = 15.08; //invScale / (zoom-5.5);
+      break;
+    case 8:
+      scale = 7.54; //invScale / (zoom-6.5);
+      break;
+    case 9:
+      scale = 3.77; //invScale / (zoom-7.5);
+      break;
+    case 10:
+      scale = 1.88; //invScale / (zoom-7.5);
+      break;
+    case 11:
+      scale = .94; //invScale / (zoom-7.5);
+      break;
+    case 12:
+      scale = .47; //invScale / (zoom-7.5);
+      break;
+    case 13:
+      scale = .23; //invScale / (zoom-7.5);
+      break;
+    case 14:
+      scale = .11; //invScale / (zoom-7.5);
+      break;
+    case 15:
+      scale = .05; //invScale / (zoom-7.5);
+      break;
+    case 16:
+      scale = .02; //invScale / (zoom-7.5);
+      break;
+    case 17:
+      scale = .01; //invScale / (zoom-7.5);
+      break;
+    case 18:
+      scale = .005; //invScale / (zoom-7.5);
+      break;
+    default:
+    // code block
+  }
+
+  //if (zoomanim) return scale*2;
+  //else  return scale;
+
+  return scale;
 };
 
 /**
  * Hace limpieza de las variables para poder desplegar distintas visualizaciones
  */
-var configuraVariables = function()
-{
-    if (ya_cargo) limpiaMapa();
-    inicializaVariables();
-    ya_cargo = true;
+var configuraVariables = function () {
+  if (opciones.pixi.tiene_var_iniciales) limpiaMapa();
+  inicializaVariables();
+  opciones.pixi.tiene_var_iniciales = true;
 };
 
 /**
  * Limpia e inicializa las variables de los layer y el control
  */
-var inicializaVariables = function()
-{
-    snibLayer = L.layerGroup();  // Layer papa que tiene las capas
-    infoLayers = { 'totales': 0 };  // Tiene los conteos por layer
-    snibControl = L.control.layers({}, {}, {collapsed: true, position: 'bottomright'}).addTo(map);
+var inicializaVariables = function () {
+  snibLayer = L.layerGroup(); // Layer papa que tiene las capas
+  infoLayers = { totales: 0 }; // Tiene los conteos por layer
+  snibControl = L.control
+    .layers({}, {}, { collapsed: true, position: "bottomright" })
+    .addTo(map);
+  marker = undefined;
 };
 
 /**
  * Limpia los layer y el control
  */
-var limpiaMapa = function()
-{
-    map.removeLayer(snibLayer);
-    map.removeControl(snibControl);
+var limpiaMapa = function () {
+  map.removeLayer(snibLayer);
+  map.removeControl(snibControl);
 };
 
 /**
  * La simbologia personalizada dentro del mapa
  */
-var leyenda = function()
-{
-    snibControl.addOverlay(snibLayer,
-        '<b>Ejemplares del SNIB</b><br />(museos, colectas, proyectos) <sub>' + infoLayers["totales"] + '</sub>'
+var leyenda = function () {
+  snibControl.addOverlay(
+    snibLayer,
+    "<b>Ejemplares del SNIB</b><br />(museos, colectas, proyectos) <sub>" +
+      infoLayers["totales"] +
+      "</sub>"
+  );
+
+  if (infoLayers[2] !== undefined) {
+    snibControl.addOverlay(
+      infoLayers[2]["layer"],
+      '<img src="/imagenes/app/mapa/averaves.png"> Observaciones de aVerAves <sub>' +
+        infoLayers[2]["totales"] +
+        "</sub>"
     );
+  }
 
-    if(infoLayers[2] !== undefined)
-    {
-        snibControl.addOverlay(infoLayers[2]["layer"],
-            '<img src="/imagenes/app/mapa/averaves.png"> Observaciones de aVerAves <sub>' + infoLayers[2]["totales"] + '</sub>'
-        );
-    }
+  if (infoLayers[5] !== undefined) {
+    snibControl.addOverlay(
+      infoLayers[5]["layer"],
+      '<img src="/imagenes/app/mapa/naturalista.png"> Naturalista <sub>' +
+        infoLayers[5]["totales"] +
+        "</sub>"
+    );
+  }
 
-    if(infoLayers[5] !== undefined)
-    {
-        snibControl.addOverlay(infoLayers[5]["layer"],
-            '<img src="/imagenes/app/mapa/naturalista.png"> Naturalista <sub>' + infoLayers[5]["totales"] + '</sub>'
-        );
-    }
+  if (infoLayers[1] !== undefined) {
+    snibControl.addOverlay(
+      infoLayers[1]["layer"],
+      '<img src="/imagenes/app/mapa/colectas.png"> Especímenes en colecciones <sub>' +
+        infoLayers[1]["totales"] +
+        "</sub>"
+    );
+  }
 
-    if(infoLayers[1] !== undefined)
-    {
-        snibControl.addOverlay(infoLayers[1]["layer"],
-        '<img src="/imagenes/app/mapa/colectas.png"> Especímenes en colecciones <sub>' + infoLayers[1]["totales"] + '</sub>'
-        );
-    }
+  if (infoLayers[3] !== undefined) {
+    snibControl.addOverlay(
+      infoLayers[3]["layer"],
+      '<img src="/imagenes/app/mapa/fosiles.png"> Fósiles <sub>' +
+        infoLayers[3]["totales"] +
+        "</sub>"
+    );
+  }
 
-    if(infoLayers[3] !== undefined)
-    {
-        snibControl.addOverlay(infoLayers[3]["layer"],
-            '<img src="/imagenes/app/mapa/fosiles.png"> Fósiles <sub>' + infoLayers[3]["totales"] + '</sub>'
-        );
-    }
+  if (infoLayers[4] !== undefined) {
+    snibControl.addOverlay(
+      infoLayers[4]["layer"],
+      '<img src="/imagenes/app/mapa/nodecampo.png"> Localidad no de campo <sub>' +
+        infoLayers[4]["totales"] +
+        "</sub>"
+    );
+  }
+};
 
-    if(infoLayers[4] !== undefined)
-    {
-        snibControl.addOverlay(infoLayers[4]["layer"],
-            '<img src="/imagenes/app/mapa/nodecampo.png"> Localidad no de campo <sub>' + infoLayers[4]["totales"] + '</sub>'
-        );
+/**
+ * Regresa la informacion del ejemplar
+ */
+var createMarker = function () {
+  console.log(opciones)
+  getJSON("/explora-por-region/ejemplar?ejemplar_id=" + opciones.filtros.marker[2], function(resp){
+    if (resp.estatus) {
+      var data = resp.resultados[0];
+      var info = infoPopup(data)
+      if (marker != undefined) marker.removeFrom(map);
+      marker = L.marker([data.latitud, data.longitud]).addTo(map)
+      .bindPopup(info)
+      .openPopup();
     }
+  });
+}
+
+var infoPopup = function(data)
+{
+    // var nombre_comun = '';
+    // if (opciones.nombre_comun !== undefined) var nombre_comun = '<h4 class="text-center">' + opciones.nombre_comun + '</h4>';
+    // var nombre = nombre_comun + '<h4 class="text-center"><a href="/especies/' + opciones.especie_id + '"><i>' + opciones.nombre_cientifico + '</i></a></h4>';
+
+    // contenido += "" + nombre + "<br />";
+    
+    contenido = "<strong>Localidad:</strong> " + data.localidad + "<br />";
+    contenido += "<strong>Municipio: </strong>" + data.municipiomapa + "<br />";
+    contenido += "<strong>Estado: </strong>" + data.estadomapa + "<br />";
+    contenido += "<strong>País: </strong>" + data.paismapa + "<br />";
+    contenido += "<strong>Fecha: </strong>" + data.fechacolecta + "<br />";
+    contenido += "<strong>Colector: </strong>" + data.colector + "<br />";
+    contenido += "<strong>Colección: </strong>" + data.coleccion + "<br />";
+    contenido += "<strong>Institución: </strong>" + data.institucion + "<br />";
+    contenido += "<strong>País de la colección: </strong>" + data.paiscoleccion + "<br />";
+
+    //if (data.proyecto.length > 0 && data.urlproyecto.length > 0)
+    //    contenido += "<strong>Proyecto: </strong><a href='" + data.urlproyecto + "' target='_blank'>" + data.proyecto + "</a><br />";
+
+    contenido += "<strong>Más información: </strong><a href='" + data.urlejemplar + "' target='_blank'>consultar</a><br />";
+
+    //Para enviar un comentario acerca de un ejemplar en particular
+    contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" +
+        data.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a><br />";
+
+    return "<dl class='dl-horizontal'>" + contenido + "</dl>";
 };
 
 /**
  * Carga todos los registros del SNIB en una misma integracion
  */
-var cargaEjemplares = function(url)
-{
-    configuraVariables();
-    loader.load(function(loader, resources) {
-        textures = [null, resources.colectas.texture, resources.averaves.texture, resources.fosiles.texture, resources.nodecampo.texture, resources.naturalista.texture];
-        //focusTextures = [resources.defaultMarkerFocus.texture];
-        //legend = document.querySelector('div.legend.geometry');
-        //legendContent = legend.querySelector('.content');
-        getJSON(url, function(markers) {
-            if (markers["estatus"])
-            {
-                var colecciones = [1,2,3,4,5];
-                //var colecciones = [1];
-                colecciones.forEach(function(coleccion){
-                    if(markers["resultados"][coleccion] !== undefined && markers["resultados"][coleccion][0] !== undefined) 
-                        porColeccion(markers["resultados"][coleccion], coleccion);
-                        //cualColeccion([[-98.98, 21.2078056, 6142080], [-98.98, 21.21, 6142081]], coleccion);
-                });   
-
-                if (infoLayers["totales"] > 0)
-                {
-                    snibLayer.addTo(map);
-                    leyenda();
-                    $('div.leaflet-control-layers label div input').first().remove();
-                } 
-            }    
-        });
-    });
-};
-
-var borraEjemeplares = function()
-{
-    this.loader.destroy();
-};
-
-/**
- * Carga ellayer de acuerdo a la coleccion especificada
- * @param {*} markers 
- * @param {*} coleccion 
- */
-/*var porColeccion = function(markers, coleccion)
-{        
-    var pixiLayer = (function() {
-        var firstDraw = true;
-        var prevZoom;
-        var markerSprites = [];
-        var frame = null;
-        var focus = null;
-        var pixiContainer = new PIXI.Container();
-        var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+var cargaEjemplares = function (url) {
+  configuraVariables();
+  loader.load(function (loader, resources) {
+    textures = [
+      null,
+      resources.colectas.texture,
+      resources.averaves.texture,
+      resources.fosiles.texture,
+      resources.nodecampo.texture,
+      resources.naturalista.texture,
+    ];
+    getJSON(url, function (markers) {
+      if (markers["estatus"]) {
+        // Quitando los eventos para no repetirlos
+        //map.off("click");
+        //map.off("mousemove");
         
-        return L.pixiOverlay(function(utils) {
-            var zoom = utils.getMap().getZoom();
-            if (frame) {
-                cancelAnimationFrame(frame);
-                frame = null;
-            }
-            var container = utils.getContainer();
-            var renderer = utils.getRenderer();
-            var project = utils.latLngToLayerPoint;
-            var scale = utils.getScale();
-            var invScale = 1 / scale;
-            
-            if (firstDraw) {
-                prevZoom = zoom;
-                markers.forEach(function(marker) {
-                    var coords = project([marker[1], marker[0]]);
-                    //var markerSprite = new PIXI.Sprite(textures[marker[3]]);
-                    //markerSprite.textureIndex = marker[3];
-                    var markerSprite = new PIXI.Sprite(textures[0]);
-                    markerSprite.textureIndex = 0;
-                    markerSprite.x0 = coords.x;
-                    markerSprite.y0 = coords.y;
-                    markerSprite.anchor.set(0.5, 0.5);
-                    markerSprite.tint = 16771584; //8388608; // color de conabio en decimal
-                    container.addChild(markerSprite);
-                    markerSprites.push(markerSprite);
-                    markerSprite.legend = marker[2];
-                });
-
-                var quadTrees = {};
-                for (var z = map.getMinZoom(); z <= map.getMaxZoom(); z++) {
-                    var rInit = ((z <= 7) ? 10 : 24) / utils.getScale(z);
-                    quadTrees[z] = window.solveCollision(markerSprites, {r0: rInit, zoom: z});
-                }
-
-                function findMarker(ll) {
-                    var layerPoint = project(ll);
-                    var quadTree = quadTrees[utils.getMap().getZoom()];
-                    var marker;
-                    var rMax = quadTree.rMax;
-                    var found = false;
-                    quadTree.visit(function(quad, x1, y1, x2, y2) {
-                        if (!quad.length) {
-                            var dx = quad.data.x - layerPoint.x;
-                            var dy = quad.data.y - layerPoint.y;
-                            var r = quad.data.scale.x * 16;
-                            if (dx * dx + dy * dy <= r * r) {
-                                marker = quad.data;
-                                found = true;
-                            }
-                        }
-                        return found || x1 > layerPoint.x + rMax || x2 + rMax < layerPoint.x || y1 > layerPoint.y + rMax || y2 + rMax < layerPoint.y;
-                    });
-                    return marker;
-                }
-                
-                map.on('click', function(e) {
-                    var redraw = false;
-                    if (focus) {
-                        focus.texture = textures[focus.textureIndex];
-                        focus = null;
-                        L.DomUtil.addClass(legend, 'hide');
-                        legendContent.innerHTML = '';
-                        redraw = true;
-                    }
-                    
-                    var marker = findMarker(e.latlng);
-                    if (marker) {
-                        marker.texture = focusTextures[marker.textureIndex];
-                        focus = marker;
-                        legendContent.innerHTML = marker.legend;
-                        L.DomUtil.removeClass(legend, 'hide');
-                        redraw = true;
-                    }
-                    if (redraw) utils.getRenderer().render(container);
-                });
-                
-                var self = this;
-                map.on('mousemove', L.Util.throttle(function(e) {
-                    var marker = findMarker(e.latlng);
-                    if (marker) {
-                        L.DomUtil.addClass(self._container, 'leaflet-interactive');
-                    } else {
-                        L.DomUtil.removeClass(self._container, 'leaflet-interactive');
-                    }
-                }, 32));
-            }
-            
-            if (firstDraw || prevZoom !== zoom) {
-                markerSprites.forEach(function(markerSprite) {
-                    var position = markerSprite.cache[zoom];
-                    if (firstDraw) {
-                        markerSprite.x = position.x;
-                        markerSprite.y = position.y;
-                        markerSprite.scale.set((position.r * scale < 16) ? position.r / 16 : invScale);
-                    } else {
-                        markerSprite.currentX = markerSprite.x;
-                        markerSprite.currentY = markerSprite.y;
-                        markerSprite.targetX = position.x;
-                        markerSprite.targetY = position.y;
-                        markerSprite.currentScale = markerSprite.scale.x;
-                        markerSprite.targetScale = (position.r * scale < 16) ? position.r / 16 : invScale;
-                    }
-                });
-            }
-
-            var start = null;
-            var delta = 250;
-            function animate(timestamp) {
-                var progress;
-                if (start === null) start = timestamp;
-                progress = timestamp - start;
-                var lambda = progress / delta;
-                if (lambda > 1) lambda = 1;
-                lambda = lambda * (0.4 + lambda * (2.2 + lambda * -1.6));
-                markerSprites.forEach(function(markerSprite) {
-                    markerSprite.x = markerSprite.currentX + lambda * (markerSprite.targetX - markerSprite.currentX);
-                    markerSprite.y = markerSprite.currentY + lambda * (markerSprite.targetY - markerSprite.currentY);
-                    markerSprite.scale.set(markerSprite.currentScale + lambda * (markerSprite.targetScale - markerSprite.currentScale));
-                });
-                renderer.render(container);
-                if (progress < delta) {
-                frame = requestAnimationFrame(animate);
-                }
-            }
-            if (!firstDraw && prevZoom !== zoom) {
-                frame = requestAnimationFrame(animate);
-            }
-            firstDraw = false;
-            prevZoom = zoom;
-            renderer.render(container);
-        }, pixiContainer, {
-            doubleBuffering: doubleBuffering,
-            destroyInteractionManager: true
-        });
-    })();
-
-    snibLayer.addLayer(pixiLayer);
-    infoLayers[coleccion] = {}
-    infoLayers[coleccion]["layer"] = pixiLayer;
-    infoLayers[coleccion]["totales"] = markers.length;
-    infoLayers["totales"] += infoLayers[coleccion]["totales"];
-};*/
-
-/**
- * Carga ellayer de acuerdo a la coleccion especificada
- * @param {*} markers 
- * @param {*} coleccion 
- */
-var porColeccion = function(markers, coleccion)
-{        
-    var easing = BezierEasing(0, 0, 0.25, 1);
-    var pixiLayer = (function() {
-        var zoomChangeTs = null;
-        var pixiContainer = new PIXI.Container();
-        var innerContainer = new PIXI.particles.ParticleContainer(markers.length, {vertices: true});
-        // add properties for our patched particleRenderer:
-        innerContainer.texture = textures[coleccion];
-        innerContainer.baseTexture = textures[coleccion].baseTexture;
-        innerContainer.anchor = {x: 0.5, y: .5};
-
-        pixiContainer.addChild(innerContainer);
-        var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        var initialScale;
+        var colecciones = [1, 2, 3, 4, 5];
+        tree_complete = []
+        tree = [];
         
-        return L.pixiOverlay(function(utils, event) {
-            var zoom = utils.getMap().getZoom();
-            var container = utils.getContainer();
-            var renderer = utils.getRenderer();
-            var project = utils.latLngToLayerPoint;
-            var getScale = utils.getScale;
-            var invScale = 1 / getScale();
-
-            if (event.type === 'add') {
-                //console.log('entro a add')
-                var origin = project([(14.54 + 32.38) / 2, (-117.67 + -85.29) / 2]);
-                innerContainer.x = origin.x;
-                innerContainer.y = origin.y;
-                //initialScale = invScale / 8;
-                //innerContainer.localScale = initialScale;
-                //var localScale = zoom >= 8 ? 1 / getScale(zoom) : 16;
-                //console.log(.5 / getScale(zoom))
-                var localScale = .6 / getScale(zoom);
-                innerContainer.localScale = localScale;
-                //innerContainer.setInteractive = true
-                
-                markers.forEach(function(marker) {
-                    var coords = project([marker[1], marker[0]]);
-
-                    /*var markerSprite = new PIXI.Sprite(textures[0]);
-                    markerSprite.textureIndex = 0;
-                    markerSprite.x = coords.x - origin.x;
-                    markerSprite.y = coords.y - origin.y;
-                    markerSprite.anchor.set(0.5, 0.5);
-                    markerSprite.tint = 16771584; 
-                    //markerSprite.interactive = true;
-                    */
-
-                    innerContainer.addChild({
-                        x: coords.x - origin.x,
-                        y: coords.y - origin.y,
-                        name: 'calonsooooooooooooooooooooo!!!',
-                        label: 'caonso1',
-                    });
-                });
-            }
-
-            if (event.type === 'zoomanim') {
-                var targetZoom = event.zoom;
-                if (targetZoom >= 5 || zoom >= 5) {
-                    zoomChangeTs = 0;
-                    var targetScale = targetZoom >= 5 ? .8 / getScale(event.zoom) : .8 / getScale(event.zoom);
-                    innerContainer.currentScale = innerContainer.localScale;
-                    innerContainer.targetScale = targetScale;
-                }
-                return;
-            }
-
-            if (event.type === 'redraw') {
-                var delta = event.delta;
-                if (zoomChangeTs !== null) {
-                    //console.log('zoomchangets no es nulo:' + zoomChangeTs)
-                    var duration = 17;
-                    zoomChangeTs += delta;
-                    var lambda = zoomChangeTs / duration;
-                  if (lambda > 1) {
-                      lambda = 1;
-                      zoomChangeTs = null;
-                  }
-                  lambda = easing(lambda);
-                  innerContainer.localScale = innerContainer.currentScale + lambda * (innerContainer.targetScale - innerContainer.currentScale);
-                } else {return;}
-            }
-
-            //var self = this;
-            //map.on('click', L.Util.throttle(function(e) {
-                //console.log(e);
-                /*var marker = findMarker(e.latlng);
-                if (marker) {
-                    L.DomUtil.addClass(self._container, 'leaflet-interactive');
-                } else {
-                    L.DomUtil.removeClass(self._container, 'leaflet-interactive');
-                }*/
-            //}, 32))
-
-            /*console.log(map.getMinZoom())   
-            console.log(map.getMaxZoom())
-            console.log(utils.getScale(4))
-            console.log(window.solveCollision([], {r0: rInit, zoom: z}))*/
-
-            renderer.render(container);
+        colecciones.forEach(function (coleccion) {
+          if (
+            markers["resultados"][coleccion] !== undefined &&
+            markers["resultados"][coleccion][0] !== undefined
+          ) {
+            porColeccion(markers["resultados"][coleccion], coleccion);
+          }
             
-        }, pixiContainer, {
-            doubleBuffering: doubleBuffering,
-            destroyInteractionManager: true
         });
-    })();
-
-    var ticker = new PIXI.ticker.Ticker();
-    ticker.add(function(delta) {
-        pixiLayer.redraw({type: 'redraw', delta: delta});
-    });
-    map.on('zoomstart', function() {
-        ticker.start();
-    });
-    map.on('zoomend', function() {
-        ticker.stop();
-    });
-    map.on('zoomanim', pixiLayer.redraw, pixiLayer);
-    
-    snibLayer.addLayer(pixiLayer);
-    infoLayers[coleccion] = {}
-    infoLayers[coleccion]["layer"] = pixiLayer;
-    infoLayers[coleccion]["totales"] = markers.length;
-    infoLayers["totales"] += infoLayers[coleccion]["totales"];
-};
-
-var getJSON = function(url, successHandler, errorHandler) {
-    var xhr = typeof XMLHttpRequest != 'undefined'
-        ? new XMLHttpRequest()
-        : new ActiveXObject('Microsoft.XMLHTTP');
-    xhr.open('get', url, true);
-    xhr.onreadystatechange = function() {
-        var status;
-        var data;
-        if (xhr.readyState == 4) {
-            status = xhr.status;
-            if (status == 200) {
-                data = JSON.parse(xhr.responseText);
-                successHandler && successHandler(data);
-            } else {
-                errorHandler && errorHandler(status);
-            }
+            
+        if (infoLayers["totales"] > 0) {
+            snibLayer.addTo(map);
+            leyenda();
+            $("div.leaflet-control-layers label div input").first().remove();
         }
-    };
-    xhr.send();
+      }
+    });
+  });
+};
+
+var borraEjemeplares = function () {
+  this.loader.destroy();
+};
+
+/**
+ * Carga ellayer de acuerdo a la coleccion especificada
+ * @param {*} markers
+ * @param {*} coleccion
+ */
+var porColeccion = function (markers, coleccion) {
+  var easing = BezierEasing(0, 0, 0.25, 1);
+  var pixiLayer = (function () {
+    var zoomChangeTs = null;
+    var pixiContainer = new PIXI.Container();
+    var innerContainer = new PIXI.particles.ParticleContainer(markers.length, {
+      vertices: true,
+    });
+    innerContainer.texture = textures[coleccion];
+    innerContainer.baseTexture = textures[coleccion].baseTexture;
+    innerContainer.anchor = { x: 0.5, y: 1 };
+
+    pixiContainer.addChild(innerContainer);
+    var doubleBuffering =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    var initialScale;
+
+    return L.pixiOverlay(
+      function (utils, event) {
+        var zoom = utils.getMap().getZoom();
+        var container = utils.getContainer();
+        var renderer = utils.getRenderer();
+        var project = utils.latLngToLayerPoint;
+        var getScale = utils.getScale;
+        var invScale = 1 / getScale();
+
+        if (event.type === "add") {
+          initialScale = markerScale(zoom);
+          innerContainer.localScale = initialScale;
+
+          markers.forEach(function (marker) {
+            var coords = project([marker[1], marker[0]]);
+
+            innerContainer.addChild({
+              x: coords.x,
+              y: coords.y,
+              id: marker[2],
+            });
+          });
+
+          tree_complete = tree_complete.concat(innerContainer.children);
+          tree = d3
+            .quadtree()
+            .addAll(tree_complete.map((p) => [p.x, p.y, p.id]));
+
+          if (opciones.pixi.click == undefined) {
+            map.on("click", function (e) {
+              var m = findMarker(e);
+              opciones.filtros.marker = m;
+              createMarker();
+            });
+            opciones.pixi.click = true;
+          }
+
+          if (opciones.pixi.mousemove == undefined) {
+            map.on(
+              "mousemove",
+              L.Util.throttle(function (e) {
+                var marker = findMarker(e);
+                if (marker) {
+                  $("#map canvas").addClass("leaflet-interactive");
+                } else {
+                  $("#map canvas").removeClass("leaflet-interactive");
+                }
+              }, 32)
+            );
+            opciones.pixi.mousemove = true;
+          }
+        }
+
+        if (event.type === "zoomanim") {
+          var targetZoom = event.zoom;
+          zoomChangeTs = 0;
+          var targetScale = markerScale(targetZoom);
+          innerContainer.currentScale = innerContainer.localScale;
+          innerContainer.targetScale = targetScale;
+          return;
+        }
+
+        if (event.type === "redraw") {
+          var delta = event.delta;
+          if (zoomChangeTs !== null) {
+            var duration = 17;
+            zoomChangeTs += delta;
+            var lambda = zoomChangeTs / duration;
+            if (lambda > 1) {
+              lambda = 1;
+              zoomChangeTs = null;
+            }
+            lambda = easing(lambda);
+            innerContainer.localScale =
+              innerContainer.currentScale +
+              lambda *
+                (innerContainer.targetScale - innerContainer.currentScale);
+          } else {
+            return;
+          }
+        }
+
+        function findMarker(e) {
+          var coords = project(e.latlng);
+          return tree.find(coords.x, coords.y, markerScale(event.zoom)*10);
+        }
+
+        renderer.render(container);
+      },
+      pixiContainer,
+      {
+        doubleBuffering: doubleBuffering,
+        destroyInteractionManager: true,
+      }
+    );
+  })();
+
+  var ticker = new PIXI.ticker.Ticker();
+  ticker.add(function (delta) {
+    pixiLayer.redraw({ type: "redraw", delta: delta });
+  });
+  map.on("zoomstart", function () {
+    ticker.start();
+  });
+  map.on("zoomend", function () {
+    ticker.stop();
+  });
+  map.on("zoomanim", pixiLayer.redraw, pixiLayer);
+
+  snibLayer.addLayer(pixiLayer);
+  infoLayers[coleccion] = {};
+  infoLayers[coleccion]["layer"] = pixiLayer;
+  infoLayers[coleccion]["totales"] = markers.length;
+  infoLayers["totales"] += infoLayers[coleccion]["totales"];
+};
+
+var getJSON = function (url, successHandler, errorHandler) {
+  var xhr =
+    typeof XMLHttpRequest != "undefined"
+      ? new XMLHttpRequest()
+      : new ActiveXObject("Microsoft.XMLHTTP");
+  xhr.open("get", url, true);
+  xhr.onreadystatechange = function () {
+    var status;
+    var data;
+    if (xhr.readyState == 4) {
+      status = xhr.status;
+      if (status == 200) {
+        data = JSON.parse(xhr.responseText);
+        successHandler && successHandler(data);
+      } else {
+        errorHandler && errorHandler(status);
+      }
+    }
+  };
+  xhr.send();
 };

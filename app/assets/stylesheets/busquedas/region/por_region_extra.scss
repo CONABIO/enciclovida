@@ -54,3 +54,7 @@
 .f-fuentes-reg {
   font-size: 1.8em;
 }
+
+.border-hover-especie:hover, .border-selected-especie {
+  border: 2px #666 solid;
+}

@@ -41,6 +41,15 @@ class BusquedasRegionesController < ApplicationController
     render json: snib.resp
   end
 
+  # Regresa la información asociada a un ejemplar por medio de su ID
+  def ejemplar
+    snib = Geoportal::Snib.new
+    snib.params = params
+    snib.ejemplar
+
+    render json: snib.resp
+  end
+
   # Devuelve los municipios por el estado seleccionado
   def municipios_por_estado
     resp = {}
