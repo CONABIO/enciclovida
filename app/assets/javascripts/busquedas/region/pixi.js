@@ -22,6 +22,7 @@ var variablesIniciales = function () {
  * @param {*} zoom
  */
 var markerScale = function (zoom) {
+  console.log(zoom)
   switch (zoom) {
     case 5:
       scale = 45.25; //invScale / (zoom-3);
@@ -33,44 +34,41 @@ var markerScale = function (zoom) {
       scale = 15.08; //invScale / (zoom-5.5);
       break;
     case 8:
-      scale = 7.54; //invScale / (zoom-6.5);
+      scale = 9.54; //invScale / (zoom-6.5);
       break;
     case 9:
-      scale = 3.77; //invScale / (zoom-7.5);
+      scale = 5.1; //invScale / (zoom-7.5);
       break;
     case 10:
-      scale = 1.88; //invScale / (zoom-7.5);
+      scale = 3.1; //invScale / (zoom-7.5);
       break;
     case 11:
-      scale = .94; //invScale / (zoom-7.5);
+      scale = 1.54; //invScale / (zoom-7.5);
       break;
     case 12:
-      scale = .47; //invScale / (zoom-7.5);
+      scale = .87; //invScale / (zoom-7.5);
       break;
     case 13:
-      scale = .23; //invScale / (zoom-7.5);
+      scale = .43; //invScale / (zoom-7.5);
       break;
     case 14:
-      scale = .11; //invScale / (zoom-7.5);
+      scale = .21; //invScale / (zoom-7.5);
       break;
     case 15:
-      scale = .05; //invScale / (zoom-7.5);
+      scale = .11; //invScale / (zoom-7.5);
       break;
     case 16:
-      scale = .02; //invScale / (zoom-7.5);
+      scale = .06; //invScale / (zoom-7.5);
       break;
     case 17:
-      scale = .01; //invScale / (zoom-7.5);
+      scale = .03; //invScale / (zoom-7.5);
       break;
     case 18:
-      scale = .005; //invScale / (zoom-7.5);
+      scale = .015; //invScale / (zoom-7.5);
       break;
     default:
     // code block
   }
-
-  //if (zoomanim) return scale*2;
-  //else  return scale;
 
   return scale;
 };
@@ -180,32 +178,26 @@ var createMarker = function () {
 
 var infoPopup = function(data)
 {
-    // var nombre_comun = '';
-    // if (opciones.nombre_comun !== undefined) var nombre_comun = '<h4 class="text-center">' + opciones.nombre_comun + '</h4>';
-    // var nombre = nombre_comun + '<h4 class="text-center"><a href="/especies/' + opciones.especie_id + '"><i>' + opciones.nombre_cientifico + '</i></a></h4>';
+  contenido = "<strong>Localidad:</strong> " + data.localidad + "<br />";
+  contenido += "<strong>Municipio: </strong>" + data.municipiomapa + "<br />";
+  contenido += "<strong>Estado: </strong>" + data.estadomapa + "<br />";
+  contenido += "<strong>País: </strong>" + data.paismapa + "<br />";
+  contenido += "<strong>Fecha: </strong>" + data.fechacolecta + "<br />";
+  contenido += "<strong>Colector: </strong>" + data.colector + "<br />";
+  contenido += "<strong>Colección: </strong>" + data.coleccion + "<br />";
+  contenido += "<strong>Institución: </strong>" + data.institucion + "<br />";
+  contenido += "<strong>País de la colección: </strong>" + data.paiscoleccion + "<br />";
 
-    // contenido += "" + nombre + "<br />";
-    
-    contenido = "<strong>Localidad:</strong> " + data.localidad + "<br />";
-    contenido += "<strong>Municipio: </strong>" + data.municipiomapa + "<br />";
-    contenido += "<strong>Estado: </strong>" + data.estadomapa + "<br />";
-    contenido += "<strong>País: </strong>" + data.paismapa + "<br />";
-    contenido += "<strong>Fecha: </strong>" + data.fechacolecta + "<br />";
-    contenido += "<strong>Colector: </strong>" + data.colector + "<br />";
-    contenido += "<strong>Colección: </strong>" + data.coleccion + "<br />";
-    contenido += "<strong>Institución: </strong>" + data.institucion + "<br />";
-    contenido += "<strong>País de la colección: </strong>" + data.paiscoleccion + "<br />";
+  //if (data.proyecto.length > 0 && data.urlproyecto.length > 0)
+  //    contenido += "<strong>Proyecto: </strong><a href='" + data.urlproyecto + "' target='_blank'>" + data.proyecto + "</a><br />";
 
-    //if (data.proyecto.length > 0 && data.urlproyecto.length > 0)
-    //    contenido += "<strong>Proyecto: </strong><a href='" + data.urlproyecto + "' target='_blank'>" + data.proyecto + "</a><br />";
+  contenido += "<strong>Más información: </strong><a href='" + data.urlejemplar + "' target='_blank'>consultar</a><br />";
 
-    contenido += "<strong>Más información: </strong><a href='" + data.urlejemplar + "' target='_blank'>consultar</a><br />";
+  //Para enviar un comentario acerca de un ejemplar en particular
+  contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" +
+      data.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a><br />";
 
-    //Para enviar un comentario acerca de un ejemplar en particular
-    contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" +
-        data.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a><br />";
-
-    return "<dl class='dl-horizontal'>" + contenido + "</dl>";
+  return "<dl class='dl-horizontal'>" + contenido + "</dl>";
 };
 
 /**
@@ -309,8 +301,10 @@ var porColeccion = function (markers, coleccion) {
           if (opciones.pixi.click == undefined) {
             map.on("click", function (e) {
               var m = findMarker(e);
-              opciones.filtros.marker = m;
-              createMarker();
+              if (m) {
+                opciones.filtros.marker = m;
+                createMarker();
+              }
             });
             opciones.pixi.click = true;
           }
@@ -322,8 +316,10 @@ var porColeccion = function (markers, coleccion) {
                 var marker = findMarker(e);
                 if (marker) {
                   $("#map canvas").addClass("leaflet-interactive");
+                  opciones.pixi.marker = true;
                 } else {
                   $("#map canvas").removeClass("leaflet-interactive");
+                  opciones.pixi.marker = false;
                 }
               }, 32)
             );

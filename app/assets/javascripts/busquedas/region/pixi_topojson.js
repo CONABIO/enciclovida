@@ -19,7 +19,6 @@ var containsPoint = function(polygon, p) {
 };
 
 var despliegaRegiones = function () {
-    // patch WebGL PIXI.mesh.MeshRenderer
     var _pixiGlCore2 = PIXI.glCore;
     PIXI.mesh.MeshRenderer.prototype.onContextChange = function onContextChange() {
         var gl = this.renderer.gl;
@@ -77,17 +76,13 @@ var cargaRegion = function(region)
             var prevZoom;
             var pixiContainer = new PIXI.Graphics();
             var alphaScale = d3.scaleLinear()
-            /*.domain([0, 0.3, 1])
-            .range([0, 0.6, 1]);*/
             var meshAlphaScale = d3.scaleLinear()
             .domain([9, 12])
             .range([0.6, 1]);
             meshAlphaScale.clamp(true);
             var tree = new RBush();
-            //focus = null;
-            //mousehover = null;
             var doubleBuffering = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            var mesh, circMesh;
+            var mesh;
             return L.pixiOverlay(function (utils) {
                 var zoom = utils.getMap().getZoom();
                 var container = utils.getContainer();
@@ -108,7 +103,6 @@ var cargaRegion = function(region)
 
                         var geojson = topojson.feature(topo, topo.objects.collection);
                         var interiors = topojson.mesh(topo, topo.objects.collection, function (a, b) { return a !== b && a.properties.ref === b.properties.ref });
-                        var circs = topojson.mesh(topo, topo.objects.collection, function (a, b) { return a !== b && a.properties.ref !== b.properties.ref });
 
                         topo = null;
                         prevZoom = zoom;
@@ -166,7 +160,6 @@ var cargaRegion = function(region)
                         if (renderer.type === PIXI.RENDERER_TYPE.WEBGL) {
                             (function () {
                                 mesh = new PIXI.Container();
-                                circMesh = new PIXI.Container();
 
                                 var memo = Object.create(null);
                                 var newIndex = 0;
@@ -208,35 +201,6 @@ var cargaRegion = function(region)
                                     } else meshIndices.push(indices[iMax], indices[iMin], indices[iMin]);
                                 }
 
-                                function circMeshCb(triangle) {
-                                    if (newIndex > 60000) {
-                                        memo = Object.create(null);
-                                        meshCreate(meshVertices, meshIndices, circMesh, 0);
-                                        newIndex = 0;
-                                        meshVertices = [];
-                                        meshIndices = [];
-                                    }
-                                    var indices = triangle.map(function (point) {
-                                        var key = point[0] + '#' + point[1];
-                                        var index = memo[key];
-                                        if (index !== undefined) return index;
-                                        else {
-                                            var index = memo[key] = newIndex++;
-                                            meshVertices.push(point[0], point[1]);
-                                            return index;
-                                        }
-                                    });
-                                    iMax = triangle.length - 1;
-                                    iMin = 0;
-                                    meshIndices.push(indices[iMax]);
-                                    while (iMax - iMin >= 2) {
-                                        meshIndices.push(indices[iMax--], indices[iMin++]);
-                                    }
-                                    if (iMax === iMin) {
-                                        meshIndices.push(indices[iMax], indices[iMax]);
-                                    } else meshIndices.push(indices[iMax], indices[iMin], indices[iMin]);
-                                }
-
                                 var point2index = {};
                                 var vertices = [];
                                 var edges = [];
@@ -260,37 +224,6 @@ var cargaRegion = function(region)
 
                                 graphDraw({ vertices: vertices, edges: edges }, 2 / utils.getScale(9), meshCb, Math.PI);
                                 meshCreate(meshVertices, meshIndices, mesh, 0);
-                                memo = Object.create(null);
-                                newIndex = 0;
-                                meshVertices = [];
-                                meshIndices = [];
-
-                                var point2index2 = {};
-                                var vertices2 = [];
-                                var edges2 = [];
-                                circs.coordinates.forEach(function (arc) {
-                                    arc.forEach(function (point, index) {
-                                        var proj = project([point[1], point[0]]);
-                                        point[0] = proj.x;
-                                        point[1] = proj.y;
-
-                                        var key = point[0] + '#' + point[1];
-                                        var indexTo;
-                                        if (!(key in point2index2)) {
-                                            indexTo = point2index2[key] = vertices2.length;
-                                            vertices2.push(point);
-                                        } else {
-                                            indexTo = point2index2[key];
-                                        }
-                                        if (index > 0) {
-                                            var prevPoint = arc[index - 1];
-                                            var indexFrom = point2index2[prevPoint[0] + '#' + prevPoint[1]];
-                                            edges2.push([indexTo, indexFrom]);
-                                        }
-                                    })
-                                });
-                                graphDraw({ vertices: vertices2, edges: edges2 }, 6 / utils.getScale(12), circMeshCb, Math.PI);
-                                meshCreate(meshVertices, meshIndices, circMesh, 0);
                             })();
                         } else {
                             mesh = new PIXI.Graphics();
@@ -301,20 +234,10 @@ var cargaRegion = function(region)
                                     else mesh.lineTo(point[0], point[1]);
                                 });
                             });
-                            circMesh = new PIXI.Graphics();
-                            circMesh.lineStyle(6 / utils.getScale(12), 0x000000, 1);
-                            circs.coordinates.forEach(function (path) {
-                                path.forEach(function (point, index) {
-                                    if (index === 0) circMesh.moveTo(point[0], point[1]);
-                                    else circMesh.lineTo(point[0], point[1]);
-                                });
-                            });
                         }
                         interiors = null;
-                        circs = null;
 
                         container.addChild(mesh);
-                        container.addChild(circMesh);
 
                         function findFeature(latlng) {
                             var point = project(latlng);
@@ -401,18 +324,17 @@ var cargaRegion = function(region)
                             let i = 0;
                             utils.getMap().eachLayer(function(layer){ 
                                 i += 1; 
-                                //console.log(layer)
                             });
-
-                            //console.log(i)
                         }
 
                         cleanEventVars();
                         setSelectedRegion();
 
                         utils.getMap().on('click', function (e) {
-                            var feat = findFeature(e.latlng);
-                            if (feat != undefined) focusFeature(feat);
+                            if (!opciones.pixi.marker) {
+                                var feat = findFeature(e.latlng);
+                                if (feat != undefined) focusFeature(feat);
+                            }
                         });
 
                         utils.getMap().on('mousemove', L.Util.throttle(function (e) {
@@ -457,7 +379,6 @@ var cargaRegion = function(region)
                 firstDraw = false;
                 mesh.visible = (zoom >= 4);
                 mesh.alpha = meshAlphaScale(zoom);
-                circMesh.alpha = meshAlphaScale(zoom);
                 prevZoom = zoom;
                 renderer.render(container);
             }, pixiContainer, {
