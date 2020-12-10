@@ -72,6 +72,7 @@ var soulmateAsigna = function(tipo_busqueda, elem)
                 console.log('acaso aca?' + data.id + '-' + data.nombre_cientifico + '-')
                 $('#especie_id').attr('value', data.id);
                 $('#' + elemento).val(data.nombre_cientifico);
+                opciones.filtros.pagina = 1;
                 cargaEspecies();
                 break;
             case 'soloAsigna':
