@@ -1,4 +1,12 @@
 /**
+ * Para ponerle comas a los numeros en el conteo de la simbologia
+ * @param {*} number 
+ */
+var numberWithDelimiter = function (number) {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+/**
  * Variables para poder cargar la visualizacion con PIXI
  */
 var variablesIniciales = function () {
@@ -104,55 +112,48 @@ var limpiaMapa = function () {
  * La simbologia personalizada dentro del mapa
  */
 var leyenda = function () {
-  snibControl.addOverlay(
-    snibLayer,
-    "<b>Ejemplares del SNIB</b><br />(museos, colectas, proyectos) <sub>" +
-      infoLayers["totales"] +
-      "</sub>"
-  );
-
   if (infoLayers[2] !== undefined) {
     snibControl.addOverlay(
       infoLayers[2]["layer"],
-      '<img src="/imagenes/app/mapa/averaves.png"> Observaciones de aVerAves <sub>' +
-        infoLayers[2]["totales"] +
-        "</sub>"
+      "<img src='/imagenes/app/mapa/averaves.png'> aVerAves <span class='badge badge-pill badge-info br-badge'>" +
+      numberWithDelimiter(infoLayers[2]["totales"]) +
+        "</span>"
     );
   }
 
   if (infoLayers[5] !== undefined) {
     snibControl.addOverlay(
       infoLayers[5]["layer"],
-      '<img src="/imagenes/app/mapa/naturalista.png"> Naturalista <sub>' +
-        infoLayers[5]["totales"] +
-        "</sub>"
+      "<img src='/imagenes/app/mapa/naturalista.png'> Naturalista <span class='badge badge-pill badge-info br-badge'>" +
+      numberWithDelimiter(infoLayers[5]["totales"]) +
+        "</span>"
     );
   }
 
   if (infoLayers[1] !== undefined) {
     snibControl.addOverlay(
       infoLayers[1]["layer"],
-      '<img src="/imagenes/app/mapa/colectas.png"> Especímenes en colecciones <sub>' +
-        infoLayers[1]["totales"] +
-        "</sub>"
+      "<img src='/imagenes/app/mapa/colectas.png'> colecciones <span class='badge badge-pill badge-info br-badge'>" +
+      numberWithDelimiter(infoLayers[1]["totales"]) +
+        "</span>"
     );
   }
 
   if (infoLayers[3] !== undefined) {
     snibControl.addOverlay(
       infoLayers[3]["layer"],
-      '<img src="/imagenes/app/mapa/fosiles.png"> Fósiles <sub>' +
-        infoLayers[3]["totales"] +
-        "</sub>"
+      "<img src='/imagenes/app/mapa/fosiles.png'> Fósiles <span class='badge badge-pill badge-info br-badge'>" +
+      numberWithDelimiter(infoLayers[3]["totales"]) +
+        "</span>"
     );
   }
 
   if (infoLayers[4] !== undefined) {
     snibControl.addOverlay(
       infoLayers[4]["layer"],
-      '<img src="/imagenes/app/mapa/nodecampo.png"> Localidad no de campo <sub>' +
-        infoLayers[4]["totales"] +
-        "</sub>"
+      "<img src='/imagenes/app/mapa/nodecampo.png'> Localidad no de campo <span class='badge badge-pill badge-info br-badge'>" +
+        numberWithDelimiter(infoLayers[4]["totales"]) +
+        "</span>"
     );
   }
 };
@@ -160,7 +161,7 @@ var leyenda = function () {
 /**
  * Regresa la informacion del ejemplar
  */
-var createMarker = function () {
+var createPopup = function () {
   getJSON("/explora-por-region/ejemplar?ejemplar_id=" + opciones.filtros.marker[2], function(resp){
     if (resp.estatus) {
       var data = resp.resultados[0];
@@ -233,17 +234,19 @@ var cargaEjemplares = function (url) {
         });
             
         if (infoLayers["totales"] > 0) {
-            snibLayer.addTo(map);
-            leyenda();
-            $("div.leaflet-control-layers label div input").first().remove();
+          snibLayer.addTo(map);
+          leyenda();
+          $(
+            "<p><b>Ejemplares del SNIB</b> <span class='badge badge-pill badge-info br-badge'>" +
+            numberWithDelimiter(infoLayers["totales"]) +
+              "</span><br />(colectas, ciencia ciudadana, <br />museos, proyectos)</p>"
+          ).insertBefore(
+            "#map div.leaflet-control-container div.leaflet-bottom div.leaflet-control-layers-overlays"
+          );
         }
       }
     });
   });
-};
-
-var borraEjemeplares = function () {
-  this.loader.destroy();
 };
 
 /**
@@ -301,7 +304,7 @@ var porColeccion = function (markers, coleccion) {
               var m = findMarker(e);
               if (m) {
                 opciones.filtros.marker = m;
-                createMarker();
+                createPopup();
               }
             });
             opciones.pixi.click = true;

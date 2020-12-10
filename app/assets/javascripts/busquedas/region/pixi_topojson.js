@@ -313,8 +313,6 @@ var cargaRegion = function(region)
                             if (layers.region_id == undefined) return;
                             let feat = tree.all().find(findFeatureById, layers.region_id);
                             if (feat != undefined) focusFeature(feat.feature)
-                            //if (opciones.pixi.tiene_var_iniciales) limpiaMapa();
-                            //opciones.pixi.tiene_var_iniciales = false;
                         }
 
                         function cleanEventVars() {
@@ -322,8 +320,6 @@ var cargaRegion = function(region)
                             utils.getMap().off("mousemove");
                             if (focus) focus.removeFrom(utils.getMap());
                             if (mousehover) mousehover.removeFrom(utils.getMap());
-                            //if (opciones.pixi.tiene_var_iniciales) limpiaMapa();
-                            //opciones.pixi.tiene_var_iniciales = false;
 
                             let i = 0;
                             utils.getMap().eachLayer(function(layer){ 
