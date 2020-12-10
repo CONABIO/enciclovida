@@ -78,7 +78,7 @@ $(document).ready(function(){
     $('#contenedor_especies').on('click', '.boton-especie-registros', function(event){
         $('#especie-container-' + opciones.filtros.catalogo_id).removeClass('border-selected-especie');
         opciones.filtros.catalogo_id = $(this).attr('catalogo_id');
-        opciones.filtros.especie_id = $(this).attr('catalogo_id');
+        opciones.filtros.especie_id = $(this).attr('especie_id');
         $('#especie-container-' + opciones.filtros.catalogo_id).addClass('border-selected-especie');
         cargaEjemplares('/explora-por-region/ejemplares?' + serializeParametros() + '&especie_id=' + opciones.filtros.catalogo_id);
         event.preventDefault();
@@ -159,7 +159,8 @@ $(document).ready(function(){
     // Para inicializar la barra lateral del mapa
     L.control.sidebar('sidebar').addTo(map);
     control_capas = L.control.layers({}).addTo(map);
-    opciones.filtros.pagina = 1;
+    opciones.filtros.pagina = $('#pagina').val()
+    
     // Inicializa la carga inicial de las especies
     cargaEspecies();
     variablesIniciales();

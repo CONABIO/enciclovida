@@ -192,7 +192,7 @@ var infoPopup = function(data)
   contenido += "<strong>Más información: </strong><a href='" + data.urlejemplar + "' target='_blank'>consultar</a><br />";
 
   //Para enviar un comentario acerca de un ejemplar en particular
-  contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" +
+  contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.filtros.especie_id + "/comentarios/new?proveedor_id=" +
       data.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a><br />";
 
   return "<dl class='dl-horizontal'>" + contenido + "</dl>";
