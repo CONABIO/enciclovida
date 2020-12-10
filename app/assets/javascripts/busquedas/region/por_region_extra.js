@@ -54,6 +54,9 @@ var seleccionaRegion = function(prop)
     $('#tipo_region').val(prop.tipo_region.toLowerCase());
 
     opciones.filtros.pagina = 1;
+    if (opciones.pixi.tiene_var_iniciales) limpiaMapa();  // Nos aseguramos que cada que escoja una region se limpien los registros
+    opciones.pixi.tiene_var_iniciales = false;
+
     map.flyToBounds(prop.bounds);
     cargaEspecies();
     colapsaBarra();  // colapsa la barrar lateral, para mayor comodidad

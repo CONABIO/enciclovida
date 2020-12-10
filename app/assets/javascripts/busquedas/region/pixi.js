@@ -22,52 +22,49 @@ var variablesIniciales = function () {
  * @param {*} zoom
  */
 var markerScale = function (zoom) {
-  console.log(zoom)
   switch (zoom) {
     case 5:
-      scale = 45.25; //invScale / (zoom-3);
+      scale = 45.25;
       break;
     case 6:
-      scale = 30.16; //invScale / (zoom-4.5);
+      scale = 30.16;
       break;
     case 7:
-      scale = 15.08; //invScale / (zoom-5.5);
+      scale = 15.08;
       break;
     case 8:
-      scale = 9.54; //invScale / (zoom-6.5);
+      scale = 9.54;
       break;
     case 9:
-      scale = 5.1; //invScale / (zoom-7.5);
+      scale = 5.1;
       break;
     case 10:
-      scale = 3.1; //invScale / (zoom-7.5);
+      scale = 3.1;
       break;
     case 11:
-      scale = 1.54; //invScale / (zoom-7.5);
+      scale = 1.54;
       break;
     case 12:
-      scale = .87; //invScale / (zoom-7.5);
+      scale = .87;
       break;
     case 13:
-      scale = .43; //invScale / (zoom-7.5);
+      scale = .43;
       break;
     case 14:
-      scale = .21; //invScale / (zoom-7.5);
+      scale = .21;
       break;
     case 15:
-      scale = .11; //invScale / (zoom-7.5);
+      scale = .11;
       break;
     case 16:
-      scale = .06; //invScale / (zoom-7.5);
+      scale = .06;
       break;
     case 17:
-      scale = .03; //invScale / (zoom-7.5);
+      scale = .03;
       break;
     case 18:
-      scale = .015; //invScale / (zoom-7.5);
+      scale = .015;
       break;
-    default:
-    // code block
   }
 
   return scale;
@@ -80,6 +77,7 @@ var configuraVariables = function () {
   if (opciones.pixi.tiene_var_iniciales) limpiaMapa();
   inicializaVariables();
   opciones.pixi.tiene_var_iniciales = true;
+  opciones.popup = undefined;
 };
 
 /**
@@ -91,13 +89,13 @@ var inicializaVariables = function () {
   snibControl = L.control
     .layers({}, {}, { collapsed: true, position: "bottomright" })
     .addTo(map);
-  marker = undefined;
 };
 
 /**
  * Limpia los layer y el control
  */
 var limpiaMapa = function () {
+  if (opciones.popup) opciones.popup.removeFrom(map);
   map.removeLayer(snibLayer);
   map.removeControl(snibControl);
 };
@@ -163,15 +161,15 @@ var leyenda = function () {
  * Regresa la informacion del ejemplar
  */
 var createMarker = function () {
-  console.log(opciones)
   getJSON("/explora-por-region/ejemplar?ejemplar_id=" + opciones.filtros.marker[2], function(resp){
     if (resp.estatus) {
       var data = resp.resultados[0];
       var info = infoPopup(data)
-      if (marker != undefined) marker.removeFrom(map);
-      marker = L.marker([data.latitud, data.longitud]).addTo(map)
-      .bindPopup(info)
-      .openPopup();
+
+      opciones.popup = L.popup({ offset: L.point(0, 0) })
+  .setLatLng([data.latitud, data.longitud])
+  .setContent(info)
+  .openOn(map);
     }
   });
 }
