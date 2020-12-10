@@ -2,6 +2,8 @@
   <div class="col d-flex justify-content-center">
     <%= text_field_tag :nombre_especie, params.present? ? params[:nombre_especie] : nil, :maxlength => 255, :placeholder => 'Nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-lg mr-5 mb-2', title: "Nombre común o científico" %>
     <%= hidden_field_tag :especie_id, params.present? ? params[:especie_id] : nil %>
+    <%= hidden_field_tag :especie_id_focus, params.present? ? params[:especie_id_focus] : nil %>
+    <%= hidden_field_tag :catalogo_id, params.present? ? params[:catalogo_id] : nil %>
     <%= hidden_field_tag :pagina, params.present? && params[:pagina].present? ? params[:pagina] : 1 %>
     <%= hidden_field_tag :nivel, params.present? && params[:nivel].present? ? params[:nivel] : nil %>
     <%= hidden_field_tag :cat, params.present? && params[:cat].present? ? params[:cat] : nil %>

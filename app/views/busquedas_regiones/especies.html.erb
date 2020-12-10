@@ -35,11 +35,11 @@
     <% @resp[:taxones].each do |t| %>
       <% taxon = t[:especie] %>
 
-      <div class="col-3 my-2 px-1 border-hover-especie" id="especie-container-<%= taxon.catalogo_id %>">
+      <div class="col-3 my-2 px-1 border-hover-especie <%= 'border-selected-especie' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
         <div class="row no-gutters">
           <div class="result-img-container col-12">
             <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid') : "<i class='ev1-ev-icon'></i>".html_safe %>
-            <button class="btn btn-info boton-especie-registros" especie_id="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>">
+            <button class="btn btn-info boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>">
               <%= number_with_delimiter(t[:nregistros], delimiter: ',') %>
             </button>
           </div>

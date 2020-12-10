@@ -78,7 +78,13 @@ $(document).ready(function(){
     $('#contenedor_especies').on('click', '.boton-especie-registros', function(event){
         $('#especie-container-' + opciones.filtros.catalogo_id).removeClass('border-selected-especie');
         opciones.filtros.catalogo_id = $(this).attr('catalogo_id');
-        opciones.filtros.especie_id = $(this).attr('especie_id');
+        opciones.filtros.especie_id_focus = $(this).attr('especie_id_focus');
+        
+        // sobreescribe los parametros de la URL para el catalogo_id
+        $('#catalogo_id').val(opciones.filtros.catalogo_id);
+        $('#especie_id_focus').val(opciones.filtros.especie_id_focus);
+        cambiaURLParametros();
+
         $('#especie-container-' + opciones.filtros.catalogo_id).addClass('border-selected-especie');
         cargaEjemplares('/explora-por-region/ejemplares?' + serializeParametros() + '&especie_id=' + opciones.filtros.catalogo_id);
         event.preventDefault();
@@ -160,9 +166,12 @@ $(document).ready(function(){
     L.control.sidebar('sidebar').addTo(map);
     control_capas = L.control.layers({}).addTo(map);
     opciones.filtros.pagina = $('#pagina').val()
+    if ($('#catalogo_id').val() != '') opciones.filtros.catalogo_id = $('#catalogo_id').val();
+    if ($('#especie_id_focus').val() != '') opciones.filtros.especie_id_focus = $('#especie_id_focus').val();
     
     // Inicializa la carga inicial de las especies
     cargaEspecies();
     variablesIniciales();
     despliegaRegiones();
+    cargaEjemplares('/explora-por-region/ejemplares?' + serializeParametros() + '&especie_id=' + opciones.filtros.catalogo_id);
 });
