@@ -96,7 +96,6 @@ var inicializaVariables = function () {
   infoLayers = { totales: 0 }; // Tiene los conteos por layer
   snibControl = L.control
     .layers({}, {}, { collapsed: true, position: "bottomright" })
-    .addTo(map);
 };
 
 /**
@@ -133,7 +132,7 @@ var leyenda = function () {
   if (infoLayers[1] !== undefined) {
     snibControl.addOverlay(
       infoLayers[1]["layer"],
-      "<img src='/imagenes/app/mapa/colectas.png'> colecciones <span class='badge badge-pill badge-info br-badge'>" +
+      "<img src='/imagenes/app/mapa/colectas.png'> Colecciones <span class='badge badge-pill badge-info br-badge'>" +
       numberWithDelimiter(infoLayers[1]["totales"]) +
         "</span>"
     );
@@ -235,6 +234,7 @@ var cargaEjemplares = function (url) {
             
         if (infoLayers["totales"] > 0) {
           snibLayer.addTo(map);
+          snibControl.addTo(map);
           leyenda();
           $(
             "<p><b>Ejemplares del SNIB</b> <span class='badge badge-pill badge-info br-badge'>" +
