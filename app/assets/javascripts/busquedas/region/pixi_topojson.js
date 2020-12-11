@@ -54,24 +54,41 @@ var despliegaRegiones = function () {
         glData.vao.draw(gl.TRIANGLE_STRIP, mesh.indices.length, 0);
     };
 
-    var regiones = ["estado", "municipio", "anp"];
-    layers = {};
-    let params = (new URL(window.location.href)).searchParams;
-    layers.region_id = params.get('region_id');
-    layers.tipo_region = params.get('tipo_region') || 'estado';
+    var tipos_regiones = ["estado", "municipio", "anp"];
+    opciones.baseMaps = {};
 
-    regiones.forEach(function(region){
-        cargaRegion(region);
+    // Despliega los titulos de los baseMap vacios para no cargar la pagina de un inicio
+    tipos_regiones.forEach(function(tipo_region){
+        if (opciones.filtros.tipo_region == tipo_region) {
+            opciones.baseMaps.inicial = true;  
+            cargaRegion(tipo_region, true);
+            opciones.baseMaps.inicial = false;
+        } else {
+            switch (tipo_region) {
+              case "estado":
+                control_capas.addBaseLayer(L.tileLayer(""), "División estatal");
+                break;
+              case "municipio":
+                control_capas.addBaseLayer(
+                  L.tileLayer(""),
+                  "División municipal"
+                );
+                break;
+              case "anp":
+                control_capas.addBaseLayer(L.tileLayer(""), "División por ANP");
+                break;
+            }
+        } 
     });
 };
 
-var cargaRegion = function(region)
+var cargaRegion = function(tipo_region, inicial=false)
 {
     focus = null;
     mousehover = null;
 
-    getJSON('topojson/' + region + '.topojson', function (topo) {
-        layers[region] = (function () {
+    getJSON('topojson/' + tipo_region + '.topojson', function (topo) {
+        opciones.baseMaps[tipo_region] = (function () {
             var firstDraw = true;
             var prevZoom;
             var pixiContainer = new PIXI.Graphics();
@@ -305,13 +322,13 @@ var cargaRegion = function(region)
                         {
                             function findFeatureById(item)
                             {
-                                if (item.feature.properties.region_id == layers.region_id)
+                                if (item.feature.properties.region_id == opciones.filtros.region_id)
                                     return true;
                                 else return false;
                             }
                             
-                            if (layers.region_id == undefined) return;
-                            let feat = tree.all().find(findFeatureById, layers.region_id);
+                            if (opciones.filtros.region_id == undefined) return;
+                            let feat = tree.all().find(findFeatureById, opciones.filtros.region_id);
                             if (feat != undefined) focusFeature(feat.feature)
                         }
 
@@ -387,19 +404,53 @@ var cargaRegion = function(region)
             });
         })();
 
-        switch (region) {
-            case 'estado':
-                control_capas.addBaseLayer(layers[region], 'División estatal');
-                if (layers.tipo_region == region) layers[region].addTo(map);
+        // Pone el baseMap en el mapa
+        switch (tipo_region) {
+            case "estado":
+                if (inicial) control_capas.addBaseLayer(opciones.baseMaps[tipo_region], "División estatal");
+                opciones.baseMaps[tipo_region].addTo(map);
                 break;
-            case 'municipio':
-                control_capas.addBaseLayer(layers[region], 'División municipal');
-                if (layers.tipo_region == region) layers[region].addTo(map);
+            case "municipio":
+                opciones.baseMaps[tipo_region].addTo(map);
                 break;
-            case 'anp':
-                control_capas.addBaseLayer(layers[region], 'División por ANP');
-                if (layers.tipo_region == region) layers[region].addTo(map);
-                break;                    
+            case "anp":
+                opciones.baseMaps[tipo_region].addTo(map);
+                break;
         }
     });
 }
+
+// Cuando cambia este componente, pongo el que actualmente selecciono
+$(document).ready(function(){
+    map.on('baselayerchange', function(e){
+        console.log(e)
+        console.log(opciones.filtros.tipo_region)
+        
+        if (opciones.baseMaps.inicial == undefined)
+        {
+            if (opciones.filtros.tipo_region != undefined) {
+                opciones.baseMaps[opciones.filtros.tipo_region].removeFrom(map);
+            }
+
+            switch (e.name) {
+                case "División estatal":
+                    opciones.filtros.tipo_region = 'estado';
+                    $('#tipo_region').val('estado');
+                    cargaRegion('estado');
+                    break;
+                case "División municipal":
+                    opciones.filtros.tipo_region = 'municipio';
+                    $('#tipo_region').val('municipio');
+                    cargaRegion('municipio');
+                    break;
+                case "División por ANP":
+                    opciones.filtros.tipo_region = 'anp';
+                    $('#tipo_region').val('anp');
+                    cargaRegion('anp');
+                    break;
+            }
+
+            cargaEspecies();
+        }
+    });
+});

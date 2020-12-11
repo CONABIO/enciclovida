@@ -88,7 +88,7 @@ var configuraVariables = function () {
   opciones.popup = undefined;
 };
 
-/**
+/** 
  * Limpia e inicializa las variables de los layer y el control
  */
 var inicializaVariables = function () {

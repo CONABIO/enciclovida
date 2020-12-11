@@ -165,11 +165,15 @@ $(document).ready(function(){
     // Para inicializar la barra lateral del mapa
     L.control.sidebar('sidebar').addTo(map);
     control_capas = L.control.layers({}).addTo(map);
-    opciones.filtros.pagina = $('#pagina').val()
+
+    // Asigna variables globales
+    opciones.filtros.pagina = $('#pagina').val();
     if ($('#catalogo_id').val() != '') opciones.filtros.catalogo_id = $('#catalogo_id').val();
     if ($('#especie_id_focus').val() != '') opciones.filtros.especie_id_focus = $('#especie_id_focus').val();
+    if ($('#tipo_region').val() != '') opciones.filtros.tipo_region = $('#tipo_region').val();
+    if ($('#region_id').val() != '') opciones.filtros.region_id = $('#region_id').val();
     
-    // Inicializa la carga inicial de las especies
+    // Servicios iniciales
     cargaEspecies();
     variablesIniciales();
     despliegaRegiones();
