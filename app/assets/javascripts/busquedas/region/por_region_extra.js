@@ -177,5 +177,7 @@ $(document).ready(function(){
     cargaEspecies();
     variablesIniciales();
     despliegaRegiones();
-    cargaEjemplares('/explora-por-region/ejemplares?' + serializeParametros() + '&especie_id=' + opciones.filtros.catalogo_id);
+    if (opciones.filtros.catalogo_id) cargaEjemplares('/explora-por-region/ejemplares?' + serializeParametros() + '&especie_id=' + opciones.filtros.catalogo_id);
+
+    if ($('#ejemplar_id').val() != '') createPopup($('#ejemplar_id').val());
 });

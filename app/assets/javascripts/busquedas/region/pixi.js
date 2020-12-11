@@ -85,7 +85,7 @@ var configuraVariables = function () {
   if (opciones.pixi.tiene_var_iniciales) limpiaMapa();
   inicializaVariables();
   opciones.pixi.tiene_var_iniciales = true;
-  opciones.popup = undefined;
+  opciones.pixi.popup = undefined;
 };
 
 /** 
@@ -102,7 +102,14 @@ var inicializaVariables = function () {
  * Limpia los layer y el control
  */
 var limpiaMapa = function () {
-  if (opciones.popup) opciones.popup.removeFrom(map);
+  if (opciones.pixi.popup) {
+    opciones.pixi.popup.removeFrom(map);
+    $('#ejemplar_id').val('');  
+    $('#latitud').val('');  
+    $('#longitud').val('');
+    cambiaURLParametros();
+  }
+
   map.removeLayer(snibLayer);
   map.removeControl(snibControl);
 };
@@ -160,16 +167,25 @@ var leyenda = function () {
 /**
  * Regresa la informacion del ejemplar
  */
-var createPopup = function () {
-  getJSON("/explora-por-region/ejemplar?ejemplar_id=" + opciones.filtros.marker[2], function(resp){
+var createPopup = function (ejemplar_id) {
+  if (ejemplar_id == undefined)
+    var ej_id = opciones.filtros.marker[2];
+  else
+    var ej_id = ejemplar_id;
+
+  getJSON("/explora-por-region/ejemplar?ejemplar_id=" + ej_id, function(resp){
     if (resp.estatus) {
       var data = resp.resultados[0];
-      var info = infoPopup(data)
+      var info = infoPopup(data);
 
-      opciones.popup = L.popup({ offset: L.point(0, 0) })
-  .setLatLng([data.latitud, data.longitud])
-  .setContent(info)
-  .openOn(map);
+      opciones.pixi.popup = L.popup({ offset: L.point(0, 0) })
+        .setLatLng([data.latitud, data.longitud])
+        .setContent(info)
+        .openOn(map);
+
+      // Asigna en la url los datos del punto seleccionado  
+      $('#ejemplar_id').val(ej_id);  
+      cambiaURLParametros();
     }
   });
 }

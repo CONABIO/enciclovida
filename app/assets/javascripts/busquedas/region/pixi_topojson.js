@@ -429,10 +429,11 @@ $(document).ready(function(){
             if (opciones.filtros.tipo_region != undefined) {
                 opciones.baseMaps[opciones.filtros.tipo_region].removeFrom(map);
                 if (opciones.pixi.tiene_var_iniciales) limpiaMapa();  // Nos aseguramos que cada que escoja una region se limpien los registros
-                opciones.pixi.tiene_var_iniciales = false;
                 
                 // Limpia los valores cuando cambia el baseMap
                 opciones.filtros = {};
+                opciones.pixi = {};
+                opciones.pixi.tiene_var_iniciales = false;
                 $('#region_id').val('');
                 $('#especie_id_focus').val('');
                 $('#catalogo_id').val('');
