@@ -423,13 +423,20 @@ var cargaRegion = function(tipo_region, inicial=false)
 // Cuando cambia este componente, pongo el que actualmente selecciono
 $(document).ready(function(){
     map.on('baselayerchange', function(e){
-        console.log(e)
-        console.log(opciones.filtros.tipo_region)
         
         if (opciones.baseMaps.inicial == undefined)
         {
             if (opciones.filtros.tipo_region != undefined) {
                 opciones.baseMaps[opciones.filtros.tipo_region].removeFrom(map);
+                if (opciones.pixi.tiene_var_iniciales) limpiaMapa();  // Nos aseguramos que cada que escoja una region se limpien los registros
+                opciones.pixi.tiene_var_iniciales = false;
+                
+                // Limpia los valores cuando cambia el baseMap
+                opciones.filtros = {};
+                $('#region_id').val('');
+                $('#especie_id_focus').val('');
+                $('#catalogo_id').val('');
+                $('#pagina').val('1');
             }
 
             switch (e.name) {
