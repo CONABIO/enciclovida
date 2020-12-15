@@ -8,8 +8,8 @@
 
   <%= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-   crossorigin=""/>
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
   <!--link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" /-->
   <%= stylesheet_link_tag 'busquedas/region/por_region', 'data-turbolinks-track' => true %>
   <!--link rel="stylesheet" href="https://manubb.github.io/Leaflet.PixiOverlay/css/leaflet.css" />
@@ -23,14 +23,14 @@
   <!--script src="https://d3js.org/d3.v6.min.js"></script-->
   <!--script src="https://unpkg.com/topojson@3" data-turbolinks-track="true"></script-->
 
-   <!-- Make sure you put this AFTER Leaflet's CSS -->
+  <!-- Make sure you put this AFTER Leaflet's CSS -->
   <!--script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
    crossorigin=""></script-->
-  
+
   <!--script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js" data-turbolinks-track="true"></script>
   <script src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup.js" data-turbolinks-track="true"></script-->
-  
+
 
   <!--script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/leaflet-pixi-overlay@1.8.1/L.PixiOverlay.min.js"></script-->
@@ -55,16 +55,17 @@
   <%= yield :extracss %>
   <%= yield :extrajs %>
 </head>
+<body>
 
 <%= yield :ribbon %>
 
 <header class="container-fluid">
   <%= render :partial => 'shared_b4/brandBar' %>
-  <%#= yield :extra_title_header %>
+  <%= render :partial => 'shared_b4/tituloBuscador', locals: {icon_class: 'busqueda-region', titulo: "Búsqueda por región"} %>
 </header>
 
 <section id="content" class="container-fluid">
-  <div class="row main bg-light">
+  <div class="row main">
     <%= yield %>
   </div>
 </section>
@@ -73,8 +74,6 @@
   <%= render :partial => 'shared_b4/footer_social' %>
   <%= render :partial => 'shared_b4/footer_legal' %>
 </footer>
-
-<%= yield :extrajs_carrusel %>
 
 <%= yield :delayedjs %>
 </body>
