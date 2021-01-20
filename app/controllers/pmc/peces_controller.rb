@@ -11,15 +11,14 @@ class Pmc::PecesController < Pmc::PmcController
   end
 
   def index
-    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/diversidad/alimentos/peces/")).css('#introenciclovida2')
+    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/diversidad/alimentos/peces/")).css('#introenciclovida, #introenciclovida2')
     @doc.xpath('//comment()').remove
 
     @doc.each do |el|
       el.traverse do |n|
-        next if n.key?('id') && %w(accordion collapse1 collapse2 collapse3 collapse4).include?(n.attribute('id').value)
         if n.matches?('img')
           n.attribute('src').value = "https://www.biodiversidad.gob.mx/" + n.attribute('src').value unless  n.attribute('src').value.include?('biodiversidad.gob.mx')
-          n['class']='img-fluid'
+          n['class'] = n['class'].present? ? (n['class'] + ' img-fluid') : 'img-fluid'
         end
       end
     end

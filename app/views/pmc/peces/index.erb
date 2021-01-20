@@ -31,25 +31,6 @@
       color: #1B3138;
       font-family: "freight-sans-pro";
     }
-    #ficha1, #ficha2, #ficha3, #ficha4, #ficha5, #ficha6, #ficha7{
-      background: url("https://www.biodiversidad.gob.mx/media/1/diversidad/peces/fondoPecesAcorddion.jpg") no-repeat scroll 0 0 rgba(39, 49, 53, 0.8);
-      max-height: 47px;
-    }
-    #ficha1:active, #ficha2:active, #ficha3:active, #ficha4:active, #ficha5:active, #ficha6:active, #ficha7:active {opacity: 0.8;filter: alpha(opacity=80);}
-    #ficha1{background-position: 0 0;	border: 1px solid #023651;}
-    #ficha1:hover{background-position: 0 -48px;	border: 1px solid #04658C;}
-    #ficha2{background-position: 0 -96px;	border: 1px solid #023651;}
-    #ficha2:hover{background-position: 0 -144px;	border: 1px solid #04658C;}
-    #ficha3{background-position: 0 -192px;	border: 1px solid #023651;}
-    #ficha3:hover{background-position: 0 -240px;	border: 1px solid #04658C;}
-    #ficha4{background-position: 0 -288px;	border: 1px solid #023651;}
-    #ficha4:hover{background-position: 0 -336px;	border: 1px solid #04658C;}
-    #ficha5{background-position: 0 -384px;	border: 1px solid #023651;}
-    #ficha5:hover{background-position: 0 -432px;	border: 1px solid #04658C;}
-    #ficha6{background-position: 0 -480px;	border: 1px solid #023651;}
-    #ficha6:hover{background-position: 0 -529px;	border: 1px solid #04658C;}
-    #ficha7{background-position: 0 -580px;	border: 1px solid #023651;}
-    #ficha7:hover{background-position: 0 -629px;	border: 1px solid #04658C;}
 
     .piefoto{font-size: 13px; color: #777;}
 
@@ -65,22 +46,7 @@
       color: #3a8fac;
       font-weight: bolder;
     }
-      .flecha-preguntas div, #liga-semaforo{
-        display: inline-block;
-        width: 276px;
-        height: 200px;
-      }
-    .preguntas-inicio{
-      background-image: url("https://www.biodiversidad.gob.mx/media/1/diversidad/peces/preguntas-inicio.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      float: left;
-    }
-    .flecha-preguntas div:nth-of-type(1){background-position: 0 0;}
-    .flecha-preguntas div:nth-of-type(2){background-position: -268px 0;}
-    .flecha-preguntas div:nth-of-type(3){background-position: -536px 0;}
 
-    
    .color_B {background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 100%);}
    .color_V- {background: linear-gradient(to bottom, rgba(224, 235, 195, 1) 0%, rgba(146, 186, 37, 1) 100%);}    
    .color_A- {background: linear-gradient(to bottom, rgba(255, 241, 184, 1) 0%, rgba(255, 174, 41, 1) 100%);}
@@ -95,20 +61,6 @@
       <div class="col-12">
         <h2 class="titulo-principal text-center my-3">Nuestras decisiones tienen impactos en la salud del ambiente</h2>
       </div>
-      <div class="col-12 flecha-preguntas">
-        <div class="preguntas-inicio mx-n1"></div>
-        <div class="preguntas-inicio mx-n1"></div>
-        <div class="preguntas-inicio mx-n1">
-          <a id="liga-semaforo" data-turbolinks="false" href="/pmc/peces/busqueda"></a>
-        </div>
-        <div class="mx-n1">
-          <p class="m-0 p-0 titulo-principal text-center h2 font-weight-bold">En colaboración con</p>
-          <p class="m-1 p-4 display-4">
-            <a href="https://cobi.org.mx/" target="_blank"><img class="img-fluid" src="https://www.biodiversidad.gob.mx/media/1/diversidad/peces/COBI-20anios.png"></a>
-          </p>
-        </div>
-      </div>
-
       <div class="biodiversidad col-12">
         <%= @doc.html_safe %>
       </div>
