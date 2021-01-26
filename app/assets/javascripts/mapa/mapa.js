@@ -38,7 +38,8 @@ var cargaMapa = function (id, opc)
     });
     */
 
-    var place = [23.79162789, -102.04376221];
+    //var place = [23.79162789, -102.04376221];
+    var place = [24.127, -81.430];
     
     map = L.map(id, {
         zoomControl: false,
