@@ -29,6 +29,10 @@ class BusquedasRegionesController < ApplicationController
         br.descarga_taxa_excel
         render json: br.resp 
       end
+      format.json do
+        br.especies
+        render json: br.resp 
+      end
     end
   end
 
