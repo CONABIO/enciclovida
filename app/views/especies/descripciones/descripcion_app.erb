@@ -4,6 +4,8 @@
 
 <div class="<%= css_class %> w-100" id="taxon_description">
 
+<h3>Fuente <%= eval("Api::#{@api.camelize}").new.nombre %></h3>
+
   <% if @descripcion.blank? %>
     <p class="nocontent meta">
       <% if params[:from].present? %>
@@ -21,3 +23,8 @@
     <%=raw @descripcion %>
   <% end %>
 </div>
+
+<br />
+<br />
+<br />
+<br />

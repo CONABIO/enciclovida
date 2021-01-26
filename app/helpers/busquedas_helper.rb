@@ -2,20 +2,18 @@ module BusquedasHelper
 
   # Opciones default para el bootstrap-select plugin
   @@opciones = { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, 'data-none-results-text': 'Sin resultados para {0}', 'data-count-selected-text': '{0} seleccionados', title: '- - Selecciona - -', multiple: true, 'data-sanitize': false }
-
   @@html = ''
-  #@@bibliografias = []
 
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos(resultados = false)
     def arma_span(taxon)
-      "<label>#{radio_button_tag('id_gi', taxon.id, false, id: "id_gi_#{taxon.id}")}<span class='mx-1'><span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn-title'></span></span></label>"
+      "<label>#{radio_button_tag('id_gi', taxon.id, params[:id_gi].to_i === taxon.id, id: "id_gi_#{taxon.id}")}<span class='mx-1'><span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn-title'></span></span></label>"
     end
 
     radios = ''
     radios << '<div class="col-md">'
     radios << '<h6><strong>Grupos de animales</strong></h6>'
-    @animales.each do |taxon|  # Para tener los grupos ordenados
+    @filtros[:animales].each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end
     radios << '</div>'
@@ -23,7 +21,7 @@ module BusquedasHelper
 
     radios << '<div class="col-md">'
     radios << '<h6><strong>Grupos de plantas</strong></h6>'
-    @plantas.each do |taxon|  # Para tener los grupos ordenados
+    @filtros[:plantas].each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end
     radios << '</div>'
@@ -34,46 +32,57 @@ module BusquedasHelper
 
   # REVISADO: Filtros para categorías de riesgo y comercio internacional
   def checkboxEstadoConservacion(opciones={})
+    selected = (params[:edo_cons].present? && params[:edo_cons].any?) ? params[:edo_cons] : []
     opc = @@opciones.merge(opciones)
-    options = @nom_cites_iucn_todos.map{ |k,v| [t(k), v.map{ |val| [val.descripcion.gsub('-eval',''), val.id, { class: "#{val.descripcion.estandariza}-ev-icon f-fuentes" }] }] }
-    select_tag('edo_cons', grouped_options_for_select(options), opc)
+    options = @filtros[:nom_cites_iucn_todos].map{ |k,v| [t(k), v.map{ |val| [val.descripcion.gsub('-eval',''), val.id, { class: "#{val.descripcion.estandariza}-ev-icon f-fuentes" }] }] }
+    select_tag('edo_cons', grouped_options_for_select(options, selected), opc)
   end
 
   # REVISADO: Filtros para Tipos de distribuciónes
   def checkboxTipoDistribucion(opciones={})
+    selected = (params[:dist].present? && params[:dist].any?) ? params[:dist] : []
     opc = @@opciones.merge(opciones)
-    options = @distribuciones.map{ |d| [d.descripcion, d.id, { class: "#{d.descripcion.estandariza}-ev-icon f-fuentes" }] }
-    select_tag('dist', options_for_select(options), opc)
+    options = @filtros[:tipos_distribuciones].map{ |d| [d.descripcion, d.id, { class: "#{d.descripcion.estandariza}-ev-icon f-fuentes" }] }
+    select_tag('dist', options_for_select(options, selected), opc)
   end
 
   # REVISADO: Filtros para Especies prioritarias para la conservación
   def checkboxPrioritaria(opciones={})
+    selected = (params[:prior].present? && params[:prior].any?) ? params[:prior] : []
     opc = @@opciones.merge(opciones)
-    options = @prioritarias.map{ |p| [p.descripcion, p.id, { class: "#{p.descripcion.estandariza}-ev-icon f-fuentes" }] }
-    select_tag('prior', options_for_select(options), opc)
+    options = @filtros[:prioritarias].map{ |p| [p.descripcion, p.id, { class: "#{p.descripcion.estandariza}-ev-icon f-fuentes" }] }
+    select_tag('prior', options_for_select(options, selected), opc)
   end
 
   # REVISADO: Filtros para estatus taxonómico en la busqueda avanzada
   def checkboxSoloValidos
-    "<label for='estatus'><span title='Solo válidos/aceptados'>Solo válidos/aceptados</span></label> #{check_box_tag('estatus[]', 2, false, id: "estatus_2", class:'form-control')}"
+    "<label for='estatus'><span title='Solo válidos/aceptados'>Solo válidos/aceptados</span></label> #{check_box_tag('estatus[]', 2, params[:estatus].present? ? true: false, id: "estatus_2", class:'form-control')}"
   end
 
   def selectUsos(opciones={})
+    selected = (params[:uso].present? && params[:uso].any?) ? params[:uso] : []
     opc = @@opciones.merge(opciones)
-    options = @usos.map{ |u| [u.descripcion, "#{u.nivel1}-#{u.nivel2}-#{u.nivel3}-#{u.nivel4}-#{u.nivel5}-#{u.nivel6}-#{u.nivel7}", { class: "f-fuentes" }] }
-    select_tag('uso', options_for_select(options), opc)
+    options = @filtros[:usos].map{ |u| [u.descripcion, "#{u.nivel1}-#{u.nivel2}-#{u.nivel3}-#{u.nivel4}-#{u.nivel5}-#{u.nivel6}-#{u.nivel7}", { class: "f-fuentes" }] }
+    select_tag('uso', options_for_select(options, selected), opc)
   end
 
   def selectAmbiente(opciones={})
+    selected = (params[:ambiente].present? && params[:ambiente].any?) ? params[:ambiente] : []
     opc = @@opciones.merge(opciones)
-    options = @ambientes.map{ |a| [a.descripcion, a.id, { class: "#{a.descripcion.estandariza}-ev-icon f-fuentes" }] }
-    select_tag('ambiente', options_for_select(options), opc)
+    options = @filtros[:ambientes].map{ |a| [a.descripcion, a.id, { class: "#{a.descripcion.estandariza}-ev-icon f-fuentes" }] }
+    select_tag('ambiente', options_for_select(options, selected), opc)
   end
 
-  def selectRegiones(opciones={})
+  def selectDistribuciones(opciones={})
+    selected = (params[:reg].present? && params[:reg].any?) ? params[:reg] : []
     opc = @@opciones.merge(opciones)
-    options = @regiones.map{ |k,v| [t("regiones.#{k.estandariza}"), v.map{ |val| [k.estandariza == 'estado' ? t("estados.#{val.nombre_region.estandariza}", default: val.nombre_region) : t("ecorregiones-marinas.#{val.nombre_region.estandariza}", default: val.nombre_region), val.id, { class: "#{val.nombre_region.estandariza}-ev-icon f-fuentes" }] }] }
-    select_tag('reg', grouped_options_for_select(options), opc)
+    options = @filtros[:distribuciones].map{ |k,v| [t("regiones.#{k.estandariza}"), v.map{ |val| [k.estandariza == 'estado' ? t("estados.#{val.nombre_region.estandariza}", default: val.nombre_region) : t("ecorregiones-marinas.#{val.nombre_region.estandariza}", default: val.nombre_region), val.id, { class: "#{val.nombre_region.estandariza}-ev-icon f-fuentes" }] }] }
+    select_tag('reg', grouped_options_for_select(options, selected), opc)
+  end
+
+  def selctPorPagina
+    selected = params[:por_pagina].present? ? params[:por_pagina] : []
+    select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}, selected), :class => 'busquedas form-control'
   end
 
   # Si la búsqueda ya fue realizada y se desea generar un checklist, unicamente se añade un parametro extra y se realiza la búsqueda as usual
@@ -88,26 +97,58 @@ module BusquedasHelper
   end
 
   # Para las descargas
-  def campoCorreo(recurso)
+  def campoCorreo(tipo_descarga='')
+    return if tipo_descarga == 'checklist'
     html = ''
 
     if usuario_signed_in?
-      html << text_field_tag('correo-' + recurso, current_usuario.email, class: 'form-control d-none', placeholder: 'correo ...')
+      html << hidden_field_tag('correo', current_usuario.email, id: nil)
     else
-      html << label_tag('correo-'+recurso, 'Correo electrónico ', class: 'control-label')
-      html << text_field_tag('correo-'+recurso, nil, class: 'form-control', placeholder: 'correo ...')
+      html << label_tag('correo', 'Correo electrónico ', class: 'control-label')
+      html << text_field_tag('correo', nil, class: 'form-control', placeholder: 'correo ...', id: nil)
     end
 
-    html
+    html.html_safe
   end
 
   # El boton de las descargas
-  def botonDescarga(recurso, checklist = false)
-    if usuario_signed_in? || checklist
-      "<button type='button' class='btn btn-success' id='boton-descarga-#{recurso}'>Enviar</button>"
+  def botonDescarga(tipo_descarga)
+    if usuario_signed_in? || tipo_descarga == 'checklist'
+      "<button type='button' class='btn btn-success boton-descarga'>Enviar</button>".html_safe  
     else
-      "<button type='button' class='btn btn-success' id='boton-descarga-#{recurso}' disabled='disabled'>Enviar</button>"
+      "<button type='button' class='btn btn-success boton-descarga' disabled='disabled'>Enviar</button>".html_safe
     end
+  end
+
+  # Los checkbox para que el usuario decida que descargar, se ocupa en descarga de busqueda basica, avanzada, por region y el checklist
+  def camposDescarga(tipo_descarga=nil)
+    checkbox = ''
+    campos = { x_tipo_distribucion: 'Tipo de distribución', x_cat_riesgo: 'Categorías de riesgo y comercio internacional', x_ambiente: 'Ambiente', x_nombres_comunes: 'Nombres comunes', x_bibliografia: 'Bibliografía' }
+    
+    case tipo_descarga
+    when 'basica'
+    when 'avanzada'
+      campos.merge!({ x_col_basicas: 'Columnas basicas', x_taxa_sup: 'Taxonomía superior', x_url_ev: 'URL de la especie en enciclovida' })
+    when 'region'
+      campos = { x_num_reg: 'Número de registros' }.merge(campos.merge!({ x_col_basicas: 'Columnas basicas', x_taxa_sup: 'Taxonomía superior', x_url_ev: 'URL de la especie en enciclovida' }))
+    when 'checklist'
+      campos.merge!({ x_estatus: 'Solo válidos/aceptados', x_distribucion: 'Distribución (reportada en literatura)', x_residencia: 'Categoría de residencia (aves)', x_formas: 'Formas de crecimiento (plantas)', x_interaccion: 'Interacciones biológicas' })  
+    end
+    
+    campos.each do |valor, label|
+      if valor.to_s == 'x_col_basicas'
+        checkbox << check_box_tag('f_desc[]', valor, true, style: 'display: none;', id: "f_#{tipo_descarga}_#{valor}")
+      else
+        checkbox << "<div class='custom-control custom-switch'>"
+        checkbox << check_box_tag('f_desc[]', valor, false, class: "custom-control-input", id: "f_#{tipo_descarga}_#{valor}")
+        checkbox << "<label class='custom-control-label' for='f_#{tipo_descarga}_#{valor}'>#{label}</label>"
+        checkbox << "</div>"
+      end
+
+      
+    end
+
+    checkbox.html_safe
   end
 
   # Despliega el checklist
@@ -140,8 +181,8 @@ module BusquedasHelper
 
   # Devuelve los nombres comunes agrupados por lengua, solo de catalogos
   def nombresComunesChecklist(taxon)
-    return unless params[:f_check].present?
-    return unless params[:f_check].include?('nom_com')
+    return unless params[:f_desc].present?
+    return unless params[:f_desc].include?('x_nombres_comunes')
 
     nombres = taxon.dame_nombres_comunes_catalogos
     return '' unless nombres.any?
@@ -162,12 +203,12 @@ module BusquedasHelper
     sinonimos_basonimo = {sinonimos: [], basonimo: [], hospedero: [], parasito: []}
 
     estatus_permitidos = []
-    if params[:f_check].present? && !params[:f_check].include?('val')
+    if params[:f_desc].present? && !params[:f_desc].include?('x_estatus')
       estatus_permitidos << 1
       estatus_permitidos << 2
     end
 
-    if params[:f_check].present? && params[:f_check].include?('interac')
+    if params[:f_desc].present? && params[:f_desc].include?('x_interaccion')
       estatus_permitidos << 7
     end
 
@@ -224,7 +265,7 @@ module BusquedasHelper
 
   # Regresa el tipo de distribucion
   def tipoDistribucionChecklist(taxon)
-    if params[:f_check].present? && params[:f_check].include?('tipo_dist')
+    if params[:f_desc].present? && params[:f_desc].include?('x_tipo_distribucion')
       taxon.tipos_distribuciones.map(&:descripcion).uniq
     end
   end
@@ -237,10 +278,10 @@ module BusquedasHelper
     tipo_dist = tipoDistribucionChecklist(taxon)
     res[:catalogos] = tipo_dist if tipo_dist
 
-    catalogos_permitidos << 4 if params[:f_check].present? && params[:f_check].include?('cat_riesgo')
-    catalogos_permitidos << 2 if params[:f_check].present? && params[:f_check].include?('amb')
-    catalogos_permitidos << 16 if params[:f_check].present? && params[:f_check].include?('residencia')
-    catalogos_permitidos << 18 if params[:f_check].present? && params[:f_check].include?('formas')
+    catalogos_permitidos << 4 if params[:f_desc].present? && params[:f_desc].include?('x_cat_riesgo')
+    catalogos_permitidos << 2 if params[:f_desc].present? && params[:f_desc].include?('x_ambiente')
+    catalogos_permitidos << 16 if params[:f_desc].present? && params[:f_desc].include?('x_residencia')
+    catalogos_permitidos << 18 if params[:f_desc].present? && params[:f_desc].include?('x_formas')
 
     if catalogos_permitidos.any?
       taxon.catalogos.each do |catalogo|
@@ -278,8 +319,8 @@ module BusquedasHelper
   end
 
   def distribucionChecklist(taxon, seccion=true)
-    return unless params[:f_check].present?
-    return unless params[:f_check].include?('dist') || params[:f_check].include?('interac')
+    return unless params[:f_desc].present?
+    return unless params[:f_desc].include?('x_distribucion') || params[:f_desc].include?('x_interaccion')
 
     regiones = taxon.regiones.map{ |r| t("estados_siglas.#{r.nombre_region.estandariza}") if r.tipo_region_id == 2 }.flatten.compact.sort
     return regiones unless seccion
@@ -288,8 +329,8 @@ module BusquedasHelper
 
   # Va imprimiendo los numeros de las bibliografias de los nombres cientificos
   def bibliografiaNombreChecklist(taxon)
-    return unless params[:f_check].present?
-    return unless params[:f_check].include?('biblio')
+    return unless params[:f_desc].present?
+    return unless params[:f_desc].include?('x_bibliografia')
     referencias = []
 
     taxon.bibliografias.each do |bibliografia|
@@ -306,8 +347,8 @@ module BusquedasHelper
 
   # Imprime las bibliografias al final
   def bibliografiasChecklist
-    return unless params[:f_check].present?
-    return unless params[:f_check].include?('biblio')
+    return unless params[:f_desc].present?
+    return unless params[:f_desc].include?('x_bibliografia')
     return unless @bibliografias.any?
 
     html = "<h5 class='etiqueta-checklist'>Bibliografía</h5>"
@@ -317,21 +358,6 @@ module BusquedasHelper
     end
 
     html.html_safe
-  end
-
-  # Los checkbox para que el usuario decida que descargar
-  def campoDescargaChecklist
-    campos = { tipo_dist: 'Tipo de distribución', cat_riesgo: 'Categorías de riesgo y comercio internacional', dist: 'Distribución (reportada en literatura)', amb: 'Ambiente', val: 'Solo válidos/aceptados', nom_com: 'Nombres comunes', biblio: 'Bibliografía', residencia: 'Categoría de residencia (aves)', formas: 'Formas de crecimiento (plantas)', interac: 'Interacciones biológicas' }
-    checkBoxes = '<h6>Selecciona los campos a desplegar en el checklist</h6>'
-
-    campos.each do |valor, label|
-      checkBoxes << "<div class='custom-control custom-switch'>"
-      checkBoxes << check_box_tag('f_check[]', valor, false, class: 'custom-control-input', id: "f_check_#{valor}")
-      checkBoxes << "<label class = 'custom-control-label' for='f_check_#{valor}'>#{label}</label>"
-      checkBoxes << "</div>"
-    end
-
-    checkBoxes.html_safe
   end
   
   def dameArbolInicial
@@ -350,6 +376,9 @@ module BusquedasHelper
     soyHoja = taxon.conteo == 0
     icono_fuente = 'fa-genderless' if soyHoja
 
+    # Para saber de que reino viene
+    phylum_division = taxon.ancestry_ascendente_directo.split(',').include?('1') ? '1' : '0'
+
     busqueda_orig = inicial ? 'clas-fila-busqueda-orig' : ''
 
     if taxon.jres
@@ -361,7 +390,7 @@ module BusquedasHelper
     
     caret = "<i class='fa #{icono_fuente} px-2'></i>".html_safe
     nombre = tituloNombreCientifico(taxon, { render: 'link-inline-clasificacion'}, { target: :_blank })
-    especies_url = "/busquedas/resultados?nivel=%3D&cat=7100&busqueda=avanzada&id=#{taxon.id}&por_pagina=50"
+    especies_url = "/busquedas/resultados?nivel=%3D&cat=7#{phylum_division}00&busqueda=avanzada&id=#{taxon.id}&por_pagina=50"
     especies = "<span>" + link_to("(#{taxon.conteo} especies)", especies_url, target: :_blank) + "</span>" if taxon.conteo > 0
     span = "<button data-taxon-id='#{taxon.id}' #{'data-hoja=true' if soyHoja} type='button' class='btn btn-block btn-outline-success border-0 clas-fila my-0 px-3 py-3 rounded-sm shadow-sm text-left text-info #{busqueda_orig} nodo-taxon'>#{caret} #{nombre} #{especies} #{iconos_fuentes}</button>"
     html = "<div class='arbol-taxon ml-3'>#{span}"
@@ -397,6 +426,57 @@ module BusquedasHelper
     end
 
     html.html_safe
+  end
+
+  # Asigna los filtros de las especies en la busqueda por region
+  def filtrosEspecies(params)
+    html = ''
+
+    if params[:especie_id].present?  # Grupos iconicos
+      grupo_ids = (@filtros[:animales] + @filtros[:plantas]).map{ |d| [d.id, d.nombre_comun_principal] }.to_h 
+
+      if grupo_ids.key?(params[:especie_id].to_i)
+        html << "<span class='#{grupo_ids[params[:especie_id].to_i].estandariza}-ev-icon f-fuentes-reg mx-2' title='#{grupo_ids[params[:especie_id].to_i]}'></span>"
+      end
+    end
+
+    if params[:dist].present? && params[:dist].any?  # Tipo de distribucion
+      dist = @filtros[:tipos_distribuciones].map{ |d| [d.id, d.descripcion] }.to_h 
+      ids = params[:dist].map(&:to_i) & dist.keys
+
+      ids.each do |i|
+        html << "<span class='#{dist[i].estandariza}-ev-icon f-fuentes-reg' title='#{dist[i]}'></span>"
+      end
+    end
+
+    if params[:edo_cons].present? && params[:edo_cons].any?  # Especies en riesgo y comercio int.
+      edo_cons = @filtros[:nom_cites_iucn_todos].values.flatten.map{ |e| [e.id, e.descripcion] }.to_h 
+      ids = params[:edo_cons].map(&:to_i) & edo_cons.keys
+
+      ids.each do |i|
+        html << "<span class='#{edo_cons[i].estandariza}-ev-icon f-fuentes-reg' title='#{edo_cons[i]}'></span>"
+      end
+    end
+
+    if params[:ambiente].present? && params[:ambiente].any?  # Ambiente
+      ambiente = @filtros[:ambientes].map{ |a| [a.id, a.descripcion] }.to_h 
+      ids = params[:ambiente].map(&:to_i) & ambiente.keys
+
+      ids.each do |i|
+        html << "<span class='#{ambiente[i].estandariza}-ev-icon f-fuentes-reg' title='#{ambiente[i]}'></span>"
+      end
+    end
+
+    if params[:uso].present? && params[:uso].any?  # Usos
+      uso = @filtros[:usos].map{ |u| ["#{u.nivel1}-#{u.nivel2}-#{u.nivel3}-#{u.nivel4}-#{u.nivel5}-#{u.nivel6}-#{u.nivel7}", u.descripcion] }.to_h 
+      ids = params[:uso] & uso.keys
+
+      ids.each do |i|
+        html << "<i class='btn-title mx-2' title='#{uso[i]}'>#{uso[i]}</i>"
+      end
+    end
+
+    html.present? ? "Tus filtros: #{html} <hr />".html_safe : html.html_safe
   end
 
 end

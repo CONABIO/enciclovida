@@ -6,7 +6,7 @@ var server = new Hapi.Server({
     connections: {
         routes: {
             timeout: {
-                server: 1000*60*10,
+                server: 1000*60*30,
                 socket: false,
             }
         }

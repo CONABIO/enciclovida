@@ -1,13 +1,14 @@
 class Api::Descripcion
 
-  attr_accessor :taxon, :servidor, :timeout, :debug, :locale
+  attr_accessor :taxon, :servidor, :timeout, :debug, :locale, :app
 
-  DESCRIPCIONES_ES = %w(conabio wikipedia_es wikipedia_en)
-  DESCRIPCIONES_ES_CIENTIFICO = %w(conabio_tecnico wikipedia_es wikipedia_en)
+  DESCRIPCIONES_ES = %w(conabio wikipedia_es wikipedia_en conabio_tecnico)
+  DESCRIPCIONES_ES_CIENTIFICO = %w(conabio_tecnico wikipedia_es wikipedia_en conabio)
 
   def initialize(opc = {})
     self.taxon = opc[:taxon]
     self.locale = locale || opc[:locale] || I18n.locale || 'es'
+    self.app = app || opc[:app] || false
     self.servidor = servidor || opc[:servidor]
     self.timeout = opc[:timeout] || 8
     self.debug = opc[:debug] || Rails.env.development? || false
@@ -21,8 +22,8 @@ class Api::Descripcion
   def dame_descripcion
     eval("DESCRIPCIONES_#{locale.to_s.gsub('-','_').upcase}").each do |descripcion|
       desc = eval("Api::#{descripcion.camelize}")
-      resp = desc.new(taxon: taxon).dame_descripcion
-      return { api: descripcion, descripcion: resp } if resp
+      resp = desc.new(taxon: taxon, app: app).dame_descripcion
+      return { api: descripcion, descripcion: app ? resp.to_s.quita_enlaces : resp } if resp
     end
 
     nil

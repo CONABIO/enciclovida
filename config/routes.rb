@@ -120,8 +120,8 @@ Buscador::Application.routes.draw do
     end
   end
 
-  #get 'estadisticas' => 'estadisticas#show'
-  #get 'filtros_estadisticas' => 'estadisticas#filtros_estadisticas'
+  get 'estadisticas' => 'estadisticas#show'
+  get 'filtros_estadisticas' => 'estadisticas#filtros_estadisticas'
   #get '' => ''
 
   get 'peces' => 'pmc/peces#index'
@@ -138,16 +138,15 @@ Buscador::Application.routes.draw do
   get 'exoticas-invasoras' => 'paginas#exoticas_invasoras'
   get 'exoticas-invasoras-paginado' => 'paginas#exoticas_invasoras_paginado'
 
-  # Busqueda por region
-  get 'explora-por-ubicacion' => 'ubicaciones#ubicacion'
-  get 'explora-por-region' => 'ubicaciones#por_region'
-  get 'explora-por-region/especies-por-grupo' => 'ubicaciones#especies_por_grupo'
-  get 'municipios-por-estado' => 'ubicaciones#municipios_por_estado'
-  get 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
-  get 'explora-por-region/descarga-taxa' => 'ubicaciones#descarga_taxa'
-  get 'explora-por-region/conteo-por-grupo' => 'ubicaciones#conteo_por_grupo'
+  # Busquedas por region
+  #get 'explora-por-ubicacion' => 'busquedas_regiones#ubicacion'
+  get 'explora-por-region' => 'busquedas_regiones#por_region'
+  get 'explora-por-region/especies' => 'busquedas_regiones#especies'
+  get 'explora-por-region/ejemplares' => 'busquedas_regiones#ejemplares'
+  get 'explora-por-region/ejemplar' => 'busquedas_regiones#ejemplar'
+  get 'explora-por-region/descarga-taxa' => 'busquedas_regiones#descarga_taxa'
 
-
+  # Paginas del inicio
   get "inicio/comentarios"
   get "inicio/index"
   get "inicio/acerca"
@@ -276,8 +275,6 @@ Buscador::Application.routes.draw do
 
   # Para las validaciones de taxones la simple y la avanzada
   get 'validaciones' => 'validaciones#index'
-  #get 'validaciones/simple' => 'validaciones#simple', as: 'validacion_simple'
-  #get 'validaciones/avanzada' => 'validaciones#avanzada', as: 'validacion_avanzada'
   post 'validaciones/simple' => 'validaciones#simple', as: 'validacion_simple'
   post 'validaciones/avanzada' => 'validaciones#avanzada', as: 'validacion_avanzada'
 

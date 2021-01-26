@@ -11,26 +11,19 @@ class Pmc::PecesController < Pmc::PmcController
   end
 
   def index
-    #render layout: false
-    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/usos/alimentacion/peces/")).css('#introenciclovida2')
-    #@doc.css('#pagetitle').remove
-    #@doc.css('#sectionmenu').remove
-    #@doc.css('#pageima').remove
+    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/diversidad/alimentos/peces/")).css('#introenciclovida, #introenciclovida2')
     @doc.xpath('//comment()').remove
 
     @doc.each do |el|
       el.traverse do |n|
-        next if n.key?('id') && %w(accordion collapse1 collapse2 collapse3 collapse4).include?(n.attribute('id').value)
-        #n.remove_attribute('id')
-        #n.remove_class('contenidoGRALima')
-        #n.remove_class('project')
         if n.matches?('img')
-          n.attribute('src').value = n.attribute('src').value.gsub('../../../', 'https://www.biodiversidad.gob.mx/')
+          n.attribute('src').value = "https://www.biodiversidad.gob.mx/" + n.attribute('src').value unless  n.attribute('src').value.include?('biodiversidad.gob.mx')
+          n['class'] = n['class'].present? ? (n['class'] + ' img-fluid') : 'img-fluid'
         end
       end
     end
+    @doc = @doc.to_html
 
-    @doc = @doc.to_html.force_encoding('UTF-8').gsub('Ã¡','á').gsub('Ã©','é').gsub('Ã','í').gsub('í³','ó').gsub('íº','ú').gsub('í','Á')
   end
 
   # Busqueda por pez y marisco

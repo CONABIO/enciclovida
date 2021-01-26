@@ -45,8 +45,10 @@ class EspeciesController < ApplicationController
       format.html do
 
         @datos = {}
+        @datos[:nombre_cientifico] = @especie.nombre_cientifico
+
         if adicional = @especie.adicional
-          @datos[:nombre_comun_principal] =  adicional.nombre_comun_principal
+          @datos[:nombre_comun] =  adicional.nombre_comun_principal
           @datos[:nombres_comunes] =  adicional.nombres_comunes
         end
 
@@ -502,7 +504,7 @@ class EspeciesController < ApplicationController
 
   # La respuesta a la ficha en la app
   def descripcion_app
-    asigna_variables_descripcion
+    asigna_variables_descripcion(true)
     render 'especies/descripciones/descripcion_app', layout: 'descripcion_app'
   end
 
@@ -521,7 +523,11 @@ class EspeciesController < ApplicationController
     
   # Viene de la pestaña de la ficha
   def descripcion_catalogos
-    render 'especies/descripciones/descripcion_catalogos'
+    if params[:app]
+      render 'especies/descripciones/descripcion_catalogos_app'
+    else
+      render 'especies/descripciones/descripcion_catalogos'
+    end
   end
 
   # Devuelve las observaciones de naturalista en diferentes formatos
@@ -598,7 +604,7 @@ class EspeciesController < ApplicationController
 
       respond_to do |format|
         format.json do
-          resp = p.ejemplares_snib('.json')
+          resp = p.ejemplares_snib('.json', params[:mapa].present? ? true : false)
 
           headers['Access-Control-Allow-Origin'] = '*'
           headers['Access-Control-Allow-Methods'] = 'GET'
@@ -915,17 +921,17 @@ class EspeciesController < ApplicationController
     )
   end
 
-  def asigna_variables_descripcion
+  def asigna_variables_descripcion(app=false)
     if params[:from].present?
       begin
         desc = eval("Api::#{params[:from].camelize}")
-        @descripcion = desc.new(taxon: @especie).dame_descripcion
+        @descripcion = desc.new(taxon: @especie, app: app).dame_descripcion
         @api = params[:from]
       rescue
       end
     else
       begin
-        desc = Api::Descripcion.new(taxon: @especie).dame_descripcion
+        desc = Api::Descripcion.new(taxon: @especie, app: app).dame_descripcion
         @descripcion = desc[:descripcion]
         @api = desc[:api]
       rescue

@@ -107,12 +107,10 @@ footer .list-group-item {
 }
 .biomex-ev-icon:before/*, .conabio-ev-icon:before*/{
   width: 2.5em !important;
-  /*font-size: 2em;*/
   color: #f7f7f7;
 }
 .enciclo-ev-icon:before, .enciclo-ev-icon:after, .vida-ev-icon:before, .conabio_completo-ev-icon:before{
   margin: 0;
-  /*font-size: 2.5em;*/
   width: 3em !important;
 }
 
@@ -181,23 +179,23 @@ ul.social-buttons li a:active {
 .panel-disabled .nom:after, .panel-disabled .sujeta-a-proteccion-especial-pr-ev-icon:after, .panel-disabled .amenazada-a-ev-icon:after, .panel-disabled .en-peligro-de-extincion-p-ev-icon:after, .panel-disabled .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .panel-disabled .tipoDist:after, .panel-disabled .endemica-ev-icon:after, .panel-disabled .nativa-ev-icon:after, .panel-disabled .exotica-ev-icon:after, .panel-disabled .exotica-invasora-ev-icon:after {color: #797979 !important;}
 
 /* NOM-059*/
-.sujeta-a-proteccion-especial-pr-ev-icon {color: #f6b134;}
+.sujeta-a-proteccion-especial-pr-ev-icon:before {color: #f6b134;}
 .sujeta-a-proteccion-especial-pr-ev-icon:after{ content: '\e81e'; }
 
-.amenazada-a-ev-icon {color: #ef8934;}
+.amenazada-a-ev-icon:before {color: #ef8934;}
 .amenazada-a-ev-icon:after { content: '\e820'; }
 
-.en-peligro-de-extincion-p-ev-icon {color: #e10019;}
+.en-peligro-de-extincion-p-ev-icon:before {color: #e10019;}
 .en-peligro-de-extincion-p-ev-icon:after { content: '\e822'; }
 
-.probablemente-extinta-en-el-medio-silvestre-e-ev-icon {color: #444444;}
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:before {color: #444444;}
 .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after { content: '\e824';}
 
 .nom:after, .sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after {color: #444444; margin-left: -1.2em;}
 /*Termina NOM-059*/
 
 /* Evaluación CONABIO*/
-[class$="evaluacion-conabio-ev-icon"], [class*="evaluacion-conabio-ev-icon "]{
+[class$="evaluacion-conabio-ev-icon"]:before, [class*="evaluacion-conabio-ev-icon "]:before{
   color: #800000;
 }
 /* Termina Evaluación CONABIO*/
@@ -208,7 +206,7 @@ ul.social-buttons li a:active {
 /* Termina IUCN*/
 
 /* cites */
-.cites, .apendice-i-ev-icon,.apendice-ii-ev-icon,.apendice-iii-ev-icon{color: #095417;}
+.cites:before, .apendice-i-ev-icon:before,.apendice-ii-ev-icon:before,.apendice-iii-ev-icon:before{color: #095417;}
 /* Termina cites */
 
 /* tipo distribucion */
@@ -222,15 +220,15 @@ ul.social-buttons li a:active {
 /* Termina tipo distribucion */
 
 /* prioritarias */
-.alta-ev-icon, .media-ev-icon, .menor-ev-icon{color: #ff931e;}
+.alta-ev-icon:before, .media-ev-icon:before, .menor-ev-icon:before{color: #ff931e;}
 .alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after {content: '\e837'; color: #555555; margin-left: -1.2em;}
 /* termina prioritarias */
 
 /* ambiente */
-.marino-ev-icon{color: #255E54;}
-.dulceacuicola-ev-icon{color: #58867B;}
-.salobre-ev-icon{color: #81B49B;}
-.terrestre-ev-icon{color: #777442;}
+.marino-ev-icon:before{color: #255E54;}
+.dulceacuicola-ev-icon:before{color: #58867B;}
+.salobre-ev-icon:before{color: #81B49B;}
+.terrestre-ev-icon:before{color: #777442;}
 /* Termina ambiente */
 
 .ev1-ev-icon:before { content: '\e84f'; }
@@ -239,7 +237,6 @@ ul.social-buttons li a:active {
 /*.vida-ev-icon:before { content: '\e850'; }*/
 .naturalista-3-ev-icon:before { content: '\e853'; }
 .naturalista-4-ev-icon:before { content: '\e854'; }
-.enciclo-ev-icon:before { content: '\e860'; }
 
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 

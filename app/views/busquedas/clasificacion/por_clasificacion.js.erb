@@ -1,0 +1,19 @@
+<%
+arbol = {}
+@taxones.reverse.each do |taxon|
+nodo = taxon.as_json
+nodo["especies_inferiores_conteo"] = nodo.delete "conteo"
+nodo["especie_id"] = nodo.delete "IdNombre"
+nodo["nombre_cientifico"] = nodo.delete "NombreCompleto"
+nodo["nombre_comun"] = nodo.delete "nombre_comun_principal"
+nodo["abreviacion_categoria"] = (nodo.delete "nombre_categoria_taxonomica")[0].upcase
+
+if arbol.empty?
+arbol = nodo
+else
+nodo[:children] = [arbol]
+arbol = nodo
+end
+end
+%>
+<%= arbol.to_json.html_safe %>

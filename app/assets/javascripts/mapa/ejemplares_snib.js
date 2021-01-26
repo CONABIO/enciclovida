@@ -23,7 +23,7 @@ var borraEjemplaresAnterioresSnib = function()
     }
 
     snibLayer = L.markerClusterGroup({ chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-        spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 },
+        spiderLegPolylineOptions: { weight: 1.5, color: 'white', opacity: 0.5 }, disableClusteringAtZoom: 10,
         iconCreateFunction: function (cluster) {
             var markers = cluster.getAllChildMarkers();
             return L.divIcon({ html: '<div><span>' + markers.length + '</span></div>', className: 'div-cluster-snib',
@@ -59,7 +59,7 @@ var leyendaSnib = function()
     );
 
     snib_control.addOverlay(noCampoLayer,
-        '<i class="fa fa-map-flag div-icon-snib"></i>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
+        '<i class="fa fa-flag div-icon-snib"></i>Localidad no de campo <sub>' + no_campo_conteo + '</sub>'
     );
 };
 
@@ -215,7 +215,7 @@ var aniadePuntosSnib = function()
 var ejemplarSnibGeojson = function(layer, id)
 {
     $.ajax({
-        url: "/especies/" + opciones.taxon + "/ejemplar-snib/" + id,
+        url: "/especies/" + opciones.especie_id + "/ejemplar-snib/" + id,
         dataType : "json",
         success : function (res){
             if (res.estatus)
@@ -240,11 +240,11 @@ var ejemplarSnibGeojson = function(layer, id)
  * */
 var ejemplarSnib = function(prop)
 {
-    // Sustituye las etiquetas h5 por h4 y centra el texto
-    var nombre_f = $('<textarea/>').html(opciones.nombre).text().replace(/<h5/g, "<h4 class='text-center'").replace(/<\/h5/g, "</h4");
-    var contenido = "";
+    var nombre_comun = '';
+    if (opciones.nombre_comun !== undefined) var nombre_comun = '<h4 class="text-center">' + opciones.nombre_comun + '</h4>';
+    var nombre = nombre_comun + '<h4 class="text-center"><a href="/especies/' + opciones.especie_id + '"><i>' + opciones.nombre_cientifico + '</i></a></h4>';
 
-    contenido += "" + nombre_f + "<br />";
+    contenido += "" + nombre + "<br />";
     contenido += "<strong>Localidad:</strong> " + prop.localidad + "<br />";
     contenido += "<strong>Municipio: </strong>" + prop.municipiomapa + "<br />";
     contenido += "<strong>Estado: </strong>" + prop.estadomapa + "<br />";
@@ -261,7 +261,7 @@ var ejemplarSnib = function(prop)
     contenido += "<strong>Más información: </strong><a href='" + prop.urlejemplar + "' target='_blank'>consultar</a><br />";
 
     //Para enviar un comentario acerca de un ejemplar en particular
-    contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" +
+    contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" +
         prop.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a><br />";
 
     return "<dl class='dl-horizontal'>" + contenido + "</dl>" + "<strong>ID SNIB: </strong>" + prop.idejemplar;
@@ -277,6 +277,8 @@ var geojsonSnib = function(url)
         url: url,
         dataType : "json",
         success : function (d){
+            if (d.estatus != undefined) d = d.resultados;
+
             ejemplares_conteo = d.length;
             colecciones_conteo = 0;
             observaciones_conteo = 0;

@@ -68,6 +68,13 @@ var soulmateAsigna = function(tipo_busqueda, elem)
             case 'pmc_new':
                 $('#pmc_pez_especie_id').attr('value', data.id);
                 break;
+            case 'busqueda_region':
+                console.log('acaso aca?' + data.id + '-' + data.nombre_cientifico + '-')
+                $('#especie_id').attr('value', data.id);
+                $('#' + elemento).val(data.nombre_cientifico);
+                opciones.filtros.pagina = 1;
+                cargaEspecies();
+                break;
             case 'soloAsigna':
                 $('#id').attr('value', data.id); //TODO arreglar el ID id ¬.¬ !>.> pffff
                 break;
@@ -109,13 +116,47 @@ var soulmateAsigna = function(tipo_busqueda, elem)
     };
 
     $('#' + elemento).soulmate({
-        url:            "//"+ IP + ":" + PORT + "sm/search",
+        url:            SITE_URL + "sm/search",
         types:          TYPES,
         renderCallback: render,
         selectCallback: select,
         minQueryLength: 2,
         maxResults:     5,
         timeout:        3500
+    });
+};
+
+/**
+ * Funcion para atachar que una caja de texto tenga funcionamiento con soulmate y redis
+ * @elem al elemento al cual se le quiere poner redis
+ */
+var soulmateRegionAsigna = function(elem)
+{
+    if (elem == undefined) var elemento = 'region';
+    else var elemento = elem;
+
+    var render = function(term, data)
+    {
+        var html = '<h5>' + data.nombre_region + '</h5>';
+        if (data.tipo_region != undefined) html+= "<sub>" + data.tipo_region + "</sub>";
+
+        return html;
+    };
+
+    var select = function(term, data, type)
+    {
+        $('ul#soulmate').hide();  // Esconde el autocomplete cuando escoge uno
+        var prop = { region_id: data.region_id, tipo_region: type, nombre_region: data.nombre_region, bounds: data.bounds }
+        seleccionaRegion(prop);
+    };
+
+    $('#' + elemento).soulmate({
+        url:            SITE_URL + "sm/search",
+        types:          ['estado','municipio','anp'],
+        renderCallback: render,
+        selectCallback: select,
+        minQueryLength: 2,
+        maxResults:     10
     });
 };
 

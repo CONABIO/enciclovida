@@ -9,8 +9,7 @@
   <%= favicon_link_tag '/favicon.ico' %>
 
   <script type="text/javascript" data-turbolinks-track="true">
-      IP = "<%= IP %>";
-      PORT = "<%= PORT %>";
+    SITE_URL = "<%= CONFIG.site_url %>";
   </script>
 
   <script src='https://d3js.org/d3.v4.min.js'></script>
@@ -63,10 +62,6 @@
 <footer class="legal">
   <%= render :partial => 'shared/footer_legal' %>
 </footer>
-
-<% if Rails.env.production? %>
-  <script src="http://bdi.conabio.gob.mx/fotoweb/googleAnalytics.js"></script>
-<% end %>
 
 <%= yield :delayedjs %>
 

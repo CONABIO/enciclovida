@@ -51,8 +51,17 @@
 <% end %>
 
 <% content_for(:extra_title_header) do %>
-  <%= render :partial => 'shared/tituloBuscador', locals: {icon_class: 'exotica-invasora', titulo: "Búsqueda de especies exóticas invasoras <a class='btn btn-warning pull-right' href='/Tabla exóticas.xlsx'>Descargar lista &nbsp;<span class='glyphicon glyphicon-save'></span></a>"} %>
+  <%= render :partial => 'shared/tituloBuscador', locals: { icon_class: 'exotica-invasora', titulo: "Búsqueda de especies exóticas invasoras" } %>
 <% end %>
+
+<div class="dropdown pull-right">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Descarga la lista
+  <span class="caret"></span></button>
+  <ul class="dropdown-menu">
+    <li><%= link_to 'Excel', '/exoticas_invasoras/lista_sp_2020.xlsx' %></li>
+    <li><%= link_to 'PDF', '/exoticas_invasoras/lista_sp_enciclovida_2020.pdf' %></li>
+  </ul>
+</div>
 
 <div class="text-center page-selection1"></div>
 

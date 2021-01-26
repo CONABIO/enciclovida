@@ -5,7 +5,7 @@ class Tropicos_Service
 
   def initialize(options = {})
     @service_name = 'Tropicos'
-    @server = options[:server] || "#{IP}:#{PORT}" # después del puerto, termina con '/'
+    @server = options[:server] || CONFIG.site_url # después del puerto, termina con '/'
     @timeout = options[:timeout] || 8
     @debug = options[:debug] || false
     Rails.logger.debug "[DEBUG] Inicializar el servicio: #{@service_name}"

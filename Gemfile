@@ -14,6 +14,8 @@ gem 'daemons', '1.0.10'  # para hacer ejecutables bash
 gem 'delayed_job'
 gem 'delayed_job_mongoid'
 gem 'delayed-web'
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
 gem 'devise', '>= 4.7.1'
 gem 'exifr'
 gem 'font-awesome-rails'

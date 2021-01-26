@@ -21,18 +21,19 @@ class BDIService
   ALBUM_VIDEOS = ['5121-Video']
 
   def dameFotos(opts)
-    bdi = CONFIG.bdi_imagenes
+    bdi_rp = CONFIG.enciclovida_url
+    bdi_url = CONFIG.bdi_imagenes
     fotos = []
     jres = fotos_album(opts)
     return {:estatus => 'OK', :ultima => nil, :fotos => []} unless jres['data'].any?
 
     jres['data'].each do |x|
       foto = Photo.new
-      foto.large_url = bdi+x['previews'][3]['href']
-      foto.medium_url = bdi+x['previews'][7]['href']
-      foto.native_page_url = bdi+x['href']
+      foto.large_url = bdi_rp+x['previews'][3]['href']
+      foto.medium_url = bdi_rp+x['previews'][7]['href']
+      foto.native_page_url = bdi_url+x['href']
       foto.license = x['metadata']['340'].present? ? x['metadata']['340']['value'] : 'Sin licencia'
-      foto.square_url = bdi+x['previews'][10]['href']
+      foto.square_url = bdi_rp+x['previews'][10]['href']
       foto.native_realname = x['metadata']['80'].present? ? x['metadata']['80']['value'].first : "Anónimo"
       fotos << foto
     end
@@ -47,7 +48,8 @@ class BDIService
 
   # Método para recuperar los videos
   def dame_videos(opts)
-    bdi = CONFIG.bdi_imagenes
+    bdi_rp = CONFIG.enciclovida_url
+    bdi_url = CONFIG.bdi_imagenes
     videos = []
     jres = videos_album(opts)
 
@@ -55,8 +57,8 @@ class BDIService
 
     jres['data'].each do |x|
       video = Video.new
-      video.href_info = bdi + x['href']
-      video.url_acces = bdi + x['attributes']['videoattributes']['proxy']['videoHREF']
+      video.href_info = bdi_url + x['href']
+      video.url_acces = bdi_rp + x['attributes']['videoattributes']['proxy']['videoHREF']
       video.preview_img = x['previews'].present? ? bdi + x['previews'][0]['href'] : nil
       video.autor = x['metadata']['80'].present? ? x['metadata']['80']['value'].first : "Anónimo"
       video.localidad = x['metadata']['90'].present? ? x['metadata']['90']['value'] : nil
@@ -97,6 +99,8 @@ class BDIService
 
     begin
       res = Net::HTTP.start(uri.host, uri.port) {|http| http.request(req) }
+      puts res.body.class.inspect
+      puts res.body.inspect
       JSON.parse(res.body)
     rescue
       {'data' => []}
@@ -123,10 +127,10 @@ class BDIService
     end
 
     reino = taxon.root.nombre_cientifico.strip
+    puts reino.inspect
     ancestros = taxon.path_ids
-
     case reino
-      when 'Animalia'
+    when 'Animalia', 'Protoctista'
         (ALBUM_ANIMALES.keys & ancestros).reverse.each do |taxon_id|
           opts.merge!({album: ALBUM_ANIMALES[taxon_id], nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)
@@ -148,7 +152,7 @@ class BDIService
         end
 
         return {'data' => []}
-      else
+    else
         (ALBUM_PLANTAS.keys & ancestros).reverse.each do |taxon_id|
           opts.merge!({album: ALBUM_PLANTAS[taxon_id], nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)

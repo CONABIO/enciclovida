@@ -16,8 +16,7 @@
 
   <script type="text/javascript" data-turbolinks-track="true">
       TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
-      IP = "<%= IP %>";
-      PORT = "<%= PORT %>";
+      SITE_URL = "<%= CONFIG.site_url %>";
   </script>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= javascript_include_tag 'inicio/inicio', 'data-no-turbolink' => true %>
@@ -34,7 +33,7 @@
 </head>
 
 <body class="index">
-<%#= render :partial => 'shared_b4/ribbon'%>
+<%# render :partial => 'shared_b4/ribbon', locals: {mensaje: "¡Estamos estrenando <br />  app para dispositivos iOS!" } %>
 <header class="container-fluid" style="background-image:url('/assets/portada/img_portada_video.png');">
   <%= render :partial => 'inicio/layout/brandBar' %>
 </header>
@@ -58,7 +57,7 @@
     </button>
   </div>
   <div class="toast-body">
-    <h5 class="text-center"><%= link_to '¡Descarga nuestra app!', '#por-que-es-importante', 'data-turbolinks'=>"false" %></h5>
+    <h5 class="text-center"><%= link_to '¡Descarga nuestras app!', '#por-que-es-importante', 'data-turbolinks'=>"false" %></h5>
   </div>
 </div>
 <script type="text/javascript">

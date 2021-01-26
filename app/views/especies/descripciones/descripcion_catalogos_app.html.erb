@@ -1,0 +1,9 @@
+<%= dameEstatus(@especie) %>
+<%= dameSinonimosUhomonimos(@especie, { tipo_recurso: 'Sinónimos', tab_catalogos: true, app: params[:app] }) %>
+<%= dameDistribucion(@especie) %>
+<%= dameCaracteristica(@especie) %>
+<%= dameNomComunesBiblio(@especie, { app: params[:app] }) %>
+<%= dameDistribucionLiteratura(@especie, { app: params[:app] }) %>
+<%= dameEspecieBibliografias(@especie) %>
+<%= dameOtrosAtributos(@especie) %>
+<%= "<p><strong>Identificador único</strong><ul><li>#{@especie.scat.catalogo_id}</li></ul></p>".html_safe %>

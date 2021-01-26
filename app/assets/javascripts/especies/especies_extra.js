@@ -24,6 +24,7 @@ $(document).ready(function(){
                     break;
             }
         });
+
     });
     if (opciones.naturalista_api != undefined) fotosNaturalista(); else fotosBDI();
 

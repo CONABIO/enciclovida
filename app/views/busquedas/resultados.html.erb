@@ -1,4 +1,5 @@
 <% content_for(:extrajs) do %>
+  <%= javascript_include_tag 'jquery-ui', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'lib/scrolling', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'busquedas/avanzada/basica', 'data-turbolinks-track' => true %>
 
@@ -26,8 +27,6 @@
   <% content_for(:delayedjs) do %>
     <script type="text/javascript">
         $(document).ready(function(){
-            asignaFiltros(<%=raw @setParams.to_json %>);
-
             <% if params[:id].present? && params[:nivel].present? && params[:cat].present? %>
             cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
             <% end %>
@@ -39,15 +38,12 @@
 <% content_for(:title) do %>
   <%= @titulo='Resultados' %>
 <% end %>
-<%- content_for(:extracss) do -%>
-  <%= stylesheet_link_tag "busquedas/avanzada/avanzada", media: "all", "data-turbolinks-track" => true %>
-<%- end -%>
 
 <% if notice.present? %>
   <div class="alert alert-warning col-12" role="alert"><%= notice %></div>
 <% end %>
 
-<div class="alert alert-success d-none col-12" role="alert" id="notice-avanzada"></div>
+<div class="alert alert-success d-none col-12" role="alert" id="notice"></div>
 
 <% if @fuzzy_match.present? %>
   <div class="alert alert-success col-12">
@@ -69,8 +65,8 @@
           Descargas
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <%= link_to("Datos en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-lista', 'onclick': "$('#modal-descarga-lista').modal('toggle');return false;", class: 'dropdown-item') %>
-          <%= link_to("Lista/checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
+          <%= link_to("Datos en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-avanzada', 'onclick': "$('#modal-descarga-avanzada').modal('toggle');return false;", class: 'dropdown-item') %>
+          <%= link_to("Lista/checklist", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') if params[:busqueda] == 'avanzada' %>
         </div>
       </div>
     <% end %>
@@ -112,7 +108,8 @@
 
 </div>
 
-<%= render partial: 'busquedas/form_descarga_lista' if @totales > 0 %>
-<%= render partial: 'busquedas/form_descarga_checklist' if @totales > 0 %>
-
+<% if @totales > 0 %>
+  <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@totales, delimiter: ','), tipo_descarga: 'avanzada' } %>
+  <%= render(partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@totales, delimiter: ','), tipo_descarga: 'checklist' }) if params[:busqueda] == 'avanzada' %>
+<% end %>
 

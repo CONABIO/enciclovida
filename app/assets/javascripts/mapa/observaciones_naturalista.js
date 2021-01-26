@@ -24,7 +24,7 @@ var borraObservacionesAnterioresNaturalista = function()
 
     naturalistaLayer = L.markerClusterGroup({
         chunkedLoading: true, spiderfyDistanceMultiplier: 2,
-        spiderLegPolylineOptions: {weight: 1.5, color: 'white', opacity: 0.5},
+        spiderLegPolylineOptions: {weight: 1.5, color: 'white', opacity: 0.5}, disableClusteringAtZoom: 8,
         iconCreateFunction: function (cluster) {
             var markers = cluster.getAllChildMarkers();
             return L.divIcon({ html: '<div><span>' + markers.length + '</span></div>', className: 'div-cluster-naturalista',
@@ -134,7 +134,7 @@ var aniadePuntosNaturaLista = function()
 var observacionNaturalistaGeojson = function(layer, id)
 {
     $.ajax({
-        url: "/especies/" + opciones.taxon + "/observacion-naturalista/" + id,
+        url: "/especies/" + opciones.especie_id + "/observacion-naturalista/" + id,
         dataType : "json",
         success : function (res){
             if (res.estatus)
@@ -177,8 +177,8 @@ var observacionNaturalista = function(prop)
     contenido += "<strong>URL NaturaLista: </strong><a href='"+ prop.uri +"' target='_blank'>ver la observación</a><br />";
 
     // Para enviar un comentario acerca de un registro en particular
-    contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.taxon + "/comentarios/new?proveedor_id=" + prop.id + "&tipo_proveedor=7' target='_blank'>redactar</a><br />";
-
+    contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.especie_id + "/comentarios/new?proveedor_id=" + prop.id + "&tipo_proveedor=7' target='_blank'>redactar</a><br />";
+    
     return "<dl class='dl-horizontal'>" + contenido + "</dl>";
 };
 

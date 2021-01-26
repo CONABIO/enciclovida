@@ -54,4 +54,35 @@ class ApplicationController < ActionController::Base
     current_usuario.id == usuario_id
   end
 
+  # TODO: las consultas pasarlas a json para que con el cache no vuelva a ocupar la base
+  def cache_filtros_ev
+    @filtros = Rails.cache.fetch("filtros_ev", expires_in: eval(CONFIG.cache.filtros_ev)) do
+      
+      anim = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
+      animales = []
+      anim.each do |animal|
+        if index = Busqueda::GRUPOS_ANIMALES.index(animal.nombre_cientifico)
+          animales[index] = animal
+        end
+      end
+  
+      plant = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
+      plantas = []
+      plant.each do |planta|
+        if index = Busqueda::GRUPOS_PLANTAS.index(planta.nombre_cientifico)
+          plantas[index] = planta
+        end
+      end
+      
+      nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
+      tipos_distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
+      prioritarias = Catalogo.prioritarias
+      usos = Catalogo.usos
+      ambientes = Catalogo.ambientes
+      distribuciones = Region.dame_regiones_filtro
+
+      { animales: animales, plantas: plantas, nom_cites_iucn_todos: nom_cites_iucn_todos, tipos_distribuciones: tipos_distribuciones, prioritarias: prioritarias, usos: usos, ambientes: ambientes, distribuciones: distribuciones }
+    end
+  end
+
 end
