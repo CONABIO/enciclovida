@@ -217,10 +217,12 @@ var cargaRegion = function (tipo_region, inicial = false) {
                 // Descomentar estas lineas si se desea descargar el geojson que producen las coordenadas proyectadas al plano con pixi
                 //geojson_data[feature.properties.region_id] = feature;
 
-                var alpha, color;
-                color = 0xffffff;
+                var alpha, color, bounds;
+
+                if (tipo_region == "anp") color = 0xffff00;
+                else color = 0xffffff;
+
                 alpha = 0.3;
-                var bounds;
 
                 if (feature.geometry.type === "Polygon") {
                   bounds = L.bounds(feature.geometry.coordinates[0]);
