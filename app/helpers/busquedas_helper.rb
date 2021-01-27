@@ -11,16 +11,16 @@ module BusquedasHelper
     end
 
     radios = ''
-    radios << '<div class="col-md">'
-    radios << '<h6><strong>Grupos de animales</strong></h6>'
+    radios << '<div class="col-12">'
+    radios << '<h6><strong>Animales</strong></h6>'
     @filtros[:animales].each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end
     radios << '</div>'
     radios << '<div class="w-100"></div>' if resultados
 
-    radios << '<div class="col-md">'
-    radios << '<h6><strong>Grupos de plantas</strong></h6>'
+    radios << '<div class="col-12">'
+    radios << '<h6><strong>Plantas</strong></h6>'
     @filtros[:plantas].each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end

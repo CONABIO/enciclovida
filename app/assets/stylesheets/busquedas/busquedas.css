@@ -173,5 +173,5 @@ div.result-img-container{
 
 /*Para las opciones del plugin select con boostrap*/
 ul.dropdown-menu li a span{
-    font-size: .6em;
+    /*font-size: .6em;*/
 }
