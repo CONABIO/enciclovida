@@ -25,5 +25,5 @@ class Geoportal::Estado < GeoportalAbs
     self.redis = {} unless redis.present?
     self.redis["id"] = "20#{region_id.to_s.rjust(8,'0')}".to_i
   end
-
+  
 end
