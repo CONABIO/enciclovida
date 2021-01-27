@@ -1,10 +1,8 @@
 <div class="row">
-  <div class="col text-right" id="filtros-especies"><%= filtrosEspecies(params) %></div>
-</div>
+  <div class="col-12" id="filtros-especies"><%= filtrosEspecies(params) %></div>
 
-<% if @resp[:estatus] %>
-  <% if @resp[:totales].present? %>
-    <div class="row">
+  <% if @resp[:estatus] %>
+    <% if @resp[:totales].present? %>
       <div class="col-9">
         <h3>
           <strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
@@ -28,43 +26,37 @@
         <% end %>
 
       </div>
-    </div>
-  <% end %>
+    <% end %>
 
-  <div class="row">
     <% @resp[:taxones].each do |t| %>
       <% taxon = t[:especie] %>
 
-      <div class="col-3 my-2 px-1 border-hover-especie <%= 'border-selected-especie' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
-        <div class="row no-gutters">
-          <div class="result-img-container col-12">
-            <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid') : "<i class='ev1-ev-icon'></i>".html_safe %>
-            <button class="btn btn-info boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>">
-              <%= number_with_delimiter(t[:nregistros], delimiter: ',') %>
-            </button>
-          </div>
-          <div class="result-nombre-container col-12 px-1">
-            <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
-          </div>
+      <div class="col-3 px-1 <%= 'border-selected-especie' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
+        <div class="result-img-container w-100">
+          <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid') : "<i class='ev1-ev-icon'></i>".html_safe %>
+          <button class="btn btn-light btn-outline-info btn-title rounded-pill m-1 position-absolute boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros">
+            <%= number_with_delimiter(t[:nregistros], delimiter: ',') %>
+          </button>
+        </div>
+        <div class="result-nombre-container w-100 px-1">
+          <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
         </div>
       </div>
     <% end %>
 
-  </div>
-
-  <div class="row">
     <div class="col-12 text-center mt-2">
       <%= @resp['carga-anteriores-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-info', id: 'carga-anteriores-especies', title: 'Anterior') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-dark disabled') %>
       <%= @resp['carga-siguientes-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-info', id: 'carga-siguientes-especies', title: 'Siguiente') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-dark disabled') %>
     </div>
-  </div>
 
-  <script>
-      $(document).ready(function(){
-          var resp = <%=raw @resp.to_json %>;
-      });
-  </script>
+    <script>
+        $(document).ready(function(){
+            var resp = <%=raw @resp.to_json %>;
+        });
+    </script>
 
-<% else %>
-  <p><%= @resp[:msg] %></p>
-<% end %>
+  <% else %>
+    <p><%= @resp[:msg] %></p>
+  <% end %>
+
+</div>

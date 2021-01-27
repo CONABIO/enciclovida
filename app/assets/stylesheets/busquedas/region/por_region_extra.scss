@@ -11,15 +11,17 @@
 }
 
 #busqueda_region{
-  z-index: 1000;
+  z-index: 400;
   top:0;
 }
 #contenedor_especies{
-  position: relative;
+  top: -45px;
   right: 0;
   z-index: 400;
 }
-
+#filtros-especies{
+  min-height: 45px;
+}
 #contenedor_especies i.ev1-ev-icon {
   transition: all .2s ease;
   vertical-align: baseline;
@@ -28,11 +30,7 @@
 } 
 
 .boton-especie-registros{
-  background-color: #555;
-  position: absolute;
-  border-radius: 5px;
-  top: 81%;
-  left: 2%;
+  left: 0;
 }
 
 #nombre-region-hover {
@@ -44,7 +42,9 @@
   border-radius: 5px;
   opacity: .6;
 }
-
+[id^="especie-container"]{
+  background-color: #fafafabf;
+}
 #contenedor_especies div.result-img-container img {
     object-fit: cover;
     height: 12rem;
@@ -63,8 +63,4 @@
 
 .f-fuentes-reg {
   font-size: 1.8em;
-}
-
-.border-hover-especie:hover, .border-selected-especie {
-  border: 2px #666 solid;
 }
