@@ -180,4 +180,7 @@ $(document).ready(function(){
     if (opciones.filtros.catalogo_id) cargaEjemplares('/explora-por-region/ejemplares?' + serializeParametros() + '&especie_id=' + opciones.filtros.catalogo_id);
 
     if ($('#ejemplar_id').val() != '') createPopup($('#ejemplar_id').val());
+
+    $("html,body").animate({scrollTop: 100}, 400);
+
 });
