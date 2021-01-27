@@ -163,7 +163,7 @@ $(document).ready(function(){
     });
 
     // Para inicializar la barra lateral del mapa
-    L.control.sidebar('sidebar').addTo(map);
+    //L.control.sidebar('sidebar').addTo(map);
     control_capas = L.control.layers({}).addTo(map);
 
     // Asigna variables globales
