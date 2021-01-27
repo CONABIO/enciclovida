@@ -1,13 +1,11 @@
 <% content_for(:extrajs) do %>
-  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" data-turbolinks-track="reload"></script>
-  <script src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup.js" data-turbolinks-track="reload"></script>
-  <script src="https://unpkg.com/leaflet.markercluster@1.2.0/dist/leaflet.markercluster.js"></script>
   <%= javascript_include_tag 'especies/mapa/mapa', 'data-turbolinks-track' => true %>
 <% end %>
 
 <% content_for(:extracss) do %>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
   <%= stylesheet_link_tag 'especies/mapa/mapa', 'data-turbolinks-track' => true %>
 <% end %>
 
@@ -18,7 +16,6 @@
 <div id="contenedor_mapa" class="embed-responsive embed-responsive-23by9">
   <div id="map" class="w-100"></div>
 </div>
-
 
 <div class="dropdown">
   <button class="btn btn-link btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
