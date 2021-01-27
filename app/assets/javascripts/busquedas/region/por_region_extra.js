@@ -59,17 +59,16 @@ var seleccionaRegion = function(prop)
 
     map.flyToBounds(prop.bounds);
     cargaEspecies();
-    colapsaBarra();  // colapsa la barrar lateral, para mayor comodidad
+    //colapsaBarra();  // colapsa la barrar lateral, para mayor comodidad
 };
 
 /**
  * Para cuando eliga alguna opcion se oculte automáticamente la barra y pueda ver el resultado
  */
-var colapsaBarra  =function()
-{
+/*var colapsaBarra  =function(){
     $('#sidebar').addClass('collapsed');
     $('#sidebar .sidebar-tabs li').removeClass('active');
-};
+};*/
 
 $(document).ready(function(){
     /**
@@ -157,13 +156,6 @@ $(document).ready(function(){
         else soulmateRegionAsigna(this.id);
     });
 
-    // Cuando le da clic en recargar
-    $('#sidebar').on('click','#recarga-tab',function () {
-        window.location.href = '/explora-por-region';
-    });
-
-    // Para inicializar la barra lateral del mapa
-    L.control.sidebar('sidebar').addTo(map);
     control_capas = L.control.layers({}).addTo(map);
 
     // Asigna variables globales
@@ -180,4 +172,23 @@ $(document).ready(function(){
     if (opciones.filtros.catalogo_id) cargaEjemplares('/explora-por-region/ejemplares?' + serializeParametros() + '&especie_id=' + opciones.filtros.catalogo_id);
 
     if ($('#ejemplar_id').val() != '') createPopup($('#ejemplar_id').val());
+
+    $("html,body").animate({scrollTop: 100}, 400);
+
+    $('#grupos-pop').popover({
+        content: $('#grupos-tab'),
+        sanitize:false,
+        container: '#busqueda_region',
+        html: true,
+        boundary: 'viewport'
+    });
+
+    $('#filtros-pop').popover({
+        content: $('#filtros-tab'),
+        sanitize:false,
+        container: '#busqueda_region',
+        html: true,
+        boundary: 'viewport'
+    })
+
 });

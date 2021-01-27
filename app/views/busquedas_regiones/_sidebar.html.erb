@@ -1,53 +1,45 @@
-<%= form_tag explora_por_region_especies_path, :method => :get, :class => 'form-horizontal', :id => :busqueda_region do %>
-  <div class="col d-flex justify-content-center">
-    <%= text_field_tag :nombre_especie, params.present? ? params[:nombre_especie] : nil, :maxlength => 255, :placeholder => 'Nombre común o científico ...', :autocomplete => :off, :class => 'form-control input-lg mr-5 mb-2', title: "Nombre común o científico" %>
-    <%= hidden_field_tag :especie_id, params.present? ? params[:especie_id] : nil %>
-    <%= hidden_field_tag :especie_id_focus, params.present? ? params[:especie_id_focus] : nil %>
-    <%= hidden_field_tag :catalogo_id, params.present? ? params[:catalogo_id] : nil %>
-    <%= hidden_field_tag :pagina, params.present? && params[:pagina].present? ? params[:pagina] : 1 %>
-    <%= hidden_field_tag :nivel, params.present? && params[:nivel].present? ? params[:nivel] : nil %>
-    <%= hidden_field_tag :cat, params.present? && params[:cat].present? ? params[:cat] : nil %>
-    
-    <%= text_field_tag :nombre_region, params.present? ? params[:nombre_region] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control input-lg mb-2', title: "Estado, municipio o ANP" %>
-    <%= hidden_field_tag :region_id, params.present? ? params[:region_id] : nil %>
-    <%= hidden_field_tag :tipo_region, params.present? ? params[:tipo_region] : nil %>
-    <%= hidden_field_tag :ejemplar_id, params.present? ? params[:ejemplar_id] : nil %>
-  </div>
-    
-  <div id="sidebar" class="sidebar collapsed">
-    <div class="sidebar-tabs">
-      <ul role="tablist">
-        <li><a href="#grupos-tab" role="tab" title="Filtros por grupo"><i class="aves-ev-icon black" style="font-size: 1.5em;"></i></a></li>
-        <li><a href="#filtros-tab" role="tab" title="Filtros adicionales"><i class="fa fa-filter"></i></a></li>
-        <li><a href="#settings" role="tab" id="recarga-tab" title="Reiniciar"><i class="fa fa-refresh"></i></a></li>
-      </ul>
+<%= form_tag explora_por_region_especies_path, :method => :get, :class => 'position-absolute m-2', :id => :busqueda_region do %>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+
+      <%= text_field_tag :nombre_especie, params.present? ? params[:nombre_especie] : nil, :maxlength => 255, :placeholder => 'Nombre común o científico ...', :autocomplete => :off, :class => 'form-control form-control-lg mr-3', title: "Nombre común o científico" %>
+      <%= hidden_field_tag :especie_id, params.present? ? params[:especie_id] : nil %>
+      <%= hidden_field_tag :especie_id_focus, params.present? ? params[:especie_id_focus] : nil %>
+      <%= hidden_field_tag :catalogo_id, params.present? ? params[:catalogo_id] : nil %>
+      <%= hidden_field_tag :pagina, params.present? && params[:pagina].present? ? params[:pagina] : 1 %>
+      <%= hidden_field_tag :nivel, params.present? && params[:nivel].present? ? params[:nivel] : nil %>
+      <%= hidden_field_tag :cat, params.present? && params[:cat].present? ? params[:cat] : nil %>
     </div>
+    <div class="form-group col-md-6">
 
-    <div class="sidebar-content">
-      
-      <div class="sidebar-pane" id="grupos-tab">
-        <h1 class="sidebar-header mb-4">Filtros adicionales<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-        <h4>Grupo taxonómico</h4>
-        <%= radioGruposIconicos.html_safe %>
-      </div>
+      <%= text_field_tag :nombre_region, params.present? ? params[:nombre_region] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control form-control-lg', title: "Estado, municipio o ANP" %>
+      <%= hidden_field_tag :region_id, params.present? ? params[:region_id] : nil %>
+      <%= hidden_field_tag :tipo_region, params.present? ? params[:tipo_region] : nil %>
+      <%= hidden_field_tag :ejemplar_id, params.present? ? params[:ejemplar_id] : nil %>
+    </div>
+  </div>
+  <button id="grupos-pop" class="btn btn-light btn-sm btn-title filtro-popover rounded-pill m-2" type="button" data-toggle="popover" title="Filtrar por grupos taxonómicos"><i class="aves-ev-icon black"></i></button><br />
+  <button id="filtros-pop" class="btn btn-light btn-lg btn-title filtro-popover rounded-pill m-2" type="button" data-toggle="popover" title="Filtros adicionales"><i class="fa fa-filter"></i></button><br />
+  <button id="reload" class="btn btn-light btn-title btn-lg rounded-pill m-2" type="button" title="Limpiar filtros" onclick="window.location.href='/explora-por-region'"><i class="fa fa-refresh h2"></i></button>
 
-      <div class="sidebar-pane" id="filtros-tab">
-        <h1 class="sidebar-header mb-4">Filtros adicionales<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+  <div class="d-none">
+    <div id="grupos-tab">
+      <%= radioGruposIconicos.html_safe %>
+    </div>
+    <div id="filtros-tab">
+      <h4>Categorías de riesgo y comercio internacional</h4>
+      <%= checkboxEstadoConservacion.html_safe %>
 
-        <h4>Categorías de riesgo y comercio internacional</h4>
-        <%= checkboxEstadoConservacion.html_safe %>
+      <h4>Tipo de distribución</h4>
+      <%= checkboxTipoDistribucion.html_safe %>
 
-        <h4>Tipo de distribución</h4>
-        <%= checkboxTipoDistribucion.html_safe %>
+      <h4>Usos</h4>
+      <%= selectUsos.html_safe %>
 
-        <h4>Usos</h4>
-        <%= selectUsos.html_safe %>
-
-        <h4>Ambiente</h4>
-        <%= selectAmbiente.html_safe %>
-      </div>
-
+      <h4>Ambiente</h4>
+      <%= selectAmbiente.html_safe %>
     </div>
   </div>
 
 <% end %>
+

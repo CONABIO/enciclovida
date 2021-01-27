@@ -127,10 +127,10 @@ class BDIService
     end
 
     reino = taxon.root.nombre_cientifico.strip
+    puts reino.inspect
     ancestros = taxon.path_ids
-
     case reino
-      when 'Animalia'
+    when 'Animalia', 'Protoctista'
         (ALBUM_ANIMALES.keys & ancestros).reverse.each do |taxon_id|
           opts.merge!({album: ALBUM_ANIMALES[taxon_id], nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)
@@ -152,7 +152,7 @@ class BDIService
         end
 
         return {'data' => []}
-      else
+    else
         (ALBUM_PLANTAS.keys & ancestros).reverse.each do |taxon_id|
           opts.merge!({album: ALBUM_PLANTAS[taxon_id], nombre: taxon.nombre_cientifico})
           jres = tiene_fotos?(opts)

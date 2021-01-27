@@ -4,7 +4,6 @@ Buscador::Application.routes.draw do
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
   # Administracion de los catalogos
-=begin  
   namespace :admin do
     resources :catalogos do
       collection do
@@ -26,7 +25,6 @@ Buscador::Application.routes.draw do
       end
     end
   end
-=end
 
   # metamares, alias infoceanos
   if Rails.env.development?
