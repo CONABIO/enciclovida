@@ -1,21 +1,14 @@
 <div class="row">
-  <div class="col-12" id="filtros-especies"><%= filtrosEspecies(params) %></div>
+  <div class="col-8" id="filtros-especies"><%= filtrosEspecies(params) %></div>
 
   <% if @resp[:estatus] %>
     <% if @resp[:totales].present? %>
-      <div class="col-9">
-        <h3>
-          <strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
-          | <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros
-        </h3>
-      </div>
-
-      <div class="col-3">
+      <div class="col-4 mt-2">
         <% if @resp[:totales] > 0 && @resp[:totales] < 62000 %>
           <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
 
           <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-outline-info btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Descargas
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -24,7 +17,13 @@
             </div>
           </div>
         <% end %>
+      </div>
 
+      <div class="col-12">
+        <h3>
+          <strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
+          | <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros
+        </h3>
       </div>
     <% end %>
 
@@ -45,8 +44,8 @@
     <% end %>
 
     <div class="col-12 text-center mt-2">
-      <%= @resp['carga-anteriores-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-info', id: 'carga-anteriores-especies', title: 'Anterior') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-dark disabled') %>
-      <%= @resp['carga-siguientes-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-info', id: 'carga-siguientes-especies', title: 'Siguiente') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-dark disabled') %>
+      <%= @resp['carga-anteriores-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-light btn-outline-info btn-title rounded-pill', id: 'carga-anteriores-especies', title: 'Anterior') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-dark btn-outline-info btn-title rounded-pill disabled') %>
+      <%= @resp['carga-siguientes-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-light btn-outline-info btn-title rounded-pill', id: 'carga-siguientes-especies', title: 'Siguiente') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-dark disabled') %>
     </div>
 
     <script>
