@@ -9,15 +9,11 @@
 <% end %>
 
 <% content_for(:delayedjs) do %>
-<script data-turbolinks-track="true">
-    opciones = {};
-    opciones.filtros = {};
-    cargaMapa('map', {
-        pantalla_comp: true,
-        collapsed: true,
-        position: 'topright'
-    });
-</script>
+  <script data-turbolinks-track="true">
+      opciones = {};
+      opciones.filtros = {};
+      cargaMapa('map', { pantalla_comp : true, collapsed: true, position: 'topright', hash: true } );
+  </script>
 <% end %>
 
 <% content_for(:title) do %>

@@ -1,9 +1,6 @@
-<% #### Begins Contents for... #### %>
 <% content_for(:extrajs) do %>
-  <script src="https://d3js.org/d3.v3.min.js"></script>
   <%= javascript_include_tag 'busquedas/clasificacion/por_clasificacion_extra', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'especies/especies', 'data-turbolinks-track' => true %>
-
 
   <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
       opciones = <%=raw @datos.to_json %>;
@@ -21,8 +18,6 @@
 <% content_for(:title) do %>
   <%= @titulo = tituloNombreCientifico(@especie, render: 'title').strip_tags %>
 <% end %>
-
-<% #### Ends Contents for... #### %>
 
 <% if notice.present? %>
   <div class="col-12 alert alert-success" role="alert">

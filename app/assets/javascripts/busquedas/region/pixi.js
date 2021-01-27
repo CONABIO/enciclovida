@@ -1,10 +1,10 @@
 /**
  * Para ponerle comas a los numeros en el conteo de la simbologia
- * @param {*} number 
+ * @param {*} number
  */
 var numberWithDelimiter = function (number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+};
 
 /**
  * Variables para poder cargar la visualizacion con PIXI
@@ -32,13 +32,13 @@ var variablesIniciales = function () {
 var markerScale = function (zoom) {
   switch (zoom) {
     case 5:
-      scale = 45.25;
+      scale = 59.25;
       break;
     case 6:
-      scale = 30.16;
+      scale = 34.16;
       break;
     case 7:
-      scale = 15.08;
+      scale = 19.08;
       break;
     case 8:
       scale = 9.54;
@@ -53,25 +53,25 @@ var markerScale = function (zoom) {
       scale = 1.54;
       break;
     case 12:
-      scale = .87;
+      scale = 0.87;
       break;
     case 13:
-      scale = .43;
+      scale = 0.43;
       break;
     case 14:
-      scale = .21;
+      scale = 0.21;
       break;
     case 15:
-      scale = .11;
+      scale = 0.11;
       break;
     case 16:
-      scale = .06;
+      scale = 0.06;
       break;
     case 17:
-      scale = .03;
+      scale = 0.03;
       break;
     case 18:
-      scale = .015;
+      scale = 0.015;
       break;
   }
 
@@ -88,14 +88,17 @@ var configuraVariables = function () {
   opciones.pixi.popup = undefined;
 };
 
-/** 
+/**
  * Limpia e inicializa las variables de los layer y el control
  */
 var inicializaVariables = function () {
   snibLayer = L.layerGroup(); // Layer papa que tiene las capas
   infoLayers = { totales: 0 }; // Tiene los conteos por layer
-  snibControl = L.control
-    .layers({}, {}, { collapsed: true, position: "bottomright" })
+  snibControl = L.control.layers(
+    {},
+    {},
+    { collapsed: true, position: "bottomright" }
+  );
 };
 
 /**
@@ -104,9 +107,9 @@ var inicializaVariables = function () {
 var limpiaMapa = function () {
   if (opciones.pixi.popup) {
     opciones.pixi.popup.removeFrom(map);
-    $('#ejemplar_id').val('');  
-    $('#latitud').val('');  
-    $('#longitud').val('');
+    $("#ejemplar_id").val("");
+    $("#latitud").val("");
+    $("#longitud").val("");
     cambiaURLParametros();
   }
 
@@ -122,7 +125,7 @@ var leyenda = function () {
     snibControl.addOverlay(
       infoLayers[2]["layer"],
       "<img src='/imagenes/app/mapa/averaves.png'> aVerAves <span class='badge badge-pill badge-info br-badge'>" +
-      numberWithDelimiter(infoLayers[2]["totales"]) +
+        numberWithDelimiter(infoLayers[2]["totales"]) +
         "</span>"
     );
   }
@@ -131,7 +134,7 @@ var leyenda = function () {
     snibControl.addOverlay(
       infoLayers[5]["layer"],
       "<img src='/imagenes/app/mapa/naturalista.png'> Naturalista <span class='badge badge-pill badge-info br-badge'>" +
-      numberWithDelimiter(infoLayers[5]["totales"]) +
+        numberWithDelimiter(infoLayers[5]["totales"]) +
         "</span>"
     );
   }
@@ -140,7 +143,7 @@ var leyenda = function () {
     snibControl.addOverlay(
       infoLayers[1]["layer"],
       "<img src='/imagenes/app/mapa/colectas.png'> Colecciones <span class='badge badge-pill badge-info br-badge'>" +
-      numberWithDelimiter(infoLayers[1]["totales"]) +
+        numberWithDelimiter(infoLayers[1]["totales"]) +
         "</span>"
     );
   }
@@ -149,7 +152,7 @@ var leyenda = function () {
     snibControl.addOverlay(
       infoLayers[3]["layer"],
       "<img src='/imagenes/app/mapa/fosiles.png'> Fósiles <span class='badge badge-pill badge-info br-badge'>" +
-      numberWithDelimiter(infoLayers[3]["totales"]) +
+        numberWithDelimiter(infoLayers[3]["totales"]) +
         "</span>"
     );
   }
@@ -168,12 +171,10 @@ var leyenda = function () {
  * Regresa la informacion del ejemplar
  */
 var createPopup = function (ejemplar_id) {
-  if (ejemplar_id == undefined)
-    var ej_id = opciones.filtros.marker[2];
-  else
-    var ej_id = ejemplar_id;
+  if (ejemplar_id == undefined) var ej_id = opciones.filtros.marker[2];
+  else var ej_id = ejemplar_id;
 
-  getJSON("/explora-por-region/ejemplar?ejemplar_id=" + ej_id, function(resp){
+  getJSON("/explora-por-region/ejemplar?ejemplar_id=" + ej_id, function (resp) {
     if (resp.estatus) {
       var data = resp.resultados[0];
       var info = infoPopup(data);
@@ -183,15 +184,14 @@ var createPopup = function (ejemplar_id) {
         .setContent(info)
         .openOn(map);
 
-      // Asigna en la url los datos del punto seleccionado  
-      $('#ejemplar_id').val(ej_id);  
+      // Asigna en la url los datos del punto seleccionado
+      $("#ejemplar_id").val(ej_id);
       cambiaURLParametros();
     }
   });
-}
+};
 
-var infoPopup = function(data)
-{
+var infoPopup = function (data) {
   contenido = "<strong>Localidad:</strong> " + data.localidad + "<br />";
   contenido += "<strong>Municipio: </strong>" + data.municipiomapa + "<br />";
   contenido += "<strong>Estado: </strong>" + data.estadomapa + "<br />";
@@ -200,16 +200,24 @@ var infoPopup = function(data)
   contenido += "<strong>Colector: </strong>" + data.colector + "<br />";
   contenido += "<strong>Colección: </strong>" + data.coleccion + "<br />";
   contenido += "<strong>Institución: </strong>" + data.institucion + "<br />";
-  contenido += "<strong>País de la colección: </strong>" + data.paiscoleccion + "<br />";
+  contenido +=
+    "<strong>País de la colección: </strong>" + data.paiscoleccion + "<br />";
 
   //if (data.proyecto.length > 0 && data.urlproyecto.length > 0)
   //    contenido += "<strong>Proyecto: </strong><a href='" + data.urlproyecto + "' target='_blank'>" + data.proyecto + "</a><br />";
 
-  contenido += "<strong>Más información: </strong><a href='" + data.urlejemplar + "' target='_blank'>consultar</a><br />";
+  contenido +=
+    "<strong>Más información: </strong><a href='" +
+    data.urlejemplar +
+    "' target='_blank'>consultar</a><br />";
 
   //Para enviar un comentario acerca de un ejemplar en particular
-  contenido += "<strong>¿Tienes un comentario?: </strong><a href='/especies/" + opciones.filtros.especie_id_focus + "/comentarios/new?proveedor_id=" +
-      data.idejemplar + "&tipo_proveedor=6' target='_blank'>redactar</a><br />";
+  contenido +=
+    "<strong>¿Tienes un comentario?: </strong><a href='/especies/" +
+    opciones.filtros.especie_id_focus +
+    "/comentarios/new?proveedor_id=" +
+    data.idejemplar +
+    "&tipo_proveedor=6' target='_blank'>redactar</a><br />";
 
   return "<dl class='dl-horizontal'>" + contenido + "</dl>";
 };
@@ -233,11 +241,11 @@ var cargaEjemplares = function (url) {
         // Quitando los eventos para no repetirlos
         //map.off("click");
         //map.off("mousemove");
-        
+
         var colecciones = [1, 2, 3, 4, 5];
-        tree_complete = []
+        tree_complete = [];
         tree = [];
-        
+
         colecciones.forEach(function (coleccion) {
           if (
             markers["resultados"][coleccion] !== undefined &&
@@ -245,16 +253,15 @@ var cargaEjemplares = function (url) {
           ) {
             porColeccion(markers["resultados"][coleccion], coleccion);
           }
-            
         });
-            
+
         if (infoLayers["totales"] > 0) {
           snibLayer.addTo(map);
           snibControl.addTo(map);
           leyenda();
           $(
             "<p><b>Ejemplares del SNIB</b> <span class='badge badge-pill badge-info br-badge'>" +
-            numberWithDelimiter(infoLayers["totales"]) +
+              numberWithDelimiter(infoLayers["totales"]) +
               "</span><br />(colectas, ciencia ciudadana, <br />museos, proyectos)</p>"
           ).insertBefore(
             "#map div.leaflet-control-container div.leaflet-bottom div.leaflet-control-layers-overlays"
@@ -375,7 +382,7 @@ var porColeccion = function (markers, coleccion) {
 
         function findMarker(e) {
           var coords = project(e.latlng);
-          return tree.find(coords.x, coords.y, markerScale(event.zoom)*10);
+          return tree.find(coords.x, coords.y, markerScale(event.zoom) * 10);
         }
 
         renderer.render(container);

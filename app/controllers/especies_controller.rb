@@ -101,6 +101,7 @@ class EspeciesController < ApplicationController
         # Para las variables restantes
         @datos[:cuantos_comentarios] = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
         @datos[:taxon] = @especie.id
+        @datos[:catalogo_id] = @especie.scat.catalogo_id
         @datos[:bdi_api] = "/especies/#{@especie.id}/bdi-photos.json"
         @datos[:cual_ficha] = ''
         @datos[:slug_url] = "/especies/#{@especie.id}-#{@especie.nombre_cientifico.estandariza}"
