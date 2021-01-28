@@ -47,6 +47,10 @@
 #busqueda_region{
   z-index: 400;
   top:0;
+  pointer-events: none;
+}
+#busqueda_region input, #busqueda_region button{
+  pointer-events: auto;
 }
 #contenedor_especies{
   top: -45px;
