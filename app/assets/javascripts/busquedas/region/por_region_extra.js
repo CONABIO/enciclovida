@@ -176,7 +176,7 @@ $(document).ready(function(){
     $("html,body").animate({scrollTop: 100}, 400);
 
     $('#grupos-pop').popover({
-        content: $('#grupos-tab'),
+        content: $('#grupos-tab')[0],
         sanitize:false,
         container: '#busqueda_region',
         html: true,
@@ -184,11 +184,16 @@ $(document).ready(function(){
     });
 
     $('#filtros-pop').popover({
-        content: $('#filtros-tab'),
+        content: $('#filtros-tab')[0],
         sanitize:false,
         container: '#busqueda_region',
         html: true,
         boundary: 'viewport'
     })
-
+    $('#grupos-pop').on('hide.bs.popover', function () {
+        $('#grupos-tab').detach().appendTo('#sidebar');
+    });
+    $('#filtros-pop').on('hide.bs.popover', function () {
+        $('#filtros-tab').detach().appendTo('#sidebar');
+    })
 });
