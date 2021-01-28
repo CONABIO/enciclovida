@@ -65,7 +65,7 @@ class GeoportalAbs < ActiveRecord::Base
 
   # Lee el archivo json para asignarlo en el campo geojson
   def asigna_pixi_geojson
-    file = File.read(Rails.root.join('public', 'topojson', "#{tipo.estandariza}.json"))
+    file = File.read(Rails.root.join('public', 'topojson', "#{tipo.estandariza}.geojson"))
     json = JSON.parse(file)
     json[region_id.to_s]
   end

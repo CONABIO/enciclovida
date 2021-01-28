@@ -146,6 +146,7 @@ var despliegaRegiones = function () {
 };
 
 var cargaRegion = function (tipo_region, inicial = false) {
+  if (focus) map.removeLayer(focus);
   focus = null;
   mousehover = null;
   geojson_data = {};
@@ -153,7 +154,6 @@ var cargaRegion = function (tipo_region, inicial = false) {
   getJSON("topojson/" + tipo_region + ".topojson", function (topo) {
     opciones.baseMaps[tipo_region] = (function () {
       var firstDraw = true;
-      var prevZoom;
       var pixiContainer = new PIXI.Graphics();
       var meshAlphaScale = d3.scaleLinear().domain([9, 12]).range([0.6, 1]);
       meshAlphaScale.clamp(true);
@@ -170,6 +170,7 @@ var cargaRegion = function (tipo_region, inicial = false) {
           var self = this;
           if (firstDraw) {
             (function () {
+              // Comentar estas lineas si se desea descargar el geojson antes de proyectar las corrdenadas con pixi
               topo.arcs.forEach(function (arc) {
                 arc.forEach(function (position) {
                   var proj = project([position[1], position[0]]);
@@ -218,10 +219,9 @@ var cargaRegion = function (tipo_region, inicial = false) {
 
               geojson.features.forEach(function (feature, index) {
                 // Descomentar estas lineas si se desea descargar el geojson que producen las coordenadas proyectadas al plano con pixi
-                //geojson_data[feature.properties.region_id] = feature;
+                // geojson_data[feature.properties.region_id] = feature;
 
                 var alpha, color, bounds;
-                //color = 0xffa500;
                 color = 0x0;
                 alpha = 0.1;
 
@@ -252,7 +252,7 @@ var cargaRegion = function (tipo_region, inicial = false) {
               // Descomentar estas lineas si se desea descargar el geojson que producen las coordenadas proyectadas al plano con pixi
               //   download(
               //     JSON.stringify(geojson_data),
-              //     tipo_region + ".json",
+              //     tipo_region + ".geojson",
               //     "application/json"
               //   );
 
@@ -393,7 +393,7 @@ var cargaRegion = function (tipo_region, inicial = false) {
                         fillOpacity: 0,
                         fillColor: "#FFFFFF",
                         stroke: true,
-                        color: "white",
+                        color: "#FFEF00",
                         weight: 2,
                       };
                     },
@@ -415,7 +415,7 @@ var cargaRegion = function (tipo_region, inicial = false) {
                         fillOpacity: 0,
                         fillColor: "#FFFFFF",
                         stroke: true,
-                        color: "#FFEF00",
+                        color: "white",
                         weight: 2,
                       };
                     },

@@ -188,18 +188,8 @@ var soulmateRegionAsigna = function (elem) {
   };
 
   var select = function (term, data, type) {
-    console.log(data.geojson);
-    var prueba = {};
-    prueba["geojson"] = data.geojson;
     $("ul#soulmate").hide(); // Esconde el autocomplete cuando escoge uno
-    // var prop = {
-    //   region_id: data.region_id,
-    //   tipo_region: type,
-    //   nombre_region: data.nombre_region,
-    //   bounds: data.bounds,
-    // };
-
-    seleccionaRegionRedis(prueba["geojson"]);
+    seleccionaRegionRedis(data.geojson);
   };
 
   $("#" + elemento).soulmate({
@@ -213,21 +203,20 @@ var soulmateRegionAsigna = function (elem) {
 };
 
 var seleccionaRegionRedis = function (feat) {
-  //if (focus) map.removeLayer(focus);
+  if (focus) map.removeLayer(focus);
 
-  //   focus = L.geoJSON(feat, {
-  //     coordsToLatLng: map.layerPointToLatLng,
-  //     style: function () {
-  //       return {
-  //         fillOpacity: 0.1,
-  //         fillColor: "#FFFFFF",
-  //         stroke: true,
-  //         color: "#104C5B",
-  //         weight: 2,
-  //       };
-  //     },
-  //     interactive: false,
-  //   }).addTo(map);
+  focus = L.geoJSON(feat, {
+    style: function () {
+      return {
+        fillOpacity: 0,
+        fillColor: "#FFFFFF",
+        stroke: true,
+        color: "#FFEF00",
+        weight: 2,
+      };
+    },
+    interactive: false,
+  }).addTo(map);
 
   seleccionaRegion(feat.properties);
 };
