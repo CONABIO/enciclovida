@@ -96,16 +96,11 @@ $soulmateWidth: $inputWidth - 21px;
 
     &.focus{
       position: relative;
-      font-weight: bold;
-      background-color: #9a9a9a;
+      background-color: #899f57;
     }
   }
   
   .soulmate-type {
-    font-size: 11px;
-    letter-spacing: 0.5px;
-    padding: 10px 1px 0 5px;
-    text-align: left;
     text-transform: capitalize;
     vertical-align: top;
     @include clearfix();

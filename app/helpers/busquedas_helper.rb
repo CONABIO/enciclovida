@@ -433,10 +433,10 @@ module BusquedasHelper
     html = ''
 
     if params[:especie_id].present?  # Grupos iconicos
-      grupo_ids = (@filtros[:animales] + @filtros[:plantas]).map{ |d| [d.id, d.nombre_comun_principal] }.to_h 
+      grupo_ids = (@filtros[:animales] + @filtros[:plantas]).map{ |d| [d.id, d.nombre_cientifico] }.to_h
 
       if grupo_ids.key?(params[:especie_id].to_i)
-        html << "<span class='#{grupo_ids[params[:especie_id].to_i].estandariza}-ev-icon f-fuentes-reg mx-2' title='#{grupo_ids[params[:especie_id].to_i]}'></span>"
+        html << "<span class='#{grupo_ids[params[:especie_id].to_i].estandariza}-ev-icon mx-2 btn-title' title='#{grupo_ids[params[:especie_id].to_i]}'></span>"
       end
     end
 
@@ -445,7 +445,7 @@ module BusquedasHelper
       ids = params[:dist].map(&:to_i) & dist.keys
 
       ids.each do |i|
-        html << "<span class='#{dist[i].estandariza}-ev-icon f-fuentes-reg' title='#{dist[i]}'></span>"
+        html << "<span class='#{dist[i].estandariza}-ev-icon btn-title'' title='#{dist[i]}'></span>"
       end
     end
 
@@ -454,7 +454,7 @@ module BusquedasHelper
       ids = params[:edo_cons].map(&:to_i) & edo_cons.keys
 
       ids.each do |i|
-        html << "<span class='#{edo_cons[i].estandariza}-ev-icon f-fuentes-reg' title='#{edo_cons[i]}'></span>"
+        html << "<span class='#{edo_cons[i].estandariza}-ev-icon btn-title'' title='#{edo_cons[i]}'></span>"
       end
     end
 
@@ -463,7 +463,7 @@ module BusquedasHelper
       ids = params[:ambiente].map(&:to_i) & ambiente.keys
 
       ids.each do |i|
-        html << "<span class='#{ambiente[i].estandariza}-ev-icon f-fuentes-reg' title='#{ambiente[i]}'></span>"
+        html << "<span class='#{ambiente[i].estandariza}-ev-icon btn-title'' title='#{ambiente[i]}'></span>"
       end
     end
 
