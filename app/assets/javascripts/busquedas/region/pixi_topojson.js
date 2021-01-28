@@ -135,7 +135,10 @@ var despliegaRegiones = function () {
           control_capas.addBaseLayer(L.tileLayer(""), "División municipal");
           break;
         case "anp":
-          control_capas.addBaseLayer(L.tileLayer(""), "División por ANP");
+          control_capas.addBaseLayer(
+            L.tileLayer(""),
+            "División por Área Natural Protegida"
+          );
           break;
       }
     }
@@ -152,7 +155,6 @@ var cargaRegion = function (tipo_region, inicial = false) {
       var firstDraw = true;
       var prevZoom;
       var pixiContainer = new PIXI.Graphics();
-      var alphaScale = d3.scaleLinear();
       var meshAlphaScale = d3.scaleLinear().domain([9, 12]).range([0.6, 1]);
       meshAlphaScale.clamp(true);
       var tree = new RBush();
@@ -165,8 +167,6 @@ var cargaRegion = function (tipo_region, inicial = false) {
           var container = utils.getContainer();
           var renderer = utils.getRenderer();
           var project = utils.latLngToLayerPoint;
-          var scale = utils.getScale();
-          //var invScale = 1 / scale;
           var self = this;
           if (firstDraw) {
             (function () {
@@ -183,7 +183,10 @@ var cargaRegion = function (tipo_region, inicial = false) {
                 topo,
                 topo.objects.collection,
                 function (a, b) {
-                  return a !== b && a.properties.ref === b.properties.ref;
+                  return (
+                    (a === b || a !== b) &&
+                    a.properties.ref === b.properties.ref
+                  );
                 }
               );
 
@@ -218,11 +221,9 @@ var cargaRegion = function (tipo_region, inicial = false) {
                 //geojson_data[feature.properties.region_id] = feature;
 
                 var alpha, color, bounds;
-
-                if (tipo_region == "anp") color = 0xffff00;
-                else color = 0xffffff;
-
-                alpha = 0.3;
+                //color = 0xffa500;
+                color = 0x0;
+                alpha = 0.1;
 
                 if (feature.geometry.type === "Polygon") {
                   bounds = L.bounds(feature.geometry.coordinates[0]);
@@ -278,13 +279,13 @@ var cargaRegion = function (tipo_region, inicial = false) {
                       null,
                       new Uint16Array(meshIndices)
                     );
-                    partialMesh.tint = color;
+                    partialMesh.tint = "0xFFA500";
                     target.addChild(partialMesh);
                   }
                   function meshCb(polygon) {
                     if (newIndex > 60000) {
                       memo = Object.create(null);
-                      meshCreate(meshVertices, meshIndices, mesh, 0x333333);
+                      meshCreate(meshVertices, meshIndices, mesh, 0xffa500);
                       newIndex = 0;
                       meshVertices = [];
                       meshIndices = [];
@@ -340,11 +341,11 @@ var cargaRegion = function (tipo_region, inicial = false) {
 
                   graphDraw(
                     { vertices: vertices, edges: edges },
-                    2 / utils.getScale(9),
+                    9 / utils.getScale(9),
                     meshCb,
                     Math.PI
                   );
-                  meshCreate(meshVertices, meshIndices, mesh, 0);
+                  meshCreate(meshVertices, meshIndices, mesh, 0xffa500);
                 })();
               } else {
                 mesh = new PIXI.Graphics();
@@ -387,12 +388,12 @@ var cargaRegion = function (tipo_region, inicial = false) {
                 if (feat) {
                   focus = L.geoJSON(feat, {
                     coordsToLatLng: utils.layerPointToLatLng,
-                    style: function (feature) {
+                    style: function () {
                       return {
-                        fillOpacity: 0.1,
+                        fillOpacity: 0,
                         fillColor: "#FFFFFF",
                         stroke: true,
-                        color: "#104C5B",
+                        color: "white",
                         weight: 2,
                       };
                     },
@@ -409,12 +410,12 @@ var cargaRegion = function (tipo_region, inicial = false) {
                 if (feat) {
                   mousehover = L.geoJSON(feat, {
                     coordsToLatLng: utils.layerPointToLatLng,
-                    style: function (feature) {
+                    style: function () {
                       return {
-                        fillOpacity: 0.1,
+                        fillOpacity: 0,
                         fillColor: "#FFFFFF",
                         stroke: true,
-                        color: "black",
+                        color: "#FFEF00",
                         weight: 2,
                       };
                     },
@@ -594,7 +595,7 @@ $(document).ready(function () {
           $("#tipo_region").val("municipio");
           cargaRegion("municipio");
           break;
-        case "División por ANP":
+        case "División por Área Natural Protegida":
           opciones.filtros.tipo_region = "anp";
           $("#tipo_region").val("anp");
           cargaRegion("anp");
