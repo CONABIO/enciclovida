@@ -22,6 +22,7 @@ class GeoportalAbs < ActiveRecord::Base
     self.redis[:data][:region_id] = region_id
     self.redis[:data][:nombre_region] = nombre_publico
     self.redis[:data][:bounds] = bounds_formato
+    self.redis[:data][:geojson] = asigna_pixi_geojson
 
     redis.deep_stringify_keys!
   end
@@ -60,6 +61,13 @@ class GeoportalAbs < ActiveRecord::Base
     when 'anp'
       10
     end
+  end
+
+  # Lee el archivo json para asignarlo en el campo geojson
+  def asigna_pixi_geojson
+    file = File.read(Rails.root.join('public', 'topojson', "#{tipo.estandariza}.json"))
+    json = JSON.parse(file)
+    json[region_id.to_s]
   end
 
 end
