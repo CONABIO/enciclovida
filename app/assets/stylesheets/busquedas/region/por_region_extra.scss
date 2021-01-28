@@ -1,64 +1,49 @@
-
 #map {
   min-height: 600px;
   max-height: 600px;
-  /*width: 1200px;*/
 }
 
-.animalia-ev-icon, .plantae-ev-icon, .fungi-ev-icon, .prokaryotae-ev-icon, .protoctista-ev-icon, .mammalia-ev-icon, .aves-ev-icon, .reptilia-ev-icon, .amphibia-ev-icon, .actinopterygii-ev-icon, .petromyzontidae-ev-icon, .myxini-ev-icon, .chondrichthyes-ev-icon, .cnidaria-ev-icon, .arachnida-ev-icon, .myriapoda-ev-icon, .annelida-ev-icon, .insecta-ev-icon, .porifera-ev-icon, .echinodermata-ev-icon, .mollusca-ev-icon, .crustacea-ev-icon, .invertebrados-ev-icon, .bryophyta-ev-icon, .pteridophyta-ev-icon, .cycadophyta-ev-icon, .gnetophyta-ev-icon, .liliopsida-ev-icon, .coniferophyta-ev-icon, .magnoliopsida-ev-icon, .anthocerotophyta-ev-icon, .polypodiidae-ev-icon, .pinidae-ev-icon, .cycadidae-ev-icon, .lilianae-ev-icon, .magnoliidae-ev-icon{
-  background-image: linear-gradient(to bottom, rgb(250, 250, 250) 0%, rgba(255, 255, 255, 0) 100%)!important;
-  /*border-radius: 50%;*/
+#grupos-pop [class*="ev-icon"], #grupos-tab [class*="ev-icon"], #filtros-especies [class*="ev-icon"]{
+  background-image: none!important;
 }
 
-/* line 1, /usr/local/enciclovida/buscador/app/assets/stylesheets/busquedas/avanzada/inputs_grupos.scss */
-#grupos-tab input, .porGrupo input, .porSemaforo input, .porSustentable input, .porZonas label, #porCriterios .nom input, #porCriterios .iucn input {
+#grupos-tab input{
   display: none;
 }
-
-/* line 3, /usr/local/enciclovida/buscador/app/assets/stylesheets/busquedas/avanzada/inputs_grupos.scss */
-#grupos-tab span, .porSemaforo span, .porSustentable span, .porGrupo span, #porCriterios .nom span, #porCriterios .iucn span {
+#grupos-tab span{
   font-size: 2rem;
   cursor: pointer;
   border-radius: 35%;
   transition: border-radius .3s ease-in-out;
 }
 
-/* line 12, /usr/local/enciclovida/buscador/app/assets/stylesheets/busquedas/avanzada/inputs_grupos.scss */
-#grupos-tab input + span, .porSemaforo input + span, .porSustentable input + span, .porGrupo input + span, #porCriterios .nom input + span, #porCriterios .iucn input + span {
+#grupos-tab input + span{
   border: 2px solid transparent;
   padding: 2px;
   transition: border-radius .3s ease-in-out;
 }
 
-/* line 20, /usr/local/enciclovida/buscador/app/assets/stylesheets/busquedas/avanzada/inputs_grupos.scss */
-#grupos-tab input:checked + span, .porSemaforo input:checked + span, .porSustentable input:checked + span, .porGrupo input:checked + span, #porCriterios .nom input:checked + span, #porCriterios .iucn input:checked + span {
+#grupos-tab input:checked + span{
   border-radius: 50% !important;
   border: 2px solid #991705 !important;
 }
 
-/* line 24, /usr/local/enciclovida/buscador/app/assets/stylesheets/busquedas/avanzada/inputs_grupos.scss */
-#grupos-tab input + span:hover, .porSemaforo input + span:hover, .porSustentable input + span:hover, .porGrupo input + span:hover, #porCriterios .nom input + span:hover, #porCriterios .iucn input + span:hover {
+#grupos-tab input + span:hover{
   border: 2px solid rgba(153, 23, 5, 0.4);
 }
 
-/* line 30, /usr/local/enciclovida/buscador/app/assets/stylesheets/busquedas/avanzada/inputs_grupos.scss */
-#grupos-tab input + span > span, .porSemaforo input + span > span, .porSustentable input + span > span, .porGrupo input + span > span, #porCriterios .nom input + span > span, #porCriterios .iucn input + span > span {
+#grupos-tab input + span > span{
   border: 1px solid transparent;
 }
 
-/* line 34, /usr/local/enciclovida/buscador/app/assets/stylesheets/busquedas/avanzada/inputs_grupos.scss */
-#grupos-tab input:checked + span > span, .porSemaforo input:checked + span > span, .porSustentable input:checked + span > span, .porGrupo input:checked + span > span, #porCriterios .nom input:checked + span > span, #porCriterios .iucn input:checked + span > span {
+#grupos-tab input:checked + span > span{
   border-radius: 50% !important;
   border: 1px solid #991705 !important;
 }
 
-/* line 38, /usr/local/enciclovida/buscador/app/assets/stylesheets/busquedas/avanzada/inputs_grupos.scss */
-#por_gi input + span:hover > span, .porSemaforo input + span:hover > span, .porSustentable input + span:hover > span, .porGrupo input + span:hover > span, #porCriterios .nom input + span:hover > span, #porCriterios .iucn input + span:hover > span {
+#grupos-tab input + span:hover > span{
   border: 1px solid rgba(153, 23, 5, 0.4);
 }
-
-
-
 #busqueda_region{
   z-index: 400;
   top:0;
@@ -92,25 +77,14 @@
   border-radius: 5px;
   opacity: .6;
 }
-[id^="especie-container"]{
-  /*background-color: #fafafabf;*/
-}
+
 #contenedor_especies div.result-img-container img {
     object-fit: cover;
     height: 12rem;
     width: 100%;
 }
 
-.sidebar {
-  /*top: 50px!important;*/
-}
-
 #soulmate {
-  /*max-width: 450px;*/
-  /*margin-top: 38px;*/
+  width: 500px;
   top: 35px;
-}
-
-.f-fuentes-reg {
-  font-size: 1.8em;
 }
