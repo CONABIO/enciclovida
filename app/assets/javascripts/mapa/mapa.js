@@ -6,7 +6,7 @@
 var cargaMapa = function (id, opc) {
   // Por si viene vacia la variable opc
   if (opc === undefined) opc = {};
-  if (opc.position == undefined) opc.position = "topleft";
+  if (opc.position == undefined) opc.position = "bottomleft";
 
   // Google Hybrid
   var GHM_layer = L.tileLayer(

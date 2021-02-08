@@ -97,7 +97,7 @@ var inicializaVariables = function () {
   snibControl = L.control.layers(
     {},
     {},
-    { collapsed: true, position: "bottomright" }
+    { collapsed: true, position: "bottomleft" }
   );
 };
 
