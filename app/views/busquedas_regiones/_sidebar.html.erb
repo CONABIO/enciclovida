@@ -1,7 +1,16 @@
 <%= form_tag explora_por_region_especies_path, :method => :get, :class => 'position-absolute my-2 w-50', :id => :busqueda_region do %>
   <div class="form-row">
     <div class="form-group col-md-6">
-      <%= text_field_tag :nombre_especie, params.present? ? params[:nombre_especie] : nil, :maxlength => 255, :placeholder => 'Especie o grupo ...', :autocomplete => :off, :class => 'form-control form-control-lg mr-3', title: "Especie o grupo" %>
+    
+      <div class="input-group">
+        <%= text_field_tag :nombre_region, params.present? ? params[:nombre_region] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control form-control-lg ml-3 py-2 border-right-0 border', title: "Estado, municipio o ANP" %> 
+        <span class="input-group-append">
+          <button class="btn btn-outline-secondary border-left-0 border bg-light" type="button" id="boton-region-limpia">
+            <i class="fa fa-close"></i>
+          </button>
+        </span> 
+      </div>
+       
       <%= hidden_field_tag :especie_id, params.present? ? params[:especie_id] : nil %>
       <%= hidden_field_tag :especie_id_focus, params.present? ? params[:especie_id_focus] : nil %>
       <%= hidden_field_tag :catalogo_id, params.present? ? params[:catalogo_id] : nil %>
@@ -10,7 +19,15 @@
       <%= hidden_field_tag :cat, params.present? && params[:cat].present? ? params[:cat] : nil %>
     </div>
     <div class="form-group col-md-6">
-      <%= text_field_tag :nombre_region, params.present? ? params[:nombre_region] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control form-control-lg', title: "Estado, municipio o ANP" %>
+      <div class="input-group">
+        <%= text_field_tag :nombre_especie, params.present? ? params[:nombre_especie] : nil, :maxlength => 255, :placeholder => 'Especie o grupo ...', :autocomplete => :off, :class => 'form-control form-control-lg py-2 border-right-0 border', title: "Especie o grupo" %>  
+        <span class="input-group-append">
+          <button class="btn btn-outline-secondary border-left-0 border bg-light mr-3" type="button" id="boton-especie-limpia">
+            <i class="fa fa-close"></i>
+          </button>
+        </span> 
+      </div>      
+      
       <%= hidden_field_tag :region_id, params.present? ? params[:region_id] : nil %>
       <%= hidden_field_tag :tipo_region, params.present? ? params[:tipo_region] : nil %>
       <%= hidden_field_tag :ejemplar_id, params.present? ? params[:ejemplar_id] : nil %>

@@ -97,9 +97,6 @@ var soulmateAsigna = function (tipo_busqueda, elem) {
         $("#pmc_pez_especie_id").attr("value", data.id);
         break;
       case "busqueda_region":
-        console.log(
-          "acaso aca?" + data.id + "-" + data.nombre_cientifico + "-"
-        );
         $("#especie_id").attr("value", data.id);
         $("#" + elemento).val(data.nombre_cientifico);
         opciones.filtros.pagina = 1;
