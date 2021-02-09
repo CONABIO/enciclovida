@@ -557,9 +557,19 @@ var cargaRegion = function (tipo_region, inicial = false) {
         opciones.baseMaps[tipo_region].addTo(map);
         break;
       case "municipio":
+        if (inicial)
+          control_capas.addBaseLayer(
+            opciones.baseMaps[tipo_region],
+            "División municipal"
+          );
         opciones.baseMaps[tipo_region].addTo(map);
         break;
       case "anp":
+        if (inicial)
+          control_capas.addBaseLayer(
+            opciones.baseMaps[tipo_region],
+            "División por Área Natural Protegida"
+          );
         opciones.baseMaps[tipo_region].addTo(map);
         break;
     }
@@ -569,40 +579,39 @@ var cargaRegion = function (tipo_region, inicial = false) {
 // Cuando cambia este componente, pongo el que actualmente selecciono
 $(document).ready(function () {
   map.on("baselayerchange", function (e) {
-    if (opciones.baseMaps.inicial == undefined) {
-      if (opciones.filtros.tipo_region != undefined) {
-        opciones.baseMaps[opciones.filtros.tipo_region].removeFrom(map);
-        if (opciones.pixi.tiene_var_iniciales) limpiaMapa(); // Nos aseguramos que cada que escoja una region se limpien los registros
+    if (opciones.filtros.tipo_region != undefined) {
+      opciones.baseMaps[opciones.filtros.tipo_region].removeFrom(map);
+      if (opciones.pixi.tiene_var_iniciales) limpiaMapa(); // Nos aseguramos que cada que escoja una region se limpien los registros
 
-        // Limpia los valores cuando cambia el baseMap
-        opciones.filtros = {};
-        opciones.pixi = {};
-        opciones.pixi.tiene_var_iniciales = false;
-        $("#region_id").val("");
-        $("#especie_id_focus").val("");
-        $("#catalogo_id").val("");
-        $("#pagina").val("1");
-      }
-
-      switch (e.name) {
-        case "División estatal":
-          opciones.filtros.tipo_region = "estado";
-          $("#tipo_region").val("estado");
-          cargaRegion("estado");
-          break;
-        case "División municipal":
-          opciones.filtros.tipo_region = "municipio";
-          $("#tipo_region").val("municipio");
-          cargaRegion("municipio");
-          break;
-        case "División por Área Natural Protegida":
-          opciones.filtros.tipo_region = "anp";
-          $("#tipo_region").val("anp");
-          cargaRegion("anp");
-          break;
-      }
-
-      cargaEspecies();
+      // Limpia los valores cuando cambia el baseMap
+      opciones.filtros = {};
+      opciones.pixi = {};
+      opciones.pixi.tiene_var_iniciales = false;
+      $("#region_id").val("");
+      $("#especie_id_focus").val("");
+      $("#catalogo_id").val("");
+      $("#pagina").val("1");
     }
+
+    switch (e.name) {
+      case "División estatal":
+        opciones.filtros.tipo_region = "estado";
+        $("#tipo_region").val("estado");
+        cargaRegion("estado");
+        console.log("entro a estado");
+        break;
+      case "División municipal":
+        opciones.filtros.tipo_region = "municipio";
+        $("#tipo_region").val("municipio");
+        cargaRegion("municipio");
+        break;
+      case "División por Área Natural Protegida":
+        opciones.filtros.tipo_region = "anp";
+        $("#tipo_region").val("anp");
+        cargaRegion("anp");
+        break;
+    }
+
+    cargaEspecies();
   });
 });

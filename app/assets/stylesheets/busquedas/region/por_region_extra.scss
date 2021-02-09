@@ -3,73 +3,76 @@
   max-height: 600px;
 }
 
-#grupos-pop [class*="ev-icon"], #grupos-tab [class*="ev-icon"], #filtros-especies [class*="ev-icon"]{
-  background-image: none!important;
+#grupos-pop [class*="ev-icon"],
+#grupos-tab [class*="ev-icon"],
+#filtros-especies [class*="ev-icon"] {
+  background-image: none !important;
 }
 
-#grupos-tab input{
+#grupos-tab input {
   display: none;
 }
-#grupos-tab span{
+#grupos-tab span {
   font-size: 2rem;
   cursor: pointer;
   border-radius: 35%;
-  transition: border-radius .3s ease-in-out;
+  transition: border-radius 0.3s ease-in-out;
 }
 
-#grupos-tab input + span{
+#grupos-tab input + span {
   border: 2px solid transparent;
   padding: 2px;
-  transition: border-radius .3s ease-in-out;
+  transition: border-radius 0.3s ease-in-out;
 }
 
-#grupos-tab input:checked + span{
+#grupos-tab input:checked + span {
   border-radius: 50% !important;
   border: 2px solid #991705 !important;
 }
 
-#grupos-tab input + span:hover{
+#grupos-tab input + span:hover {
   border: 2px solid rgba(153, 23, 5, 0.4);
 }
 
-#grupos-tab input + span > span{
+#grupos-tab input + span > span {
   border: 1px solid transparent;
 }
 
-#grupos-tab input:checked + span > span{
+#grupos-tab input:checked + span > span {
   border-radius: 50% !important;
   border: 1px solid #991705 !important;
 }
 
-#grupos-tab input + span:hover > span{
+#grupos-tab input + span:hover > span {
   border: 1px solid rgba(153, 23, 5, 0.4);
 }
-#busqueda_region{
+#busqueda_region {
   z-index: 400;
-  top:0;
+  top: 0;
   pointer-events: none;
 }
-#busqueda_region *{
+#busqueda_region * {
   pointer-events: auto;
 }
-#contenedor_especies{
+#contenedor_especies {
   top: -45px;
   right: 0;
   z-index: 400;
   background-color: #fafafabf;
 }
-#filtros-especies{
+#filtros-especies {
   min-height: 45px;
 }
 #contenedor_especies i.ev1-ev-icon {
-  transition: all .2s ease;
+  transition: all 0.2s ease;
   vertical-align: baseline;
   font-size: 5rem;
-  color: #ABABAB;
-} 
+  color: #ababab;
+}
 
-.boton-especie-registros{
+.boton-especie-registros {
   left: 0;
+  bottom: 0;
 }
 
 #nombre-region-hover {
@@ -79,13 +82,13 @@
   display: none;
   padding: 5px;
   border-radius: 5px;
-  opacity: .6;
+  opacity: 0.6;
 }
 
 #contenedor_especies div.result-img-container img {
-    object-fit: cover;
-    height: 12rem;
-    width: 100%;
+  object-fit: cover;
+  height: 12rem;
+  width: 100%;
 }
 
 #soulmate {
