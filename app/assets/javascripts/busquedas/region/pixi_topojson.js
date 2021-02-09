@@ -136,9 +136,7 @@ var despliegaRegiones = function () {
           break;
         case "anp":
           control_capas.addBaseLayer(
-            L.tileLayer(""),
-            "División por Área Natural Protegida"
-          );
+            L.tileLayer(""), "División por Área Natural Protegida");
           break;
       }
     }
