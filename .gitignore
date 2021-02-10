@@ -67,6 +67,8 @@ db/metamares/migracion_base/metamares*sql
 db/metamares/migracion_base/*sql
 db/metamares/migracion_base/version_*
 
+db/snib/adicionales_faltantes.sql
+
 public/javascripts
 public/IUCN
 public/assets/

@@ -27,5 +27,12 @@ con el usuario postgres y preferentemente desde el servidor enciclovida.
 9. Renombrar la base geoportal_tmp por geoportal
 10. Correr los procesos para los caches de las especies por cada region
 11. Generar las regiones en redis
-12. Probar
-13. Listo!
+12. Genera los registros de la tabla adicionales faltantes
+    12.1 Ejecuta el siguiente comando en la ruta de este archivo
+        mysql -u enciclovida -h localhost -e "SELECT CONCAT('(', IdNombre, ', \"2021-02-09 20:00:00\", \"2021-02-09 20:00:00\"),') FROM Nombre n LEFT JOIN enciclovida.adicionales a ON n.IdNombre=a.especie_id WHERE a.especie_id IS NULL LIMIT 50000;" -p catalogocentralizado > adicionales_faltantes.sql
+    12.2 Borra la primera linea del archivo adicionales_faltantes.sql e inserta la siguiente "INSERT INTO adicionales (especie_id, created_at, updated_at) VALUES "
+    12.3 Pega al final de la ultima linea un ";" 
+    12.3 Inserta los registros: 
+        mysql -u enciclovida -h localhost -p enciclovida < adicionales_faltantes.sql
+13. Probar
+14. Listo!
