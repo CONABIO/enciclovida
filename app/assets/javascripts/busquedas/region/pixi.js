@@ -97,7 +97,7 @@ var inicializaVariables = function () {
   snibControl = L.control.layers(
     {},
     {},
-    { collapsed: true, position: "bottomright" }
+    { collapsed: true, position: "bottomleft" }
   );
 };
 
@@ -259,13 +259,9 @@ var cargaEjemplares = function (url) {
           snibLayer.addTo(map);
           snibControl.addTo(map);
           leyenda();
-          $(
-            "<p><b>Ejemplares del SNIB</b> <span class='badge badge-pill badge-info br-badge'>" +
-              numberWithDelimiter(infoLayers["totales"]) +
-              "</span><br />(colectas, ciencia ciudadana, <br />museos, proyectos)</p>"
-          ).insertBefore(
-            "#map div.leaflet-control-container div.leaflet-bottom div.leaflet-control-layers-overlays"
-          );
+          $("<p><b>Ejemplares del SNIB</b> <span class='badge badge-pill badge-info br-badge'>" + numberWithDelimiter(infoLayers["totales"]) + "</span><br />(colectas, ciencia ciudadana, <br />museos, proyectos)</p>").insertBefore($(snibControl.getContainer()).find(".leaflet-control-layers-separator"));
+          $(snibControl.getContainer()).find(".leaflet-control-layers-separator").show();
+          $(snibControl.getContainer()).find(".leaflet-control-layers-toggle").css("background-color", "#333333");
         }
       }
     });
