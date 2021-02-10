@@ -41,7 +41,7 @@ var cargaMapa = function (id, opc) {
     */
 
 
-var place = [24.807, -91.187];
+  var place = [24.807, -91.187];
 
   map = L.map(id, {
     zoomControl: false,
@@ -56,20 +56,20 @@ var place = [24.807, -91.187];
     ],
   });
 
-  var zoom = L.control.zoom({
+  zoom = L.control.zoom({
     zoomInTitle: "Acercarse",
     zoomOutTitle: "Alejarse",
     position: opc.position,
   });
 
   // https://github.com/brunob/leaflet.fullscreen
-  var fullscreen = L.control.fullscreen({
+  fullscreen = L.control.fullscreen({
     position: opc.position,
     title: "Pantalla completa",
     titleCancel: "Salir de pantalla completa",
   });
 
-    map.setView(place, 5);  // Default place and zoom
+  map.setView(place, 5);  // Default place and zoom
 
   // Para poner las capas iniciales de los mapas
   var baseMaps = {
@@ -96,4 +96,11 @@ var place = [24.807, -91.187];
 
   //Para asegurarnos que siempre se genere el mapa con el mínimo markup posible
   ponTamaño();
+};
+
+var reordenaControles = function(){
+  fullscreen.remove();
+  zoom.remove();
+  fullscreen.addTo(map);
+  zoom.addTo(map);
 };

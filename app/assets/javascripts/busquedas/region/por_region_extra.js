@@ -202,9 +202,8 @@ $(document).ready(function () {
     }
   );
 
-  control_capas = L.control
-    .layers({}, {}, { position: "bottomleft", collapsed: true })
-    .addTo(map);
+  control_capas = L.control.layers({}, {}, { position: "bottomleft", collapsed: false }).addTo(map);
+  reordenaControles();
 
   // Asigna variables globales
   opciones.filtros.pagina = $("#pagina").val();

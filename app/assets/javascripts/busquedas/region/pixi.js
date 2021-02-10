@@ -258,6 +258,7 @@ var cargaEjemplares = function (url) {
         if (infoLayers["totales"] > 0) {
           snibLayer.addTo(map);
           snibControl.addTo(map);
+          reordenaControles();
           leyenda();
           $("<p><b>Ejemplares del SNIB</b> <span class='badge badge-pill badge-info br-badge'>" + numberWithDelimiter(infoLayers["totales"]) + "</span><br />(colectas, ciencia ciudadana, <br />museos, proyectos)</p>").insertBefore($(snibControl.getContainer()).find(".leaflet-control-layers-separator"));
           $(snibControl.getContainer()).find(".leaflet-control-layers-separator").show();
