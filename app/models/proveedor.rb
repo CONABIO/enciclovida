@@ -23,27 +23,6 @@ class Proveedor < ActiveRecord::Base
     self.jres = jres.merge({ nombres_comunes: nombres_comunes })
   end
 
-  # Devuelve el conteo de obs por grado de calidad; casual, investigacion y necesita identificacion
-  def conteo_observaciones_grado_calidad
-    self.jres = Rails.cache.fetch("conteo_obs_naturalista_#{especie_id}", expires_in: eval(CONFIG.cache.ficha_naturalista)) do
-
-      begin
-        resp = RestClient.get "#{CONFIG.inaturalist_api}/observations/quality_grades?place_id=6793&taxon_id=#{naturalista_id}"
-        consulta = JSON.parse(resp)
-
-        if consulta['total_results'] > 0
-          { estatus: true, conteo_obs: consulta['results'][0] }
-        else
-          { estatus: false, msg: 'No tiene reusltados esa busqueda' }
-        end
-
-      rescue => e
-        { estatus: false, msg: e }
-      end
-
-    end  # End cache.fetch
-  end
-
   # REVISADO: Consulta la ficha de naturalista por medio de su API nodejs
   # TODO se requiere un boton de borrar cache
   def ficha_naturalista_api_nodejs
