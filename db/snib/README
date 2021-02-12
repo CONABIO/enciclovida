@@ -22,7 +22,7 @@ con el usuario postgres y preferentemente desde el servidor enciclovida.
 7. Renombrar las tablas snib y snib_dev para poder correr el proceso en rails
 8. Correr script para que todas las infraespecies quden con el mismo idnombrecatvalido que la especie en cuestion
     OJO: catalogocentralizado debe de estar lo más actualizado posible
-    En la consola de rails: Geoportal::Snib.actualiza_idnombrecatvalido
+    En la consola de rails: Geoportal::Snib.actualiza_idnombrecatvalidoespecie
 9. Crear un respaldo
     pg_dump -h localhost -U postgres -t estados -t municipios -t anp -t ecorregiones -t snib -t snib_ev -Fc -O -x geoportal_tmp > /home/enciclovida/buscador/db/respaldos/geoportal/geoportal_aaaa_mm_dd.dump
 10. Borrar las tablas que no se ocupan de la base geoportal_tmp, desde el pgadmin
