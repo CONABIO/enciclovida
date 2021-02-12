@@ -58,16 +58,7 @@ var seleccionaRegion = function (prop) {
 
   map.flyToBounds(prop.bounds);
   cargaEspecies();
-  //colapsaBarra();  // colapsa la barrar lateral, para mayor comodidad
 };
-
-/**
- * Para cuando eliga alguna opcion se oculte automáticamente la barra y pueda ver el resultado
- */
-/*var colapsaBarra  =function(){
-    $('#sidebar').addClass('collapsed');
-    $('#sidebar .sidebar-tabs li').removeClass('active');
-};*/
 
 $(document).ready(function () {
   /**
@@ -92,10 +83,7 @@ $(document).ready(function () {
         "border-selected-especie"
       );
       cargaEjemplares(
-        "/explora-por-region/ejemplares?" +
-          serializeParametros() +
-          "&especie_id=" +
-          opciones.filtros.catalogo_id
+        "/explora-por-region/ejemplares?" + serializeParametros()
       );
       event.preventDefault();
     }

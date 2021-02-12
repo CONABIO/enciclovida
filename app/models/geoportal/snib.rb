@@ -26,7 +26,7 @@ class Geoportal::Snib < GeoportalAbs
     if campo_tipo_region.present? && params[:region_id].present? 
       self.resp = consulta_ejemplares_por_region
     else  # Lo guarda en cache
-      self.resp = Rails.cache.fetch("br_#{params[:especie_id]}_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region)) do
+      self.resp = Rails.cache.fetch("br_#{params[:catalogo_id]}_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region)) do
         consulta_ejemplares_por_region
       end
     end
@@ -44,7 +44,7 @@ class Geoportal::Snib < GeoportalAbs
   end
   
   # Actualiza el idnombrecatvalido de las infraespecies para cambiarlo por su especie correspondiente y asigna la especie valida de acuerdo a catalogocentralizado
-  def self.actualiza_idnombrecatvalidoespecie
+  def self.actualiza_idnombrecatvalido
     ids = Geoportal::Snib.all.select(:idnombrecatvalido).group(:idnombrecatvalido).map(&:idnombrecatvalido)
     ids_count = ids.length
     Rails.logger.debug "Taxones a correr: #{ids_count}"
@@ -67,7 +67,7 @@ class Geoportal::Snib < GeoportalAbs
       next unless especie
       next unless scat = especie.scat
       Rails.logger.debug "Original: #{catalogo_id} ---> #{scat.catalogo_id}"
-      Geoportal::Snib.where(idnombrecatvalido: catalogo_id).update_all(idnombrecatvalidoespecie: scat.catalogo_id)
+      Geoportal::Snib.where(idnombrecatvalido: catalogo_id).update_all(idnombrecatvalido: scat.catalogo_id)
 
     end
   end
@@ -93,7 +93,7 @@ class Geoportal::Snib < GeoportalAbs
 
   # Regresa todos los ejemplares de la especie seleccionada, de una forma simplificada
   def consulta_ejemplares_por_region
-    resultados = Geoportal::Snib.select(:id, :latitud, :longitud, :tipocoleccion).where(idnombrecatvalido: params[:especie_id])
+    resultados = Geoportal::Snib.select(:id, :latitud, :longitud, :tipocoleccion).where(idnombrecatvalido: params[:catalogo_id])
 
     if campo_tipo_region.present? && params[:region_id].present?
       resultados = resultados.where("#{campo_tipo_region}=#{params[:region_id]}")

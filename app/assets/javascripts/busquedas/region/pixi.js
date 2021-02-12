@@ -203,8 +203,13 @@ var infoPopup = function (data) {
   contenido +=
     "<strong>País de la colección: </strong>" + data.paiscoleccion + "<br />";
 
-  //if (data.proyecto.length > 0 && data.urlproyecto.length > 0)
-  //    contenido += "<strong>Proyecto: </strong><a href='" + data.urlproyecto + "' target='_blank'>" + data.proyecto + "</a><br />";
+  if (data.proyecto.length > 0 && data.urlproyecto.length > 0)
+    contenido +=
+      "<strong>Proyecto: </strong><a href='" +
+      data.urlproyecto +
+      "' target='_blank'>" +
+      data.proyecto +
+      "</a><br />";
 
   contenido +=
     "<strong>Más información: </strong><a href='" +
@@ -259,9 +264,21 @@ var cargaEjemplares = function (url) {
           snibLayer.addTo(map);
           snibControl.addTo(map);
           leyenda();
-          $("<p><b>Ejemplares del SNIB</b> <span class='badge badge-pill badge-info br-badge'>" + numberWithDelimiter(infoLayers["totales"]) + "</span><br />(colectas, ciencia ciudadana, <br />museos, proyectos)</p>").insertBefore($(snibControl.getContainer()).find(".leaflet-control-layers-separator"));
-          $(snibControl.getContainer()).find(".leaflet-control-layers-separator").show();
-          $(snibControl.getContainer()).find(".leaflet-control-layers-toggle").css("background-color", "#333333");
+          $(
+            "<p><b>Ejemplares del SNIB</b> <span class='badge badge-pill badge-info br-badge'>" +
+              numberWithDelimiter(infoLayers["totales"]) +
+              "</span><br />(colectas, ciencia ciudadana, <br />museos, proyectos)</p>"
+          ).insertBefore(
+            $(snibControl.getContainer()).find(
+              ".leaflet-control-layers-separator"
+            )
+          );
+          $(snibControl.getContainer())
+            .find(".leaflet-control-layers-separator")
+            .show();
+          $(snibControl.getContainer())
+            .find(".leaflet-control-layers-toggle")
+            .css("background-color", "#333333");
         }
       }
     });

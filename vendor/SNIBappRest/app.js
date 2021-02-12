@@ -331,7 +331,7 @@ server.register(
           var req = request.query;
 
           if (req.catalogo_id !== undefined)
-            url += "&especie_id=" + req.catalogo_id;
+            url += "&catalogo_id=" + req.catalogo_id;
 
           if (req.region_id !== undefined) url += "&region_id=" + req.region_id;
 
