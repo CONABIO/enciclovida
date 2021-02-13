@@ -1,7 +1,9 @@
-<div class="row">
+<div id="drag"></div>
+<div class="row ml-0">
   <div class="col-12" id="filtros-especies"><%= filtrosEspecies(params) %></div>
 
   <% if @resp[:estatus] %>
+
     <% if @resp[:totales].present? %>
       <div class="col-12">
         <h3>
@@ -52,9 +54,38 @@
     </div>
 
     <script>
-        $(document).ready(function(){
-            var resp = <%=raw @resp.to_json %>;
-        });
+      $(document).ready(function(){
+          var resp = <%=raw @resp.to_json %>;
+      });
+
+      var isResizing = false,
+          lastDownX = 0;
+
+      $(function () {
+          var container = $('#contenedor_mapa'),
+              left = $('#busqueda_region'),
+              right = $('#contenedor_especies'),
+              handle = $('#drag');
+
+          handle.on('mousedown', function (e) {
+              isResizing = true;
+              lastDownX = e.clientX;
+          });
+
+          $(document).on('mousemove', function (e) {
+              // we don't want to do anything if we aren't resizing.
+              if (!isResizing)
+                  return;
+
+              var offsetRight = container.width() - (e.clientX - container.offset().left);
+
+              left.css('right', offsetRight);
+              right.css('width', offsetRight);
+          }).on('mouseup', function (e) {
+              // stop resizing
+              isResizing = false;
+          });
+      });
     </script>
 
   <% else %>

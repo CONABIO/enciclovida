@@ -1,6 +1,6 @@
 #map {
-  min-height: 600px;
-  max-height: 600px;
+  min-height: 650px;
+  max-height: 650px;
 }
 
 #grupos-pop [class*="ev-icon"],
@@ -50,15 +50,32 @@
   z-index: 400;
   top: 0;
   pointer-events: none;
+  width: 50%;
 }
 #busqueda_region * {
   pointer-events: auto;
 }
 #contenedor_especies {
-  top: -45px;
+  top: 0px;
   right: 0;
   z-index: 400;
+  width: 50%;
+  /*background-color: #fafafabf;*/
+}
+[id^=especie-container]{
+  background-color: #fafafa30;
+}
+[id^=especie-container]:hover{
   background-color: #fafafabf;
+}
+#drag {
+  position: absolute;
+  left: -4px;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  cursor: col-resize;
+  background-color: #999999;
 }
 #filtros-especies {
   min-height: 45px;
