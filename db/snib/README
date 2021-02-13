@@ -5,7 +5,7 @@ con el usuario postgres y preferentemente desde el servidor enciclovida.
 1. Acceso y permisos
     1.1 Crear la estructura de la base en el servidor postgres de enciclovida para que Emmanuel suba la base actualizada a enciclovida.
         pg_restore -h localhost -U postgres -d geoportal -j 5 -v -C /home/enciclovida/buscador/db/respaldos/geoportal/geoportal_tmp.dump
-    1.2 Dar permisos a la base geoportal_tmp a emmanuel
+    1.2 Dar permisos a la base geoportal_tmp a emmanuel, en el pgadmin
         1.2.1 En caso que no recuerde su usuario reiniciar su contraseña
 2. Verificacion de tablas y columnas
     2.1 Verificar que existen las tablas y columnas 
@@ -14,25 +14,28 @@ con el usuario postgres y preferentemente desde el servidor enciclovida.
 4. Crear una llave primaria con un id consecutivo, se mamo con su cadena codificada como ID
 5. Crear los indices
 6. Campos nuevos
-    6.1 Crear el campos nuevos
+    6.1 Crear el campo tipocoleccion
     6.2 Llenar el campo con los distintos tipocoleccion: 1=coleccion, 2=averaves, 3=fosiles, 4=localidad no de campo, 5=naturalista 
+    6.3 Crear el campo idnombrecatvalidoespecie que tendra el idcat solo para la especie
+    6.4 Copiar la columna idnombrecatvalido a idnombrecatvalidoespecie
+    6.5 Crear el indice para idnombrecatvalido
 7. Renombrar las tablas snib y snib_dev para poder correr el proceso en rails
 8. Correr script para que todas las infraespecies quden con el mismo idnombrecatvalido que la especie en cuestion
     OJO: catalogocentralizado debe de estar lo más actualizado posible
-    En la consola de rails: Geoportal::Snib.actualiza_idnombrecatvalido
+    En la consola de rails: Geoportal::Snib.actualiza_idnombrecatvalidoespecie
 9. Crear un respaldo
     pg_dump -h localhost -U postgres -t estados -t municipios -t anp -t ecorregiones -t snib -t snib_ev -Fc -O -x geoportal_tmp > /home/enciclovida/buscador/db/respaldos/geoportal/geoportal_aaaa_mm_dd.dump
-7. Borrar las tablas que no se ocupan de la base geoportal_tmp
-8. Borra la base geoportal
-9. Renombrar la base geoportal_tmp por geoportal
-10. Correr los procesos para los caches de las especies por cada region
-11. Generar las regiones en redis
-12. Genera los registros de la tabla adicionales faltantes
+10. Borrar las tablas que no se ocupan de la base geoportal_tmp, desde el pgadmin
+11. Borra la base geoportal
+12. Renombrar la base geoportal_tmp por geoportal
+13. Correr los procesos para los caches de las especies por cada region
+14. Generar las regiones en redis
+15. Genera los registros de la tabla adicionales faltantes
     12.1 Ejecuta el siguiente comando en la ruta de este archivo
         mysql -u enciclovida -h localhost -e "SELECT CONCAT('(', IdNombre, ', \"2021-02-09 20:00:00\", \"2021-02-09 20:00:00\"),') FROM Nombre n LEFT JOIN enciclovida.adicionales a ON n.IdNombre=a.especie_id WHERE a.especie_id IS NULL LIMIT 50000;" -p catalogocentralizado > adicionales_faltantes.sql
     12.2 Borra la primera linea del archivo adicionales_faltantes.sql e inserta la siguiente "INSERT INTO adicionales (especie_id, created_at, updated_at) VALUES "
     12.3 Pega al final de la ultima linea un ";" 
     12.3 Inserta los registros: 
         mysql -u enciclovida -h localhost -p enciclovida < adicionales_faltantes.sql
-13. Probar
-14. Listo!
+16. Probar
+17. Listo!
