@@ -476,7 +476,7 @@ module BusquedasHelper
       end
     end
 
-    html.present? ? "<h4>Filtros utilizados: #{html}</h4>".html_safe : html.html_safe
+    html.present? ? "<p class='h5 my-0'>Filtros utilizados: #{html}</p>".html_safe : html.html_safe
   end
 
 end
