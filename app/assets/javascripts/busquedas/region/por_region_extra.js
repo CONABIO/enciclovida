@@ -172,7 +172,7 @@ $(document).ready(function () {
       if (this.id == "carga-anteriores-especies") opciones.filtros.pagina--;
       else opciones.filtros.pagina++;
       cargaEspecies();
-      event.preventDefault();
+      //event.preventDefault();
     }
   );
 
@@ -190,9 +190,8 @@ $(document).ready(function () {
     }
   );
 
-  control_capas = L.control
-    .layers({}, {}, { position: "bottomleft", collapsed: true })
-    .addTo(map);
+  control_capas = L.control.layers({}, {}, { position: "bottomleft", collapsed: false }).addTo(map);
+  reordenaControles();
 
   // Asigna variables globales
   opciones.filtros.pagina = $("#pagina").val();

@@ -263,6 +263,7 @@ var cargaEjemplares = function (url) {
         if (infoLayers["totales"] > 0) {
           snibLayer.addTo(map);
           snibControl.addTo(map);
+          reordenaControles();
           leyenda();
           $(
             "<p><b>Ejemplares del SNIB</b> <span class='badge badge-pill badge-info br-badge'>" +

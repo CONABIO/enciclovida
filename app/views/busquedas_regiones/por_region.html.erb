@@ -9,11 +9,16 @@
 <% end %>
 
 <% content_for(:delayedjs) do %>
-  <script data-turbolinks-track="true">
-      opciones = {};
-      opciones.filtros = {};
-      cargaMapa('map', { pantalla_comp : true, collapsed: true, position: 'bottomleft', hash: true } );
-  </script>
+<script data-turbolinks-track="true">
+    opciones = {};
+    opciones.filtros = {};
+    cargaMapa('map', {
+        pantalla_comp: true,
+        collapsed: true,
+        position: 'bottomleft',
+        hash: true
+    });
+</script>
 <% end %>
 
 <% content_for(:title) do %>
@@ -26,7 +31,7 @@
 
 <div class="alert alert-success d-none col-12" role="alert" id="notice"></div>
 
-<div id="contenedor_mapa" class="col-12">
+<div id="contenedor_mapa" class="col-12 overflow-hidden">
     <div id="map" style="" class="cartes w-100">
         <div class="legend geometry top center hide">
             <div class="wrapper">
@@ -34,8 +39,8 @@
             </div>
         </div>
     </div>
-  <%= render partial: 'sidebar' %>
-  <div class="col-6 position-absolute px-3 pb-2" id="contenedor_especies"></div>
+    <%= render partial: 'sidebar' %>
+    <div class="position-absolute w-50 h-100 pr-2 d-flex align-items-start flex-column" id="contenedor_especies"></div>
 
 </div>
 <div class="sharethis-inline-share-buttons"></div>

@@ -1,6 +1,6 @@
 #map {
-  min-height: 600px;
-  max-height: 600px;
+  min-height: 650px;
+  max-height: 650px;
 }
 
 #grupos-pop [class*="ev-icon"],
@@ -46,29 +46,44 @@
 #grupos-tab input + span:hover > span {
   border: 1px solid rgba(153, 23, 5, 0.4);
 }
-#busqueda_region {
-  z-index: 400;
+#busqueda_region{left: 0;}
+#busqueda_region, #contenedor_especies, #contenedor_resultados{
   top: 0;
-  pointer-events: none;
-}
-#busqueda_region * {
-  pointer-events: auto;
-}
-#contenedor_especies {
-  top: -45px;
-  right: 0;
   z-index: 400;
-  background-color: #fafafabf;
+  pointer-events: none!important;
 }
-#filtros-especies {
-  min-height: 45px;
+#busqueda_region *, #filtros-especies, #snib, #drag,  #opciones_resultados *, .result-img-container, .result-nombre-container{pointer-events: auto;}
+#contenedor_especies{right: 0;}
+
+[id^=especie-container]{background-color: #fafafa30;}
+[id^=especie-container]:hover, .result-nombre-container{background-color: #fafafa;}
+.result-nombre-container{min-height: 80px;}
+
+#contenedor_resultados{
+  right: 0;
+  top: 0;
+  bottom: 0;
+  transition: all ease-out .5s;
 }
+#drag{
+  left: -12px;
+  top: 2rem;
+  bottom: 2rem;
+  width: 6px;
+  cursor: e-resize;
+  background-color: #333333;
+}
+#drag button{cursor: pointer;}
+#filtros-especies {}
+
 #contenedor_especies i.ev1-ev-icon {
   transition: all 0.2s ease;
   vertical-align: baseline;
   font-size: 5rem;
   color: #ababab;
 }
+/*div.result-img-container {height: 10rem;}*/
+#opciones_resultados{bottom: 0;}
 
 .boton-especie-registros {
   left: 0;
@@ -87,7 +102,7 @@
 
 #contenedor_especies div.result-img-container img {
   object-fit: cover;
-  height: 12rem;
+  height: 10rem;
   width: 100%;
 }
 
