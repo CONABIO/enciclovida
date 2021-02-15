@@ -1,36 +1,47 @@
-<div id="drag"></div>
-<div class="row mx-0">
-    <div class="col-12 bg-light py-1" id="filtros-especies"><%= filtrosEspecies(params) %></div>
+<div class="w-100 bg-light p-1" id="filtros-especies"><%= filtrosEspecies(params) %></div>
 
-    <% if @resp[:estatus] %>
+<% if @resp[:estatus] %>
 
-    <% if @resp[:totales].present? %>
-    <div class="col-12 bg-light py-1 rounded-bottom mb-2">
-        <p class="h5 my-0">
-            <strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
-            | <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros del <span class="btn-title font-weight-bolder" data-toggle="popover" title="Sistema Nacional de Información sobre Biodiversidad">SNIB</span>
-        </p>
-    </div>
-    <% end %>
+<% if @resp[:totales].present? %>
+<div class="w-100 bg-light p-1 rounded-bottom mb-2">
+    <p class="h5 my-0">
+        <strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
+        | <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros del <a href="https://www.snib.mx/" class="btn-title font-weight-bolder" data-toggle="popover" title="Sistema Nacional de Información sobre Biodiversidad">SNIB</a>
+    </p>
+</div>
+<% end %>
 
-    <% @resp[:taxones].each do |t| %>
-    <% taxon = t[:especie] %>
+<div id="contenedor_resultados" class="">
+    <!--div id="izquierda" class="position-relative"></div-->
+    <div id="derecha" class="position-relative">
+        <div id="drag" class="position-absolute"></div>
+        <div class="row no-gutters">
 
-    <div class="col-3 px-1 <%= 'border-selected-especie' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
-        <div class="result-img-container w-100">
-            <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid') : "<i class='ev1-ev-icon'></i>".html_safe %>
-            <button class="btn btn-light btn-outline-info btn-title rounded-pill m-1 position-absolute boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros">
-                <%= number_with_delimiter(t[:nregistros], delimiter: ',') %>
-            </button>
+            <% @resp[:taxones].each do |t| %>
+            <% taxon = t[:especie] %>
+
+            <div class="col-3 px-1 <%= 'border-selected-especie' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
+                <div class="result-img-container w-100">
+                    <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid') : "<i class='ev1-ev-icon'></i>".html_safe %>
+                    <button class="btn btn-light btn-outline-info btn-title rounded-pill m-1 position-absolute boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros">
+                        <%= number_with_delimiter(t[:nregistros], delimiter: ',') %>
+                    </button>
+                </div>
+                <div class="result-nombre-container w-100 px-1">
+                    <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
+                </div>
+            </div>
+            <% end %>
         </div>
-        <div class="result-nombre-container w-100 px-1">
-            <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
-        </div>
-    </div>
-    <% end %>
 
-    <% if @resp[:totales].present? %>
-    <div class="col-4 mt-2">
+    </div>
+
+</div>
+
+
+<div id="opciones_resultados" class="w-100 bg-light p-1 rounded-top mt-auto d-inline-flex">
+    <div class="w-25">
+        <% if @resp[:totales].present? %>
         <% if @resp[:totales] > 0 && @resp[:totales] < 62000 %>
         <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
 
@@ -44,54 +55,55 @@
             </div>
         </div>
         <% end %>
+
+        <% end %>
     </div>
 
-    <% end %>
-
-    <div class="col-8 text-center mt-2">
+    <div class="w-75 text-center">
         <%= @resp['carga-anteriores-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-light btn-outline-info btn-title rounded-pill', id: 'carga-anteriores-especies', title: 'Anterior') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-left btn btn-dark btn-outline-info btn-title rounded-pill disabled') %>
         <%= @resp['carga-siguientes-especies'] ? link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-light btn-outline-info btn-title rounded-pill', id: 'carga-siguientes-especies', title: 'Siguiente') : link_to("<i></i>".html_safe, nil, class: 'fa fa-arrow-right btn btn-dark btn-outline-info btn-title rounded-pill disabled') %>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            var resp = <%= raw @resp.to_json %> ;
-            tooltip();
-
-        });
-
-        var isResizing = false,
-            lastDownX = 0;
-
-        $(function() {
-            var container = $('#contenedor_mapa'),
-                left = $('#busqueda_region'),
-                right = $('#contenedor_especies'),
-                handle = $('#drag');
-
-            handle.on('mousedown', function(e) {
-                isResizing = true;
-                lastDownX = e.clientX;
-            });
-
-            $(document).on('mousemove', function(e) {
-                // we don't want to do anything if we aren't resizing.
-                if (!isResizing)
-                    return;
-
-                var offsetRight = container.width() - (e.clientX - container.offset().left);
-
-                left.css('right', offsetRight);
-                right.css('width', offsetRight);
-            }).on('mouseup', function(e) {
-                // stop resizing
-                isResizing = false;
-            });
-        });
-    </script>
-
-    <% else %>
-    <p><%= @resp[:msg] %></p>
-    <% end %>
-
 </div>
+
+<script>
+    $(document).ready(function() {
+        var resp = <%= raw @resp.to_json %> ;
+        tooltip();
+
+    });
+
+    var isResizing = false,
+        lastDownX = 0;
+
+    $(function() {
+        var container = $('#contenedor_mapa'),
+            //left = $('#izquierda'),
+            right = $('#derecha'),
+            handle = $('#drag');
+
+        handle.on('mousedown', function(e) {
+            isResizing = true;
+            lastDownX = e.clientX;
+            //anchoR = right.width();
+            //posicionP = right.offset().left; 
+        });
+
+        $(document).on('mousemove', function(e) {
+            // we don't want to do anything if we aren't resizing.
+            if (!isResizing)
+                return;
+
+            var offsetRight = container.width() - e.clientX;
+
+            right.css('left', (lastDownX - e.clientX)*-1);
+            right.css('width', offsetRight);
+        }).on('mouseup', function(e) {
+            // stop resizing
+            isResizing = false;
+        });
+    });
+</script>
+
+<% else %>
+<p><%= @resp[:msg] %></p>
+<% end %>

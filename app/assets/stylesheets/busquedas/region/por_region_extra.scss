@@ -46,46 +46,53 @@
 #grupos-tab input + span:hover > span {
   border: 1px solid rgba(153, 23, 5, 0.4);
 }
-#busqueda_region {
-  z-index: 400;
+#busqueda_region{left: 0;}
+#busqueda_region, #contenedor_especies{
   top: 0;
-  pointer-events: none;
-  width: 50%;
-}
-#busqueda_region * {
-  pointer-events: auto;
-}
-#contenedor_especies {
-  top: 0px;
-  right: 0;
   z-index: 400;
-  width: 50%;
-  /*background-color: #fafafabf;*/
+  pointer-events: none;
+  /*width: 50%;*/
 }
-[id^=especie-container]{
-  background-color: #fafafa30;
-}
-[id^=especie-container]:hover{
-  background-color: #fafafabf;
-}
-#drag {
-  position: absolute;
-  left: -4px;
+#busqueda_region *, #contenedor_especies *{pointer-events: auto;}
+#contenedor_especies{right: 0;}
+
+[id^=especie-container]{background-color: #fafafa30;}
+[id^=especie-container]:hover{background-color: #fafafabf;}
+
+#izquierda{
+  left: 0;
   top: 0;
   bottom: 0;
+  right: 0;
+  background: fuchsia;
+}
+
+#derecha{
+  right: 0;
+  top: 0;
+  bottom: 0;
+  /*width: 500px;*/
+  background: yellow;
+}
+#drag{
+  left: -10px;
+  top: 0;
+  bottom: 0;
+  /*height: 50px;*/
   width: 10px;
   cursor: col-resize;
   background-color: #999999;
 }
-#filtros-especies {
-  /*min-height: 45px;*/
-}
+#filtros-especies {}
+
 #contenedor_especies i.ev1-ev-icon {
   transition: all 0.2s ease;
   vertical-align: baseline;
   font-size: 5rem;
   color: #ababab;
 }
+div.result-img-container {height: 10rem;}
+#opciones_resultados{bottom: 0;}
 
 .boton-especie-registros {
   left: 0;
@@ -104,7 +111,7 @@
 
 #contenedor_especies div.result-img-container img {
   object-fit: cover;
-  height: 12rem;
+  height: 10rem;
   width: 100%;
 }
 
