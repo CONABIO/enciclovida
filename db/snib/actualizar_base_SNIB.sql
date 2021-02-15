@@ -54,6 +54,7 @@ UPDATE snib_ev SET idnombrecatvalidoorig = idnombrecatvalido;
 
 -- 6.5
 CREATE INDEX idx_snib_ev_idnombrecatvalidoorig ON snib_ev USING btree (idnombrecatvalidoorig);
+CREATE INDEX idx_snib_ev_tipocoleccion ON snib_ev USING btree (tipocoleccion);
 
 -- 7.
 ALTER TABLE snib RENAME TO snib_orig;

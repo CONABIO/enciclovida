@@ -3,6 +3,7 @@ class Geoportal::Snib < GeoportalAbs
   self.table_name = 'snib'
 
   attr_accessor :resp, :params, :campo_tipo_region
+  attr_accessor :registros, :tipo_registro, :taxon, :catalogo_id, :formato, :kml
 
   # Regresa todas las especies que coincidan con el tipo de region y id seleccionado
   def especies
@@ -72,6 +73,74 @@ class Geoportal::Snib < GeoportalAbs
     end
   end
 
+  # Guarda el archivo debajo de geodata para un posterior uso, se puede consumir al vuelo a la hora de generarlos
+  def guarda_registros
+    valida_registros
+    return resp unless resp[:estatus]
+    equivalencias = { 'naturalista' => { tipo_coleccion: [5], archivo: 'observaciones-naturalista-' }, 'snib' => { tipo_coleccion: [1,2,3,4], archivo: 'ejemplares-snib-' }}
+    tipo_coleccion = equivalencias[tipo_registro][:tipo_coleccion]
+
+    case tipo_registro
+    when 'naturalista', 'snib'
+      colecciones = Rails.cache.fetch("br_#{catalogo_id}__")[:resultados].try(:keys)
+      return self.resp = { estatus: false, msg: "No tiene registros en el cache: br_#{catalogo_id}__" } unless (colecciones & tipo_coleccion).any?
+
+      case formato
+      when 'json'
+        self.registros = Geoportal::Snib.where(idnombrecatvalido: catalogo_id, tipocoleccion: tipo_coleccion)
+        carpeta = carpeta_geodatos
+        nombre = carpeta.join("#{equivalencias[tipo_registro][:archivo]}#{taxon.nombre_cientifico.estandariza}")
+        
+        archivo = File.new("#{nombre}.#{formato}", 'w+')
+        archivo.puts registros.to_json
+        archivo.close
+        self.resp = { estatus: true, ruta: "#{nombre}.#{formato}" }
+      when 'kml'
+        self.registros = Geoportal::Snib.where(idnombrecatvalido: catalogo_id, tipocoleccion: tipo_coleccion)
+        carpeta = carpeta_geodatos
+        nombre = carpeta.join("#{equivalencias[tipo_registro][:archivo]}#{taxon.nombre_cientifico.estandariza}")
+        archivo = File.new("#{nombre}.#{formato}", 'w+')
+        
+        to_kml
+        archivo.puts kml
+        archivo.close
+        self.resp = { estatus: true, ruta: "#{nombre}.#{formato}" }
+      when 'kmz'
+        self.registros = Geoportal::Snib.where(idnombrecatvalido: catalogo_id, tipocoleccion: tipo_coleccion)
+        carpeta = carpeta_geodatos
+        nombre = carpeta.join("#{equivalencias[tipo_registro][:archivo]}#{taxon.nombre_cientifico.estandariza}")
+        
+        if !File.exist?("#{nombre}.kml")
+          archivo = File.new("#{nombre}.kml", 'w+')
+          to_kml
+          archivo.puts kml
+          archivo.close
+        end
+
+        kmz(nombre)
+        self.resp = { estatus: true, ruta: "#{nombre}.#{formato}" }
+      when 'mapa-app'
+        self.registros = []
+        
+        (colecciones & tipo_coleccion).each do |col|
+          self.registros << Rails.cache.fetch("br_#{catalogo_id}__")[:resultados][col]
+        end
+        
+        return self.resp = { estatus: true, registros: registros.flatten(1) }
+      else
+        return self.resp = { estatus: false, msg: "No tiene el formato correcto de descarga" }
+      end
+
+    when 'mapa-app'
+      # TODO: el app no esta tomando este metodo, pfff
+      return self.resp = { estatus: false, msg: 'Este método aún no esta implementado' } 
+    else
+      return self.resp = { estatus: false, msg: 'Opción inválida del tipo de registro' }
+    end
+
+    Rails.logger.debug "Guardo ejempalres con catalogo_id: #{catalogo_id}, tipo_registro: #{tipo_registro}, tipo_coleccion: #{tipo_coleccion}"
+  end
+
 
   private
 
@@ -126,6 +195,88 @@ class Geoportal::Snib < GeoportalAbs
     else  
       self.campo_tipo_region = nil
     end 
+  end
+
+  # Validacion de los registros de la especie
+  def valida_registros
+    # Vemos que exista algun dato en el cache para proceder a guardar
+    return self.resp = { estatus: false, msg: "No existe el cache: br_#{catalogo_id}__" } unless Rails.cache.exist?("br_#{catalogo_id}__")
+    return self.resp = { estatus: false, msg: "Respuesta erronea del cache: br_#{catalogo_id}__" } unless Rails.cache.fetch("br_#{catalogo_id}__")[:estatus]
+    self.resp = { estatus: true }
+  end 
+
+  # REVISADO: Crea o devuleve la capreta de los geodatos
+  def carpeta_geodatos
+    carpeta = Rails.root.join('public', 'geodatos', taxon.id.to_s)
+    FileUtils.mkpath(carpeta, :mode => 0755) unless File.exists?(carpeta)
+    carpeta
+  end
+
+  # REVISADO: Transforma los ejemplares del SNIB a kml
+  def to_kml
+    h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
+    nombre_cientifico = h.encode(taxon.nombre_cientifico)
+    nombre_comun = h.encode(taxon.nom_com_prin(true))
+    nombre = nombre_comun.present? ? "<b>#{nombre_comun}</b> <i>(#{nombre_cientifico})</i>" : "<i><b>#{nombre_cientifico}</b></i>"
+
+    self.kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+    self.kml << "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
+    self.kml << "<Document>\n"
+    self.kml << "<Style id=\"normalPlacemark\">\n"
+    self.kml << "<IconStyle><scale>1.5</scale>\n"
+    self.kml << "<Icon>\n"
+    self.kml << "<href>https://maps.google.com/mapfiles/kml/paddle/red-blank.png</href>\n"
+    self.kml << "</Icon>\n"
+    self.kml << "</IconStyle>\n"
+    self.kml << "</Style>\n"
+
+    registros.each do |registro|
+      self.kml << "<Placemark>\n"
+      self.kml << "<description>\n"
+      self.kml << "<![CDATA[\n"
+      self.kml << "<div>\n"
+      self.kml << "<h4>\n"
+      self.kml << "<a href=\"#{CONFIG.enciclovida_url}/especies/#{taxon.id}\">#{nombre}</a>\n"
+      self.kml << "</h4>\n"
+      self.kml << "<dl>\n"
+
+      self.kml << "<dt>Localidad</dt> <dd>#{registro.localidad}</dd>\n"
+      self.kml << "<dt>Municipio</dt> <dd>#{registro.municipiomapa}</dd>\n"
+      self.kml << "<dt>Estado</dt> <dd>#{registro.estadomapa}</dd>\n"
+      self.kml << "<dt>País</dt> <dd>#{registro.paismapa}</dd>\n"
+      self.kml << "<dt>Fecha</dt> <dd>#{registro.fechacolecta}</dd>\n"
+      self.kml << "<dt>Nombre del colector</dt> <dd>#{registro.colector}</dd>\n"
+      self.kml << "<dt>Colección</dt> <dd>#{registro.coleccion}</dd>\n"
+      self.kml << "<dt>Institución</dt> <dd>#{registro.institucion}</dd>\n"
+      self.kml << "<dt>País de la colección</dt> <dd>#{registro.paiscoleccion}</dd>\n"
+
+      if registro.proyecto.present? && registro.urlproyecto.present?
+        self.kml << "<dt>Proyecto:</dt> <dd><a href=\"#{registro.urlproyecto}\">#{registro.proyecto}</a></dd>\n"
+      else
+        self.kml << "<dt>Proyecto:</dt> <dd>#{registro.proyecto}</dd>\n"
+      end
+
+      self.kml << "</dl>\n"
+
+      self.kml << "<span><text>Más información: </text><a href=\"http://#{registro.urlejemplar}\">consultar</a></span>\n"
+
+      self.kml << "</div>\n"
+      self.kml << "]]>\n"
+      self.kml << "</description>\n"
+      self.kml << '<styleUrl>#normalPlacemark</styleUrl>'
+      self.kml << "<Point>\n<coordinates>\n#{registro.longitud},#{registro.latitud}\n</coordinates>\n</Point>\n"
+      self.kml << "</Placemark>\n"
+    end
+
+    self.kml << "</Document>\n"
+    self.kml << '</kml>'
+  end
+
+  # REVISADO: Comprime el kml a kmz
+  def kmz(nombre)
+    archvo_zip = "#{nombre}.zip"
+    system "zip -j #{archvo_zip} #{nombre}.kml"
+    File.rename(archvo_zip, "#{nombre}.kmz")
   end
 
 end
