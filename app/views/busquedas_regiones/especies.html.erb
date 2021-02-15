@@ -40,7 +40,7 @@
 <div id="opciones_resultados" class="w-100 bg-light p-1 rounded-top mt-auto d-inline-flex">
     <div class="w-25">
         <% if @resp[:totales].present? %>
-        <% if @resp[:totales] > 0 && @resp[:totales] < 62000 %>
+        <% if @resp[:totales] > 0 && @resp[:totales] < 60000 %>
         <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
 
         <div class="dropdown">
