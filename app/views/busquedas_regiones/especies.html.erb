@@ -20,14 +20,14 @@
             <% @resp[:taxones].each do |t| %>
             <% taxon = t[:especie] %>
 
-            <div class="col-3 px-1 <%= 'border-selected-especie' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
-                <div class="result-img-container w-100">
+            <div class="col-3 p-2 <%= 'border-selected-especie' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
+                <div class="result-img-container w-100 m-0">
                     <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid') : "<i class='ev1-ev-icon'></i>".html_safe %>
-                    <button class="btn btn-light btn-outline-info btn-title rounded-pill m-1 position-absolute boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros">
+                    <button class="btn btn-light btn-title rounded-pill m-1 position-absolute boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros">
                         <%= number_with_delimiter(t[:nregistros], delimiter: ',') %>
                     </button>
                 </div>
-                <div class="result-nombre-container w-100 px-1">
+                <div class="result-nombre-container w-100 p-1 rounded">
                     <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
                 </div>
             </div>
@@ -57,10 +57,11 @@
         <% end %>
     </div>
 
-    <div class="w-75 text-center">
+    <div class="w-50 text-center">
         <%= @resp['carga-anteriores-especies'] ? button_tag('<i class="fa fa-arrow-left"></i>'.html_safe, class: 'btn btn-light btn-outline-info btn-title rounded-pill', id: 'carga-anteriores-especies', title: 'Anterior', type: 'button', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover') : button_tag('<i class="fa fa-arrow-left"></i>'.html_safe, class: 'btn btn-dark btn-outline-info btn-title rounded-pill disabled', type: 'button') %>
         <%= @resp['carga-siguientes-especies'] ? button_tag('<i class="fa fa-arrow-right"></i>'.html_safe, class: 'btn btn-light btn-outline-info btn-title rounded-pill', id: 'carga-siguientes-especies', title: 'Siguiente', type: 'button', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover') : button_tag('<i class="fa fa-arrow-right"></i>'.html_safe, class: 'btn btn-dark btn-outline-info btn-title rounded-pill disabled', type: 'button') %>
     </div>
+  <div class="w-25"></div>
 </div>
 
 <script>
