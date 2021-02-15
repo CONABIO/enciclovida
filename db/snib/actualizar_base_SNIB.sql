@@ -47,13 +47,14 @@ UPDATE snib_ev SET tipocoleccion=4 WHERE probablelocnodecampo='SI';
 UPDATE snib_ev SET tipocoleccion=5 WHERE coleccion='Naturalista Naturalista';
 
 -- 6.3
-ALTER TABLE snib_ev ADD COLUMN idnombrecatvalidoespecie character varying(50);
+ALTER TABLE snib_ev ADD COLUMN idnombrecatvalidoorig character varying(50);
 
 -- 6.4
-UPDATE snib_ev SET idnombrecatvalidoespecie = idnombrecatvalido;
+UPDATE snib_ev SET idnombrecatvalidoorig = idnombrecatvalido;
 
 -- 6.5
-CREATE INDEX idx_snib_ev_idnombrecatvalidoespecie ON snib_ev USING btree (idnombrecatvalidoespecie);
+CREATE INDEX idx_snib_ev_idnombrecatvalidoorig ON snib_ev USING btree (idnombrecatvalidoorig);
+CREATE INDEX idx_snib_ev_tipocoleccion ON snib_ev USING btree (tipocoleccion);
 
 -- 7.
 ALTER TABLE snib RENAME TO snib_orig;
@@ -64,3 +65,6 @@ DROP DATABASE geoportal;
 
 -- 12.
 ALTER DATABASE geoportal_tmp RENAME TO geoportal;
+
+-- 16.
+UPDATE snib_ev SET idnombrecatvalido=NULL WHERE idnombrecatvalidoorig IN ('20092MAMIF');

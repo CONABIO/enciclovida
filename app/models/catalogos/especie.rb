@@ -44,6 +44,8 @@ class Especie < ActiveRecord::Base
   attr_accessor :e_geodata, :e_nombre_comun_principal, :e_foto_principal, :e_nombres_comunes, :e_categoria_taxonomica,
                 :e_tipo_distribucion, :e_caracteristicas, :e_bibliografia, :e_fotos  # Atributos para la respuesta en json
   attr_accessor :jres  # Para las respuest en json
+  # Para la parte de validar registros de la especie
+  attr_accessor :tipo_registro, :formato
 
   has_one :proveedor
   has_one :adicional
@@ -663,5 +665,22 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     # Asigna la categoria taxonomica
     self.x_categoria_taxonomica = categoria_taxonomica.nombre_categoria_taxonomica
   end
+
+  # Validacion para saber si la especie es valida para registros
+  def descarga_registros
+    # Para no generar descargas arriba de especie
+    return self.jresp = { estatus: false, msg: 'No es una especie o subespecie' } unless apta_con_geodatos?
+    # Que haya registro en Scat
+    return self.jresp = { estatus: false, msg: 'No existe registro en Scat' } unless s = scat
+    catalogo_id = s.catalogo_id
+    reutn self.jresp = { estatus: false, msg: 'El IdCAT esta vacio' } unless catalogo_id.present?
+
+    # Vemos que exista algun dato en el cache para proceder a guardar
+    return self.jresp = { estatus: false, msg: "No existe el cache: br_#{catalogo_id}__" } unless Rails.cache.exist?("br_#{catalogo_id}__")
+    return self.jresp = { estatus: false, msg: "Respuesta erronea del cache: br_#{catalogo_id}__" } unless Rails.cache.fetch("br_#{catalogo_id}__")[:estatus]
+
+    geo = Geoportal::Snib.new({ catalogo_id: catalogo_id, tipo_registro: tipo_registro, formato: formato, taxon: self })
+    self.jres = geo.guarda_registros
+  end 
 
 end

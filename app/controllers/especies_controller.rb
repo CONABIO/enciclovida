@@ -2,11 +2,11 @@ class EspeciesController < ApplicationController
 
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
                                          :fotos_naturalista, :bdi_photos, :bdi_videos, :nombres_comunes_naturalista,
-                                         :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
+                                         :nombres_comunes_todos, :descarga_registros, :observaciones_naturalista, :observacion_naturalista,
                                          :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :resumen_wikipedia]
 
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion, :descripcion_app,
-                                     :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
+                                     :descarga_registros, :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
@@ -528,6 +528,15 @@ class EspeciesController < ApplicationController
       render 'especies/descripciones/descripcion_catalogos_app'
     else
       render 'especies/descripciones/descripcion_catalogos'
+    end
+  end
+
+  # Descarga los registros de naturalista, snib y en el formato solicitado. Tambien se incluye para el app
+  def descarga_registros
+    if params[:tipo_registro].present? && params[:formato].present?
+
+    else
+      render json: { estaus: false, msg: 'Parámetros incorrectos' }
     end
   end
 
