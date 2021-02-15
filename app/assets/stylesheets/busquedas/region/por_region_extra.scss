@@ -64,13 +64,14 @@
   bottom: 0;
 }
 #drag{
-  left: -10px;
+  left: -12px;
   top: 2rem;
   bottom: 2rem;
-  width: 8px;
-  cursor: col-resize;
+  width: 6px;
+  cursor: e-resize;
   background-color: #333333;
 }
+#drag button{cursor: pointer;}
 #filtros-especies {}
 
 #contenedor_especies i.ev1-ev-icon {

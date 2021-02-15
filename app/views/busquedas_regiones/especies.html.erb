@@ -12,8 +12,8 @@
 <% end %>
 
 <div id="contenedor_resultados" class="position-relative">
-        <div id="drag" class="position-absolute border-left border-right border-light text-center d-flex align-items-center">
-          <!--button type=button class="fa fa-arrows-h btn btn-light btn-outline-info btn-title rounded-pill h3"></button-->
+        <div id="drag" class="align-items-center border-left border-light border-right d-flex flex-column justify-content-center position-absolute">
+          <button type=button class="btn btn-light btn-sm btn-title fa fa-chevron-circle-right rounded-pill"></button>
         </div>
         <div class="row no-gutters">
 
@@ -73,15 +73,21 @@
 
     $(function() {
         const resize = $('#contenedor_resultados');
-        const posicionResize = resize.offset().left;
+        const posicionInicialResize = resize.offset().left;
+        const anchoResize = resize.width();
 
         $('#drag').on('mousedown', function(e) {isResizing = true});
 
         $('#contenedor_mapa').on('mousemove', function(e) {
             if (!isResizing){return}
 
-            resize.css('left', ((e.clientX - posicionResize) < -5) ? 0 :  e.clientX - posicionResize);
+            resize.css('left', ((e.clientX - posicionInicialResize) < -5) ? 0 :  e.clientX - posicionInicialResize);
         }).on('mouseup', function(e) {isResizing = false});
+
+        $('#drag button').on('click', function (){
+            resize.css('left', ((resize.offset().left > posicionInicialResize) ? 0 : anchoResize-20));
+            $(this).toggleClass('fa-chevron-circle-right fa-chevron-circle-left')
+        });
     });
 </script>
 
