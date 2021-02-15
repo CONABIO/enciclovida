@@ -13,7 +13,9 @@
 
 <div id="contenedor_resultados" class="">
     <div id="derecha" class="position-relative">
-        <div id="drag" class="position-absolute"></div>
+        <div id="drag" class="position-absolute text-center d-flex align-items-center">
+          <!--button type=button class="fa fa-arrows-h btn btn-light btn-outline-info btn-title rounded-pill h3"></button-->
+        </div>
         <div class="row no-gutters">
 
             <% @resp[:taxones].each do |t| %>
@@ -92,7 +94,7 @@
             var offsetRight = container.width() - e.clientX;
 
             right.css('left', (lastDownX - e.clientX)*-1);
-            right.css('width', offsetRight);
+            //right.css('width', offsetRight);
         }).on('mouseup', function(e) {
             // stop resizing
             isResizing = false;

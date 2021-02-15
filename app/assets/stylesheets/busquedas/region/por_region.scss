@@ -1,7 +1,16 @@
+@import 'bootstrap-variable-overrides';
+@import 'bootstrap';
+@import "font-awesome";
+@import 'soulmate';
+
+@import 'enciclovida_font_icons';
+@import "animation";
+
+@import 'general';
+
 @import "lib/Control.FullScreen";
 @import "busquedas/busquedas";
 @import "busquedas/avanzada/resultados";
 @import "mapa/marker_cluster_default";
 @import "busquedas/region/por_region_extra";
-//@import "mapa/leaflet-sidebar";
 @import "mapa/ejemplares_snib";
