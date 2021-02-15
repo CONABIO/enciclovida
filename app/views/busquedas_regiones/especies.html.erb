@@ -12,7 +12,6 @@
 <% end %>
 
 <div id="contenedor_resultados" class="">
-    <!--div id="izquierda" class="position-relative"></div-->
     <div id="derecha" class="position-relative">
         <div id="drag" class="position-absolute"></div>
         <div class="row no-gutters">
@@ -77,15 +76,12 @@
 
     $(function() {
         var container = $('#contenedor_mapa'),
-            //left = $('#izquierda'),
             right = $('#derecha'),
             handle = $('#drag');
 
         handle.on('mousedown', function(e) {
             isResizing = true;
             lastDownX = e.clientX;
-            //anchoR = right.width();
-            //posicionP = right.offset().left; 
         });
 
         $(document).on('mousemove', function(e) {
