@@ -56,12 +56,14 @@
 #contenedor_especies{right: 0;}
 
 [id^=especie-container]{background-color: #fafafa30;}
-[id^=especie-container]:hover{background-color: #fafafaca;}
+[id^=especie-container]:hover, .result-nombre-container{background-color: #fafafa;}
+.result-nombre-container{min-height: 80px;}
 
 #contenedor_resultados{
   right: 0;
   top: 0;
   bottom: 0;
+  transition: all ease-out .5s;
 }
 #drag{
   left: -12px;
@@ -80,7 +82,7 @@
   font-size: 5rem;
   color: #ababab;
 }
-div.result-img-container {height: 10rem;}
+/*div.result-img-container {height: 10rem;}*/
 #opciones_resultados{bottom: 0;}
 
 .boton-especie-registros {
