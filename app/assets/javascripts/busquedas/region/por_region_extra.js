@@ -184,7 +184,7 @@ $(document).ready(function () {
       if (this.id == "carga-anteriores-especies") opciones.filtros.pagina--;
       else opciones.filtros.pagina++;
       cargaEspecies();
-      event.preventDefault();
+      //event.preventDefault();
     }
   );
 
