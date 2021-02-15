@@ -6,14 +6,13 @@
 <div class="w-100 bg-light p-1 rounded-bottom mb-2">
     <p class="h5 my-0">
         <strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
-        | <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros del <a href="https://www.snib.mx/" class="btn-title font-weight-bolder" data-toggle="popover" title="Sistema Nacional de Información sobre Biodiversidad">SNIB</a>
+        | <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros del <a id="snib" href="https://www.snib.mx/" class="btn-title font-weight-bolder" data-toggle="popover" title="Sistema Nacional de Información sobre Biodiversidad">SNIB</a>
     </p>
 </div>
 <% end %>
 
-<div id="contenedor_resultados" class="">
-    <div id="derecha" class="position-relative">
-        <div id="drag" class="position-absolute text-center d-flex align-items-center">
+<div id="contenedor_resultados" class="position-relative">
+        <div id="drag" class="position-absolute border-left border-right border-light text-center d-flex align-items-center">
           <!--button type=button class="fa fa-arrows-h btn btn-light btn-outline-info btn-title rounded-pill h3"></button-->
         </div>
         <div class="row no-gutters">
@@ -34,8 +33,6 @@
             </div>
             <% end %>
         </div>
-
-    </div>
 
 </div>
 
@@ -70,35 +67,21 @@
     $(document).ready(function() {
         var resp = <%= raw @resp.to_json %> ;
         tooltip();
-
     });
 
-    var isResizing = false,
-        lastDownX = 0;
+    var isResizing = false;
 
     $(function() {
-        var container = $('#contenedor_mapa'),
-            right = $('#derecha'),
-            handle = $('#drag');
+        const resize = $('#contenedor_resultados');
+        const posicionResize = resize.offset().left;
 
-        handle.on('mousedown', function(e) {
-            isResizing = true;
-            lastDownX = e.clientX;
-        });
+        $('#drag').on('mousedown', function(e) {isResizing = true});
 
-        $(document).on('mousemove', function(e) {
-            // we don't want to do anything if we aren't resizing.
-            if (!isResizing)
-                return;
+        $('#contenedor_mapa').on('mousemove', function(e) {
+            if (!isResizing){return}
 
-            var offsetRight = container.width() - e.clientX;
-
-            right.css('left', (lastDownX - e.clientX)*-1);
-            //right.css('width', offsetRight);
-        }).on('mouseup', function(e) {
-            // stop resizing
-            isResizing = false;
-        });
+            resize.css('left', ((e.clientX - posicionResize) < -5) ? 0 :  e.clientX - posicionResize);
+        }).on('mouseup', function(e) {isResizing = false});
     });
 </script>
 
