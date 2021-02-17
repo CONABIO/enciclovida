@@ -80,7 +80,7 @@ class Geoportal::Snib < GeoportalAbs
   def guarda_registros
     valida_registros
     return resp unless resp[:estatus]
-    equivalencias = { 'naturalista' => { tipo_coleccion: COLECCION_SNIB, archivo: 'observaciones-naturalista-' }, 'snib' => { tipo_coleccion: COLECCION_NATURALISTA, archivo: 'ejemplares-snib-' }}
+    equivalencias = { 'naturalista' => { tipo_coleccion: COLECCION_NATURALISTA, archivo: 'observaciones-naturalista-' }, 'snib' => { tipo_coleccion: COLECCION_SNIB, archivo: 'ejemplares-snib-' }}
     tipo_coleccion = equivalencias[params[:coleccion]][:tipo_coleccion]
 
     case params[:coleccion]
@@ -90,38 +90,52 @@ class Geoportal::Snib < GeoportalAbs
 
       case params[:formato]
       when 'json'
-        self.registros = Geoportal::Snib.where(idnombrecatvalido: params[:catalogo_id], tipocoleccion: tipo_coleccion)
         carpeta = carpeta_geodatos
-        nombre = carpeta.join("#{equivalencias[params[:coleccion]][:archivo]}#{params[:taxon].nombre_cientifico.estandariza}")
+        ruta = carpeta.join("#{equivalencias[params[:coleccion]][:archivo]}#{params[:taxon].nombre_cientifico.estandariza}")
+        ruta_archivo = "#{ruta}.#{params[:formato]}"
         
-        archivo = File.new("#{nombre}.#{params[:formato]}", 'w+')
-        archivo.puts registros.to_json
-        archivo.close
-        self.resp = { estatus: true, archivo: archivo }
+        # Si el archivo existe entonces ya no se consulta a la base ni se crea
+        unless File.exist?(ruta_archivo)
+          self.registros = Geoportal::Snib.where(idnombrecatvalido: params[:catalogo_id], tipocoleccion: tipo_coleccion)
+          archivo = File.new(ruta_archivo, 'w+')
+          archivo.puts registros.to_json
+          archivo.close
+        end
+        
+        self.resp = { estatus: true, ruta_archivo: ruta_archivo }
       when 'kml'
-        self.registros = Geoportal::Snib.where(idnombrecatvalido: params[:catalogo_id], tipocoleccion: tipo_coleccion)
         carpeta = carpeta_geodatos
-        nombre = carpeta.join("#{equivalencias[params[:coleccion]][:archivo]}#{params[:taxon].nombre_cientifico.estandariza}")
+        ruta = carpeta.join("#{equivalencias[params[:coleccion]][:archivo]}#{params[:taxon].nombre_cientifico.estandariza}")
+        ruta_archivo = "#{ruta}.#{params[:formato]}"
         
-        archivo = File.new("#{nombre}.#{params[:formato]}", 'w+')
-        to_kml
-        archivo.puts kml
-        archivo.close
-        self.resp = { estatus: true, archivo: archivo }
-      when 'kmz'
-        self.registros = Geoportal::Snib.where(idnombrecatvalido: params[:catalogo_id], tipocoleccion: tipo_coleccion)
-        carpeta = carpeta_geodatos
-        nombre = carpeta.join("#{equivalencias[params[:coleccion]][:archivo]}#{params[:taxon].nombre_cientifico.estandariza}")
-        
-        if !File.exist?("#{nombre}.kml")
-          archivo = File.new("#{nombre}.kml", 'w+')
+        # Si el archivo existe entonces ya no se consulta a la base ni se crea
+        unless File.exist?(ruta_archivo)
+          self.registros = Geoportal::Snib.where(idnombrecatvalido: params[:catalogo_id], tipocoleccion: tipo_coleccion)
+          archivo = File.new(ruta_archivo, 'w+')
           to_kml
           archivo.puts kml
           archivo.close
         end
+        
+        self.resp = { estatus: true, ruta_archivo: ruta_archivo }
+      when 'kmz'
+        carpeta = carpeta_geodatos
+        ruta = carpeta.join("#{equivalencias[params[:coleccion]][:archivo]}#{params[:taxon].nombre_cientifico.estandariza}")
+        ruta_archivo = "#{ruta}.#{params[:formato]}"
 
-        kmz(nombre)
-        self.resp = { estatus: true, ruta: "#{nombre}.#{params[:formato]}" }
+        # Si el archivo existe entonces ya no se consulta a la base ni se crea
+        unless File.exist?(ruta_archivo)
+          unless File.exist?("#{ruta}.kml")
+            self.registros = Geoportal::Snib.where(idnombrecatvalido: params[:catalogo_id], tipocoleccion: tipo_coleccion)
+            archivo = File.new("#{ruta}.kml", 'w+')
+            to_kml
+            archivo.puts kml
+            archivo.close
+          end
+        end
+
+        kmz(ruta)
+        self.resp = { estatus: true, ruta_archivo: ruta_archivo }
       when 'mapa-app'
         self.registros = []
         
@@ -285,10 +299,10 @@ class Geoportal::Snib < GeoportalAbs
   end
 
   # REVISADO: Comprime el kml a kmz
-  def kmz(nombre)
-    archvo_zip = "#{nombre}.zip"
-    system "zip -j #{archvo_zip} #{nombre}.kml"
-    File.rename(archvo_zip, "#{nombre}.kmz")
+  def kmz(ruta)
+    archvo_zip = "#{ruta}.zip"
+    system "zip -j #{archvo_zip} #{ruta}.kml"
+    File.rename(archvo_zip, "#{ruta}.kmz")
   end
 
 end

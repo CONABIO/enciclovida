@@ -673,6 +673,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     return self.jres = { estatus: false, msg: 'No existe registro en Scat' } unless s = scat
     catalogo_id = s.catalogo_id
     return self.jres = { estatus: false, msg: 'El IdCAT esta vacio' } unless catalogo_id.present?
+    self.jres = { estatus: true, catalogo_id: catalogo_id }
   end
 
   # Validacion para saber si la especie es valida para registros
@@ -680,8 +681,9 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     valida_registros
     return jres unless jres[:estatus]
 
-    geo = Geoportal::Snib.new({ params: { catalogo_id: catalogo_id, coleccion: coleccion, formato: formato, taxon: self } })
-    self.jres = geo.guarda_registros
+    geo = Geoportal::Snib.new({ params: { catalogo_id: jres[:catalogo_id], coleccion: coleccion, formato: formato, taxon: self } })
+    geo.guarda_registros
+    self.jres = geo.resp 
   end
   
   # REVISADO: Borra todos los json, kml, kmz del taxon en cuestion

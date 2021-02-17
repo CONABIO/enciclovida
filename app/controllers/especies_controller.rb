@@ -534,8 +534,8 @@ class EspeciesController < ApplicationController
   def consulta_registros
     if params[:coleccion].present? && params[:formato].present?
       respond_to do |format|
-        @espeice.coleccion = params[:coleccion]
-        @espeice.formato = params[:formato]
+        @especie.coleccion = params[:coleccion]
+        @especie.formato = params[:formato]
         @especie.descarga_registros
 
         format.json do
@@ -546,7 +546,8 @@ class EspeciesController < ApplicationController
           
           if @especie.jres[:estatus]
             if params[:formato] == 'json'
-              render json: { estatus: true, resultados: JSON.parse(File.read(@espeice.jres[:archivo])) }
+              archivo = File.read(@especie.jres[:ruta_archivo])
+              send_data archivo, :filename => @especie.jres[:ruta_archivo].split('/').last
             elsif params[:formato] == 'mapa-app'
               render json: @especie.jres[:registros]
             else
@@ -558,28 +559,23 @@ class EspeciesController < ApplicationController
         end
 
         format.kml do
-          resp = p.observaciones_naturalista('.kml')
-
-          if resp[:estatus]
-            archivo = File.read(resp[:ruta])
-            send_data archivo, :filename => resp[:ruta].split('/').last
+          if @especie.jres[:estatus]
+            archivo = File.read(@especie.jres[:ruta_archivo])
+            send_data archivo, :filename => @especie.jres[:ruta_archivo].split('/').last
           else
-            resp.delete(:ruta)
-            render json: resp.to_json
+            render json: @especie.jres
           end
         end
 
         format.kmz do
-          resp = p.observaciones_naturalista('.kmz')
-
-          if resp[:estatus]
-            archivo = File.read(resp[:ruta])
-            send_data archivo, :filename => resp[:ruta].split('/').last
+          if @especie.jres[:estatus]
+            archivo = File.read(@especie.jres[:ruta_archivo])
+            send_data archivo, :filename => @especie.jres[:ruta_archivo].split('/').last
           else
-            resp.delete(:ruta)
-            render json: resp.to_json
+            render json: @especie.jres
           end
         end
+
       end  # End respond_to
     else
       render json: { estaus: false, msg: 'Parámetros incorrectos' }
