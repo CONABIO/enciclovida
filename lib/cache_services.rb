@@ -5,8 +5,6 @@ module CacheServices
     if Rails.env.production?
       guarda_redis_servicio
       guarda_estadisticas_servicio
-      guarda_observaciones_naturalista_servicio
-      guarda_ejemplares_snib_servicio
       guarda_pez_servicios
       # estadisticas_naturalista_servicio
       # estadisticas_conabio_servicio
@@ -51,33 +49,6 @@ module CacheServices
       pez.save if pez
     end
   end
-
-  # REVISADO: Guarda las observaciones desde la pagina de naturalista
-  def guarda_observaciones_naturalista_servicio
-    if !existe_cache?('observaciones_naturalista')
-      if p = proveedor
-        if Rails.env.production?
-          p.delay(queue: 'observaciones_naturalista').guarda_observaciones_naturalista
-        else
-          p.guarda_observaciones_naturalista
-        end
-      end
-    end
-  end
-
-  # REVISADO: Guarda los ejemplares del SNIB
-  def guarda_ejemplares_snib_servicio
-    if !existe_cache?('ejemplares_snib')
-      if p = proveedor
-        if Rails.env.production?
-          p.delay(queue: 'ejemplares_snib').guarda_ejemplares_snib
-        else
-          p.guarda_ejemplares_snib
-        end
-      end
-    end
-  end
-
 
   # REVISADO: Es un metodo que no depende del la tabla proveedor, puesto que consulta naturalista sin el ID
   def ficha_naturalista_por_nombre
@@ -703,8 +674,6 @@ module CacheServices
     total
   end
 
-
-
   # Recibe el apuntador a la tabla y escribe el dato en ella segùn el id de la estadìstica
   def escribe_estadistica(estd, estd_id, dato)
     if estadistica = estd.where(estadistica_id: estd_id).first
@@ -824,10 +793,9 @@ module CacheServices
     # Para saber cuantas fotos tiene
     datos[:data][:fotos] = x_fotos_totales
 
-    # Para saber si tiene algun mapa
-    if p = proveedor
-      datos[:data][:geodatos] = p.geodatos[:cuales]
-    end
+    # Para saber si tiene algun geodato
+    geodatos = consulta_geodatos
+    datos[:data][:geodatos] = geodatos[:cuales]
 
     datos.stringify_keys
   end
@@ -924,21 +892,6 @@ module CacheServices
     estadistica.estadistica_id = 1
     estadistica.conteo = 1
     estadistica.save
-  end
-
-  #Métodos a borrar, se utilizaran y se eliminaran posteriormente
-  def dame_carpeta_geodatos
-    carpeta = Rails.root.join('public', 'geodatos', id.to_s)
-    FileUtils.mkpath(carpeta, :mode => 0755) unless File.exists?(carpeta)
-    carpeta
-  end
-
-  def retrae_observaciones_naturalista
-    return unless apta_con_geodatos?
-    return unless p = proveedor
-    archivo = dame_carpeta_geodatos.join("observaciones_#{nombre_cientifico.limpiar.gsub(' ','_')}")
-    return if File.exists?(archivo)
-    guarda_observaciones_naturalista
   end
 
 end
