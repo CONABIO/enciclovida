@@ -51,8 +51,10 @@ class EspeciesController < ApplicationController
           @datos[:nombres_comunes] =  adicional.nombres_comunes
         end
 
-        @datos[:especie_o_inferior] = @especie
-
+        # Para los geodatos
+        geodatos = @especie.consulta_geodatos
+        @datos[:geodatos] = geodatos if geodatos[:cuales].any?
+          
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if proveedor = @especie.proveedor
           naturalista_id = proveedor.naturalista_id
@@ -60,42 +62,7 @@ class EspeciesController < ApplicationController
             @datos[:naturalista_api] = "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
             @datos[:ficha_naturalista] = "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}"
           end
-
-          if @datos[:especie_o_inferior]
-            geodatos = proveedor.geodatos
-
-            if geodatos[:cuales].any?
-              @datos[:geodatos] = geodatos
-              @datos[:solo_coordenadas] = true
-
-              # Para poner las variable con las que consulto el SNIB
-              if geodatos[:cuales].include?('snib')
-                if geodatos[:snib_mapa_json].present?
-                  @datos[:snib_url] = geodatos[:snib_mapa_json]
-                else
-                  reino = @especie.root.nombre_cientifico.estandariza
-                  catalogo_id = @especie.scat.catalogo_id
-                  @datos[:snib_url] = "#{CONFIG.ssig_api}/snib/getSpecies/#{reino}/#{catalogo_id}?apiKey=enciclovida"
-                end
-              end
-
-              # Para poner las variable con las que consulto de NaturaLista
-              if geodatos[:cuales].include?('naturalista')
-                if geodatos[:naturalista_mapa_json].present?
-                  @datos[:naturalista_url] = geodatos[:naturalista_mapa_json]
-                end
-              end
-
-              # Para poner las variable con las que consulto el Geoserver
-              if geodatos[:cuales].include?('geoserver')
-                if geodatos[:geoserver_url].present?
-                  @datos[:geoserver_url] = geodatos[:geoserver_url]
-                end
-              end
-
-            end  # End gedatos any?
-          end  # End especie o inferior
-        end  # End proveedor existe
+        end
 
         # Para las variables restantes
         @datos[:cuantos_comentarios] = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
@@ -108,13 +75,8 @@ class EspeciesController < ApplicationController
 
       format.json do
         @especie.e_geodata = []
-
-        if @especie.especie_o_inferior?
-          if proveedor = @especie.proveedor
-            geodatos = proveedor.geodatos
-            @especie.e_geodata = geodatos if geodatos[:cuales].any?
-          end
-        end
+        geodatos = @especie.consulta_geodatos
+        @especie.e_geodata = geodatos if geodatos[:cuales].any?
 
         @especie.e_nombre_comun_principal = nil
         @especie.e_foto_principal = nil

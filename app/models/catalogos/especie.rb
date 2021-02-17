@@ -683,7 +683,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
     geo = Geoportal::Snib.new({ params: { catalogo_id: jres[:catalogo_id], coleccion: coleccion, formato: formato, taxon: self } })
     geo.guarda_registros
-    self.jres = geo.resp 
+    self.jres = geo.resp
   end
   
   # REVISADO: Borra todos los json, kml, kmz del taxon en cuestion
@@ -697,7 +697,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   end
 
   # REVISADO: Devuelve una lista de todas las URLS asociadas a los geodatos
-  def tiene_geodatos?
+  def consulta_geodatos
     geodatos = {}
     geodatos[:cuales] = []
 
@@ -718,7 +718,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     # URL para la consulta de registros
     url = "#{CONFIG.site_url}especies/#{id}/consulta-registros"
 
-    geo = Geoportal::Snib.new({ params: { catalogo_id: catalogo_id, coleccion: 'snib' } })
+    geo = Geoportal::Snib.new({ params: { catalogo_id: jres[:catalogo_id], coleccion: 'snib' } })
     geo.tiene_registros?
     
     if geo.resp[:estatus]
@@ -729,7 +729,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       geodatos[:snib_mapa_json] = "#{url}.json?coleccion=snib&formato=mapa-app"
     end
     
-    geo = Geoportal::Snib.new({ params: { catalogo_id: catalogo_id, coleccion: 'naturalista' } })
+    geo = Geoportal::Snib.new({ params: { catalogo_id: jres[:catalogo_id], coleccion: 'naturalista' } })
     geo.tiene_registros?
     
     if geo.resp[:estatus]

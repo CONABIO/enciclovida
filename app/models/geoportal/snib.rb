@@ -161,7 +161,7 @@ class Geoportal::Snib < GeoportalAbs
     return self.resp = { estatus: true } unless params[:coleccion]
 
     colecciones = Rails.cache.fetch("br_#{params[:catalogo_id]}__")[:resultados].try(:keys)
-    existen = (colecciones & "COLECCION_#{params[:coleccion].upcase}".constantize).any?
+    existen = (colecciones & eval("COLECCION_#{params[:coleccion].upcase}")).any?
     self.resp = { estatus: existen }
   end
 
