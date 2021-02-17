@@ -120,9 +120,9 @@ Buscador::Application.routes.draw do
     end
   end
 
+  # Estadisticas
   get 'estadisticas' => 'estadisticas#show'
   get 'filtros_estadisticas' => 'estadisticas#filtros_estadisticas'
-  #get '' => ''
 
   get 'peces' => 'pmc/peces#index'
   get 'peces/busqueda' => 'pmc/peces#index'
@@ -152,7 +152,7 @@ Buscador::Application.routes.draw do
   get "inicio/acerca"
   get "inicio/error"
 
-  # rutas de bsuquedas
+  # rutas de busquedas
   get 'avanzada', to: "busquedas#avanzada", as: :avanzada
   get 'resultados', to: "busquedas#resultados", as: :resultados
   get 'checklist', to: "busquedas#checklist", as: :checklist
@@ -200,10 +200,7 @@ Buscador::Application.routes.draw do
     collection do
       get '/:id', action: 'show', constraints: { id: /\d{1,8}[\-A-Za-z]*/ }
       get :error
-      get ':id/observaciones-naturalista' => 'especies#observaciones_naturalista'
-      get ':id/observacion-naturalista/:observacion_id' => 'especies#observacion_naturalista'
-      get ':id/ejemplares-snib' => 'especies#ejemplares_snib'
-      get ':id/ejemplar-snib/:ejemplar_id' => 'especies#ejemplar_snib'
+      get ':id/consulta-registros' => 'especies#consulta_registros'
       get ':id/fotos-referencia' => 'especies#fotos_referencia'
       post ':id/fotos-referencia' => 'especies#fotos_referencia'
       get ':id/media' => 'especies#media'
@@ -217,7 +214,6 @@ Buscador::Application.routes.draw do
       post ':id/guarda-id-naturalista' => 'especies#cambia_id_naturalista'
       get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
       get ':id/resumen-wikipedia' => 'especies#resumen_wikipedia'
-      get ':id/resumen-app' => 'especies#resumen_app'
       get ':id/descripcion' => 'especies#descripcion'
       get ':id/descripcion-app' => 'especies#descripcion_app'
     end

@@ -3,7 +3,10 @@ class Geoportal::Snib < GeoportalAbs
   self.table_name = 'snib'
 
   attr_accessor :resp, :params, :campo_tipo_region
-  attr_accessor :registros, :tipo_registro, :taxon, :catalogo_id, :formato, :kml
+  attr_accessor :registros, :kml
+
+  COLECCION_NATURALISTA = [5]
+  COLECCION_SNIB = [1,2,3,4]
 
   # Regresa todas las especies que coincidan con el tipo de region y id seleccionado
   def especies
@@ -77,38 +80,38 @@ class Geoportal::Snib < GeoportalAbs
   def guarda_registros
     valida_registros
     return resp unless resp[:estatus]
-    equivalencias = { 'naturalista' => { tipo_coleccion: [5], archivo: 'observaciones-naturalista-' }, 'snib' => { tipo_coleccion: [1,2,3,4], archivo: 'ejemplares-snib-' }}
-    tipo_coleccion = equivalencias[tipo_registro][:tipo_coleccion]
+    equivalencias = { 'naturalista' => { tipo_coleccion: COLECCION_SNIB, archivo: 'observaciones-naturalista-' }, 'snib' => { tipo_coleccion: COLECCION_NATURALISTA, archivo: 'ejemplares-snib-' }}
+    tipo_coleccion = equivalencias[params[:coleccion]][:tipo_coleccion]
 
-    case tipo_registro
+    case params[:coleccion]
     when 'naturalista', 'snib'
-      colecciones = Rails.cache.fetch("br_#{catalogo_id}__")[:resultados].try(:keys)
-      return self.resp = { estatus: false, msg: "No tiene registros en el cache: br_#{catalogo_id}__" } unless (colecciones & tipo_coleccion).any?
+      colecciones = Rails.cache.fetch("br_#{params[:catalogo_id]}__")[:resultados].try(:keys)
+      return self.resp = { estatus: false, msg: "No tiene registros en el cache: br_#{params[:catalogo_id]}__" } unless (colecciones & tipo_coleccion).any?
 
-      case formato
+      case params[:formato]
       when 'json'
-        self.registros = Geoportal::Snib.where(idnombrecatvalido: catalogo_id, tipocoleccion: tipo_coleccion)
+        self.registros = Geoportal::Snib.where(idnombrecatvalido: params[:catalogo_id], tipocoleccion: tipo_coleccion)
         carpeta = carpeta_geodatos
-        nombre = carpeta.join("#{equivalencias[tipo_registro][:archivo]}#{taxon.nombre_cientifico.estandariza}")
+        nombre = carpeta.join("#{equivalencias[params[:coleccion]][:archivo]}#{params[:taxon].nombre_cientifico.estandariza}")
         
-        archivo = File.new("#{nombre}.#{formato}", 'w+')
+        archivo = File.new("#{nombre}.#{params[:formato]}", 'w+')
         archivo.puts registros.to_json
         archivo.close
-        self.resp = { estatus: true, ruta: "#{nombre}.#{formato}" }
+        self.resp = { estatus: true, archivo: archivo }
       when 'kml'
-        self.registros = Geoportal::Snib.where(idnombrecatvalido: catalogo_id, tipocoleccion: tipo_coleccion)
+        self.registros = Geoportal::Snib.where(idnombrecatvalido: params[:catalogo_id], tipocoleccion: tipo_coleccion)
         carpeta = carpeta_geodatos
-        nombre = carpeta.join("#{equivalencias[tipo_registro][:archivo]}#{taxon.nombre_cientifico.estandariza}")
-        archivo = File.new("#{nombre}.#{formato}", 'w+')
+        nombre = carpeta.join("#{equivalencias[params[:coleccion]][:archivo]}#{params[:taxon].nombre_cientifico.estandariza}")
         
+        archivo = File.new("#{nombre}.#{params[:formato]}", 'w+')
         to_kml
         archivo.puts kml
         archivo.close
-        self.resp = { estatus: true, ruta: "#{nombre}.#{formato}" }
+        self.resp = { estatus: true, archivo: archivo }
       when 'kmz'
-        self.registros = Geoportal::Snib.where(idnombrecatvalido: catalogo_id, tipocoleccion: tipo_coleccion)
+        self.registros = Geoportal::Snib.where(idnombrecatvalido: params[:catalogo_id], tipocoleccion: tipo_coleccion)
         carpeta = carpeta_geodatos
-        nombre = carpeta.join("#{equivalencias[tipo_registro][:archivo]}#{taxon.nombre_cientifico.estandariza}")
+        nombre = carpeta.join("#{equivalencias[params[:coleccion]][:archivo]}#{params[:taxon].nombre_cientifico.estandariza}")
         
         if !File.exist?("#{nombre}.kml")
           archivo = File.new("#{nombre}.kml", 'w+')
@@ -118,12 +121,12 @@ class Geoportal::Snib < GeoportalAbs
         end
 
         kmz(nombre)
-        self.resp = { estatus: true, ruta: "#{nombre}.#{formato}" }
+        self.resp = { estatus: true, ruta: "#{nombre}.#{params[:formato]}" }
       when 'mapa-app'
         self.registros = []
         
         (colecciones & tipo_coleccion).each do |col|
-          self.registros << Rails.cache.fetch("br_#{catalogo_id}__")[:resultados][col]
+          self.registros << Rails.cache.fetch("br_#{params[:catalogo_id]}__")[:resultados][col]
         end
         
         return self.resp = { estatus: true, registros: registros.flatten(1) }
@@ -131,14 +134,21 @@ class Geoportal::Snib < GeoportalAbs
         return self.resp = { estatus: false, msg: "No tiene el formato correcto de descarga" }
       end
 
-    when 'mapa-app'
-      # TODO: el app no esta tomando este metodo, pfff
-      return self.resp = { estatus: false, msg: 'Este método aún no esta implementado' } 
     else
       return self.resp = { estatus: false, msg: 'Opción inválida del tipo de registro' }
     end
 
-    Rails.logger.debug "Guardo ejempalres con catalogo_id: #{catalogo_id}, tipo_registro: #{tipo_registro}, tipo_coleccion: #{tipo_coleccion}"
+    Rails.logger.debug "Guardo ejempalres con catalogo_id: #{params[:catalogo_id]}, colección: #{params[:coleccion]}"
+  end
+
+  def tiene_registros?
+    valida_registros
+    return unless resp[:estatus]
+    return self.resp = { estatus: true } unless params[:coleccion]
+
+    colecciones = Rails.cache.fetch("br_#{params[:catalogo_id]}__")[:resultados].try(:keys)
+    existen = (colecciones & "COLECCION_#{params[:coleccion].upcase}".constantize).any?
+    self.resp = { estatus: existen }
   end
 
 
@@ -199,15 +209,17 @@ class Geoportal::Snib < GeoportalAbs
 
   # Validacion de los registros de la especie
   def valida_registros
-    # Vemos que exista algun dato en el cache para proceder a guardar
-    return self.resp = { estatus: false, msg: "No existe el cache: br_#{catalogo_id}__" } unless Rails.cache.exist?("br_#{catalogo_id}__")
-    return self.resp = { estatus: false, msg: "Respuesta erronea del cache: br_#{catalogo_id}__" } unless Rails.cache.fetch("br_#{catalogo_id}__")[:estatus]
+    # Vemos la existencia del cache la primera vez, en caso de no existir consultamos en vivo
+    ejemplares unless Rails.cache.exist?("br_#{params[:catalogo_id]}__")
+    
+    return self.resp = { estatus: false, msg: "No existe el cache: br_#{params[:catalogo_id]}__" } unless Rails.cache.exist?("br_#{params[:catalogo_id]}__")
+    return self.resp = { estatus: false, msg: "Respuesta erronea del cache: br_#{params[:catalogo_id]}__" } unless Rails.cache.fetch("br_#{params[:catalogo_id]}__")[:estatus]
     self.resp = { estatus: true }
   end 
 
   # REVISADO: Crea o devuleve la capreta de los geodatos
   def carpeta_geodatos
-    carpeta = Rails.root.join('public', 'geodatos', taxon.id.to_s)
+    carpeta = Rails.root.join('public', 'geodatos', params[:taxon].id.to_s)
     FileUtils.mkpath(carpeta, :mode => 0755) unless File.exists?(carpeta)
     carpeta
   end
@@ -215,8 +227,8 @@ class Geoportal::Snib < GeoportalAbs
   # REVISADO: Transforma los ejemplares del SNIB a kml
   def to_kml
     h = HTMLEntities.new  # Para codificar el html y no marque error en el KML
-    nombre_cientifico = h.encode(taxon.nombre_cientifico)
-    nombre_comun = h.encode(taxon.nom_com_prin(true))
+    nombre_cientifico = h.encode(params[:taxon].nombre_cientifico)
+    nombre_comun = h.encode(params[:taxon].nom_com_prin(true))
     nombre = nombre_comun.present? ? "<b>#{nombre_comun}</b> <i>(#{nombre_cientifico})</i>" : "<i><b>#{nombre_cientifico}</b></i>"
 
     self.kml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -236,7 +248,7 @@ class Geoportal::Snib < GeoportalAbs
       self.kml << "<![CDATA[\n"
       self.kml << "<div>\n"
       self.kml << "<h4>\n"
-      self.kml << "<a href=\"#{CONFIG.enciclovida_url}/especies/#{taxon.id}\">#{nombre}</a>\n"
+      self.kml << "<a href=\"#{CONFIG.enciclovida_url}/especies/#{params[:taxon].id}\">#{nombre}</a>\n"
       self.kml << "</h4>\n"
       self.kml << "<dl>\n"
 

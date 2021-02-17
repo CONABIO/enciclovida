@@ -2,14 +2,13 @@ class EspeciesController < ApplicationController
 
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
                                          :fotos_naturalista, :bdi_photos, :bdi_videos, :nombres_comunes_naturalista,
-                                         :nombres_comunes_todos, :descarga_registros, :observaciones_naturalista, :observacion_naturalista,
-                                         :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :resumen_wikipedia]
+                                         :nombres_comunes_todos, :consulta_registros, :cambia_id_naturalista, :resumen_wikipedia]
 
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion, :descripcion_app,
-                                     :descarga_registros, :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
+                                     :consulta_registros, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
-                                     :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
+                                     :nombres_comunes_todos, :cambia_id_naturalista,
                                      :dame_nombre_con_formato, :noticias, :media_tropicos, :resumen_wikipedia]
 
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista]
@@ -532,34 +531,29 @@ class EspeciesController < ApplicationController
   end
 
   # Descarga los registros de naturalista, snib y en el formato solicitado. Tambien se incluye para el app
-  def descarga_registros
-    if params[:tipo_registro].present? && params[:formato].present?
-
-    else
-      render json: { estaus: false, msg: 'Parámetros incorrectos' }
-    end
-  end
-
-  # Devuelve las observaciones de naturalista en diferentes formatos
-  def observaciones_naturalista
-    if p = @especie.proveedor
-
+  def consulta_registros
+    if params[:coleccion].present? && params[:formato].present?
       respond_to do |format|
-        format.json do
-          resp = p.observaciones_naturalista('.json')
+        @espeice.coleccion = params[:coleccion]
+        @espeice.formato = params[:formato]
+        @especie.descarga_registros
 
+        format.json do
           headers['Access-Control-Allow-Origin'] = '*'
           headers['Access-Control-Allow-Methods'] = 'GET'
           headers['Access-Control-Request-Method'] = '*'
           headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-
-          if resp[:estatus]
-            resp[:resultados] = JSON.parse(File.read(resp[:ruta]))
-            resp.delete(:ruta)
-            render json: resp
+          
+          if @especie.jres[:estatus]
+            if params[:formato] == 'json'
+              render json: { estatus: true, resultados: JSON.parse(File.read(@espeice.jres[:archivo])) }
+            elsif params[:formato] == 'mapa-app'
+              render json: @especie.jres[:registros]
+            else
+              render json: { estatus: false, msg: 'Parámetros incorrectos' }
+            end
           else
-            resp.delete(:ruta)
-            render json: resp.to_json
+            render json: @especie.jres
           end
         end
 
@@ -588,91 +582,7 @@ class EspeciesController < ApplicationController
         end
       end  # End respond_to
     else
-      render :_error and return
-    end
-  end
-
-  # Obtiene la informacion de una observacion del archivo .json, esto es para no mostrar toda la informacion cuando se construye el mapa
-  def observacion_naturalista
-    if p = @especie.proveedor
-      headers['Access-Control-Allow-Origin'] = '*'
-      headers['Access-Control-Allow-Methods'] = 'GET'
-      headers['Access-Control-Request-Method'] = '*'
-      headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-
-      resp = p.observacion_naturalista(params['observacion_id'])
-      resp.delete(:ruta) if resp[:ruta].present?
-      render json: resp.to_json
-    else
-      render json: {estatus: false, msg: 'No existe naturalista_id'}.to_json
-    end
-  end
-
-  # Devuelve los ejemplares del SNIB en diferentes formatos
-  def ejemplares_snib
-    if p = @especie.proveedor
-
-      respond_to do |format|
-        format.json do
-          resp = p.ejemplares_snib('.json', params[:mapa].present? ? true : false)
-
-          headers['Access-Control-Allow-Origin'] = '*'
-          headers['Access-Control-Allow-Methods'] = 'GET'
-          headers['Access-Control-Request-Method'] = '*'
-          headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-
-          if resp[:estatus]
-            resp[:resultados] = JSON.parse(File.read(resp[:ruta]))
-            resp.delete(:ruta)
-            render json: resp
-          else
-            resp.delete(:ruta)
-            render json: resp.to_json
-          end
-        end
-
-        format.kml do
-          resp = p.ejemplares_snib('.kml')
-
-          if resp[:estatus]
-            archivo = File.read(resp[:ruta])
-            send_data archivo, :filename => resp[:ruta].split('/').last
-          else
-            resp.delete(:ruta)
-            render json: resp.to_json
-          end
-        end
-
-        format.kmz do
-          resp = p.ejemplares_snib('.kmz')
-
-          if resp[:estatus]
-            archivo = File.read(resp[:ruta])
-            send_data archivo, :filename => resp[:ruta].split('/').last
-          else
-            resp.delete(:ruta)
-            render json: resp.to_json
-          end
-        end
-      end  # End respond_to
-    else
-      render :_error and return
-    end
-  end
-
-  # Obtiene la informacion del ejemplar del archivo .json, esto es para no mostrar toda la informacion cuando se construye el mapa
-  def ejemplar_snib
-    if p = @especie.proveedor
-      headers['Access-Control-Allow-Origin'] = '*'
-      headers['Access-Control-Allow-Methods'] = 'GET'
-      headers['Access-Control-Request-Method'] = '*'
-      headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-
-      resp = p.ejemplar_snib(params['ejemplar_id'])
-      resp.delete(:ruta) if resp[:ruta].present?
-      render json: resp.to_json
-    else
-      render json: {estatus: false, msg: 'No existe en el SNIB'}.to_json
+      render json: { estaus: false, msg: 'Parámetros incorrectos' }
     end
   end
 

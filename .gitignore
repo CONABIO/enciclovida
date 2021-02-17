@@ -76,6 +76,7 @@ public/assets/
 tools/naturalista/log/
 log
 nohup.out
+.ruby-version
 
 vendor/SNIBappRest_old/controller/config.js
 vendor/SNIBappRest_old/node_modules

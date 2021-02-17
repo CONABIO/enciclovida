@@ -58,109 +58,24 @@ class Proveedor < ActiveRecord::Base
     if Rails.cache.exist?("ficha_naturalista_#{especie_id}")
       self.jres = Rails.cache.fetch("ficha_naturalista_#{especie_id}")
     else
-      self.res = { estatus: false, msg: 'Error en el cache' }
+      self.jres = { estatus: false, msg: 'Error en el cache' }
     end
   end
 
-  # REVISADO: Devuelve una lista de todas las URLS asociadas a los geodatos
-  def geodatos
-    geodatos = {}
-    geodatos[:cuales] = []
+  # Devuelve los datos de los mapas para el geoserver
+  def dame_geoserver
+    return self.jres = { estatus: false, msg: 'No tiene datos en el geoserver' } unless geoserver_info.present?
+    info = JSON.parse(geoserver_info)
+    geoserver_descargas_url = []
 
-    if geoserver_info.present?
-      info = JSON.parse(geoserver_info)
-
-      geodatos[:cuales] << 'geoserver'
-      geodatos[:geoserver_url] = CONFIG.geoserver_url.to_s
-      geodatos[:geoserver_descargas_url] = []
-
-      info.each do |mapa, datos|
-        geodatos[:geoserver_descargas_url] << { layers: datos['layers'], styles: datos['styles'], bbox: datos['bbox'], mapa: mapa, anio: datos['anio'], autor: datos['autor'], geoportal_url: datos['geoportal_url'] }
-      end
+    info.each do |mapa, datos|
+      geoserver_descargas_url << { layers: datos['layers'], styles: datos['styles'], bbox: datos['bbox'], mapa: mapa, anio: datos['anio'], autor: datos['autor'], geoportal_url: datos['geoportal_url'] }
     end
 
-    # Para las descargas del SNIB
-    url = "#{CONFIG.site_url}especies/#{especie_id}/ejemplares-snib"
-
-    resp = ejemplares_snib('.json')
-    if resp[:estatus]
-      geodatos[:cuales] << 'snib'
-      geodatos[:snib_json] = "#{url}.json"
-    end
-
-    resp = ejemplares_snib('.kml')
-    if resp[:estatus]
-      geodatos[:cuales] << 'snib'
-      geodatos[:snib_kml] = "#{url}.kml"
-    end
-
-    resp = ejemplares_snib('.kmz')
-    if resp[:estatus]
-      geodatos[:cuales] << 'snib'
-      geodatos[:snib_kmz] = "#{url}.kmz"
-    end
-
-    resp = ejemplares_snib('.json', true)
-    if resp[:estatus]
-      geodatos[:cuales] << 'snib'
-      geodatos[:snib_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
-    end
-
-    # Para las descargas de naturalista
-    url = "#{CONFIG.site_url}especies/#{especie_id}/observaciones-naturalista"
-
-    resp = observaciones_naturalista('.json')
-    if resp[:estatus]
-      geodatos[:cuales] << 'naturalista'
-      geodatos[:naturalista_json] = "#{url}.json"
-    end
-
-    resp = observaciones_naturalista('.kml')
-    if resp[:estatus]
-      geodatos[:cuales] << 'naturalista'
-      geodatos[:naturalista_kml] = "#{url}.kml"
-    end
-
-    resp = observaciones_naturalista('.kmz')
-    if resp[:estatus]
-      geodatos[:cuales] << 'naturalista'
-      geodatos[:naturalista_kmz] = "#{url}.kmz"
-    end
-
-    resp = observaciones_naturalista('.json', true)
-    if resp[:estatus]
-      geodatos[:cuales] << 'naturalista'
-      geodatos[:naturalista_mapa_json] = "#{CONFIG.site_url}geodatos/#{especie_id}/#{resp[:ruta].split('/').last}"
-    end
-
-    ruta_registros = carpeta_geodatos.join("registros_#{especie_id}_todos.json")
-    if File.exist?(ruta_registros)
-      geodatos[:registros_todos] = "#{CONFIG.site_url}geodatos/#{especie_id}/registros_#{especie_id}_todos.json"
-    end
-
-    geodatos[:cuales] = geodatos[:cuales].uniq
-    geodatos
+    self.jres = { estatus: true, geoserver_descargas_url: geoserver_descargas_url }
   end
-
 
   private
-
-  # REVISADO: Crea o devuleve la capreta de los geodatos
-  def carpeta_geodatos
-    carpeta = Rails.root.join('public', 'geodatos', especie_id.to_s)
-    FileUtils.mkpath(carpeta, :mode => 0755) unless File.exists?(carpeta)
-    carpeta
-  end
-
-  # REVISADO: Borra el json, kml, kmz del taxon en cuestion, ya sea observaciones o ejemplares
-  def borrar_geodata(tipo)
-    ruta = Rails.root.join('public', 'geodatos', especie_id.to_s, "#{tipo}*")
-    archivos = Dir.glob(ruta)
-
-    archivos.each do |a|
-      File.delete(a)
-    end
-  end
 
   def photo_type(url)
     return 'FlickrPhoto' if url.include?("staticflickr\.com") || url.include?("static\.flickr\.com")

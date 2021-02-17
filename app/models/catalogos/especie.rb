@@ -45,7 +45,7 @@ class Especie < ActiveRecord::Base
                 :e_tipo_distribucion, :e_caracteristicas, :e_bibliografia, :e_fotos  # Atributos para la respuesta en json
   attr_accessor :jres  # Para las respuest en json
   # Para la parte de validar registros de la especie
-  attr_accessor :tipo_registro, :formato
+  attr_accessor :coleccion, :formato
 
   has_one :proveedor
   has_one :adicional
@@ -644,7 +644,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
   # REVISADO Asigna todas las categorias y nombre cientificos a los ancestros de un taxon, para poder acceder a el mas facil
   def asigna_categorias
-
     path.select("#{Especie.attribute_alias(:nombre)} AS nombret, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica").left_joins(:categoria_taxonomica).each do |ancestro|
       categoria = 'x_' << I18n.transliterate(ancestro.nombre_categoria_taxonomica).gsub(' ','_').downcase
       next unless Lista::COLUMNAS_CATEGORIAS.include?(categoria)
@@ -666,21 +665,80 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     self.x_categoria_taxonomica = categoria_taxonomica.nombre_categoria_taxonomica
   end
 
+  # Condiciones que deben de cumplir
+  def valida_registros
+    # Para no generar descargas arriba de especie
+    return self.jres = { estatus: false, msg: 'No es una especie o subespecie' } unless apta_con_geodatos?
+    # Que haya registro en Scat
+    return self.jres = { estatus: false, msg: 'No existe registro en Scat' } unless s = scat
+    catalogo_id = s.catalogo_id
+    return self.jres = { estatus: false, msg: 'El IdCAT esta vacio' } unless catalogo_id.present?
+  end
+
   # Validacion para saber si la especie es valida para registros
   def descarga_registros
-    # Para no generar descargas arriba de especie
-    return self.jresp = { estatus: false, msg: 'No es una especie o subespecie' } unless apta_con_geodatos?
-    # Que haya registro en Scat
-    return self.jresp = { estatus: false, msg: 'No existe registro en Scat' } unless s = scat
-    catalogo_id = s.catalogo_id
-    reutn self.jresp = { estatus: false, msg: 'El IdCAT esta vacio' } unless catalogo_id.present?
+    valida_registros
+    return jres unless jres[:estatus]
 
-    # Vemos que exista algun dato en el cache para proceder a guardar
-    return self.jresp = { estatus: false, msg: "No existe el cache: br_#{catalogo_id}__" } unless Rails.cache.exist?("br_#{catalogo_id}__")
-    return self.jresp = { estatus: false, msg: "Respuesta erronea del cache: br_#{catalogo_id}__" } unless Rails.cache.fetch("br_#{catalogo_id}__")[:estatus]
-
-    geo = Geoportal::Snib.new({ catalogo_id: catalogo_id, tipo_registro: tipo_registro, formato: formato, taxon: self })
+    geo = Geoportal::Snib.new({ params: { catalogo_id: catalogo_id, coleccion: coleccion, formato: formato, taxon: self } })
     self.jres = geo.guarda_registros
-  end 
+  end
+  
+  # REVISADO: Borra todos los json, kml, kmz del taxon en cuestion
+  def borra_geodata
+    ruta = Rails.root.join('public', 'geodatos', id.to_s, "*")
+    archivos = Dir.glob(ruta)
+
+    archivos.each do |a|
+      File.delete(a)
+    end
+  end
+
+  # REVISADO: Devuelve una lista de todas las URLS asociadas a los geodatos
+  def tiene_geodatos?
+    geodatos = {}
+    geodatos[:cuales] = []
+
+    # Geoserver
+    if p = proveedor
+      p.dame_geoserver
+      
+      if p.jres[:estatus]
+        geodatos[:cuales] << "geoserver"
+        geodatos[:geoserver_descargas_url] = p.jres[:geoserver_descargas_url]
+      end
+    end
+
+    # Validacion para registros del snib y naturalista
+    valida_registros
+    return geodatos unless jres[:estatus]
+    
+    # URL para la consulta de registros
+    url = "#{CONFIG.site_url}especies/#{id}/consulta-registros"
+
+    geo = Geoportal::Snib.new({ params: { catalogo_id: catalogo_id, coleccion: 'snib' } })
+    geo.tiene_registros?
+    
+    if geo.resp[:estatus]
+      geodatos[:cuales] << "snib"
+      geodatos[:snib_json] = "#{url}.json?coleccion=snib&formato=json"
+      geodatos[:snib_kml] = "#{url}.kml?coleccion=snib&formato=kml"
+      geodatos[:snib_kmz] = "#{url}.kmz?coleccion=snib&formato=kmz"
+      geodatos[:snib_mapa_json] = "#{url}.json?coleccion=snib&formato=mapa-app"
+    end
+    
+    geo = Geoportal::Snib.new({ params: { catalogo_id: catalogo_id, coleccion: 'naturalista' } })
+    geo.tiene_registros?
+    
+    if geo.resp[:estatus]
+      geodatos[:cuales] << "naturalista"
+      geodatos[:naturalista_json] = "#{url}.json?coleccion=naturalista&formato=json"
+      geodatos[:naturalista_kml] = "#{url}.kml?coleccion=naturalista&formato=kml"
+      geodatos[:naturalista_kmz] = "#{url}.kmz?coleccion=naturalista&formato=kmz"
+      geodatos[:naturalistasnib_mapa_json] = "#{url}.json?coleccion=naturalista&formato=mapa-app"
+    end
+
+    geodatos
+  end
 
 end
