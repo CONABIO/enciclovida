@@ -9,7 +9,7 @@ $(document).ready(function () {
   variablesIniciales();
   opciones.filtros = {};
   cargaEjemplares(
-    "/explora-por-region/ejemplares?" + "&especie_id=" + opciones.catalogo_id
+    "/explora-por-region/ejemplares?" + "&catalogo_id=" + opciones.catalogo_id
   );
 
   // Para cargar las capas del geoserver
