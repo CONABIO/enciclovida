@@ -4,31 +4,23 @@ base: &base
   site_url: http://localhost:4000/
 
   # Nombre del sitio y vista por default
-  site_name: Bios
-  site_name_short: Bios
+  site_name: Enciclovida
+  site_name_short: Enciclovida
   default_locale: es
 
   # Limite del fuzzy match
   limit_fuzzy : 10
 
-  # IP de la cual recibira las peticiones
-  ip_sql_server: [tus_ips]
-  secret_sql_server: Tu cadena secreta
-
-  # URL SNIB, se realizo un proxy reverse en su respectivo web server
-  geoportal_url: http://localhost:9000/snib?qtype=getSpecies
+  # URL informativas del geoportal
   geoportal_informacion: http://www.conabio.gob.mx/snibgeoportal/Ejemplar.php?id=
+  geoportal_pdf: http://www.snib.mx/ejemplares/docs/CONABIO-SNIB-DiccionarioDatosEjemplaresGeoportal-201906.pdf
 
-  # URL geoserver
+  # URL geoserver, se realizo un proxy reverse en el puerto 9001
   geoserver_url: http://localhost:9001/mapcache/wms
   geoserver_descarga_url: http://www.conabio.gob.mx/informacion/explorer/cnb/wms?format=kmz&height=1024&width=1024&request=GetMap&service=wms
 
-  # Servicio de busquedas por region
-  ssig_api: https://www.enciclovida.mx:9002
-
-  # URL BDI y URL basico para imagen
+  # URL del banco de imagenes
   bdi_imagenes: http://bdi.conabio.gob.mx
-  bdi_fotoweb: http://bdi2.conabio.gob.mx/fotoweb/archives/5000-Banco%20de%20Imágenes/
 
   # URL de NaturaLista e iNaturalist
   naturalista_url: https://www.naturalista.mx
@@ -45,7 +37,8 @@ base: &base
   nelat: 32.2499
   nelng: -85.6933
 
-  # Proveedores de fotos
+  # Proveedores de fotos y descripciones
+  taxon_describers: [conabio, wikipediaes, eol, janium, eoles, wikipedia]
   photo_providers: [conabio, eol, wikimedia, flickr]
 
   # Usuario predeterminado para correr procesos desde los scripts de tools
@@ -55,18 +48,14 @@ base: &base
   username: tu-usuario
   password: tu-passwd
 
-  # Servidor en produccion que tendra los kml y kmz, tienen que estar publicos
+  # URLs de produccion de Enciclovida
   enciclovida_url: https://enciclovida.mx
   enciclovida_api: https://api.enciclovida.mx
 
-  # Servicio de busquedas por region y por especie
-  enciclovida_api: http://enciclovida.mx:8000
-
   # Cache de los servicios que guarda en disco
   cache:
-    observaciones_naturalista: 1.day
+    filtros_ev: 1.day
     ficha_naturalista: 1.day
-    ejemplares_snib: 1.day
     fichas: 1.week
     iucn: 1.second
     busquedas_region: 1.year
@@ -146,7 +135,7 @@ base: &base
     fichasespecies: fichasespecies
     plantid: plantas
 
-  correo_admin: coco@nana.bo.bo
+  correo_admin: enciclovida@conabio.gob.mx
 
 development:
     <<: *base
