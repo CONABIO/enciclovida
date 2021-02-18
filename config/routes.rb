@@ -261,14 +261,6 @@ Buscador::Application.routes.draw do
   post 'especies/new/:parent_id' => 'especies#new', :via => :post, :as => 'new'
   mount Soulmate::Server, :at => '/sm'
 
-  # Webservice para la validacion de nuevos o actualizados records (pendiente)
-  #wash_out :webservice
-
-  # End-points para la validacion de nuevos o actualizados records (actual)
-  post 'validaciones/update' => 'validaciones#update'
-  post 'validaciones/insert' => 'validaciones#insert'
-  post 'validaciones/delete' => 'validaciones#delete'
-
   # Para las validaciones de taxones la simple y la avanzada
   get 'validaciones' => 'validaciones#index'
   post 'validaciones/simple' => 'validaciones#simple', as: 'validacion_simple'

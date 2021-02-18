@@ -132,9 +132,9 @@ class Geoportal::Snib < GeoportalAbs
             archivo.puts kml
             archivo.close
           end
+          kmz(ruta)
         end
 
-        kmz(ruta)
         self.resp = { estatus: true, ruta_archivo: ruta_archivo }
       when 'mapa-app'
         self.registros = []
