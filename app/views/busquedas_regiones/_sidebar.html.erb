@@ -2,7 +2,7 @@
   <div class="form-row">
     <div class="form-group col-md-6">
       <div class="input-group">
-        <%= text_field_tag :nombre_region, params.present? ? params[:nombre_region] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control form-control-lg ml-3 py-2 border-right-0 border', title: "Estado, municipio o ANP" %> 
+        <%= text_field_tag :nombre_region, params.present? ? params[:nombre_region] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control form-control-lg ml-3 py-2 border-right-0 border', title: "Estado, municipio o área protegida" %>
         <span class="input-group-append">
           <button class="btn btn-outline-secondary border-left-0 border bg-light" type="button" id="boton-region-limpia">
             <i class="fa fa-close"></i>
