@@ -1,9 +1,9 @@
-<div class="w-100 bg-light p-1" id="filtros-especies"><p class='h5 my-0'><b class="text-info">Filtros utilizados:</b><%= filtrosEspecies(params) %></p></div>
+<div class="w-100 bg-light py-1 px-2" id="filtros-especies"><p class='h5 my-0'><b class="text-info">Filtros utilizados:</b><%= filtrosEspecies(params) %></p></div>
 
 <% if @resp[:estatus] %>
 
 <% if @resp[:totales].present? %>
-<div class="w-100 bg-light p-1 rounded-bottom mb-2">
+<div class="w-100 bg-light py-1 px-2 rounded-bottom mb-2">
     <p class="h5 my-0">
         <strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
         | <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros del <a id="snib" href="https://www.snib.mx/" class="btn-title font-weight-bolder" data-toggle="popover" title="Sistema Nacional de Información sobre Biodiversidad">SNIB</a>
@@ -37,7 +37,7 @@
 </div>
 
 
-<div id="opciones_resultados" class="w-100 bg-light p-1 rounded-top mt-auto d-inline-flex">
+<div id="opciones_resultados" class="w-100 bg-light py-1 px-2 rounded-top mt-auto d-inline-flex">
     <div class="w-25">
         <% if @resp[:totales].present? %>
         <% if @resp[:totales] > 0 && @resp[:totales] < 60000 %>
@@ -48,7 +48,7 @@
                 Descargas
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <%= link_to("Lista en excel", nil, 'data-togle': 'modal', 'data-target': '#modal-descarga-region', 'onclick': "$('#modal-descarga-region').modal('toggle');return false;", class: 'dropdown-item') %>
+                <%= button_tag("Lista en excel", type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-region', class: 'dropdown-item') %>
                 <%#= link_to("Guía de campo en PDF", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
             </div>
         </div>
