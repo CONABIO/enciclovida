@@ -66,13 +66,15 @@ class Proveedor < ActiveRecord::Base
   def dame_geoserver
     return self.jres = { estatus: false, msg: 'No tiene datos en el geoserver' } unless geoserver_info.present?
     info = JSON.parse(geoserver_info)
-    geoserver_descargas_url = []
+    geoserver_urls = []
 
-    info.each do |mapa, datos|
-      geoserver_descargas_url << { layers: datos['layers'], styles: datos['styles'], bbox: datos['bbox'], mapa: mapa, anio: datos['anio'], autor: datos['autor'], geoportal_url: datos['geoportal_url'] }
+    info.each do |mapa, d|
+      geoserver_descarga_url = "#{CONFIG.geoserver_descarga_url}&layers=#{d['layers']}&styles=#{d['styles']}&bbox=#{d['bbox']}"
+      datos = { layers: d['layers'],  anio: d['anio'], autor: d['autor'], styles: d['styles'], bbox: d['bbox'], mapa: mapa }
+      geoserver_urls << { datos: datos, geoserver_descarga_url: geoserver_descarga_url, geoportal_url: d['geoportal_url'] }
     end
 
-    self.jres = { estatus: true, geoserver_descargas_url: geoserver_descargas_url }
+    self.jres = { estatus: true, geoserver_urls: geoserver_urls }
   end
 
   private

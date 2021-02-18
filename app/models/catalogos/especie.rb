@@ -707,7 +707,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       
       if p.jres[:estatus]
         geodatos[:cuales] << "geoserver"
-        geodatos[:geoserver_descargas_url] = p.jres[:geoserver_descargas_url]
+        geodatos[:geoserver_url] = CONFIG.geoserver_url
+        geodatos[:geoserver_urls] = p.jres[:geoserver_urls]
       end
     end
 

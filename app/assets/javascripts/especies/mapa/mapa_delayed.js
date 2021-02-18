@@ -13,6 +13,6 @@ $(document).ready(function () {
   );
 
   // Para cargar las capas del geoserver
-  if (opciones.geoserver_url !== undefined)
-    cargaCapasGeoserver(opciones.geoserver_url);
+  if (opciones.geodatos.geoserver_url !== undefined)
+    cargaCapasGeoserver();
 });
