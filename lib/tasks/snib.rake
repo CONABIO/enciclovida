@@ -48,12 +48,78 @@ namespace :snib do
         end
       end
 
-      # El cache de todas las especies a nivel nacional
+      # El cache de todas las especies a nivel nacional, i.e. sin tipo_region ni region_id
       Rails.logger.debug "[DEBUG] - Generando cache de especies a nivel nacional"
       geo = Geoportal::Snib.new
       geo.params = {}
       geo.borra_cache_especies
       geo.especies
+    end
+  end
+
+
+  namespace :registros do
+    desc "Genera/actualiza los registros default por especie, cuando no selecciono ningun tipo_region y lo guarda en cache"
+    task default: :environment do
+      Geoportal::Snib.all.select(:idnombrecatvalido).group(:idnombrecatvalido).map(&:idnombrecatvalido).each do |idnombrecatvalido|
+        Rails.logger.debug "[DEBUG] - Generando cache para: #{idnombrecatvalido}"
+        geo = Geoportal::Snib.new
+        geo.params = { catalogo_id: idnombrecatvalido }
+        geo.borra_cache_ejemplares
+        geo.ejemplares
+      end
+    end
+
+    desc "Genera/actualiza los registros cuando se tiene tipo_region estado"
+    task estado: :environment do
+      Geoportal::Snib.all.select(:idnombrecatvalido).where("entid IS NOT NULL").group(:idnombrecatvalido).map(&:idnombrecatvalido).each do |idnombrecatvalido|
+        Rails.logger.debug "[DEBUG] - Generando cache para: #{idnombrecatvalido}"
+        geo = Geoportal::Snib.new
+        geo.params = { catalogo_id: idnombrecatvalido, tipo_region: 'estado' }
+        geo.borra_cache_ejemplares
+        geo.ejemplares
+      end
+    end
+
+    desc "Genera/actualiza los registros cuando se tiene tipo_region municipio"
+    task municipio: :environment do
+      Geoportal::Snib.all.select(:idnombrecatvalido).where("munid IS NOT NULL").group(:idnombrecatvalido).map(&:idnombrecatvalido).each do |idnombrecatvalido|
+        Rails.logger.debug "[DEBUG] - Generando cache para: #{idnombrecatvalido}"
+        geo = Geoportal::Snib.new
+        geo.params = { catalogo_id: idnombrecatvalido, tipo_region: 'municipio' }
+        geo.borra_cache_ejemplares
+        geo.ejemplares
+      end
+    end
+
+    desc "Genera/actualiza los registros cuando se tiene tipo_region ANP"
+    task anp: :environment do
+      Geoportal::Snib.all.select(:idnombrecatvalido).where("anpid IS NOT NULL").group(:idnombrecatvalido).map(&:idnombrecatvalido).each do |idnombrecatvalido|
+        Rails.logger.debug "[DEBUG] - Generando cache para: #{idnombrecatvalido}"
+        geo = Geoportal::Snib.new
+        geo.params = { catalogo_id: idnombrecatvalido, tipo_region: 'anp' }
+        geo.borra_cache_ejemplares
+        geo.ejemplares
+      end
+    end    
+
+    desc "Genera/actualiza los registros que se tienen para default, estado, municipio y ANP"
+    task todos: :environment do
+      tipos_regiones = { 'default' => '', 'estado' => 'entid', 'municipio' => 'munid', 'anp' => 'anpid' }
+      
+        tipos_regiones.each do |tipo_region, campo|
+          Rails.logger.debug "[DEBUG] - Generando cache para tipo_region: #{tipo_region}"
+          geoportal = Geoportal::Snib.all.select(:idnombrecatvalido).group(:idnombrecatvalido)
+          geoportal = geoportal.where("#{campo} IS NOT NULL") if campo.present?
+          
+          geoportal.map(&:idnombrecatvalido).each do |idnombrecatvalido|
+            Rails.logger.debug "[DEBUG] - Generando cache para: #{idnombrecatvalido}"
+            geo = Geoportal::Snib.new
+            geo.params = { catalogo_id: idnombrecatvalido, tipo_region: tipo_region }
+            geo.borra_cache_ejemplares
+            geo.ejemplares
+          end
+        end
     end
   end
 
