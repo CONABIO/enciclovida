@@ -66,51 +66,6 @@ server.register(
     });
 
     server.route({
-      path: "/regiones/estados",
-      method: "GET",
-      config: {
-        tags: ["api"],
-        description: "Consulta todos los estados",
-        notes: "----",
-        handler: function (request, reply) {
-          query.dameEstados(request).then((dato) => {
-            reply(dato);
-          });
-        },
-      },
-    });
-
-    server.route({
-      path: "/regiones/municipios",
-      method: "GET",
-      config: {
-        tags: ["api"],
-        description: "Consulta todos los estados",
-        notes: "----",
-        handler: function (request, reply) {
-          query.dameMunicipios(request).then((dato) => {
-            reply(dato);
-          });
-        },
-      },
-    });
-
-    server.route({
-      path: "/regiones/anps",
-      method: "GET",
-      config: {
-        tags: ["api"],
-        description: "Consulta todas las ANPs",
-        notes: "----",
-        handler: function (request, reply) {
-          query.dameANP(request).then((dato) => {
-            reply(dato);
-          });
-        },
-      },
-    });
-
-    server.route({
       path: "/especies/busqueda/basica/{q}",
       method: "GET",
       config: {
@@ -322,16 +277,16 @@ server.register(
             tipo_region: Joi.string()
               .valid(["estado", "municipio", "anp"])
               .description(
-                "De acuerdo al tipo de region se asocia el campo del region_id"
+                "De acuerdo al tipo de region se asocia el campo del region_id, los aceptados son: estado, municipio o anp"
               ),
           },
         },
         handler: function (request, reply) {
-          var url = SERVER + "/explora-por-region/ejemplares?utf8=✓";
+          var url = SERVER + "/explora-por-region/ejemplares?";
           var req = request.query;
 
           if (req.catalogo_id !== undefined)
-            url += "&catalogo_id=" + req.catalogo_id;
+            url += "catalogo_id=" + req.catalogo_id;
 
           if (req.region_id !== undefined) url += "&region_id=" + req.region_id;
 
@@ -353,12 +308,12 @@ server.register(
         notes: "---",
         validate: {
           params: {
-            id: Joi.number().description("ID de la especie"),
+            id: Joi.number().required().description("ID de la especie"),
           },
         },
         handler: function (request, reply) {
           var url =
-            "http://enciclovida.mx/especies/" + request.params.id + ".json";
+            SERVER + "/especies/" + request.params.id + ".json";
           query.ajaxRequest(url, reply);
         },
       },
@@ -373,12 +328,12 @@ server.register(
         notes: "---",
         validate: {
           params: {
-            id: Joi.number().description("ID de la especie"),
+            id: Joi.number().required().description("ID de la especie"),
           },
         },
         handler: function (request, reply) {
           var url =
-            "http://enciclovida.mx/especies/" +
+            SERVER + "/explora-por-clasificacion.json?especie_id=" +
             request.params.id +
             "/arbol_nodo_inicial";
           query.ajaxRequest(url, reply);
@@ -395,22 +350,15 @@ server.register(
         notes: "---",
         validate: {
           params: {
-            id: Joi.number().description("ID de la especie"),
-          },
-          query: {
-            locale: Joi.string()
-              .valid(["es", "en"])
-              .description(
-                "El lenguaje del resumen, si se deja vacio trata de encontrar el que tenga información en ese orden"
-              ),
+            id: Joi.number().required().description("ID de la especie"),
           },
         },
         handler: function (request, reply) {
           var url =
-            "http://enciclovida.mx/especies/" +
+            SERVER + "/especies/" +
             request.params.id +
-            "/resumen-wikipedia?locale=" +
-            request.query.locale;
+            "/resumen-wikipedia";
+          console.log(url)
           query.ajaxRequest(url, reply);
         },
       },
@@ -430,7 +378,7 @@ server.register(
         },
         handler: function (request, reply) {
           var url =
-            "http://enciclovida.mx/sm/search?term=" +
+            SERVER + "/sm/search?term=" +
             request.params.q +
             "&types%5B%5D=especie&types%5B%5D=subespecie&types%5B%5D=variedad&types%5B%5D=subvariedad&types%5B%5D=forma&types%5B%5D=subforma&types%5B%5D=Reino&types%5B%5D=subreino&types%5B%5D=superphylum&types%5B%5D=division&types%5B%5D=subdivision&types%5B%5D=phylum&types%5B%5D=subphylum&types%5B%5D=superclase&types%5B%5D=grado&types%5B%5D=clase&types%5B%5D=subclase&types%5B%5D=infraclase&types%5B%5D=superorden&types%5B%5D=orden&types%5B%5D=suborden&types%5B%5D=infraorden&types%5B%5D=superfamilia&types%5B%5D=familia&types%5B%5D=subfamilia&types%5B%5D=supertribu&types%5B%5D=tribu&types%5B%5D=subtribu&types%5B%5D=genero&types%5B%5D=subgenero&types%5B%5D=seccion&types%5B%5D=subseccion&types%5B%5D=serie&types%5B%5D=subserie&limit=5";
           query.ajaxRequest(url, reply);
@@ -438,6 +386,72 @@ server.register(
       },
     });
 
+    server.route({
+      path: "/snib/ejemplar/{id}",
+      method: "GET",
+      config: {
+        tags: ["api"],
+        description: "Obtiene la información asociada al ejemplar",
+        notes: "---",
+        validate: {
+          params: {
+            id: Joi.number().required().description("ID del ejemplar"),
+          },
+        },
+        handler: function (request, reply) {
+          var url =
+            SERVER + "/explora-por-region/ejemplar?ejemplar_id=" +
+            request.params.id;
+          query.ajaxRequest(url, reply);
+        },
+      },
+    });
+
+    server.route({
+      path: "/snib/regiones/estados",
+      method: "GET",
+      config: {
+        tags: ["api"],
+        description: "Consulta todos los estados",
+        notes: "----",
+        handler: function (request, reply) {
+          query.dameEstados(request).then((dato) => {
+            reply(dato);
+          });
+        },
+      },
+    });
+
+    server.route({
+      path: "/snib/regiones/municipios",
+      method: "GET",
+      config: {
+        tags: ["api"],
+        description: "Consulta todos los estados",
+        notes: "----",
+        handler: function (request, reply) {
+          query.dameMunicipios(request).then((dato) => {
+            reply(dato);
+          });
+        },
+      },
+    });
+
+    server.route({
+      path: "/snib/regiones/anps",
+      method: "GET",
+      config: {
+        tags: ["api"],
+        description: "Consulta todas las ANPs",
+        notes: "----",
+        handler: function (request, reply) {
+          query.dameANP(request).then((dato) => {
+            reply(dato);
+          });
+        },
+      },
+    });    
+    
     server.start(function () {
       console.log("started on " + SERVER);
     });
