@@ -29,12 +29,17 @@ class Geoportal::Snib < GeoportalAbs
     # Hace el query en vivo, ya que es una cantidad relativamente pequeña de ejemplares
     if campo_tipo_region.present? && params[:region_id].present? 
       self.resp = consulta_ejemplares_por_region
-    else  # Lo guarda en cache
+    else  # Lo guarda en cache cuando no escogio una region en especifico
       self.resp = Rails.cache.fetch("br_#{params[:catalogo_id]}_#{params[:tipo_region]}_#{params[:region_id]}", expires_in: eval(CONFIG.cache.busquedas_region)) do
         consulta_ejemplares_por_region
       end
     end
   end
+
+  # Borra el cache de los ejemplares
+  def borra_cache_ejemplares
+    Rails.cache.delete("br_#{params[:catalogo_id]}_#{params[:tipo_region]}_#{params[:region_id]}") if Rails.cache.exist?("br_#{params[:catalogo_id]}_#{params[:tipo_region]}_#{params[:region_id]}")
+  end  
 
   # Regresa la información asociada a un ejemplar por medio de su ID
   def ejemplar
