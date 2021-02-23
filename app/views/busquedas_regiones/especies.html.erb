@@ -1,4 +1,4 @@
-<div class="w-100 bg-light py-1 px-2" id="filtros-especies">
+<div class="w-100 bg-light mt-2 px-2 rounded-top" id="filtros-especies">
   <p class='h5 my-0'><b class="text-info">Filtros utilizados:</b><%= filtrosEspecies(params) %></p>
 </div>
 
@@ -35,17 +35,16 @@
         </div>
       <% end %>
     </div>
-
   </div>
 
 
   <div id="opciones_resultados" class="w-100 bg-light py-1 px-2 rounded-top mt-auto d-inline-flex">
-    <div class="w-25">
+        <div class="w-25">
       <% if @resp[:totales].present? %>
         <% if @resp[:totales] > 0 && @resp[:totales] < 60000 %>
           <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
 
-          <div class="dropdown">
+          <div class="btn-group dropup">
             <button class="btn btn-outline-info btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Descargas
             </button>
@@ -58,7 +57,6 @@
 
       <% end %>
     </div>
-
     <div class="w-50 text-center">
       <%= @resp['carga-anteriores-especies'] ? button_tag('<i class="fa fa-arrow-left"></i>'.html_safe, class: 'btn btn-light btn-outline-info btn-title rounded-pill', id: 'carga-anteriores-especies', title: 'Anterior', type: 'button', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover') : button_tag('<i class="fa fa-arrow-left"></i>'.html_safe, class: 'btn btn-dark btn-outline-info btn-title rounded-pill disabled', type: 'button') %>
       <%= @resp['carga-siguientes-especies'] ? button_tag('<i class="fa fa-arrow-right"></i>'.html_safe, class: 'btn btn-light btn-outline-info btn-title rounded-pill', id: 'carga-siguientes-especies', title: 'Siguiente', type: 'button', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover') : button_tag('<i class="fa fa-arrow-right"></i>'.html_safe, class: 'btn btn-dark btn-outline-info btn-title rounded-pill disabled', type: 'button') %>
@@ -68,22 +66,27 @@
 
   <script>
       var isResizing = false;
+      var resp = <%= raw @resp.to_json %>;
+
+      var resize;
+      var posicionInicialResize;
+      var anchoResize;
 
       $(document).ready(function() {
-          var resp = <%= raw @resp.to_json %>;
-
-          const resize = $('#contenedor_resultados');
-          const posicionInicialResize = resize.offset().left;
-          const anchoResize = resize.width();
 
           $('#drag').on('mousedown', function(){
               isResizing = true;
-          }).on('mouseup', function() {
+          });
+
+          $('#contenedor_mapa').on('mouseup', function() {
               isResizing = false;
           });
 
           $('#contenedor_mapa').on('mousemove', function(e){
               if(isResizing){
+                  resize = $('#contenedor_resultados');
+                  posicionInicialResize = resize.offset().left;
+                  anchoResize = resize.width();
                   resize.css('left', ((e.clientX - posicionInicialResize) < -5) ? 0 : e.clientX - posicionInicialResize);
               }else{
                   return;
