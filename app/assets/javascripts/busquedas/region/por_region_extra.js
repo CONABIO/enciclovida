@@ -172,7 +172,7 @@ $(document).ready(function () {
       if (this.id == "carga-anteriores-especies") opciones.filtros.pagina--;
       else opciones.filtros.pagina++;
       cargaEspecies();
-      //event.preventDefault();
+      event.preventDefault();
     }
   );
 
@@ -181,8 +181,8 @@ $(document).ready(function () {
     "focus",
     "#nombre_especie, #nombre_region",
     function () {
-      if ($(this).attr("soulmate") == "true") return;
-      $(this).attr("soulmate", "true");
+      if ($(this).attr("soulmate") == true) return;
+      $(this).attr("soulmate", true);
 
       if (this.id == "nombre_especie")
         soulmateAsigna("busqueda_region", this.id);

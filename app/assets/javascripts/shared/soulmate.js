@@ -217,17 +217,3 @@ var seleccionaRegionRedis = function (feat) {
 
   seleccionaRegion(feat.properties);
 };
-
-var dameTaxonValido = function (especie_id) {
-  let data_valio = null;
-
-  $.ajax({
-    url: "/especies/" + especie_id + ".json",
-    async: false,
-    success: function (data) {
-      data_valido = data;
-    },
-  });
-
-  return data_valido;
-};
