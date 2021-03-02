@@ -66,14 +66,10 @@
   transition: all ease-out .5s;
 }
 #drag{
-  left: -12px;
-  top: 2rem;
-  bottom: 2rem;
-  width: 6px;
-  cursor: e-resize;
-  background-color: #333333;
+  left: -20px;
+  z-index: 1;
 }
-#drag button{cursor: pointer;}
+/*#drag button{cursor: pointer;}*/
 #filtros-especies {}
 
 #contenedor_especies i.ev1-ev-icon {

@@ -13,9 +13,10 @@
     </div>
   <% end %>
 
-  <div id="contenedor_resultados" class="position-relative">
-    <div id="drag" class="align-items-center border-left border-light border-right d-flex flex-column justify-content-center position-absolute">
-      <button type=button class="btn btn-light btn-sm btn-title fa fa-chevron-circle-right rounded-pill"></button>
+  <div id="contenedor_resultados" class="d-flex position-relative">
+    <div id="drag" class="align-self-center bg-dark d-flex flex-column position-absolute rounded-pill">
+      <button id="goLeft" type=button class="btn btn-outline-light btn-title fa fa-chevron-left rounded-pill border-0"></button>
+      <button id="goRight" type=button class="btn btn-outline-light btn-title fa fa-chevron-right rounded-pill border-0"></button>
     </div>
     <div class="row no-gutters">
 
@@ -68,34 +69,39 @@
       var isResizing = false;
       var resp = <%= raw @resp.to_json %>;
 
-      var resize;
-      var posicionInicialResize;
-      var anchoResize;
 
       $(document).ready(function() {
 
-          $('#drag').on('mousedown', function(){
-              isResizing = true;
-          });
+          resizeD = $('#contenedor_resultados');
+          resizeP = true;
+          posicionInicialResizeD = resizeD.offset().left;
+          anchoResizeD = resizeD.width();
 
-          $('#contenedor_mapa').on('mouseup', function() {
-              isResizing = false;
-          });
-
-          $('#contenedor_mapa').on('mousemove', function(e){
-              if(isResizing){
-                  resize = $('#contenedor_resultados');
-                  posicionInicialResize = resize.offset().left;
-                  anchoResize = resize.width();
-                  resize.css('left', ((e.clientX - posicionInicialResize) < -5) ? 0 : e.clientX - posicionInicialResize);
+          $('#goLeft').on('click', function() {
+              if(resizeP){
+                  resizeD.css('left', -(posicionInicialResizeD - 20));
+                  resizeD.css('width', (anchoResizeD * 2)-20);
+                  resizeP = false;
+                  $(this).prop('disabled', true);
               }else{
-                  return;
+                  resizeD.css('left', 0);
+                  resizeD.css('width', anchoResizeD);
+                  resizeP = true;
+                  $('#drag button').prop('disabled', false);
               }
           });
-
-          $('#drag button').on('click', function() {
-              resize.css('left', ((resize.offset().left > posicionInicialResize) ? 0 : anchoResize - 20));
-              $(this).toggleClass('fa-chevron-circle-right fa-chevron-circle-left');
+          $('#goRight').on('click', function() {
+              if(resizeP){
+                  resizeD.css('left', posicionInicialResizeD - 20);
+                  resizeD.css('width', anchoResizeD);
+                  resizeP = false;
+                  $(this).prop('disabled', true);
+              }else{
+                  resizeD.css('left', 0);
+                  resizeD.css('width', anchoResizeD);
+                  resizeP = true;
+                  $('#drag button').prop('disabled', false);
+              }
           });
 
           $('#contenedor_especies .btn-title').tooltip();
