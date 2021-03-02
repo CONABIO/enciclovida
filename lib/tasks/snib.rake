@@ -137,7 +137,13 @@ namespace :snib do
           geoportal.map(&:idnombrecatvalido).each do |idnombrecatvalido|
             Rails.logger.debug "[DEBUG] - Generando cache para: #{idnombrecatvalido}"
             geo = Geoportal::Snib.new
-            geo.params = { catalogo_id: idnombrecatvalido, tipo_region: tipo_region }
+
+            if tipo_region == 'default'
+              geo.params = { catalogo_id: idnombrecatvalido }
+            else
+              geo.params = { catalogo_id: idnombrecatvalido, tipo_region: tipo_region }
+            end
+            
             geo.borra_cache_ejemplares
             geo.ejemplares
           end

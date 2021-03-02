@@ -596,7 +596,6 @@ $(document).ready(function () {
         opciones.filtros.tipo_region = "estado";
         $("#tipo_region").val("estado");
         cargaRegion("estado");
-        console.log("entro a estado");
         break;
       case "División municipal":
         opciones.filtros.tipo_region = "municipio";
