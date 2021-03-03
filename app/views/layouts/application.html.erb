@@ -2,56 +2,58 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es-MX" lang="es-MX">
 
 <head>
-    <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
-    <meta name="keywords" content="<%= yield :meta_keywords %>">
-    <title><%= yield :title %></title>
-    <%= favicon_link_tag '/favicon.ico' %>
+  <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
+  <meta name="keywords" content="<%= yield :meta_keywords %>">
+  <title><%= yield :title %></title>
+  <%= favicon_link_tag '/favicon.ico' %>
 
-    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 
 
-    <script type="text/javascript" data-turbolinks-track="true">
-        TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis(I18n.locale.to_s) %>");
-        SITE_URL = "<%= CONFIG.site_url %>";
-    </script>
+  <script type="text/javascript" data-turbolinks-track="true">
+      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis(I18n.locale.to_s) %>");
+      SITE_URL = "<%= CONFIG.site_url %>";
+  </script>
 
-    <script type="text/javascript" data-turbolinks-track="true">
-        I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
-        I18n.locale = "<%= I18n.locale %>";
-        I18n.fallbacks = true;
-    </script>
+  <script type="text/javascript" data-turbolinks-track="true">
+      I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
+      I18n.locale = "<%= I18n.locale %>";
+      I18n.fallbacks = true;
+  </script>
+  
+  <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f97bf94d924480012e1d081&product=sop' async='async'></script>
 
-    <%= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
 
-    <%= csrf_meta_tags %>
-    <%= yield :extrahead %>
-    <%= yield :extracss %>
-    <%= yield :extrajs %>
+  <%= csrf_meta_tags %>
+  <%= yield :extrahead %>
+  <%= yield :extracss %>
+  <%= yield :extrajs %>
 </head>
 
 <body>
 
-    <%= yield :ribbon %>
+<%= yield :ribbon %>
 
-    <header class="container-fluid">
-        <%= render :partial => 'shared_b4/brandBar' %>
-        <%= yield :extra_title_header %>
-    </header>
+<header class="container-fluid">
+  <%= render :partial => 'shared_b4/brandBar' %>
+  <%= yield :extra_title_header %>
+</header>
 
-    <section id="content" class="container-fluid">
-        <div class="row main bg-light">
-            <%= yield %>
-        </div>
-    </section>
+<section id="content" class="container-fluid">
+  <div class="row main bg-light">
+    <%= yield %>
+  </div>
+</section>
 
-    <footer class="container-fluid">
-        <%= render :partial => 'shared_b4/footer_social' %>
-        <%= render :partial => 'shared_b4/footer_legal' %>
-    </footer>
+<footer class="container-fluid">
+  <%= render :partial => 'shared_b4/footer_social' %>
+  <%= render :partial => 'shared_b4/footer_legal' %>
+</footer>
 
-    <%= yield :extrajs_carrusel %>
+<%= yield :extrajs_carrusel %>
 
-    <%= yield :delayedjs %>
+<%= yield :delayedjs %>
 </body>
 
 </html>

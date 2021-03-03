@@ -64,29 +64,24 @@ $(document).ready(function () {
   /**
    * Cuando selecciona una especie
    */
-  $("#contenedor_especies").on(
-    "click",
-    ".boton-especie-registros",
-    function (event) {
-      $("#especie-container-" + opciones.filtros.catalogo_id).removeClass(
-        "border-selected-especie"
-      );
-      opciones.filtros.catalogo_id = $(this).attr("catalogo_id");
-      opciones.filtros.especie_id_focus = $(this).attr("especie_id_focus");
+  $("#contenedor_especies").on("click", ".boton-especie-registros", function (event) {
+    $("#especie-container-" + opciones.filtros.catalogo_id).removeClass(
+      "border-selected-especie"
+    );
+    opciones.filtros.catalogo_id = $(this).attr("catalogo_id");
+    opciones.filtros.especie_id_focus = $(this).attr("especie_id_focus");
 
-      // sobreescribe los parametros de la URL para el catalogo_id
-      $("#catalogo_id").val(opciones.filtros.catalogo_id);
-      $("#especie_id_focus").val(opciones.filtros.especie_id_focus);
-      cambiaURLParametros();
+    // sobreescribe los parametros de la URL para el catalogo_id
+    $("#catalogo_id").val(opciones.filtros.catalogo_id);
+    $("#especie_id_focus").val(opciones.filtros.especie_id_focus);
+    cambiaURLParametros();
 
-      $("#especie-container-" + opciones.filtros.catalogo_id).addClass(
-        "border-selected-especie"
-      );
-      cargaEjemplares(
-        "/explora-por-region/ejemplares?" + serializeParametros()
-      );
-      event.preventDefault();
-    }
+    $("#especie-container-" + opciones.filtros.catalogo_id).addClass(
+      "border-selected-especie"
+    );
+    cargaEjemplares("/explora-por-region/ejemplares?" + serializeParametros());
+    event.preventDefault();
+  }
   );
 
   /**
@@ -211,9 +206,9 @@ $(document).ready(function () {
   if (opciones.filtros.catalogo_id)
     cargaEjemplares(
       "/explora-por-region/ejemplares?" +
-        serializeParametros() +
-        "&especie_id=" +
-        opciones.filtros.catalogo_id
+      serializeParametros() +
+      "&especie_id=" +
+      opciones.filtros.catalogo_id
     );
 
   if ($("#ejemplar_id").val() != "") createPopup($("#ejemplar_id").val());
