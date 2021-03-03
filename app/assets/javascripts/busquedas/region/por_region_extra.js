@@ -60,6 +60,13 @@ var seleccionaRegion = function (prop) {
   cargaEspecies();
 };
 
+/**
+ * El estado inicial de la cortinilla de especies
+ * @type {number}
+ */
+var resizeP = 0;
+
+
 $(document).ready(function () {
   /**
    * Cuando selecciona una especie
@@ -218,17 +225,17 @@ $(document).ready(function () {
   $("#grupos-pop").popover({
     content: $("#grupos-tab")[0],
     sanitize: false,
-    container: "#busqueda_region",
+    container: "body",
     html: true,
-    boundary: "viewport",
+    boundary: "window",
   });
 
   $("#filtros-pop").popover({
     content: $("#filtros-tab")[0],
     sanitize: false,
-    container: "#busqueda_region",
+    container: "body",
     html: true,
-    boundary: "viewport",
+    boundary: "window",
   });
   $("#grupos-pop").on("hide.bs.popover", function () {
     $("#grupos-tab").detach().appendTo("#sidebar");

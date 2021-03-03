@@ -71,7 +71,6 @@
       $(document).ready(function() {
           /*TODO ESTO DEBE IR EN por_region_extra.js, ya q no depende de la respuesta ¬¬*/
           resizeD = $('#contenedor_resultados');
-          resizeP = 0;
           posicionInicialResizeD = resizeD.offset().left;
           anchoResizeD = resizeD.width();
 
@@ -91,13 +90,13 @@
           goState = function(state) {
               switch (state) {
                   case -1:
-                      resizeD.css('left', -(posicionInicialResizeD - 20));
-                      resizeD.css('width', (anchoResizeD * 2) - 20);
+                      resizeD.css('left', -(posicionInicialResizeD - 60));
+                      resizeD.css('width', (anchoResizeD * 2) - 60);
                       resizeP = -1;
                       $('#goLeft').prop('disabled', true);
                       break;
                   case 1:
-                      resizeD.css('left', posicionInicialResizeD - 20);
+                      resizeD.css('left', posicionInicialResizeD - 60);
                       resizeD.css('width', anchoResizeD);
                       resizeP = 1;
                       $('#goRight').prop('disabled', true);
