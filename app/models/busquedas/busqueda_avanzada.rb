@@ -57,8 +57,7 @@ class BusquedaAvanzada < Busqueda
 
   def checklist
     # Saca todos los IDS con los criterios y los ancestros
-    self.taxones = taxones.where(estatus: 2) if params[:f_desc].present? && params[:f_desc].include?('x_estatus')  
-    ids_checklist = taxones.select_ancestry.map{ |t| t.ancestry.split(',') }.flatten.reject(&:empty?).uniq!
+    ids_checklist = taxones.select_ancestry.where(estatus: 2).map{ |t| t.ancestry.split(',').reject { |c| c.empty? } }.flatten.uniq!
     self.taxones = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional).datos_checklist.categorias_checklist.where(id: ids_checklist)
 
     # Saca el conteo de los taxones en las 7 categorias principales

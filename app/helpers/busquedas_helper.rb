@@ -203,7 +203,7 @@ module BusquedasHelper
     sinonimos_basonimo = {sinonimos: [], basonimo: [], hospedero: [], parasito: []}
 
     estatus_permitidos = []
-    if params[:f_desc].present? && !params[:f_desc].include?('x_estatus')
+    if !params[:f_check].present? || !params[:f_check].include?('val')
       estatus_permitidos << 1
       estatus_permitidos << 2
     end
