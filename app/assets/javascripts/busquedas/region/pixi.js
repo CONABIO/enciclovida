@@ -290,6 +290,8 @@ var cargaEjemplares = function (url) {
                     /* Quitando el loading ua vez q ya fueron pintados los registros*/
                     $('#loading').toggleClass('invisible');
                     goState(1);
+		                /*Nos movemos un cuarto del mapa a la derecha*/
+		                map.panBy(new L.Point(-(map.getSize().x*0.25), 0), {animate: false});
                 }
             }
         });

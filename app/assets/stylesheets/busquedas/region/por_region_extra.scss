@@ -1,6 +1,6 @@
 #map {
-  min-height: 650px;
-  max-height: 650px;
+  min-height: 90vh;
+  max-height: 90vh;
 }
 
 #grupos-pop [class*="ev-icon"],
@@ -51,6 +51,9 @@
   top: 0;
   z-index: 1050;
   pointer-events: none!important;
+}
+.popover{
+  max-width: 405px!important;
 }
 #busqueda_region *, #filtros-especies, #snib, #drag,  #opciones_resultados *, .result-img-container, .result-nombre-container{pointer-events: auto;}
 #contenedor_especies{right: 0;}
