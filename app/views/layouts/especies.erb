@@ -21,6 +21,8 @@
       I18n.fallbacks = true;
   </script>
 
+  <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f97bf94d924480012e1d081&product=sop' async='async'></script>
+
   <%= stylesheet_link_tag 'application', 'data-turbolinks-track' => true %>
 
   <%= csrf_meta_tags %>
@@ -38,6 +40,12 @@
 <section id="content" class="container-fluid">
   <div class="row main bg-light">
     <%= yield %>
+    <div class="col">
+      <p class="font-weight-bolder h4 py-2 text-info text-right">Compartir:</p>
+    </div>
+    <div class="col-6 col-md-4 col-lg-3 py-1">
+      <div class="sharethis-inline-share-buttons"></div>
+    </div>
   </div>
 </section>
 

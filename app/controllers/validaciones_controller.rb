@@ -1,7 +1,8 @@
 class ValidacionesController < ApplicationController
 
   before_action :tipo_validacion, only: [:simple, :avanzada]
-
+  layout Proc.new{['update', 'insert', 'delete'].include?(action_name) ? false : 'application_b3'}
+  
   # Vista de la validacion simple y avanzada
   def index
   end

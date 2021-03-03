@@ -102,7 +102,12 @@
   width: 100%;
 }
 
-#soulmate {
+#loading{
+  top: 0;
+  z-index: 2000;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+#soulmate{
   width: 500px;
   top: 35px;
 }
