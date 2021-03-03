@@ -544,6 +544,8 @@ var cargaRegion = function (tipo_region, inicial = false) {
       );
     })();
 
+    if(inicial) opciones.filtros.cago_division = tipo_region;
+    
     // Pone el baseMap en el mapa
     switch (tipo_region) {
       case "estado":
@@ -577,6 +579,8 @@ var cargaRegion = function (tipo_region, inicial = false) {
 // Cuando cambia este componente, pongo el que actualmente selecciono
 $(document).ready(function () {
   map.on("baselayerchange", function (e) {
+    if (opciones.filtros.cago_division != undefined) return;  // Para que no entre doble vez cuando se carga una URL con una region activada
+
     if (opciones.filtros.tipo_region != undefined) {
       opciones.baseMaps[opciones.filtros.tipo_region].removeFrom(map);
       if (opciones.pixi.tiene_var_iniciales) limpiaMapa(); // Nos aseguramos que cada que escoja una region se limpien los registros
