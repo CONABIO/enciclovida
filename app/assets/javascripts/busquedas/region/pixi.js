@@ -32,28 +32,28 @@ var variablesIniciales = function () {
 var markerScale = function (zoom) {
   switch (zoom) {
     case 5:
-      scale = 59.25;
+      scale = 9;
       break;
     case 6:
-      scale = 34.16;
+      scale = 4.5;
       break;
     case 7:
-      scale = 19.08;
+      scale = 2.5;
       break;
     case 8:
-      scale = 9.54;
+      scale = 1.5;
       break;
     case 9:
-      scale = 5.1;
+      scale = .7;
       break;
     case 10:
-      scale = 3.1;
+      scale = .35;
       break;
     case 11:
-      scale = 1.54;
+      scale = .15;
       break;
     case 12:
-      scale = 0.87;
+      scale = 0.09;
       break;
     case 13:
       scale = 0.43;

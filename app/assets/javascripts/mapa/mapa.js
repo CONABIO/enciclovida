@@ -47,6 +47,7 @@ var cargaMapa = function (id, opc) {
     zoomControl: false,
     doubleClickZoom: false,
     minZoom: 5,
+    maxZoom: 12,
     layers: [
       // Existe un bug poniendo primero los layers de google
       //OSM_layer,

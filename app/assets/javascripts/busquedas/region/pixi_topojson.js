@@ -339,7 +339,7 @@ var cargaRegion = function (tipo_region, inicial = false) {
 
                   graphDraw(
                     { vertices: vertices, edges: edges },
-                    9 / utils.getScale(9),
+                    4 / utils.getScale(9),
                     meshCb,
                     Math.PI
                   );
