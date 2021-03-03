@@ -60,9 +60,6 @@ var seleccionaRegion = function (prop) {
   cargaEspecies();
 };
 
-/* Inicializando una función que posteriormente debe ir aquí*/
-var goState;
-
 $(document).ready(function () {
   /**
    * Cuando selecciona una especie

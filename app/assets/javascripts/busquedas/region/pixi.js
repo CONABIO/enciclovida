@@ -228,6 +228,11 @@ var infoPopup = function (data) {
 };
 
 /**
+ * Inicializando una función que posteriormente debe ir aquí (esta función tiene que ver con el cambio de tamaño de la cortina de resultados de especies en las busquedas por región)
+ */
+var goState = function(){};
+
+/**
  * Carga todos los registros del SNIB en una misma integracion
  */
 var cargaEjemplares = function (url) {
