@@ -75,10 +75,14 @@
           anchoResizeD = resizeD.width();
 
           goLeft = function() {
+		          /*Nos movemos un cuarto del mapa a la izquierda*/
+		          map.panBy(new L.Point((map.getSize().x*0.25), 0), {animate: true});
               resizeP == 1 ? goState(0) : goState(-1);
           };
 
           goRight = function() {
+		          /*Nos movemos un cuarto del mapa a la derecha*/
+		          map.panBy(new L.Point(-(map.getSize().x*0.25), 0), {animate: true});
               resizeP == -1 ? goState(0) : goState(1);
           };
 
@@ -90,12 +94,14 @@
           goState = function(state) {
               switch (state) {
                   case -1:
+                      actualizaPosicion();
                       resizeD.css('left', -(posicionInicialResizeD - 60));
                       resizeD.css('width', (anchoResizeD * 2) - 60);
                       resizeP = -1;
                       $('#goLeft').prop('disabled', true);
                       break;
                   case 1:
+                      actualizaPosicion();
                       resizeD.css('left', posicionInicialResizeD - 60);
                       resizeD.css('width', anchoResizeD);
                       resizeP = 1;
@@ -110,8 +116,16 @@
           };
 
           $(window).on('resize', function(){
-              goState();
-              actualizaPosicion();
+		          resizeD.removeAttr('style');
+		          //actualizaPosicion();
+              goState(resizeP);
+              //ponTamaño();
+		          //$('#map').css('height', $(window).height()-50);
+		          //$('#contenedor_mapa').addClass('embed-responsive embed-responsive-23by9');
+		          //$('#map').css('height', $('#contenedor_mapa').height());
+		          //map.invalidateSize(true);
+		          //$('#contenedor_mapa').removeClass('embed-responsive embed-responsive-23by9');
+		          $("html,body").animate({ scrollTop: 100 }, 400);
           });
 
           $('#contenedor_especies .btn-title').tooltip();

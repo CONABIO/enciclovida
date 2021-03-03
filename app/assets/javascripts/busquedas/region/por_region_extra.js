@@ -55,9 +55,14 @@ var seleccionaRegion = function (prop) {
     opciones.filtros.pagina = 1;
     if (opciones.pixi.tiene_var_iniciales) limpiaMapa(); // Nos aseguramos que cada que escoja una region se limpien los registros
     opciones.pixi.tiene_var_iniciales = false;
-
-    map.flyToBounds(prop.bounds);
-    cargaEspecies();
+    map.flyToBounds(prop.bounds, {
+    		animate: false,
+    });
+		/*Nos movemos un cuarto del mapa a la izquierda*/
+		map.panBy(new L.Point((map.getSize().x*0.25), 0), {
+				animate: false,
+		});
+		cargaEspecies();
 };
 
 /**
@@ -249,4 +254,6 @@ $(document).ready(function () {
     }).on("shown.bs.popover", function() {
         $("#grupos-pop").popover('hide');
     });
+		/*Nos movemos un cuarto del mapa a la izquierda*/
+		map.panBy(new L.Point((map.getSize().x*0.25), 0), {animate: false});
 });
