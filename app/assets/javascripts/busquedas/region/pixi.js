@@ -231,59 +231,64 @@ var infoPopup = function (data) {
  * Carga todos los registros del SNIB en una misma integracion
  */
 var cargaEjemplares = function (url) {
-  configuraVariables();
-  loader.load(function (loader, resources) {
-    textures = [
-      null,
-      resources.colectas.texture,
-      resources.averaves.texture,
-      resources.fosiles.texture,
-      resources.nodecampo.texture,
-      resources.naturalista.texture,
-    ];
-    getJSON(url, function (markers) {
-      if (markers["estatus"]) {
-        // Quitando los eventos para no repetirlos
-        //map.off("click");
-        //map.off("mousemove");
+    /* Para mostrarle al usuario un loading y q espere en lo que se cargan los registros*/
+    $('#loading').toggleClass('invisible');
+    configuraVariables();
+    loader.load(function (loader, resources) {
+        textures = [
+            null,
+            resources.colectas.texture,
+            resources.averaves.texture,
+            resources.fosiles.texture,
+            resources.nodecampo.texture,
+            resources.naturalista.texture,
+        ];
+        getJSON(url, function (markers) {
+            if (markers["estatus"]) {
+                // Quitando los eventos para no repetirlos
+                //map.off("click");
+                //map.off("mousemove");
 
-        var colecciones = [1, 2, 3, 4, 5];
-        tree_complete = [];
-        tree = [];
+                var colecciones = [1, 2, 3, 4, 5];
+                tree_complete = [];
+                tree = [];
 
-        colecciones.forEach(function (coleccion) {
-          if (
-            markers["resultados"][coleccion] !== undefined &&
-            markers["resultados"][coleccion][0] !== undefined
-          ) {
-            porColeccion(markers["resultados"][coleccion], coleccion);
-          }
+                colecciones.forEach(function (coleccion) {
+                    if (
+                        markers["resultados"][coleccion] !== undefined &&
+                        markers["resultados"][coleccion][0] !== undefined
+                    ) {
+                        porColeccion(markers["resultados"][coleccion], coleccion);
+                    }
+                });
+
+                if (infoLayers["totales"] > 0) {
+                    snibLayer.addTo(map);
+                    snibControl.addTo(map);
+                    reordenaControles();
+                    leyenda();
+                    $(
+                        "<p><b>Ejemplares del SNIB</b> <span class='badge badge-pill badge-info br-badge'>" +
+                        numberWithDelimiter(infoLayers["totales"]) +
+                        "</span><br />(colectas, ciencia ciudadana, <br />museos, proyectos)</p>"
+                    ).insertBefore(
+                        $(snibControl.getContainer()).find(
+                            ".leaflet-control-layers-separator"
+                        )
+                    );
+                    $(snibControl.getContainer())
+                        .find(".leaflet-control-layers-separator")
+                        .show();
+                    $(snibControl.getContainer())
+                        .find(".leaflet-control-layers-toggle")
+                        .css("background-color", "#333333");
+                    /* Quitando el loading ua vez q ya fueron pintados los registros*/
+                    $('#loading').toggleClass('invisible');
+                    goState(1);
+                }
+            }
         });
-
-        if (infoLayers["totales"] > 0) {
-          snibLayer.addTo(map);
-          snibControl.addTo(map);
-          reordenaControles();
-          leyenda();
-          $(
-            "<p><b>Ejemplares del SNIB</b> <span class='badge badge-pill badge-info br-badge'>" +
-              numberWithDelimiter(infoLayers["totales"]) +
-              "</span><br />(colectas, ciencia ciudadana, <br />museos, proyectos)</p>"
-          ).insertBefore(
-            $(snibControl.getContainer()).find(
-              ".leaflet-control-layers-separator"
-            )
-          );
-          $(snibControl.getContainer())
-            .find(".leaflet-control-layers-separator")
-            .show();
-          $(snibControl.getContainer())
-            .find(".leaflet-control-layers-toggle")
-            .css("background-color", "#333333");
-        }
-      }
     });
-  });
 };
 
 /**

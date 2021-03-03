@@ -82,11 +82,7 @@ $(document).ready(function () {
     $("#especie-container-" + opciones.filtros.catalogo_id).addClass(
       "border-selected-especie"
     );
-    cargaEjemplares(
-      "/explora-por-region/ejemplares?" + serializeParametros()
-    );
-    $('#loading').toggleClass('d-none');
-    goState(1);
+    cargaEjemplares("/explora-por-region/ejemplares?" + serializeParametros());
     event.preventDefault();
   }
   );
