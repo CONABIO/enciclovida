@@ -15,8 +15,8 @@
 
   <div id="contenedor_resultados" class="d-flex position-relative">
     <div id="drag" class="align-self-center bg-dark d-flex flex-column position-absolute rounded-pill">
-      <button id="goLeft" type=button class="btn btn-outline-light btn-title fa fa-chevron-left rounded-pill border-0"></button>
-      <button id="goRight" type=button class="btn btn-outline-light btn-title fa fa-chevron-right rounded-pill border-0"></button>
+      <button id="goLeft" type=button class="btn btn-outline-light btn-title fa fa-chevron-left rounded-pill border-0" onclick="goLeft();"></button>
+      <button id="goRight" type=button class="btn btn-outline-light btn-title fa fa-chevron-right rounded-pill border-0", onclick=goRight();></button>
     </div>
     <div class="row no-gutters">
 
@@ -40,7 +40,7 @@
 
 
   <div id="opciones_resultados" class="w-100 bg-light py-1 px-2 rounded-top mt-auto d-inline-flex">
-        <div class="w-25">
+    <div class="w-25">
       <% if @resp[:totales].present? %>
         <% if @resp[:totales] > 0 && @resp[:totales] < 60000 %>
           <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
@@ -66,43 +66,49 @@
   </div>
 
   <script>
-      var isResizing = false;
       var resp = <%= raw @resp.to_json %>;
-
 
       $(document).ready(function() {
 
           resizeD = $('#contenedor_resultados');
-          resizeP = true;
+          resizeP = 0;
           posicionInicialResizeD = resizeD.offset().left;
           anchoResizeD = resizeD.width();
 
-          $('#goLeft').on('click', function() {
-              if(resizeP){
-                  resizeD.css('left', -(posicionInicialResizeD - 20));
-                  resizeD.css('width', (anchoResizeD * 2)-20);
-                  resizeP = false;
-                  $(this).prop('disabled', true);
-              }else{
-                  resizeD.css('left', 0);
-                  resizeD.css('width', anchoResizeD);
-                  resizeP = true;
-                  $('#drag button').prop('disabled', false);
+          goLeft = function(){
+              resizeP == 1 ? goState(0) : goState(-1);
+          };
+
+          goRight = function(){
+              resizeP == -1 ? goState(0) : goState(1);
+          };
+
+          actualizaPosicion = function(){
+              posicionInicialResizeD = resizeD.offset().left;
+              anchoResizeD = resizeD.width();
+          };
+
+          goState = function(state){
+              switch (state){
+                  case -1:
+                      resizeD.css('left', -(posicionInicialResizeD - 20));
+                      resizeD.css('width', (anchoResizeD * 2)-20);
+                      resizeP = -1;
+                      $('#goLeft').prop('disabled', true);
+                      break;
+                  case 1:
+                      resizeD.css('left', posicionInicialResizeD - 20);
+                      resizeD.css('width', anchoResizeD);
+                      resizeP = 1;
+                      $('#goRight').prop('disabled', true);
+                      break;
+                  default:
+                      resizeD.removeAttr('style');
+                      $('#drag button').prop('disabled', false);
+                      resizeP = 0;
+                      break;
               }
-          });
-          $('#goRight').on('click', function() {
-              if(resizeP){
-                  resizeD.css('left', posicionInicialResizeD - 20);
-                  resizeD.css('width', anchoResizeD);
-                  resizeP = false;
-                  $(this).prop('disabled', true);
-              }else{
-                  resizeD.css('left', 0);
-                  resizeD.css('width', anchoResizeD);
-                  resizeP = true;
-                  $('#drag button').prop('disabled', false);
-              }
-          });
+          };
 
           $('#contenedor_especies .btn-title').tooltip();
 
