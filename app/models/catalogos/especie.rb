@@ -738,7 +738,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       geodatos[:naturalista_json] = "#{url}.json?coleccion=naturalista&formato=json"
       geodatos[:naturalista_kml] = "#{url}.kml?coleccion=naturalista&formato=kml"
       geodatos[:naturalista_kmz] = "#{url}.kmz?coleccion=naturalista&formato=kmz"
-      geodatos[:naturalistasnib_mapa_json] = "#{url}.json?coleccion=naturalista&formato=mapa-app"
+      geodatos[:naturalista_mapa_json] = "#{url}.json?coleccion=naturalista&formato=mapa-app"
     end
 
     geodatos
