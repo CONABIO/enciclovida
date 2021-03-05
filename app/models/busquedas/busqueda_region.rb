@@ -60,8 +60,7 @@ class BusquedaRegion < Busqueda
     end
 
     lista = Lista.new
-    #columnas = params[:f_desc].join(',')
-    lista.columnas_array = params[:f_desc]
+    lista.columnas = params[:f_desc].join(',')
     lista.formato = 'xlsx'
     lista.cadena_especies = original_url
     lista.hash_especies = resp[:resultados]
