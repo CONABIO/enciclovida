@@ -7,6 +7,7 @@ var cambiaURLParametros = function () {
     var params = serializeParametros();
     var url = new URL(window.location.href);
     var url_parametros = url.origin + url.pathname + "?" + params + url.hash;
+    $('.sharethis-inline-share-buttons').data('url', url_parametros);
     history.replaceState({}, "", url_parametros);
 };
 
