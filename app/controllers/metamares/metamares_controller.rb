@@ -5,7 +5,7 @@ class Metamares::MetamaresController < ApplicationController
   def index
     #render layout: false
     #@doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/pais/mares/infoceanos/")).css('#project')
-    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/monitoreo/infoceanos")).css('#introenciclovida')
+    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/monitoreo/infoceanos")).css('#el-titulo, #introenciclovida')
 
     #@doc.css('#pagetitle').remove
     #@doc.css('#sectionmenu').remove

@@ -251,7 +251,7 @@ es:
     error_notification:
       default_message: "Por favor revisa los siguientes problemas:"
   titulos:
-    colecciones_globales: Busqueda global de colecciones
+    colecciones_globales: Búsqueda global de colecciones
     editar_coleccion: Actualizar información de la colección
     informacion_coleccion: Información de la colección
     mis_colecciones: Mis colecciones de datos

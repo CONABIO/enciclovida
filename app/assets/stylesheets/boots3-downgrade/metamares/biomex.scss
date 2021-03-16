@@ -183,9 +183,9 @@ p{
 }
 
 /* estilos de HEADER estático */
-#sectionmenu {position: fixed; z-index: 3 !important; width: 100%; margin-top: 75px;}
+#sectionmenu {position: fixed; z-index: 3 !important; width: 100%;}
 #pagetitle {position: fixed; z-index: 2 !important; width: 100%;}
-#pageinfo {margin-top: 110px;}
+#pageinfo {margin-top: 110px; padding-top: 55px;}
 #solo-breadcrumb {top: 126px; position: relative;}
 #pageima {
   position: relative;
