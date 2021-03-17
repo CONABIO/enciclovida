@@ -29,6 +29,11 @@ es:
         region_estudio: Regón de estudio
         telefono: Teléfono
         pagina_web: Página web
+      proy_b:
+        campo_investigacion: Campo de investigación
+        nombre_region: Nombre de región
+        institucion: Institución
+        titulo_compilacion: Titulo de la compilación
       metamares_proyecto:
         id: ID
         nombre_proyecto: Nombre de la colección de datos
