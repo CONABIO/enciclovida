@@ -91,7 +91,15 @@ class Geoportal::Snib < GeoportalAbs
     case params[:coleccion]
     when 'naturalista', 'snib'
       colecciones = Rails.cache.fetch("br_#{params[:catalogo_id]}__")[:resultados].try(:keys)
-      return self.resp = { estatus: false, msg: "No tiene registros en el cache: br_#{params[:catalogo_id]}__" } unless (colecciones & tipo_coleccion).any?
+      
+      unless (colecciones & tipo_coleccion).any?
+        # TODO: este if no tiene sentido de ir, es una aberracion hasta que sepamos modificar las apps
+        if params[:coleccion] == 'naturalista' && params[:formato] == 'mapa-app'
+          return self.resp = { estatus: true, registros: [[]] }
+        else
+          return self.resp = { estatus: false, msg: "No tiene registros en el cache: br_#{params[:catalogo_id]}__" } unless (colecciones & tipo_coleccion).any?
+        end
+      end
 
       case params[:formato]
       when 'json'
