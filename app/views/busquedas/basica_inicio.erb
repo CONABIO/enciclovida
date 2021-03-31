@@ -16,9 +16,9 @@
 		<div class="w-100 mt-3 text-center h5">
 			<label class="font-weight-bold text-white text-shadow" for="nombre">Busca entre más de <%= t('conteo_especies') %></label>
 		</div>
-		<%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control form-control-lg', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
+		<%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control form-control-lg border-warning text-info', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil, :style => "border-radius: 50rem 0 0 50rem;" %>
 		<div class="input-group-append">
-			<%= button_tag "<i class='fa fa-search'></i>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-success", :title=>'Buscar' %>
+			<%= button_tag "<i class='fa fa-search text-info'></i>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-warning", :title=>'Buscar', :style => "border-radius: 0 50rem 50rem 0;" %>
 		</div>
 
 	</div>

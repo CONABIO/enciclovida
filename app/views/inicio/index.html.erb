@@ -1,13 +1,13 @@
-<div id="portada" class="col-12 py-5 px-3">
+<div id="portada" class="col-12 py-2 px-3">
 	<div class="row no-gutters justify-content-center">
-		<div id="busqueda_basica" class="col-10">
+		<div id="busqueda_basica" class="col-10 col-md-8">
 			<%= render(:file => 'busquedas/basica_inicio') %>
 		</div>
 	</div>
 	<div class="w-100 my-3 px-4 text-right">
 		<%= link_to "<i class='datos-ecologicos-ev-icon mr-3'></i>Datos ecológicos".html_safe, "http://proyecto-species.org/", target: '_blank', :class => "btn btn-sm btn-info", :title => 'Explora datos ecológicos', data: { turbolinks: false , confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }  %>
 	</div>
-	<div class="d-flex justify-content-around my-3">
+	<div class="px-5">
 		<%= render partial: 'buscadores_inicio'  %>
 	</div>
 	<div class="w-100 py-2">
