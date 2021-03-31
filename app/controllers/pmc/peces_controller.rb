@@ -29,7 +29,6 @@ class Pmc::PecesController < Pmc::PmcController
   # Busqueda por pez y marisco
   def busqueda
     @filtros = Pmc::Criterio.dame_filtros
-    @nom_cites_iucn_todos = @filtros[:edo_cons]
     @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS)
     @peces = Pmc::Pez.filtros_peces
 

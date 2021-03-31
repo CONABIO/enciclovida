@@ -29,6 +29,11 @@ es:
         region_estudio: Regón de estudio
         telefono: Teléfono
         pagina_web: Página web
+      proy_b:
+        campo_investigacion: Campo de investigación
+        nombre_region: Nombre de región
+        institucion: Institución
+        titulo_compilacion: Titulo de la compilación
       metamares_proyecto:
         id: ID
         nombre_proyecto: Nombre de la colección de datos
@@ -251,7 +256,7 @@ es:
     error_notification:
       default_message: "Por favor revisa los siguientes problemas:"
   titulos:
-    colecciones_globales: Busqueda global de colecciones
+    colecciones_globales: Búsqueda global de colecciones
     editar_coleccion: Actualizar información de la colección
     informacion_coleccion: Información de la colección
     mis_colecciones: Mis colecciones de datos

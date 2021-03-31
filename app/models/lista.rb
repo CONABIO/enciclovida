@@ -84,6 +84,7 @@ class Lista < ActiveRecord::Base
       r = Especie.find_by_sql(opts[:busqueda])
       datos_descarga(r)
     elsif opts[:region]  # Descarga taxa de la busqueda por region
+      self.hash_especies = opts[:hash_especies]
       r = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", hash_especies.keys).includes(:tipos_distribuciones, :catalogos, :adicional, :nombres_comunes, :bibliografias, :scat)
       datos_descarga(r)
     end

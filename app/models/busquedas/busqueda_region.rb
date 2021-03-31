@@ -60,20 +60,18 @@ class BusquedaRegion < Busqueda
     end
 
     lista = Lista.new
-    #columnas = params[:f_desc].join(',')
-    lista.columnas_array = params[:f_desc]
+    lista.columnas = params[:f_desc].join(',')
     lista.formato = 'xlsx'
     lista.cadena_especies = original_url
-    lista.hash_especies = resp[:resultados]
     lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
     # El nombre de la lista es cuando la solicito? y el correo
     lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
 
     url_limpia = original_url.gsub('/especies.xlsx?','?')
     if Rails.env.production?
-      lista.delay(queue: 'descargar_taxa').to_excel({ region: true, correo: params[:correo], original_url: url_limpia }) if lista.save
+      lista.delay(queue: 'descargar_taxa').to_excel({ region: true, correo: params[:correo], original_url: url_limpia, hash_especies: resp[:resultados] }) if lista.save
     else  # Para develpment o test
-      lista.to_excel({ region: true, correo: params[:correo], original_url: url_limpia }) if lista.save
+      lista.to_excel({ region: true, correo: params[:correo], original_url: url_limpia, hash_especies: resp[:resultados] }) if lista.save
     end
 
     self.resp[:resultados] = nil
