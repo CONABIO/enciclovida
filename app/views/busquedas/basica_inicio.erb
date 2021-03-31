@@ -14,11 +14,11 @@
 		<%= hidden_field_tag :busqueda, :basica %>
 		<%= hidden_field_tag :id %>
 		<div class="w-100 mt-3 text-center h5">
-			<label class="font-weight-bold text-white" for="nombre">Busca entre más de <%= t('conteo_especies') %></label>
+			<label class="font-weight-bold text-white text-shadow" for="nombre">Busca entre más de <%= t('conteo_especies') %></label>
 		</div>
 		<%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control form-control-lg', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
 		<div class="input-group-append">
-			<%= button_tag "<i class='fa fa-search'></i>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-outline-info", :title=>'Buscar' %>
+			<%= button_tag "<i class='fa fa-search'></i>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-success", :title=>'Buscar' %>
 		</div>
 
 	</div>

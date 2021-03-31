@@ -4,8 +4,11 @@
 			<%= render(:file => 'busquedas/basica_inicio') %>
 		</div>
 	</div>
-	<div class="d-flex">
-		<%= render partial: 'busquedas/buscadores'  %>
+	<div class="w-100 my-3 px-4 text-right">
+		<%= link_to "<i class='datos-ecologicos-ev-icon mr-3'></i>Datos ecológicos".html_safe, "http://proyecto-species.org/", target: '_blank', :class => "btn btn-sm btn-info", :title => 'Explora datos ecológicos', data: { turbolinks: false , confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }  %>
+	</div>
+	<div class="d-flex justify-content-around my-3">
+		<%= render partial: 'buscadores_inicio'  %>
 	</div>
 	<div class="w-100 py-2">
 		<div class="sharethis-inline-share-buttons"></div>
