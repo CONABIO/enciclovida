@@ -19,7 +19,7 @@
       SITE_URL = "<%= CONFIG.site_url %>";
   </script>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag 'inicio/inicio', 'data-no-turbolink' => true %>
+  <%#= javascript_include_tag 'inicio/inicio', 'data-no-turbolink' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
@@ -36,8 +36,9 @@
 
 <body class="index">
 <%# render :partial => 'shared_b4/ribbon', locals: {mensaje: "¡Estamos estrenando <br />  app para dispositivos iOS!" } %>
-<header class="container-fluid" style="background-image:url('/assets/portada/img_portada_video.png');">
-  <%= render :partial => 'inicio/layout/brandBar' %>
+<header class="container-fluid">
+  <%#= render :partial => 'inicio/layout/brandBar' %>
+	<%= render :partial => 'shared_b4/brandBar' %>
 </header>
 
 <section id="content" class="container-fluid">
