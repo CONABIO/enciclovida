@@ -1,7 +1,7 @@
 <% if @taxones.present? && @taxones.length > 0 %>
   <div id="clasificacion" class="align-items-center d-flex px-2" style="overflow-x: auto;">
     <a href="/explora-por-clasificacion?especie_id=<%= @especie.id %>" target="_blank" id="inicia-clasificacion" title="Ir a la exploración por clasificación <i class='fa fa-external-link-alt'></i>" data-taxon-id="<%= @especie.id %>" class="border btn btn-outline-success btn-sm btn-title rounded-pill">
-      <i class="flow-cascade-ev-icon h1"></i>
+      <i class="busqueda-clasificacion-ev-icon h1"></i>
     </a>
     <%= dameArbolInicialSinIndentar(@taxones) %>
   </div>

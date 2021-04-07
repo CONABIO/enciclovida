@@ -1,4 +1,4 @@
-<div id="brandBar" class="row py-3 px-md-3 d-flex">
+<div id="brandBar" class="row py-3 px-md-3 d-flex <%= 'bg-transparent' if params[:controller] == 'inicio'  %>">
 	<%= render(:partial => 'shared_b4/dropdown_menu') %>
 	
 	<div class="col order-1 text-center text-lg-left display-4">
