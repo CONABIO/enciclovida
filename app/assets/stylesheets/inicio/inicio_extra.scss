@@ -1,13 +1,3 @@
-body {
-  overflow-x: hidden;
-}
-#basica i{
-  font-size: 1.75em;
-}
-#basica a{
-  font-weight: bold;
-}
-
 #content text, #content tspan{
   font-family: "opensans"!important;
 }
@@ -28,20 +18,11 @@ body {
   font-size: 1.25rem;
   color: #000000;
 }
-.portada-buscador{
-
-}
+.buscadores div{transition: all 300ms ease-in-out;}
 .descripcion-buscador{
-  /*visibility: hidden;*/
-  display: none;
+  opacity: 0;
   top: 0;
   left: 0;
 }
-.buscadores:hover .portada-buscador{
-  /*visibility: hidden;*/
-  display: none;
-}
-.buscadores:hover .descripcion-buscador{
-  /*visibility: visible;*/
-  display: block;
-}
+.buscadores:hover .portada-buscador{visibility: hidden;}
+.buscadores:hover .descripcion-buscador{opacity: .9;}
