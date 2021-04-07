@@ -22,7 +22,7 @@
     },
     {
       "uid": "db58c4f4f71171f323e62a04dd43dc47",
-      "css": "busqueda-distribucion",
+      "css": "distribucion",
       "code": 59412,
       "src": "custom_icons",
       "selected": true,
@@ -134,7 +134,7 @@
     },
     {
       "uid": "7457daa475ff678316e1af0dc0260c72",
-      "css": "busqueda-en-riesgo",
+      "css": "en-riesgo",
       "code": 59413,
       "src": "custom_icons",
       "selected": true,
@@ -288,7 +288,7 @@
     },
     {
       "uid": "1e6a0aa1fd58c9202b7a19cbdd22acf7",
-      "css": "busqueda-por-grupo-iconico",
+      "css": "por-grupo-iconico",
       "code": 59414,
       "src": "custom_icons",
       "selected": true,
@@ -330,7 +330,7 @@
     },
     {
       "uid": "b9458e543229291eb57787689ed953fc",
-      "css": "busqueda-region",
+      "css": "region",
       "code": 59415,
       "src": "custom_icons",
       "selected": true,
@@ -358,7 +358,7 @@
     },
     {
       "uid": "0e51ab9479d2c17f1ecece78b09d5de6",
-      "css": "busqueda-usos",
+      "css": "usos",
       "code": 59416,
       "src": "custom_icons",
       "selected": true,
@@ -1338,7 +1338,7 @@
     },
     {
       "uid": "4191b4aeef0094dc52100e6c4c9a042e",
-      "css": "busqueda-avanzada",
+      "css": "avanzada",
       "code": 59410,
       "src": "custom_icons",
       "selected": true,
@@ -1352,7 +1352,7 @@
     },
     {
       "uid": "b48897530b5482c17fbd36af8f685f78",
-      "css": "busqueda-clasificacion",
+      "css": "clasificacion",
       "code": 59411,
       "src": "custom_icons",
       "selected": true,

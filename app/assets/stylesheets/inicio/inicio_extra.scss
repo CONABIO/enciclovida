@@ -28,21 +28,20 @@ body {
   font-size: 22px;
   color: #000000;
 }
-#portada .card{
-  /*width: 18rem;*/
-}
-.card{
-  border: 0!important;
-}
 .portada-buscador{
 
 }
 .descripcion-buscador{
+  /*visibility: hidden;*/
+  display: none;
+  top: 0;
+  left: 0;
+}
+.buscadores:hover .portada-buscador{
+  /*visibility: hidden;*/
   display: none;
 }
-.card:hover .portada-buscador{
-  display: none;
-}
-.card:hover .descripcion-buscador{
-  display: flex;
+.buscadores:hover .descripcion-buscador{
+  /*visibility: visible;*/
+  display: block;
 }

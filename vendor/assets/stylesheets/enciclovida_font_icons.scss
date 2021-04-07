@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?76380787');
-  src: font-url('enciclovida_font_icons.eot?76380787#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?76380787') format('woff2'),
-       font-url('enciclovida_font_icons.woff?76380787') format('woff'),
-       font-url('enciclovida_font_icons.ttf?76380787') format('truetype'),
-       font-url('enciclovida_font_icons.svg?76380787#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?33253899');
+  src: font-url('enciclovida_font_icons.eot?33253899#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?33253899') format('woff2'),
+       font-url('enciclovida_font_icons.woff?33253899') format('woff'),
+       font-url('enciclovida_font_icons.ttf?33253899') format('truetype'),
+       font-url('enciclovida_font_icons.svg?33253899#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?76380787#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?33253899#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -71,13 +71,13 @@
 .arachnida-ev-icon:before { content: '\e80d'; } /* '' */
 .bone-ev-icon:before { content: '\e810'; } /* '' */
 .bryophyta-ev-icon:before { content: '\e811'; } /* '' */
-.busqueda-avanzada-ev-icon:before { content: '\e812'; } /* '' */
-.busqueda-clasificacion-ev-icon:before { content: '\e813'; } /* '' */
-.busqueda-distribucion-ev-icon:before { content: '\e814'; } /* '' */
-.busqueda-en-riesgo-ev-icon:before { content: '\e815'; } /* '' */
-.busqueda-por-grupo-iconico-ev-icon:before { content: '\e816'; } /* '' */
-.busqueda-region-ev-icon:before { content: '\e817'; } /* '' */
-.busqueda-usos-ev-icon:before { content: '\e818'; } /* '' */
+.avanzada-ev-icon:before { content: '\e812'; } /* '' */
+.clasificacion-ev-icon:before { content: '\e813'; } /* '' */
+.distribucion-ev-icon:before { content: '\e814'; } /* '' */
+.en-riesgo-ev-icon:before { content: '\e815'; } /* '' */
+.por-grupo-iconico-ev-icon:before { content: '\e816'; } /* '' */
+.region-ev-icon:before { content: '\e817'; } /* '' */
+.usos-ev-icon:before { content: '\e818'; } /* '' */
 .casi-amenazado-nt-evaluacion-conabio-ev-icon:before { content: '\e819'; } /* '' */
 .certificacion-ev-icon:before { content: '\e81a'; } /* '' */
 .chondrichthyes-ev-icon:before { content: '\e81b'; } /* '' */

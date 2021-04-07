@@ -1,7 +1,10 @@
 <% @buscadores.each do |k,v| %>
-	<div class="col-6 col-lg-3 px-3">
-		<p class="bg-light text-center text-dark rounded-0 pb-3">
-			<%= link_to "<img src='/assets/portada/#{k.to_s}.jpg' class='mb-2 img-fluid rounded-0' alt='...'><i class='busqueda-#{k.to_s}-ev-icon mr-3 h2'></i>#{v[:nombre]}".html_safe, v[:url], :class => "font-weight-bold h4 m-0 pb-3 text-center text-dark", :title => v[:titulo], data: { turbolinks: false }  %>
-		</p>
+	<div class="col-6 col-lg-3 p-3 my-1 buscadores">
+		<div class="portada-buscador bg-light text-center text-dark rounded-0 pb-3">
+			<%= link_to "<img src='/assets/portada/#{k.to_s}.jpg' class='mb-2 img-fluid rounded-0 btn-title' alt='...'><i class='#{k.to_s}-ev-icon mr-3 h2'></i>#{v[:nombre]}".html_safe, v[:url], :class => "font-weight-bold h4 m-0 pb-3 text-center text-dark", :title =>  "Ir a la" << v[:titulo], data: { turbolinks: false }  %>
+		</div>
+		<div class="descripcion-buscador h-100">
+			<%= link_to v[:descripcion].html_safe, v[:url], :class => "btn btn-lg btn-block btn-light btn-title font-weight-bold h-100 p-3", :title => "Ir a la" << v[:titulo], data: { turbolinks: false } %>
+		</div>
 	</div>
 <% end %>
