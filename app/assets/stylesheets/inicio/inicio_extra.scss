@@ -1,94 +1,13 @@
 body {
   overflow-x: hidden;
 }
-header {
-  text-align: left;
-  background-attachment: scroll;
-  background-position: center center;
-  background-repeat: no-repeat;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  background-size: cover;
-  -o-background-size: cover;
-}
-#busqueda_basica label{
-  text-shadow: 1px 1px 1px #999999;
-  font-size: 2rem;
-}
 #basica i{
   font-size: 1.75em;
 }
 #basica a{
   font-weight: bold;
 }
-@media(min-width:768px){
-  .btn-circle {
-    visibility:visible !important;
-    display: inline-block;
-    width: 60px;
-    height: 60px;
-    padding: 10px 0;
-    border-radius: 50%!important;
-    font-size: 40px;
-    color: #f7f7f7;
-    -webkit-transition: background .3s ease-in-out;
-    -moz-transition: background .3s ease-in-out;
-    transition: background .3s ease-in-out;
-  }
-  .btn-circle:hover,.btn-circle:focus{
-    outline: 0;
-    color: #f7f7f7;
-    background-color: rgba(255,255,255,.3);
-  }
-  .btn-circle span.animated {
-    -webkit-transition-property: -webkit-transform;
-    -webkit-transition-duration: 1s;
-    -moz-transition-property: -moz-transform;
-    -moz-transition-duration: 1s;
-  }
-  .btn-circle:hover span.animated {
-    -webkit-animation-name: pulse;
-    -moz-animation-name: pulse;
-    -webkit-animation-duration: 1.5s;
-    -moz-animation-duration: 1.5s;
-    -webkit-animation-iteration-count: infinite;
-    -moz-animation-iteration-count: infinite;
-    -webkit-animation-timing-function: linear;
-    -moz-animation-timing-function: linear;
-  }
-}
 
-@-webkit-keyframes pulse {
-  0% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
-  50% {
-    -webkit-transform: scale(1.2);
-    transform: scale(1.2);
-  }
-  100% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
-}
-@-moz-keyframes pulse {
-  0% {
-    -moz-transform: scale(1);
-    transform: scale(1);
-  }
-  50% {
-    -moz-transform: scale(1.2);
-    transform: scale(1.2);
-  }
-  100% {
-    -moz-transform: scale(1);
-    transform: scale(1);
-  }
-}
-.btn-circle {
-  visibility:hidden;
-}
 #content text, #content tspan{
   font-family: "opensans"!important;
 }
@@ -114,4 +33,16 @@ header {
 }
 .card{
   border: 0!important;
+}
+.portada-buscador{
+
+}
+.descripcion-buscador{
+  display: none;
+}
+.card:hover .portada-buscador{
+  display: none;
+}
+.card:hover .descripcion-buscador{
+  display: flex;
 }
