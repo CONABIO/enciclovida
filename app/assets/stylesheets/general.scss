@@ -113,12 +113,12 @@ footer .list-group-item {
 
 div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:before, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after, .macaulay_library-ev-icon:before{min-width: 9em!important;}
 
-.cornell_lab_colors-ev-icon:before{margin-left: -9.5em; color: #E60000; content: '\e86e';}
-.cornell_lab_colors-ev-icon:after{margin-left: -8.7em; color: #F5E614; content: '\e86f';}
+/*.cornell_lab_colors-ev-icon:before{margin-left: -9.5em; color: #E60000; content: '\e823';}*/
+/*.cornell_lab_colors-ev-icon:after{margin-left: -8.7em; color: #F5E614; content: '\e825';}*/
 
 .media-supplier div{margin-bottom: 10px;}
 
-.ev1-ev-icon:after { margin-left: -1.2em; content: '\e861'; }
+.ev1-ev-icon:after { margin-left: -1.2em; content: '\e837'; }
 .enciclo-ev-icon:before, header .conabio_completo-ev-icon:before, footer .conabio_completo-ev-icon:before{color: #fdfdfd;}
 .enciclo-ev-icon:after{color: #889b45; margin-left: -3em;}
 .naturalista-3-ev-icon:before, .naturalista-4-ev-icon:before{color: #889b45; width: 2em;}
@@ -175,16 +175,16 @@ ul.social-buttons li a:active {
 
 /* NOM-059*/
 .sujeta-a-proteccion-especial-pr-ev-icon:before {color: #f6b134;}
-.sujeta-a-proteccion-especial-pr-ev-icon:after{ content: '\e81e'; }
+.sujeta-a-proteccion-especial-pr-ev-icon:after{ content: '\e86f'; }
 
 .amenazada-a-ev-icon:before {color: #ef8934;}
-.amenazada-a-ev-icon:after { content: '\e820'; }
+.amenazada-a-ev-icon:after { content: '\e802'; }
 
 .en-peligro-de-extincion-p-ev-icon:before {color: #e10019;}
-.en-peligro-de-extincion-p-ev-icon:after { content: '\e822'; }
+.en-peligro-de-extincion-p-ev-icon:after { content: '\e834'; }
 
 .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:before {color: #444444;}
-.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after { content: '\e824';}
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after { content: '\e861';}
 
 .nom:after, .sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after {color: #444444; margin-left: -1.2em;}
 /*Termina NOM-059*/
@@ -208,15 +208,15 @@ ul.social-buttons li a:active {
 .tipoDist,.endemica-ev-icon:before, .nativa-ev-icon:before, .exotica-ev-icon:before, .exotica-invasora-ev-icon:before{color: #f7b234;}
 .tipoDist:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after {color: #595926; margin-left: -1.2em;}
 .exotica-invasora-ev-icon:after {color: #592626; margin-left: -1.2em;}
-.endemica-ev-icon:after { content: '\e832'; }
-.nativa-ev-icon:after { content: '\e834'; }
-.exotica-ev-icon:after{ content: '\e836'; }
-.exotica-invasora-ev-icon:after{ content: '\e86A'; }
+.endemica-ev-icon:after { content: '\e830'; }
+.nativa-ev-icon:after { content: '\e852'; }
+.exotica-ev-icon:after{ content: '\e83a'; }
+.exotica-invasora-ev-icon:after{ content: '\e83d'; }
 /* Termina tipo distribucion */
 
 /* prioritarias */
 .alta-ev-icon:before, .media-ev-icon:before, .menor-ev-icon:before{color: #ff931e;}
-.alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after {content: '\e837'; color: #555555; margin-left: -1.2em;}
+.alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after {content: '\e84e'; color: #555555; margin-left: -1.2em;}
 /* termina prioritarias */
 
 /* ambiente */
@@ -227,11 +227,11 @@ ul.social-buttons li a:active {
 /* Termina ambiente */
 
 .ev1-ev-icon:before { content: '\e84f'; }
-.enciclo-ev-icon:before { content: '\e860'; }
-.enciclo-ev-icon:after { content: '\e850'; }
+.enciclo-ev-icon:before { content: '\e80e';}
+.enciclo-ev-icon:after { content: '\e80f';}
 /*.vida-ev-icon:before { content: '\e850'; }*/
-.naturalista-3-ev-icon:before { content: '\e853'; }
-.naturalista-4-ev-icon:before { content: '\e854'; }
+.naturalista-3-ev-icon:before { content: '\e856'; }
+.naturalista-4-ev-icon:before { content: '\e857'; }
 
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 

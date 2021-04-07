@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?33253899');
-  src: font-url('enciclovida_font_icons.eot?33253899#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?33253899') format('woff2'),
-       font-url('enciclovida_font_icons.woff?33253899') format('woff'),
-       font-url('enciclovida_font_icons.ttf?33253899') format('truetype'),
-       font-url('enciclovida_font_icons.svg?33253899#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?42077194');
+  src: font-url('enciclovida_font_icons.eot?42077194#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?42077194') format('woff2'),
+       font-url('enciclovida_font_icons.woff?42077194') format('woff'),
+       font-url('enciclovida_font_icons.ttf?42077194') format('truetype'),
+       font-url('enciclovida_font_icons.svg?42077194#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?33253899#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?42077194#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -69,6 +69,8 @@
 .apendice-iii-ev-icon:before { content: '\e80b'; } /* '' */
 .aves-ev-icon:before { content: '\e80c'; } /* '' */
 .arachnida-ev-icon:before { content: '\e80d'; } /* '' */
+.enciclo-ev-icon:before { content: '\e80e'; } /* '' */
+.vida-ev-icon:before { content: '\e80f'; } /* '' */
 .bone-ev-icon:before { content: '\e810'; } /* '' */
 .bryophyta-ev-icon:before { content: '\e811'; } /* '' */
 .avanzada-ev-icon:before { content: '\e812'; } /* '' */
@@ -91,7 +93,6 @@
 .datos-insuficientes-dd-evaluacion-conabio-ev-icon:before { content: '\e829'; } /* '' */
 .dulceacuicola-ev-icon:before { content: '\e82a'; } /* '' */
 .echinodermata-ev-icon:before { content: '\e82b'; } /* '' */
-.enciclo-ev-icon:before { content: '\e82c'; } /* '' */
 .endemica-ev-icon:before { content: '\e82f'; } /* '' */
 .endemica-2-ev-icon:before { content: '\e830'; } /* '' */
 .en-peligro-critico-cr-ev-icon:before { content: '\e831'; } /* '' */
@@ -156,7 +157,6 @@
 .sujeta-a-proteccion-especial-pr-2-ev-icon:before { content: '\e86f'; } /* '' */
 .sujetas-a-proteccion-especial-pr-evaluacion-conabio-ev-icon:before { content: '\e870'; } /* '' */
 .terrestre-ev-icon:before { content: '\e871'; } /* '' */
-.vida-ev-icon:before { content: '\e872'; } /* '' */
 .vista-especialista-ev-icon:before { content: '\e873'; } /* '' */
 .vista-general-ev-icon:before { content: '\e874'; } /* '' */
 .vulnerable-vu-ev-icon:before { content: '\e875'; } /* '' */

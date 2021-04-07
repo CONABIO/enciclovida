@@ -13,6 +13,8 @@
 .apendice-iii-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe80b;&nbsp;'); }
 .aves-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe80c;&nbsp;'); }
 .arachnida-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe80d;&nbsp;'); }
+.enciclo-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe80e;&nbsp;'); }
+.vida-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe80f;&nbsp;'); }
 .bone-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe810;&nbsp;'); }
 .bryophyta-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe811;&nbsp;'); }
 .avanzada-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe812;&nbsp;'); }
@@ -35,7 +37,6 @@
 .datos-insuficientes-dd-evaluacion-conabio-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe829;&nbsp;'); }
 .dulceacuicola-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe82a;&nbsp;'); }
 .echinodermata-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe82b;&nbsp;'); }
-.enciclo-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe82c;&nbsp;'); }
 .endemica-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe82f;&nbsp;'); }
 .endemica-2-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe830;&nbsp;'); }
 .en-peligro-critico-cr-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe831;&nbsp;'); }
@@ -100,7 +101,6 @@
 .sujeta-a-proteccion-especial-pr-2-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe86f;&nbsp;'); }
 .sujetas-a-proteccion-especial-pr-evaluacion-conabio-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe870;&nbsp;'); }
 .terrestre-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe871;&nbsp;'); }
-.vida-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe872;&nbsp;'); }
 .vista-especialista-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe873;&nbsp;'); }
 .vista-general-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe874;&nbsp;'); }
 .vulnerable-vu-ev-icon { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe875;&nbsp;'); }
