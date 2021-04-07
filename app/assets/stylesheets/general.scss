@@ -97,7 +97,7 @@ footer .list-group-item {
 }
 .enciclovida_correo-ev-icon:before{
   font-size: large;
-  width: 10em !important;
+  width: 14em !important;
   text-decoration: underline;
 }
 .biomex-ev-icon:before/*, .conabio-ev-icon:before*/{
@@ -118,75 +118,26 @@ div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:
 
 .media-supplier div{margin-bottom: 10px;}
 
-.ev1-ev-icon:after { margin-left: -1.2em; content: '\e837'; }
+/*.ev1-ev-icon:after { margin-left: -1.2em; content: '\e837'; }*/
 .enciclo-ev-icon:before, header .conabio_completo-ev-icon:before, footer .conabio_completo-ev-icon:before{color: #fdfdfd;}
 .enciclo-ev-icon:after{color: #889b45; margin-left: -3em;}
 .naturalista-3-ev-icon:before, .naturalista-4-ev-icon:before{color: #889b45; width: 2em;}
 .ev2-ev-icon:before{margin-left: -1.25em;}
 
-ul.social-buttons li a {
-  display: block;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 20px;
-  line-height: 40px;
-  outline: 0;
-  color: #104C5B;
-  background-color: #f7f7f7;
-  -webkit-transition: all .3s;
-  -moz-transition: all .3s;
-  transition: all .3s;
-}
-
-ul.social-buttons li a:hover,
-ul.social-buttons li a:focus,
-ul.social-buttons li a:active {
-  background-color: #829e3d;
-}
 .main {
   padding: 10px 25px;
   background-color: #ececec;
 }
-/* Las pestañas regresaron al controller inicio, por ello se pegan aqui en gral*/
-#pestañas{
-  /*background-color: transparent;*/
-}
-.panel .nav-tabs > li > a, .panel .nav-stacked > li > a  {
-  border-left: 1px solid #d3d3d3;
-  border-right: 1px solid #d3d3d3;
-  border-top: 1px solid #d3d3d3;
-  border-bottom: 1px solid transparent;
-}
-.panel .nav-stacked > li.active > a, .panel .nav-tabs > li.active > a  {
-  background-color: #ffffff;
-}
-#pestañas div.panel-body{
-  background-color: #ffffff;
-  /*padding: 1.5em;*/
-  margin-top: -1px;
-  border-left: 1px solid #d3d3d3;
-  filter: drop-shadow(5px 5px 5px #cecece)
 
-}
 
 #panelCaracteristicaDistribucionAmbiente span:not(.panel-disabled) > i {background-color: #ffffff; border-radius: 50%; -moz-box-shadow: 2px 2px 4px #cccccc;-webkit-box-shadow: 2px 2px 4px #cccccc;box-shadow: 2px 2px 4px #cccccc;}
 .panel-disabled .nom:after, .panel-disabled .sujeta-a-proteccion-especial-pr-ev-icon:after, .panel-disabled .amenazada-a-ev-icon:after, .panel-disabled .en-peligro-de-extincion-p-ev-icon:after, .panel-disabled .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .panel-disabled .tipoDist:after, .panel-disabled .endemica-ev-icon:after, .panel-disabled .nativa-ev-icon:after, .panel-disabled .exotica-ev-icon:after, .panel-disabled .exotica-invasora-ev-icon:after {color: #797979 !important;}
 
 /* NOM-059*/
 .sujeta-a-proteccion-especial-pr-ev-icon:before {color: #f6b134;}
-.sujeta-a-proteccion-especial-pr-ev-icon:after{ content: '\e86f'; }
-
 .amenazada-a-ev-icon:before {color: #ef8934;}
-.amenazada-a-ev-icon:after { content: '\e802'; }
-
 .en-peligro-de-extincion-p-ev-icon:before {color: #e10019;}
-.en-peligro-de-extincion-p-ev-icon:after { content: '\e834'; }
-
 .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:before {color: #444444;}
-.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after { content: '\e861';}
-
-.nom:after, .sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after {color: #444444; margin-left: -1.2em;}
 /*Termina NOM-059*/
 
 /* Evaluación CONABIO*/
@@ -204,19 +155,12 @@ ul.social-buttons li a:active {
 .cites:before, .apendice-i-ev-icon:before,.apendice-ii-ev-icon:before,.apendice-iii-ev-icon:before{color: #095417;}
 /* Termina cites */
 
-/* tipo distribucion */
-.tipoDist,.endemica-ev-icon:before, .nativa-ev-icon:before, .exotica-ev-icon:before, .exotica-invasora-ev-icon:before{color: #f7b234;}
-.tipoDist:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after {color: #595926; margin-left: -1.2em;}
-.exotica-invasora-ev-icon:after {color: #592626; margin-left: -1.2em;}
-.endemica-ev-icon:after { content: '\e830'; }
-.nativa-ev-icon:after { content: '\e852'; }
-.exotica-ev-icon:after{ content: '\e83a'; }
-.exotica-invasora-ev-icon:after{ content: '\e83d'; }
+/* tipo distribucion se comenta el color para q se vea uniforme los buscadores en el inicio*/
+/*.tipoDist,.endemica-ev-icon:before, .nativa-ev-icon:before, .exotica-ev-icon:before, .exotica-invasora-ev-icon:before{color: #f7b234;}*/
 /* Termina tipo distribucion */
 
 /* prioritarias */
 .alta-ev-icon:before, .media-ev-icon:before, .menor-ev-icon:before{color: #ff931e;}
-.alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after {content: '\e84e'; color: #555555; margin-left: -1.2em;}
 /* termina prioritarias */
 
 /* ambiente */
@@ -226,7 +170,7 @@ ul.social-buttons li a:active {
 .terrestre-ev-icon:before{color: #777442;}
 /* Termina ambiente */
 
-.ev1-ev-icon:before { content: '\e84f'; }
+/*.ev1-ev-icon:before { content: '\e84f'; }*/
 .enciclo-ev-icon:before { content: '\e80e';}
 .enciclo-ev-icon:after { content: '\e80f';}
 /*.vida-ev-icon:before { content: '\e850'; }*/
@@ -235,7 +179,7 @@ ul.social-buttons li a:active {
 
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 
-.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after, .ev1-ev-icon:after, .enciclo-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
+.ev1-ev-icon:after, .enciclo-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
   font-family: "enciclovida_font_icons";
   font-style: normal;
   font-weight: normal;
@@ -296,19 +240,8 @@ sub{
   padding-left: 1.5rem!important;
 }
 // Formato general para el nombre cientifico y comun, no importa la vista
-.f-nom-cientifico{
-  /*font-size: 1em;*/
-  /*font-style: italic;*/
-  /*color: #828b87;*/
-  /*margin-top: 20px;*/
-  /*background-color: #f8f9fa;*/
-}
-.f-nom-comun{
-  /*font-size: 1em;*/
-  /*font-weight: bold;*/
-  /*background-color: #f8f9fa;*/
-  color: #444444;
-}
+.f-nom-cientifico{}
+.f-nom-comun{color: #444444;}
 
 
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; cursor: default; overflow: auto; -webkit-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); -moz-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); }
