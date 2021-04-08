@@ -40,7 +40,7 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
       params[:uso].each_with_index do |uso, i|
         uso.split('-').each_with_index do |val,index|
 
-          if val.to_i == 0  # Arma el query con este uso
+          if val.to_i == 0  # cuando el nivel es 0 quiere decir que ya termino de iterar
             niveles[i] = niveles[i].join(' AND ')
             break
           end
@@ -51,6 +51,29 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
       end
 
       self.taxones = taxones.where(niveles.join(' OR '))
+    end
+  end
+
+  # Para el select de formas de crecimiento
+  def formas_crecimiento
+    if params[:forma].present? && params[:forma].any?
+      self.taxones = taxones.left_joins(:catalogos)
+      niveles = []
+
+      params[:forma].each_with_index do |uso, i|
+        uso.split('-').each_with_index do |val,index|
+
+          if val.to_i == 0  # Arma el query con la forma de crecimiento
+            niveles[i] = niveles[i].join(' AND ')
+            break
+          end
+
+          niveles[i] = [] unless niveles[i].present?
+          niveles[i] << "#{Catalogo.table_name}.#{Catalogo.attribute_alias("nivel#{index+1}")}=#{val}"
+        end
+      end
+
+      self.taxones = taxones.where(niveles.join(' OR '))      
     end
   end
 

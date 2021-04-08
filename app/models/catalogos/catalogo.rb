@@ -23,6 +23,7 @@ class Catalogo < ActiveRecord::Base
   scope :ambientes, -> { where(nivel1: 2, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: AMBIENTE_EQUIV_MARINO) }
   scope :usos, -> { where(id: USOS).order(:descripcion) }
   scope :evaluacion_conabio, -> { where(nivel1: 4, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where("#{attribute_alias(:nivel3)} < 4") }
+  scope :formas_crecimiento, -> { where(nivel1: 18, nivel3: 0).where("#{attribute_alias(:nivel2)} > 0").order(:descripcion) }
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
   USOS = [1216, 1217, 464, 1058, 465, 468, 469, 470, 471, 1055, 1057, 1056]

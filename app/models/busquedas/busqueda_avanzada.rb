@@ -10,6 +10,7 @@ class BusquedaAvanzada < Busqueda
     estado_conservacion
     tipo_distribucion
     uso
+    formas_crecimiento
     ambiente
     region
 
