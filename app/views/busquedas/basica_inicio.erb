@@ -1,27 +1,26 @@
 <% content_for(:delayedjs) do %>
-  <script src="https://www.google.com/jsapi" type="text/javascript" data-turbolinks-track="true"></script>
-  <script data-turbolinks-track="true">
-      // Asigna el soulmate a la caja nombre
-      $(document).ready(function(){soulmateAsigna();});
-  </script>
+	<script src="https://www.google.com/jsapi" type="text/javascript" data-turbolinks-track="true"></script>
+	<script data-turbolinks-track="true">
+			// Asigna el soulmate a la caja nombre
+			$(document).ready(function(){soulmateAsigna();});
+	</script>
 <% end %>
 
 
 <%= form_tag busquedas_resultados_url, :method => :get, :id => :basica, :role => 'form' do %>
-  <%= hidden_field_tag :busqueda, :basica %>
-  <%= hidden_field_tag :id %>
+	
+	<div class="input-group text-center">
+		
+		<%= hidden_field_tag :busqueda, :basica %>
+		<%= hidden_field_tag :id %>
+		<p class="w-100 mt-3 text-center font-weight-bold text-white h2" for="nombre">Busca entre más de <%= t('conteo_especies') %></p>
+		<%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control form-control-lg border-warning text-info', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil, :style => "border-radius: 50rem 0 0 50rem;" %>
+		<div class="input-group-append">
+			<%= button_tag "<i class='fa fa-search text-info'></i>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-warning btn-lg", :title=>'Buscar', :style => "border-radius: 0 50rem 50rem 0;" %>
+		</div>
 
-  <div class="form-group text-center">
-    <label class="font-weight-bold text-white" for="nombre">Busca entre más de <%= t('conteo_especies') %></label>
-    <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control form-control-lg', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
-    <div class="dropdown mt-3">
-      <%= button_tag "Buscar", data: { disable_with: 'Procesando...' },:class => "btn btn-success btn-lg w-25 ", :title=>'Buscar' %>
-      <button class="btn btn-light btn-lg dropdown-toggle w-25" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Más herramientas
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <%= render partial: 'busquedas/buscadores'  %>
-      </div>
-    </div>
-  </div>
+	</div>
+	<ul id="soulmate"></ul>
 <% end %>
+
+

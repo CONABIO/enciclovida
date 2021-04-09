@@ -1,58 +1,60 @@
+<div id="portada" class="col-12 py-2 px-3">
+	<div class="row no-gutters justify-content-center">
+		<div id="busqueda_basica" class="col-10 col-md-8">
+			<%= render(:file => 'busquedas/basica_inicio') %>
+		</div>
+	</div>
+	<div class="w-100 px-4 text-right">
+		<%= link_to "<i class='datos-ecologicos-ev-icon mr-3'></i>Datos ecológicos".html_safe, "http://proyecto-species.org/", target: '_blank', :class => "btn btn-outline-light", :title => 'Explora datos ecológicos', data: { turbolinks: false , confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }  %>
+	</div>
+	<p class="font-weight-bold text-white text-center h4">Prueba nuestras diferentes <span style="color: #EEB82C;">herramientas de búsqueda:</span></p>
+	<div class="row no-gutters">
+		<%= render partial: 'buscadores_inicio'  %>
+	</div>
+	<div class="w-100 py-2">
+		<div class="sharethis-inline-share-buttons"></div>
+	</div>
+</div>
+
 <div id="que-es" class="col-12 py-5 px-3  text-white text-left">
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <h1 class="font-weight-bold">¿Qué es?</h1>
-        <%= render :partial => 'index_que_es' %>
-      </div>
-    </div>
-  </div>
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<h1 class="font-weight-bold">¿Qué es?</h1>
+				<%= render :partial => 'index_que_es' %>
+			</div>
+		</div>
+	</div>
 </div>
 <div id="como-funciona" class="col-12 py-5 px-3 text-center">
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <h1 class="font-weight-bold text-left mb-n2">¿Cómo funciona?</h1>
-        <%= render :partial => 'index_como_funciona' %>
-      </div>
-    </div>
-  </div>
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<h1 class="font-weight-bold text-left mb-n2">¿Cómo funciona?</h1>
+				<%= render :partial => 'index_como_funciona' %>
+			</div>
+		</div>
+	</div>
 </div>
-<div id="herramientas-busqueda" class="col-12 py-5 px-3 text-center">
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <h3 class="font-weight-bold text-white text-left mb-n2">Prueba nuestras diferentes <span style="color: #EEB82C;">herramientas de búsqueda:</span></h3>
-        <%= render :partial => 'index_herramientas_busqueda' %>
-      </div>
-    </div>
-  </div>
-</div>
-<div id="por-que-es-importante" class="col-12 py-5 px-3 text-center">
-  <div class="container">
-    <div class="row mb-2">
-      <div class="col-12">
-        <h1 class="font-weight-bold text-left mb-4">¿Por qué es importante?</h1>
-        <p>
-          El primer paso para valorar, usar sustentablemente y conservar la naturaleza mexicana es conocerla.<br />
-          Para resolver los problemas ambientales de la actualidad, <span style="color: #829E3D; font-weight: bold;">la participación de la sociedad<br />
-          es indispensable</span>. La ciencia ciudadana <span style="color: #829E3D; font-weight: bold;">brinda la oportunidad para colaborar</span>,<br />
-          apropiándonos del conocimiento de la naturaleza de México y contribuyendo juntos <span style="color: #829E3D; font-weight: bold;">en la<br />
+
+<div id="por-que-es-importante" class="col-12 py-5 px-3 text-white text-center">
+	<div class="container">
+		<div class="row mb-2">
+			<div class="col-12">
+				<h1 class="font-weight-bold text-left mb-4">¿Por qué es importante?</h1>
+				<p class="text-white">
+					El primer paso para valorar, usar sustentablemente y conservar la naturaleza mexicana es conocerla.<br />
+					Para resolver los problemas ambientales de la actualidad, <span style="color: #EEB82C; font-weight: bold;">la participación de la sociedad<br />
+          es indispensable</span>. La ciencia ciudadana <span style="color: #EEB82C; font-weight: bold;">brinda la oportunidad para colaborar</span>,<br />
+					apropiándonos del conocimiento de la naturaleza de México y contribuyendo juntos <span style="color: #EEB82C; font-weight: bold;">en la<br />
           solución de la crisis de la biodiversidad.</span>
-        </p>
-      </div>
-    </div>
-    <div class="row align-items-end">
-      <%= render :partial => 'index_por_que_es_importante' %>
-    </div>
-  </div>
+				</p>
+			</div>
+		</div>
+		<div class="row align-items-end bg-light">
+			<%= render :partial => 'index_por_que_es_importante' %>
+		</div>
+	</div>
 </div>
-<div class="col-12 p-0 text-center bg-info">
-  <div class="row">
-    <%= render :partial => 'index_especies_destacadas' %>
-  </div>
-</div>
-<div class="col-12">
-  <%= render :partial => 'index_intro_video' %>
-</div>
+
 

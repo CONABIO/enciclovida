@@ -1,17 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 14.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 43363)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg8" sodipodi:docname="cornell_lab_red.svg" inkscape:version="0.92.4 (5da689c313, 2019-01-14)" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="2267.717px"
-	 height="2267.717px" viewBox="-789.041 -719.478 2267.717 2267.717" enable-background="new -789.041 -719.478 2267.717 2267.717"
-	 xml:space="preserve">
-<sodipodi:namedview  id="base" inkscape:window-height="962" inkscape:document-units="mm" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:current-layer="layer1" inkscape:window-width="1280" inkscape:window-maximized="1" borderopacity="1.0" bordercolor="#666666" showgrid="false" pagecolor="#ffffff" inkscape:cy="50" inkscape:cx="900" inkscape:zoom="0.108">
-	</sodipodi:namedview>
-<g id="layer1" transform="translate(-4964.7853,-526.76388)" inkscape:groupmode="layer" inkscape:label="Capa 1">
-	<path id="path3713" inkscape:connector-curvature="0" fill="none" stroke="#000000" d="M6102.203,376.861
-		c-270.546-270.548-772.991-564.286-1399.118-564.286h-92.759V44.475c533.366,0,981.701,208.707,1283.17,448.335L6102.203,376.861z
-		 M6249.072,585.569c0,0-1430.036,950.783-1669.664,1128.568c-231.899,177.791-208.71,355.577-208.71,355.577L5947.605,941.146
-		C5947.605,941.146,6254.826,735.439,6249.072,585.569z"/>
-</g>
-</svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   id="svg8"
+   x="0px"
+   y="0px"
+   viewBox="0 0 2267.717 2267.717"
+   xml:space="preserve"><metadata
+   id="metadata8"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs6" />
+
+
+<path
+   style="fill:none;stroke-width:0.254715"
+   d="m 11412.675,203.40139 c 0,0 -361.912,243.74521 -422.555,289.32261 -58.689,45.57898 -52.82,91.15665 -52.82,91.15665 l 399.082,-289.32261 c 0,0 77.75,-52.73558 76.293,-91.15665 z"
+   id="path2135" /><path
+   style="fill:none;stroke-width:0.254715"
+   d="M 11375.508,149.89648 C 11307.038,80.538093 11179.88,5.234664 11021.42,5.234664 h -23.476 v 59.450483 c 134.983,0 248.447,53.504663 324.744,114.936323 z"
+   id="path3713-6" /></svg>

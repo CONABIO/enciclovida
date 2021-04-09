@@ -1,0 +1,10 @@
+<% @buscadores.each do |k,v| %>
+	<div class="col-6 col-lg-3 p-3 my-1 text-center text-dark buscadores">
+		<div class="portada-buscador bg-light rounded-0 pb-3">
+			<%= link_to "<img src='/assets/portada/#{k.to_s}.jpg' class='mb-2 ml-n3 img-fluid rounded-0' alt='...'><i class='#{k.to_s}-ev-icon mr-1 h1'></i>#{v[:nombre]}".html_safe, v[:url], :class => "font-weight-bold h4 px-3 pb-3 text-center text-dark", data: { turbolinks: false }  %>
+		</div>
+		<div class="descripcion-buscador position-absolute h-100 rounded-0 p-3">
+			<%= link_to v[:descripcion].html_safe, v[:url], :class => "btn btn-lg btn-light font-weight-bold d-flex align-items-center h-100 p-3", data: { turbolinks: false } %>
+		</div>
+	</div>
+<% end %>

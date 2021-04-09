@@ -17,7 +17,17 @@ class Busqueda
   GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes
 Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria Porifera)
   GRUPOS_PLANTAS = %w(Bryophyta Anthocerotophyta Polypodiidae Pinidae Cycadidae Lilianae Magnoliidae)
-
+  
+  BUSCADORES = {
+		  clasificacion: {url: "/explora-por-clasificacion", nombre: "Clasificación", descripcion: "¡Explora toda la clasificación taxonómica desde reinos hasta especies!"},
+		  region: {url: "/explora-por-region", nombre: "Región", descripcion: "¡Realiza búsquedas por estados, municipios o áreas naturales protegidas!"},
+		  usos: {url: "/busquedas/resultados?utf8=%E2%9C%93&nombre=&busqueda=avanzada&id=&uso%5B%5D=11-4-0-0-0-0-0&uso%5B%5D=11-16-0-0-0-0-0&uso%5B%5D=11-5-0-0-0-0-0&uso%5B%5D=11-40-1-0-0-0-0&uso%5B%5D=11-40-2-0-0-0-0&uso%5B%5D=11-8-0-0-0-0-0&uso%5B%5D=11-9-0-0-0-0-0&uso%5B%5D=11-10-0-0-0-0-0&uso%5B%5D=11-11-0-0-0-0-0&uso%5B%5D=11-13-0-0-0-0-0&uso%5B%5D=11-15-0-0-0-0-0&uso%5B%5D=11-14-0-0-0-0-0&por_pagina=50&commit=", nombre: "Usos", descripcion: "¡Descubre las especies agrupadas por el uso que tienen!"},
+		  "en-riesgo" => {url: "/busquedas/resultados?utf8=%E2%9C%93&nombre=&busqueda=avanzada&id=&edo_cons%5B%5D=16&edo_cons%5B%5D=14&edo_cons%5B%5D=15&edo_cons%5B%5D=17&edo_cons%5B%5D=25&edo_cons%5B%5D=26&edo_cons%5B%5D=27&edo_cons%5B%5D=28&edo_cons%5B%5D=29&edo_cons%5B%5D=1102&edo_cons%5B%5D=1103&edo_cons%5B%5D=1104&edo_cons%5B%5D=22&edo_cons%5B%5D=23&edo_cons%5B%5D=24&por_pagina=50&commit=", nombre: "En riesgo", descripcion: "¡Navega por las especies que tienen asociada alguna categoría de riesgo tanto nacional como internacional!"},
+		  distribucion: {url: "/busquedas/resultados?utf8=%E2%9C%93&nombre=&busqueda=avanzada&id=&dist%5B%5D=3&dist%5B%5D=7&dist%5B%5D=10&dist%5B%5D=6&por_pagina=50&commit=", nombre: "Distribución", descripcion: "¡Ubica las especies por su tipo de distribución (endémica, nativa, exótica o exótica invasora)!"},
+		  "exotica-invasora" => {url: "/exoticas-invasoras", nombre: "Exóticas invasoras", descripcion: "¡Conoce las especies exóticas invasoras en el país!"},
+		  "peces-mariscos-comerciales" => {url: "/peces", nombre: "Consumo marino responsable", descripcion: "¡Informate con el semáforo de consumo responsable acerca de pesquerías sustentables y sus criterios de pesca!"},
+		  avanzada: {url: "/avanzada", nombre: "Avanzada", descripcion: "¡Combina los criterios de búsqueda anteriores junto a otros tales como: tipo de ambiente, la distribución reportada en literatura y por grupo icónico!"} }
+  
   # REVISADO: Inicializa los objetos busqueda
   def initialize
     self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional, :scat).distinct
