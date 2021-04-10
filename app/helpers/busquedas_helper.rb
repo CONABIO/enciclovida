@@ -80,6 +80,13 @@ module BusquedasHelper
     select_tag('reg', grouped_options_for_select(options, selected), opc)
   end
 
+  def selectFormaCrecimiento(opciones={})
+    selected = (params[:forma].present? && params[:forma].any?) ? params[:forma] : []
+    opc = @@opciones.merge(opciones)
+    options = @filtros[:formas_crecimiento].map{ |u| [u.descripcion, "#{u.nivel1}-#{u.nivel2}-#{u.nivel3}-#{u.nivel4}-#{u.nivel5}-#{u.nivel6}-#{u.nivel7}", { class: "f-fuentes" }] }
+    select_tag('forma', options_for_select(options, selected), opc)
+  end
+
   def selctPorPagina
     selected = params[:por_pagina].present? ? params[:por_pagina] : []
     select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}, selected), :class => 'busquedas form-control'
