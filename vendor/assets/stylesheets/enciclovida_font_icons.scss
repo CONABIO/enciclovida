@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?74850259');
-  src: font-url('enciclovida_font_icons.eot?74850259#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?74850259') format('woff2'),
-       font-url('enciclovida_font_icons.woff?74850259') format('woff'),
-       font-url('enciclovida_font_icons.ttf?74850259') format('truetype'),
-       font-url('enciclovida_font_icons.svg?74850259#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?83863193');
+  src: font-url('enciclovida_font_icons.eot?83863193#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?83863193') format('woff2'),
+       font-url('enciclovida_font_icons.woff?83863193') format('woff'),
+       font-url('enciclovida_font_icons.ttf?83863193') format('truetype'),
+       font-url('enciclovida_font_icons.svg?83863193#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?74850259#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?83863193#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -56,8 +56,11 @@
 }
  
 .actinopterygii-ev-icon:before { content: '\e800'; } /* '' */
+.grupo-iconico-ev-icon:before { content: '\e801'; } /* '' */
+.amenazada-a-ev-icon:before { content: '\e802'; } /* '' */
 .amenazada-a-evaluacion-conabio-ev-icon:before { content: '\e803'; } /* '' */
 .amphibia-ev-icon:before { content: '\e804'; } /* '' */
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:before { content: '\e805'; } /* '' */
 .annelida-ev-icon:before { content: '\e806'; } /* '' */
 .animalia-ev-icon:before { content: '\e807'; } /* '' */
 .anthocerotophyta-ev-icon:before { content: '\e808'; } /* '' */
@@ -70,10 +73,11 @@
 .vida-ev-icon:before { content: '\e80f'; } /* '' */
 .bone-ev-icon:before { content: '\e810'; } /* '' */
 .bryophyta-ev-icon:before { content: '\e811'; } /* '' */
+.sujeta-a-proteccion-especial-pr-ev-icon:before { content: '\e812'; } /* '' */
 .clasificacion-ev-icon:before { content: '\e813'; } /* '' */
 .distribucion-ev-icon:before { content: '\e814'; } /* '' */
 .en-riesgo-ev-icon:before { content: '\e815'; } /* '' */
-.por-grupo-iconico-ev-icon:before { content: '\e816'; } /* '' */
+.en-peligro-de-extincion-p-ev-icon:before { content: '\e816'; } /* '' */
 .usos-ev-icon:before { content: '\e818'; } /* '' */
 .casi-amenazado-nt-evaluacion-conabio-ev-icon:before { content: '\e819'; } /* '' */
 .certificacion-ev-icon:before { content: '\e81a'; } /* '' */
@@ -166,8 +170,4 @@
 .menor-ev-icon:before { content: '\e890'; } /* '' */
 .media-ev-icon:before { content: '\e891'; } /* '' */
 .alta-ev-icon:before { content: '\e892'; } /* '' */
-.sujeta-a-proteccion-especial-pr-ev-icon:before { content: '\e894'; } /* '' */
-.amenazada-a-ev-icon:before { content: '\e895'; } /* '' */
-.en-peligro-de-extincion-p-ev-icon:before { content: '\e896'; } /* '' */
-.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:before { content: '\e897'; } /* '' */
 .enciclovida_correo-ev-icon:before { content: '\e898'; } /* '' */
