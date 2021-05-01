@@ -232,7 +232,7 @@ module ApplicationHelper
   end
 
   def imagotipo_naturalista_nombre(tamaño = nil)
-    "<i class='naturalista-3-ev-icon'></i><i class='naturalista-4-ev-icon'></i>".html_safe
+    "<i class='naturalista-ev-icon'></i>".html_safe
   end
 
   def imagotipo_naturalista_app
@@ -249,10 +249,10 @@ module ApplicationHelper
   
   def ligas_mas_info(query)
 	  [link_to('Bioteca', "http://bioteca.biodiversidad.gob.mx/janium-bin/janium_login_opac.pl?scan&keyword=#{query}", target: '_blank', class: 'dropdown-item', title: 'Biblioteca digital de CONABIO', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
-	  link_to('BHL', "https://www.biodiversitylibrary.org/name/#{query}", target: '_blank', class: 'dropdown-item', title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
-	  link_to(' Google Académico', "https://scholar.google.com.mx/scholar?hl=es&q=#{query}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en Google Académico (Schoolar)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
-	  link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{query}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
-	  link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{query}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." })]
+	   link_to('BHL', "https://www.biodiversitylibrary.org/name/#{query}", target: '_blank', class: 'dropdown-item', title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
+	   link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{query}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
+	   link_to(' Google Académico', "https://scholar.google.com.mx/scholar?hl=es&q=#{query}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en Google Académico (Schoolar)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
+	   link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{query}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." })]
 	  
   end
 

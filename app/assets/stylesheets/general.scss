@@ -174,12 +174,12 @@ div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:
 .enciclo-ev-icon:before { content: '\e80e';}
 .enciclo-ev-icon:after { content: '\e80f';}
 /*.vida-ev-icon:before { content: '\e850'; }*/
-.naturalista-3-ev-icon:before { content: '\e856'; }
-.naturalista-4-ev-icon:before { content: '\e857'; }
+.naturalista-ev-icon:before { content: '\e856'; }
+.naturalista-ev-icon:after{ content: '\e857'; }
 
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 
-.ev1-ev-icon:after, .enciclo-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
+.ev1-ev-icon:after, .enciclo-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after, .naturalista-ev-icon:after{
   font-family: "enciclovida_font_icons";
   font-style: normal;
   font-weight: normal;
