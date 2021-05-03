@@ -91,9 +91,10 @@ $(document).ready(function () {
 				cargaEjemplares("/explora-por-region/ejemplares?" + serializeParametros());
 				gahref = $($('#dropdownMasInfoButton+div a')[0]);
 				gnhref = $($('#dropdownMasInfoButton+div a')[1]);
-						
-				gahref.attr('href', "https://scholar.google.com.mx/scholar?hl=es&q=#"+$(this).data('nombre-cientifico'));
-				gnhref.attr('href', "https://news.google.com.mx/search?q="+$(this).data('nombre-cientifico'));
+				
+				$('#dropdownMasInfoButton+div h6.dropdown-header').text('Más info acerca de: '+$(this).data('nombre-cientifico')+', '+$('#nombre_region').val());
+				gahref.attr('href', 'https://scholar.google.com.mx/scholar?hl=es&q="'+$(this).data('nombre-cientifico')+'"+"'+$('#nombre_region').val()+'"');
+				gnhref.attr('href', 'https://news.google.com.mx/search?q="'+$(this).data('nombre-cientifico')+'"+"'+$('#nombre_region').val()+'"');
 				event.preventDefault(); //esto solo es necesario cuando al boton no le pones type=button (distinto al submit)
 				}
 		);
