@@ -2,6 +2,7 @@
 	<p class='h5 my-0'><b class="text-info">Filtros utilizados: </b><%= filtrosEspecies(params) %></p>
 </div>
 <% taxon_seleccionado = nil %>
+
 <% if @resp[:estatus] %>
 	
 	<% if @resp[:totales].present? %>
@@ -23,7 +24,7 @@
 			<% @resp[:taxones].each do |t| %>
 				<% taxon = t[:especie] %>
 				<% taxon_seleccionado = taxon if params[:catalogo_id] == taxon.catalogo_id %>
-				<div class="col-3 p-2 <%= 'bg-light border border-warning' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
+				<div class="col-3 p-2 <%= 'bg-light border border-success' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
 					<div class="result-img-container w-100 m-0">
 						<%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid') : "<i class='ev1-ev-icon'></i>".html_safe %>
 						<button class="btn btn-light btn-title rounded-pill m-1 position-absolute boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros" data-nombre-cientifico="<%= taxon.nombre_cientifico.sanitize.html_safe %>">
@@ -54,26 +55,25 @@
 							<%#= link_to("Guía de campo en PDF", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
 						</div>
 					</div>
-					
 				<% end %>
-			
 			<% end %>
 		</div>
+		
 		<div class="w-50 text-center">
 			<%= @resp['carga-anteriores-especies'] ? button_tag('<i class="fa fa-arrow-left"></i>'.html_safe, class: 'btn btn-light btn-outline-info btn-title rounded-pill', id: 'carga-anteriores-especies', title: 'Anterior', type: 'button', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover') : button_tag('<i class="fa fa-arrow-left"></i>'.html_safe, class: 'btn btn-dark btn-outline-info btn-title rounded-pill disabled', type: 'button') %>
 			<%= @resp['carga-siguientes-especies'] ? button_tag('<i class="fa fa-arrow-right"></i>'.html_safe, class: 'btn btn-light btn-outline-info btn-title rounded-pill', id: 'carga-siguientes-especies', title: 'Siguiente', type: 'button', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover') : button_tag('<i class="fa fa-arrow-right"></i>'.html_safe, class: 'btn btn-dark btn-outline-info btn-title rounded-pill disabled', type: 'button') %>
 		</div>
+		
+		<% tax_et_region = (taxon_seleccionado.present? && params[:nombre_region].present?) %>
+		
 		<div class="w-25 text-right">
-			<% if taxon_seleccionado.present? && params[:nombre_region].present? %>
 				<div class="btn-group dropup">
-					<button class="btn btn-outline-info btn-sm dropdown-toggle" type="button" id="dropdownMasInfoButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Más info</button>
+					<button class="btn btn-info btn-sm dropdown-toggle" type="button" id="dropdownMasInfoButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" <%= "disabled" unless tax_et_region %> >Más info</button>
 					<div class="dropdown-menu" aria-labelledby="dropdownMasInfoButton">
-						<h6 class="dropdown-header">Más info acerca de: <%= [taxon_seleccionado.nombre_cientifico.sanitize,params[:nombre_region]].join(', ') %> <i class="fa fa-external-link-square"></i>:</h6>
-						<%= ligas_mas_info('"'+taxon_seleccionado.nombre_cientifico.sanitize+'"'+'+'+'"'+params[:nombre_region]+'"')[3,4].join.html_safe %>
-						
+						<h6 class="dropdown-header">Más info acerca de: <%= [taxon_seleccionado.nombre_cientifico.sanitize,params[:nombre_region]].join(', ') if tax_et_region %> <i class="fa fa-external-link-square"></i>:</h6>
+						<%= ligas_mas_info((tax_et_region ? '"'+taxon_seleccionado.nombre_cientifico.sanitize+'"'+'+'+'"'+params[:nombre_region]+'"' : '' ))[3,4].join.html_safe %>
 					</div>
 				</div>
-			<% end %>
 		</div>
 	</div>
 	
