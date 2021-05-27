@@ -192,6 +192,9 @@ var createPopup = function (ejemplar_id) {
 };
 
 var infoPopup = function (data) {
+  if (opciones.taxon != undefined) var especie_id = opciones.taxon
+  else var especie_id = opciones.filtros.especie_id_focus
+
   contenido = "<strong>Localidad:</strong> " + data.localidad + "<br />";
   contenido += "<strong>Municipio: </strong>" + data.municipiomapa + "<br />";
   contenido += "<strong>Estado: </strong>" + data.estadomapa + "<br />";
@@ -219,7 +222,7 @@ var infoPopup = function (data) {
   //Para enviar un comentario acerca de un ejemplar en particular
   contenido +=
     "<strong>¿Tienes un comentario?: </strong><a href='/especies/" +
-    opciones.filtros.especie_id_focus +
+    especie_id +
     "/comentarios/new?proveedor_id=" +
     data.idejemplar +
     "&tipo_proveedor=6' target='_blank'>redactar</a><br />";
