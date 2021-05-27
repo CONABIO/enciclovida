@@ -78,14 +78,10 @@
         <%= button_tag("<b>Ficha en PDF <i class='fa fa-file-pdf-o'></i></b>".html_safe, :class => 'dropdown-item', :type => :button, id: :boton_pdf, title: 'Descargar en formato PDF') %>
         <div class="dropdown-divider"></div>
         <h6 class="dropdown-header">Consultar en <i class="fa fa-external-link-square"></i>:</h6>
-        <%= link_to('Bioteca', "http://bioteca.biodiversidad.gob.mx/janium-bin/janium_login_opac.pl?scan&keyword=#{@especie.nombre_cientifico.limpiar.downcase}", target: '_blank', class: 'dropdown-item', title: 'Biblioteca digital de CONABIO', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
-        <%= link_to('BHL', "https://www.biodiversitylibrary.org/name/#{@especie.nombre_cientifico.limpiar}", target: '_blank', class: 'dropdown-item', title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
-        <%= link_to(' Google Académico', "https://scholar.google.com.mx/scholar?hl=es&q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en Google Académico (Schoolar)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
-        <%= link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
-        <%= link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{@especie.nombre_cientifico.limpiar}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }) %>
+	      <%= ligas_mas_info(@especie.nombre_cientifico.limpiar.downcase).join.html_safe %>
         <div class="dropdown-divider"></div>
         <% if @datos[:ficha_naturalista] %>
-          <%= link_to("#{imagotipo_naturalista_nombre}<i class='fa fa-external-link-square'></i>".html_safe, @datos[:ficha_naturalista], class: 'dropdown-item', target: '_blank') %>
+          <%= link_to("Naturalista <i class='fa fa-external-link-square'></i>".html_safe, @datos[:ficha_naturalista], class: 'dropdown-item', target: '_blank') %>
         <% end %>
         <%= ponBotonEditaIDNaturalista if usuario_signed_in? && editarIDNaturalista = tiene_permiso?('Administrador') %>
         <%# TODO aqui debe ir el boton de borrar cache %>
