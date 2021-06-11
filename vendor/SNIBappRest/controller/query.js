@@ -1,7 +1,7 @@
 "use strict";
 
 require("./config.js");
-const http = require("http");
+const http = require("https");
 
 /**
  * Regresa la lista de estados
