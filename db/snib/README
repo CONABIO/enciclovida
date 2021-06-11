@@ -48,7 +48,7 @@ con el usuario postgres y preferentemente desde el servidor enciclovida.
         mysql -u enciclovida -h 172.16.1.139 -p enciclovida < adicionales_faltantes.sql
 16. Correr los procesos para los caches de las especies por cada region
     16.1 Borra los caches anteriores
-        16.1.1 
+        16.1.1 find tmp/cache -name br_* | xargs rm
     16.2 rake snib:especies:todos
     16.3 rake snib:registros:todos
 17. Probar
