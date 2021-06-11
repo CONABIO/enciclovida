@@ -9,7 +9,9 @@ con el usuario postgres y preferentemente desde el servidor enciclovida.
         1.2.1 En caso que no recuerde su usuario reiniciar su contraseña
 2. Verificacion de tablas y columnas
     2.1 Verificar que existen las tablas y columnas 
-        2.1.1 En caso de que no exita anpid en la tabla anp, renombrar la columna gid por anpid
+        2.1.1 En caso de que no exista entid en la tabla estados, renombrar gid por entid
+        2.1.2 En caso de que no exista munid en la tabla municipios, renombrar gid por munid
+        2.1.3 En caso de que no exita anpid en la tabla anp, renombrar la columna gid por anpid
 3. Crear una tabla solo con los registros y las columnas que se utilizan
 4. Crear una llave primaria con un id consecutivo, se mamo con su cadena codificada como ID
 5. Crear los indices
@@ -18,7 +20,8 @@ con el usuario postgres y preferentemente desde el servidor enciclovida.
     6.2 Llenar el campo con los distintos tipocoleccion: 1=coleccion, 2=averaves, 3=fosiles, 4=localidad no de campo, 5=naturalista 
     6.3 Crear el campo idnombrecatvalidoorig que tendra el idcat original
     6.4 Copiar la columna idnombrecatvalido a idnombrecatvalidoorig
-    6.5 Crear el indice para el capo idnombrecatvalidoorig, se ocupara para futuras referencias
+    6.5 Poner idnombrecatvalido=NULL a las subespecies que son domesticadas y meten ruido a la base, como Canis lupus subsp. familiaris
+    6.6 Crear el indice para el capo idnombrecatvalidoorig, se ocupara para futuras referencias
 7. Renombrar las tablas snib y snib_dev para poder correr el proceso en rails
 8. Correr script para que todas las infraespecies quden con el mismo idnombrecatvalido que la especie en cuestion
     OJO: catalogocentralizado debe de estar lo más actualizado posible
@@ -31,19 +34,22 @@ con el usuario postgres y preferentemente desde el servidor enciclovida.
 13. Correr los procesos para generar los topojson: rake geoportal:topojson:todos
 14. Generar las regiones en redis: 
     14.1 Genera los geojson de las regiones antes de meterlas al redis:
-        15,1,1 Descomenta las lineas pertinentes en pixi_topojson.js
+        15.1.1 Descomenta las lineas pertinentes en pixi_topojson.js
         14.1.2 Descarga las region activando la capa corresondiente
         14.1.3 Repetir hasta tener los 3 archivos; estado, municipio, anp
         14.1.4 Copiar los 3 archivos geojson debajo de /public/topojson/
     14.2 Genera las regiones en redis: rake geoportal:redis:todos
 15. Genera los registros de la tabla adicionales faltantes
     15.1 Ejecuta el siguiente comando en la ruta de este archivo
-        mysql -u enciclovida -h localhost -e "SELECT CONCAT('(', IdNombre, ', \"2021-02-09 20:00:00\", \"2021-02-09 20:00:00\"),') FROM Nombre n LEFT JOIN enciclovida.adicionales a ON n.IdNombre=a.especie_id WHERE a.especie_id IS NULL LIMIT 50000;" -p catalogocentralizado > adicionales_faltantes.sql
+        mysql -u enciclovida -h 172.16.1.139 -e "SELECT CONCAT('(', IdNombre, ', \"2021-06-09 20:00:00\", \"2021-06-09 20:00:00\"),') FROM Nombre n LEFT JOIN enciclovida.adicionales a ON n.IdNombre=a.especie_id WHERE a.especie_id IS NULL LIMIT 50000;" -p catalogocentralizado > adicionales_faltantes.sql
     15.2 Borra la primera linea del archivo adicionales_faltantes.sql e inserta la siguiente "INSERT INTO adicionales (especie_id, created_at, updated_at) VALUES "
     15.3 Pega al final de la ultima linea un ";" 
     15.3 Inserta los registros: 
-        mysql -u enciclovida -h localhost -p enciclovida < adicionales_faltantes.sql
-16. Poner idnombrecatvalido=NULL a las subespecies que son domesticadas y meten ruido a la base, como Canis lupus subsp. familiaris
-17. Correr los procesos para los caches de las especies por cada region: rake snib:especies:todos        
-18. Probar
-19. Listo!
+        mysql -u enciclovida -h 172.16.1.139 -p enciclovida < adicionales_faltantes.sql
+16. Correr los procesos para los caches de las especies por cada region
+    16.1 Borra los caches anteriores
+        16.1.1 
+    16.2 rake snib:especies:todos
+    16.3 rake snib:registros:todos
+17. Probar
+18. Listo!

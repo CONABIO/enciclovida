@@ -13,6 +13,8 @@ longitud, localidad, municipiomapa, estadomapa, paismapa, categoriataxonomica, f
 ejemplarfosil, institucion, paiscoleccion, proyecto, urlproyecto, urlejemplar, urlorigen FROM snib LIMIT 1;
 
 -- 2.1.1
+ALTER TABLE estados RENAME COLUMN gid TO entid;
+ALTER TABLE municipios RENAME COLUMN gid TO munid;
 ALTER TABLE anp RENAME COLUMN gid TO anpid;
 
 -- 3.
@@ -53,6 +55,9 @@ ALTER TABLE snib_ev ADD COLUMN idnombrecatvalidoorig character varying(50);
 UPDATE snib_ev SET idnombrecatvalidoorig = idnombrecatvalido;
 
 -- 6.5
+UPDATE snib_ev SET idnombrecatvalido=NULL WHERE idnombrecatvalidoorig IN ('20092MAMIF');
+
+-- 6.6
 CREATE INDEX idx_snib_ev_idnombrecatvalidoorig ON snib_ev USING btree (idnombrecatvalidoorig);
 CREATE INDEX idx_snib_ev_tipocoleccion ON snib_ev USING btree (tipocoleccion);
 
@@ -65,6 +70,3 @@ DROP DATABASE geoportal;
 
 -- 12.
 ALTER DATABASE geoportal_tmp RENAME TO geoportal;
-
--- 16.
-UPDATE snib_ev SET idnombrecatvalido=NULL WHERE idnombrecatvalidoorig IN ('20092MAMIF');
