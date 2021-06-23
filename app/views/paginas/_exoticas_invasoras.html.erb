@@ -15,7 +15,7 @@
         <% when 0  # Foto %>
         <%= image_tag(col, class: 'img-responsive img-rounded') if col.present? %>
         <% when 1  # Nombre cientifico %>
-        <%= col.is_a?(String) ? col : link_to(col.nombre_cientifico,especie_path(col)) %>
+        <%= col.is_a?(String) ? col : link_to(col.nombre_cientifico, especie_path(col), { target: :_blank }) %>
         <% when 8  # PDF instrumentos legales %>
         <% col.each do |instrumento| %>
         <p><%= link_to instrumento[:nombre], instrumento[:pdf] %></p>
