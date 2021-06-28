@@ -2,8 +2,8 @@ class Api::Descripcion
 
   attr_accessor :taxon, :servidor, :timeout, :debug, :locale, :app
 
-  DESCRIPCIONES_ES = %w(conabio wikipedia_es wikipedia_en conabio_tecnico)
-  DESCRIPCIONES_ES_CIENTIFICO = %w(conabio_tecnico wikipedia_es wikipedia_en conabio)
+  DESCRIPCIONES_ES = %w(conabio wikipedia_es iucn wikipedia_en conabio_tecnico)
+  DESCRIPCIONES_ES_CIENTIFICO = %w(conabio_tecnico iucn wikipedia_es wikipedia_en conabio)
 
   def initialize(opc = {})
     self.taxon = opc[:taxon]
@@ -47,15 +47,18 @@ class Api::Descripcion
 
     begin
       Timeout::timeout(timeout) do
-        Nokogiri::HTML(open(request_uri), nil, 'UTF-8')
+        Rails.logger.info "Antes de la llamada htttp: #{request_uri}"
+        Nokogiri::HTML(URI.open(request_uri), nil, 'UTF-8')
       end
     rescue Timeout::Error
       raise Timeout::Error, "#{nombre} no respondio en los primeros #{timeout} segundos."
+    rescue => e
+      Rails.logger.info e.inspect
     end
   end
 
   def valida_uri(uri)
-    parsed_uri = URI.parse(URI.encode("#{servidor}#{uri}"))
+    parsed_uri = URI.encode("#{servidor}#{uri}")
 
     Rails.logger.debug "[DEBUG] Invocando URL: #{parsed_uri}" if debug
     parsed_uri

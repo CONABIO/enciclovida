@@ -2,14 +2,14 @@ class EspeciesController < ApplicationController
 
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
                                          :fotos_naturalista, :bdi_photos, :bdi_videos, :nombres_comunes_naturalista,
-                                         :nombres_comunes_todos, :consulta_registros, :cambia_id_naturalista, :resumen_wikipedia]
+                                         :nombres_comunes_todos, :consulta_registros, :cambia_id_naturalista, :resumen_wikipedia, :descripcion_iucn]
 
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion, :descripcion_app,
                                      :consulta_registros, :cat_tax_asociadas,
                                      :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :cambia_id_naturalista,
-                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :resumen_wikipedia]
+                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :resumen_wikipedia, :descripcion_iucn]
 
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista]
 
@@ -21,7 +21,7 @@ class EspeciesController < ApplicationController
                           :comentarios,
                           :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
-                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :resumen_wikipedia]
+                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :resumen_wikipedia, :descripcion_iucn]
 
   # Pone en cache el webservice que carga por default
   caches_action :descripcion, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
@@ -492,6 +492,18 @@ class EspeciesController < ApplicationController
     end
   end
 
+  # La descripcion proveniente de IUCN redlist
+  def descripcion_iucn
+    iucn = IUCNService.new
+    iucn.taxon = @especie
+    iucn.encuentra_descripcion
+
+    @campos = [['geographicrange', 'Geographic Range'], ['habitat', 'Habitat'], ['population', 'Population'], ['populationtrend', 'Population Trend'], ['usetrade', 'Use and Trade'], ['threats', 'Threats'], ['conservationmeasures', 'Conservation Measures'], ['rationale', 'Rationale'], ['taxonomicnotes', 'Taxonomic Notes']]
+
+    @descripcion = iucn.datos
+    render 'especies/descripciones/descripcion_iucn'
+  end
+
   # Descarga los registros de naturalista, snib y en el formato solicitado. Tambien se incluye para el app
   def consulta_registros
     if params[:coleccion].present? && params[:formato].present?
@@ -805,14 +817,16 @@ class EspeciesController < ApplicationController
         desc = eval("Api::#{params[:from].camelize}")
         @descripcion = desc.new(taxon: @especie, app: app).dame_descripcion
         @api = params[:from]
-      rescue
+      rescue => e
+        Rails.logger.info e.inspect
       end
     else
       begin
         desc = Api::Descripcion.new(taxon: @especie, app: app).dame_descripcion
         @descripcion = desc[:descripcion]
         @api = desc[:api]
-      rescue
+      rescue => e
+        Rails.logger.info e.inspect
       end
     end
   end

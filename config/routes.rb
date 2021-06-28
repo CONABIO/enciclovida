@@ -216,6 +216,7 @@ Buscador::Application.routes.draw do
       get ':id/resumen-wikipedia' => 'especies#resumen_wikipedia'
       get ':id/descripcion' => 'especies#descripcion'
       get ':id/descripcion-app' => 'especies#descripcion_app'
+      get ':id/descripcion-iucn' => 'especies#descripcion_iucn'
     end
   end
 

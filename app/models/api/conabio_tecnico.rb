@@ -3,6 +3,7 @@ class Api::ConabioTecnico < Api::Conabio
   def initialize(opc = {})
     super(opc)
     self.servidor = servidor || CONFIG.site_url
+    self.timeout = 15
   end
 
   def nombre

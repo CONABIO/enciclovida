@@ -1,0 +1,10 @@
+<div>
+    <% @campos.each do |campo| %>
+        <% if @descripcion[:resultado][campo.first].present? %>
+            <div class="mb-4">
+                <h3><%= campo.last %></h3>
+                <p><%= @descripcion[:resultado][campo.first].html_safe %></p>
+            </div>
+        <% end %>
+    <% end %>
+</div>
