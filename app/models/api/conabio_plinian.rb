@@ -11,7 +11,21 @@ class Api::ConabioPlinian < Api::Conabio
 
   def dame_descripcion
     return unless cat = taxon.scat
-    buscar(cat.catalogo_id)
+    resp = buscar(cat.catalogo_id)
+    return resp if resp  # caso simple, fue el valido
+    
+    # Iteramos en los sinonimos
+    resp = nil
+    sinonimos = taxon.especies_estatus.sinonimos
+
+    sinonimos.each do |sinonimo|
+      next unless especie = sinonimo.especie 
+      next unless cat = especie.scat
+      resp = buscar(cat.catalogo_id)
+      return resp if resp
+    end
+
+    resp  # Si llego aqui la respuesta es nula
   end
 
 
