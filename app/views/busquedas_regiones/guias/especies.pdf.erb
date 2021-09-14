@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//ES"
+        "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+<head>
+  <meta http-equiv="content-type" content="text/html" charset="UTF-8" />
+  <title>Guía de especies</title>
+
+  <%= wicked_pdf_stylesheet_link_tag 'application_guias' %>
+  <%= wicked_pdf_stylesheet_link_tag 'busquedas/region/especies.pdf' %>
+</head>
+
+<body>
+    <%# request_url = request.url %>
+    <%#= render partial: 'busquedas/checklist/checklist_datos.html.erb', locals: { request_url: request_url.gsub('&checklist=1','').gsub('/resultados.pdf?','/resultados?') } %>
+<div class="container-fluid bg-info">
+    <% @resp[:taxones].each_with_index do |taxon, index| %>
+        <% if (index+1)%2 != 0 %>
+            <div class="row alwaysbreak bg-warning">
+                <div class="col-sm-3">
+                    <img src="<%= taxon[:especie].foto_principal %>" class="img-fluid m-4">
+                    <a>nombre cinetifico</a>
+                </div>
+        <% else %>
+                <div class="col-sm-3 bg-dark">
+                    <img src="<%= taxon[:especie].foto_principal %>" class="img-fluid m-4">
+                    <%= taxon[:especie].nombre_cientifico %>
+                </div>
+            </div>
+        <% end %>
+    <% end %>
+</div>
+</body>
+</html>

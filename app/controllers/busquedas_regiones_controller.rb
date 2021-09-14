@@ -13,7 +13,7 @@ class BusquedasRegionesController < ApplicationController
     cache_filtros_ev
   end
 
-  # Servicio para consultar las especies pr region, contempla filtros y cache
+  # Servicio para consultar las especies por region, contempla filtros y cache
   def especies
     br = BusquedaRegion.new
     br.params = params
@@ -33,6 +33,47 @@ class BusquedasRegionesController < ApplicationController
         br.especies
         render json: br.resp 
       end
+      format.pdf do
+        br.valida_descarga_guia
+
+        if br.resp[:estatus]
+          cache_filtros_ev
+          br.especies
+          @resp = br.resp    
+          #localhost:3000/explora-por-region/especies.pdf?utf8=✓&nombre_region=Agua%20Prieta%2C%20Sonora&region_id=1832&tipo_region=municipio&especie_id=22654&pagina=1&nivel=%3D&cat=7100&id_gi=22654#10/31.0218/-108.7207
+          
+          render pdf: 'Guía de especies',
+                 template: 'busquedas_regiones/guias/especies.pdf.erb',
+                 encoding: 'UTF-8',
+                 wkhtmltopdf: CONFIG.wkhtmltopdf_path,
+                 page_size: 'Letter',
+                 disposition: 'attachment',
+                 orientation: 'Landscape',
+                 #show_as_html: true,
+                 header: {
+                     html: {
+                         template: 'busquedas_regiones/guias/header.html.erb'
+                     },
+                     line: true,
+                     spacing: 5,
+                 },
+                 footer: {
+                     html: {
+                         template: 'busquedas_regiones/guias/footer.html.erb'
+                     },
+                     right: '[page] de [topage]',
+                     line: true,
+                     spacing: 3
+                 },
+                 margin: {
+                     top: 23,
+                     bottom: 20
+                 }      
+        else
+          render json: br.resp
+        end
+        
+      end      
     end
   end
 

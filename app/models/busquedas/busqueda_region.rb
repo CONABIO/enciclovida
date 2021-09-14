@@ -78,6 +78,34 @@ class BusquedaRegion < Busqueda
     self.resp.merge({ estatus: true, msg: nil })
   end
 
+  # Valida que los campos seleccionados sean validos para una posible descarga de guia
+  def valida_descarga_guia
+    if params[:especie_id].present?
+      begin
+        t = Especie.find(params[:especie_id])
+        cat = t.categoria_taxonomica
+        
+        if %(3 4 5).include?(cat.nivel1)
+          self.resp = { estatus: true }
+        else
+          self.resp = { estatus: false, msg: 'El taxón no es una clase, orden o familia' }
+        end
+
+      rescue
+        self.resp = { estatus: false, msg: 'El taxón seleccionado no existe' }
+      end 
+      
+    else
+      self.resp = { estatus: false, msg: 'Se debe escoger un taxón' }  
+    end
+
+    if params[:region_id].present? && (params[:tipo_region].present? && %(municipio anp).include?(params[:tipo_region]))
+      self.resp = { estatus: true }
+    else
+      self.resp = { estatus: false, msg: 'La región seleccionada no es un municipio o ANP' }
+    end
+  end
+
 
   private
 

@@ -1,0 +1,33 @@
+.row {
+  display: flex; /* equal height of the children */
+}
+
+h1 {
+  /* font-size: 3em;*/
+}
+
+body {
+  font-size: 3em;
+}
+* {
+  border: 1px solid black;
+}
+
+div.alwaysbreak {
+  /*  page-break-before: always;*/
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
