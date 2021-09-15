@@ -4,17 +4,17 @@ class BusquedasController < ApplicationController
     @no_render_busqueda_basica = true
   end
 
-  before_action only: :avanzada do
+  before_action only: [:avanzada, :por_clasificacion, :por_clasificacion_hojas] do
     @no_render_busqueda_basica = true
   end
 
+  before_action :set_especie, only: [:por_clasificacion, :por_clasificacion_hojas]
   skip_before_action :set_locale, only: [:cat_tax_asociadas]
-  #layout false, :only => [:cat_tax_asociadas]
-  layout 'application_b4'
+  layout false, only: [:por_clasificacion_hojas]
 
   # REVISADO: Los filtros de la busqueda avanzada
   def avanzada
-    filtros_iniciales
+    cache_filtros_ev
   end
 
   # REVISADO: Los resultados de busqueda basica o avanzada
@@ -67,35 +67,78 @@ class BusquedasController < ApplicationController
   def tabs
   end
 
+  # Duvuelve la clasificacion taxonomica en forma de arbol
+  def por_clasificacion
+    if I18n.locale.to_s == 'es-cientifico'
+      if @especie
+        @taxones = Especie.arbol_inicial(@especie, 3)
+      else
+        @reinos = true
+        @taxones = Especie.arbol_reinos(3)
+      end
+
+    else  # Vista general
+      if @especie
+        @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)
+        consulta_redis
+      else
+        @reinos = true
+        @taxones = Especie.arbol_reinos(22)
+      end
+    end
+
+    if params['fromShow']
+      # Se debe especificar el nombre del archivo completo ya q al ser una llamada ajax, pide el JS por default
+      render 'busquedas/clasificacion/por_clasificacion.erb', :layout => false, :locals => {conBuscador: false}
+    else
+      respond_to do |format|
+        format.html { render 'busquedas/clasificacion/por_clasificacion', :locals => {conBuscador: true} }
+        format.json { render 'busquedas/clasificacion/por_clasificacion.js.erb' }
+      end
+    end
+
+  end
+
+  # Devuelve las hojas de la categoria taxonomica con el nivel siguiente en cuestion
+  def por_clasificacion_hojas
+    if I18n.locale.to_s == 'es-cientifico'
+      if @especie
+        @taxones = Especie.arbol_hojas(@especie, 3, 'id_nombre_ascendente')
+      end
+
+    else  # Vista general
+      if @especie
+        @taxones = Especie.arbol_hojas_obligatorias(@especie, 22, 'id_ascend_obligatorio')
+        consulta_redis
+      end
+    end
+
+    render 'busquedas/clasificacion/por_clasificacion_hojas'
+  end
+
 
   private
 
-  # REVISADO: Los filtros de la busqueda avanzada y de los resultados
-  def filtros_iniciales
-    @reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
+  # Consulta el redis para desplegar los datos
+  def consulta_redis
+    @taxones.each do |taxon|
+      if taxon.nivel1 == 7 && taxon.nivel3 == 0
+        begin
+          redis_url = "#{CONFIG.site_url}/sm/search?term=#{taxon.nombre_cientifico}&types%5B%5D=especie&limit=5"
+          resp = RestClient.get redis_url
+          json_redis = JSON.parse(resp)
 
-    animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
-    @animales = []
-    animales.each do |animal|
-      if index = Busqueda::GRUPOS_ANIMALES.index(animal.nombre_cientifico)
-        @animales[index] = animal
+          json_redis["results"]["especie"].each do |especie|
+            if especie["data"]["id"] == taxon.id
+              taxon.jres = especie["data"]
+            end
+          end
+
+        rescue => e
+          next
+        end
       end
     end
-
-    plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
-    @plantas = []
-    plantas.each do |planta|
-      if index = Busqueda::GRUPOS_PLANTAS.index(planta.nombre_cientifico)
-        @plantas[index] = planta
-      end
-    end
-
-    @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
-    @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
-    @prioritarias = Catalogo.prioritarias
-    @usos = Catalogo.usos
-    @ambientes = Catalogo.ambientes
-    @regiones = Region.dame_regiones_filtro
   end
 
   # TODO: falta ver el funcionamiento del checklist; ¿talves contempalr la tabla plana?
@@ -202,7 +245,7 @@ class BusquedasController < ApplicationController
                  #show_as_html: true,
                  header: {
                      html: {
-                     template: 'busquedas/checklist/header.html.erb'
+                         template: 'busquedas/checklist/header.html.erb'
                      },
                      line: true,
                      spacing: 5,
@@ -224,8 +267,8 @@ class BusquedasController < ApplicationController
           @columnas = @taxones.to_a.map(&:serializable_hash)[0].map{|k,v| k}
         end
       else  # Ojo si no entro a ningun condicional desplegará el render normal (resultados.html.erb)
-        filtros_iniciales
-        set_filtros
+        cache_filtros_ev
+        #set_filtros
 
         format.html { render action: 'resultados' }
         format.json { render json: { taxa: @taxones, x_total_entries: @totales, por_categroria: @por_categoria.present? ? @por_categoria : [] } }
@@ -238,8 +281,8 @@ class BusquedasController < ApplicationController
   # REVISADO: La descarga de taxa en busqueda basica o avanzada
   def descargar_taxa_excel
     lista = Lista.new
-    columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
-    lista.columnas = columnas.join(',')
+    columnas = params[:f_desc].join(',')
+    lista.columnas = columnas
     lista.formato = 'xlsx'
     lista.cadena_especies = request.original_url
     lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
@@ -289,4 +332,15 @@ class BusquedasController < ApplicationController
       end
     end
   end
+
+  def set_especie
+    if params[:especie_id].present?
+      begin
+        @especie = Especie.find(params[:especie_id])
+      rescue
+        render 'shared_b4/error' and return
+      end
+    end
+  end
+
 end

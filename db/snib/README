@@ -1,0 +1,55 @@
+==Para actualizar la busqueda por región una vez que el SNIB actualizó la versión==
+IMPORTANTE: Toda accion que requiera un comando .sql se debe checar el archivo "atualizar_base_SNIB.sql" y correrlo por separado
+con el usuario postgres y preferentemente desde el servidor enciclovida.
+
+1. Acceso y permisos
+    1.1 Crear la estructura de la base en el servidor postgres de enciclovida para que Emmanuel suba la base actualizada a enciclovida.
+        pg_restore -h localhost -U postgres -d geoportal -j 5 -v -C /home/enciclovida/buscador/db/respaldos/geoportal/geoportal_tmp.dump
+    1.2 Dar permisos a la base geoportal_tmp a emmanuel, en el pgadmin
+        1.2.1 En caso que no recuerde su usuario reiniciar su contraseña
+2. Verificacion de tablas y columnas
+    2.1 Verificar que existen las tablas y columnas 
+        2.1.1 En caso de que no exista entid en la tabla estados, renombrar gid por entid
+        2.1.2 En caso de que no exista munid en la tabla municipios, renombrar gid por munid
+        2.1.3 En caso de que no exita anpid en la tabla anp, renombrar la columna gid por anpid
+3. Crear una tabla solo con los registros y las columnas que se utilizan
+4. Crear una llave primaria con un id consecutivo, se mamo con su cadena codificada como ID
+5. Crear los indices
+6. Campos nuevos
+    6.1 Crear el campo tipocoleccion
+    6.2 Llenar el campo con los distintos tipocoleccion: 1=coleccion, 2=averaves, 3=fosiles, 4=localidad no de campo, 5=naturalista 
+    6.3 Crear el campo idnombrecatvalidoorig que tendra el idcat original
+    6.4 Copiar la columna idnombrecatvalido a idnombrecatvalidoorig
+    6.5 Poner idnombrecatvalido=NULL a las subespecies que son domesticadas y meten ruido a la base, como Canis lupus subsp. familiaris
+    6.6 Crear el indice para el capo idnombrecatvalidoorig, se ocupara para futuras referencias
+7. Renombrar las tablas snib y snib_dev para poder correr el proceso en rails
+8. Correr script para que todas las infraespecies quden con el mismo idnombrecatvalido que la especie en cuestion
+    OJO: catalogocentralizado debe de estar lo más actualizado posible
+    En la consola de rails: Geoportal::Snib.actualiza_idnombrecatvalido
+9. Crear un respaldo
+    pg_dump -h localhost -U postgres -t estados -t municipios -t anp -t ecorregiones -t snib -t snib_ev -Fc -O -x geoportal_tmp > /home/enciclovida/buscador/db/respaldos/geoportal/geoportal_aaaa_mm_dd.dump
+10. Borrar las tablas que no se ocupan de la base geoportal_tmp, desde el pgadmin
+11. Borra la base geoportal
+12. Renombrar la base geoportal_tmp por geoportal
+13. Correr los procesos para generar los topojson: rake geoportal:topojson:todos
+14. Generar las regiones en redis: 
+    14.1 Genera los geojson de las regiones antes de meterlas al redis:
+        15.1.1 Descomenta las lineas pertinentes en pixi_topojson.js
+        14.1.2 Descarga las region activando la capa corresondiente
+        14.1.3 Repetir hasta tener los 3 archivos; estado, municipio, anp
+        14.1.4 Copiar los 3 archivos geojson debajo de /public/topojson/
+    14.2 Genera las regiones en redis: rake geoportal:redis:todos
+15. Genera los registros de la tabla adicionales faltantes
+    15.1 Ejecuta el siguiente comando en la ruta de este archivo
+        mysql -u enciclovida -h 172.16.1.139 -e "SELECT CONCAT('(', IdNombre, ', \"2021-06-09 20:00:00\", \"2021-06-09 20:00:00\"),') FROM Nombre n LEFT JOIN enciclovida.adicionales a ON n.IdNombre=a.especie_id WHERE a.especie_id IS NULL LIMIT 50000;" -p catalogocentralizado > adicionales_faltantes.sql
+    15.2 Borra la primera linea del archivo adicionales_faltantes.sql e inserta la siguiente "INSERT INTO adicionales (especie_id, created_at, updated_at) VALUES "
+    15.3 Pega al final de la ultima linea un ";" 
+    15.3 Inserta los registros: 
+        mysql -u enciclovida -h 172.16.1.139 -p enciclovida < adicionales_faltantes.sql
+16. Correr los procesos para los caches de las especies por cada region
+    16.1 Borra los caches anteriores
+        16.1.1 find tmp/cache -name br_* | xargs rm
+    16.2 rake snib:especies:todos
+    16.3 rake snib:registros:todos
+17. Probar
+18. Listo!

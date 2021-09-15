@@ -75,7 +75,7 @@
         };
 
         Suggestion.prototype.render = function(callback) {
-            return "<li id=\"" + this.id + "\" class=\"soulmate-suggestion\">\n  " + (callback(this.term, this.data, this.type, this.index, this.id)) + "\n</li>";
+            return "<li id=\"" + this.id + "\" class=\"soulmate-suggestion clearfix p-2 border-bottom\">\n  " + (callback(this.term, this.data, this.type, this.index, this.id)) + "\n</li>";
         };
 
         Suggestion.prototype.element = function() {
@@ -193,7 +193,7 @@
         };
 
         SuggestionCollection.prototype._renderTypeEnd = function(type) {
-            return "  </ul>\n  <div class=\"soulmate-type\">" + typesDiacritics(type) + "</div>\n</li>";
+            return "  </ul>\n  <div class=\"soulmate-type p-2 h5 font-weight-bold\">" + typesDiacritics(type) + "</div>\n</li>";
         };
 
         SuggestionCollection.prototype._renderSuggestion = function(suggestion) {

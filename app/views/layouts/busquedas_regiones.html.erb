@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es-MX" lang="es-MX">
+<head>
+  <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
+  <meta name="keywords" content="Búsqueda por región, búsqueda por ubicación, búsqueda por zona, búsqueda por lugar, búsueda por especies, búsqueda por estados, búsqueda por municipios, búsqueda por ANP, registros geográficos">
+  <title><%= yield :title %></title>
+  <%= favicon_link_tag '/favicon.ico' %>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+
+  <%= stylesheet_link_tag 'busquedas/region/por_region', 'data-turbolinks-track' => true %>
+
+  <script type="text/javascript" data-turbolinks-track="true">
+      TYPES = ["especie", "genero", "familia", "orden", "clase", "division", "phylum", "reino"];
+      SITE_URL = "<%= CONFIG.site_url %>";
+  </script>
+
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'busquedas/region/por_region', 'data-turbolinks-track' => true %>
+
+  <script type="text/javascript" data-turbolinks-track="true">
+      I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
+      I18n.locale = "<%= I18n.locale %>";
+      I18n.fallbacks = true;
+  </script>
+
+  <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f97bf94d924480012e1d081&product=sop' async='async' data-turbolinks-track="true"></script>
+
+  <%= csrf_meta_tags %>
+  <%= yield :extrahead %>
+  <%= yield :extracss %>
+  <%= yield :extrajs %>
+</head>
+<body>
+
+<%= yield :ribbon %>
+
+<header class="container-fluid">
+  <%= render :partial => 'shared_b4/brandBar' %>
+  <%= render :partial => 'shared_b4/tituloBuscador', locals: {icon_class: 'busqueda-region', titulo: "Búsqueda por región"} %>
+</header>
+
+<section id="content" class="container-fluid px-0">
+  <div class="row no-gutters">
+    <%= yield %>
+  </div>
+</section>
+
+<footer class="container-fluid">
+  <%= render :partial => 'shared_b4/footer_social' %>
+  <%= render :partial => 'shared_b4/footer_legal' %>
+</footer>
+
+<%= yield :delayedjs %>
+</body>
+</html>

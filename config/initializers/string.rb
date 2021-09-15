@@ -29,6 +29,10 @@ class String
     self.gsub("'", "''")
   end
 
+  def strip_tags
+    ActionController::Base.helpers.strip_tags(self)
+  end
+
   def codifica64
     Base64.encode64(self)
   end
@@ -61,13 +65,34 @@ class String
       # Verificar que sea texto lo que se va a analizar
       if self.is_a? String
         #Asegurar que el fragmento html tenga los "< / >"'s cerrados
-        Nokogiri::HTML.fragment(self).to_html.html_safe
+        x = Nokogiri::HTML.fragment(self.gsub("\r\n",' '))
+        x.css("div").each { |div|  div.name= "p";}
+        x.xpath('@style|.//@style').remove
+        x.to_html.html_safe
       else
         self.to_s
       end
     else
       ''
     end
+  end
+
+  # Quitamos toda etiqueda <a> con nokogiri
+  def quita_enlaces
+    # Verificar si hay información que mostrar
+    if self.present?
+      # Verificar que sea texto lo que se va a analizar
+      if self.is_a? String
+        #Asegurar que el fragmento html tenga los "< / >"'s cerrados
+        x = Nokogiri::HTML.fragment(self)
+        x.search("a").each {|node| node.replace(node.content) }
+        x.to_html.html_safe
+      else
+        self.to_s
+      end
+    else
+      ''
+    end    
   end
 
   # Quita el html de la cadena

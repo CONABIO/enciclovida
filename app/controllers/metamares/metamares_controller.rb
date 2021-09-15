@@ -3,26 +3,27 @@ class Metamares::MetamaresController < ApplicationController
 
   #la pagina de flopez
   def index
+	  @b4 = true
     #render layout: false
-    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/pais/mares/infoceanos/")).css('#project')
-    @doc.css('#pagetitle').remove
-    @doc.css('#sectionmenu').remove
-    @doc.css('#pageima').remove
+    #@doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/pais/mares/infoceanos/")).css('#project')
+    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/monitoreo/infoceanos")).css('#el-titulo, #introenciclovida')
+
+    #@doc.css('#pagetitle').remove
+    #@doc.css('#sectionmenu').remove
+    #@doc.css('#pageima').remove
     @doc.xpath('//comment()').remove
 
     @doc.each do |el|
       el.traverse do |n|
-        next if n.key?('id') && %w(accordion collapse1 collapse2 collapse3 collapse4).include?(n.attribute('id').value)
-        n.remove_attribute('id')
-        n.remove_class('contenidoGRALima')
-        n.remove_class('project')
         if n.matches?('img')
-          n.attribute('src').value = n.attribute('src').value.gsub('../../../', 'https://www.biodiversidad.gob.mx/')
+          #n.attribute('src').value = n.attribute('src').value.gsub('../../../', 'https://www.biodiversidad.gob.mx/')
+          n.attribute('src').value = "https://www.biodiversidad.gob.mx/" + n.attribute('src').value unless  n.attribute('src').value.include?('biodiversidad.gob.mx')
+          n['class'] = n['class'].present? ? (n['class'] + ' img-fluid') : 'img-fluid'
         end
       end
     end
 
-    @doc = @doc.to_html.encode("utf-8")
+    @doc = @doc.to_html
   end
 
   # La visualizacion por medio de D3

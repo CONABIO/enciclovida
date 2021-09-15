@@ -54,6 +54,7 @@ app/views/admin
 app/models/admin
 public/kmz/*
 tools/correspondencia_proyectos_naturalista/
+tools/mapas_SIG/*.csv
 public/fontello-demo.html
 public/pdfs/
 public/uploads/
@@ -63,18 +64,31 @@ node_modules/
 public/descargas_resultados/
 public/fotos_invasoras/
 public/validaciones/
-public/topojson/
 db/metamares/metamares.mwb.bak
 db/plantid/plantid_MER.mwb.bak
 db/metamares/migracion_base/metamares*csv
 db/metamares/migracion_base/metamares*sql
 db/metamares/migracion_base/*sql
 db/metamares/migracion_base/version_*
+
+db/snib/adicionales_faltantes.sql
+
 public/javascripts
 public/IUCN
 public/assets/
+
 tools/naturalista/log/
 log
+<<<<<<< HEAD
 public/uploads
 NuevaGema.png
 redis-5.0.5/
+=======
+nohup.out
+.ruby-version
+
+vendor/SNIBappRest_old/controller/config.js
+vendor/SNIBappRest_old/node_modules
+vendor/SNIBappRest/node_modules
+vendor/SNIBappRest/controller/config.js
+>>>>>>> origin/master

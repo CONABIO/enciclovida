@@ -12,15 +12,14 @@
 
   <%= csrf_meta_tags %>
 
-  <%= stylesheet_link_tag "boots4-upgrade/inicio", media: "all", "data-turbolinks-track" => true %>
+  <%= stylesheet_link_tag "inicio", media: "all", "data-turbolinks-track" => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
-      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis %>");
-      IP = "<%= IP %>";
-      PORT = "<%= PORT %>";
+      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis(I18n.locale.to_s) %>");
+      SITE_URL = "<%= CONFIG.site_url %>";
   </script>
-  <%= javascript_include_tag "application_b4", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag 'inicio/inicio', 'data-no-turbolink' => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%#= javascript_include_tag 'inicio/inicio', 'data-no-turbolink' => true %>
 
   <script type="text/javascript" data-turbolinks-track="true">
       I18n.defaultLocale = "<%= CONFIG.default_locale.to_s %>";
@@ -28,16 +27,17 @@
       I18n.fallbacks = true;
   </script>
 
+  <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f97bf94d924480012e1d081&product=sop' async='async' data-turbolinks-track="true"></script>
+
   <%= yield :extrajs %>
   <%= yield :extracss %>
 
 </head>
 
-<body class="index">
-
-<header class="container-fluid" style="background-image:url('/assets/portada/img_portada_video.png');">
-  <%= render :partial => 'inicio/layout/brandBar' %>
-
+<body class="index" style="background-image: url('/assets/portada/fondo.jpg');">
+<%# render :partial => 'shared_b4/ribbon', locals: {mensaje: "¡Estamos estrenando <br />  app para dispositivos iOS!" } %>
+<header class="container-fluid">
+	<%= render :partial => 'shared_b4/brandBar' %>
 </header>
 
 <section id="content" class="container-fluid">
@@ -50,23 +50,7 @@
   <%= render :partial => 'shared_b4/footer_social' %>
   <%= render :partial => 'shared_b4/footer_legal' %>
 </footer>
-
-<div id="app-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="true" data-delay=5000 style="position: fixed; bottom: 0px; right: 20px;">
-  <div class="toast-header">
-    <strong class="mr-auto">Noticias</strong>
-    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="toast-body">
-    <h5 class="text-center"><%= link_to '¡Descarga nuestra app!', '#por-que-es-importante', 'data-turbolinks'=>"false" %></h5>
-  </div>
-</div>
-<script type="text/javascript">
-  $(document).ready(function () {
-    $('.toast').toast('show')
-  });
-</script>
+<%#= render :partial => 'shared_b4/toast', locals: {header: "Noticias", body: "¡Nueva versión de Búsquedas por región!", body_link: "/explora-por-region"} %>
 <%= yield :delayedcss %>
 <%= yield :delayedjs %>
 </body>

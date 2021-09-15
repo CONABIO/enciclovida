@@ -1,142 +1,116 @@
-body{
-    background-color: #ececec;
-}
 #map {
-    min-height: 620px;
-    width: 100%;
-}
-.panel-resultados {
-    text-align: left;
-    max-height: 400px;
-    overflow-y: scroll;
-}
-.panel-resultados div.result-img-container .result-nombre-container{
-    margin: -5px 0px 0 0;
-    opacity: 0.85;
-    line-height: 11px;
-    min-height: 28px;
-    font-size: 11px;
-    background-color: #ecececce;
-    color: #332222;
-    /*font-weight: bold;*/
-}
-.panel-resultados div.result-img-container {
-    margin: 0 2px;
+  min-height: 90vh;
+  max-height: 90vh;
 }
 
-#especies img{max-height: 120px;}
-
-.region, .selecciona-region {
-    fill: black;
-    opacity: .2;
-    pointer-events: all!important;
-}
-.region {
-    stroke: #ffff00;
-    stroke-width: 1px;
-}
-.region:hover {
-    stroke: #ffff00;
-    opacity: .3;
-    stroke-width: 4px;
-}
-.selecciona-region {
-    stroke: #ffff00;
-    stroke-width: 4px;
-    opacity: .3;
+#grupos-pop [class*="ev-icon"],
+#grupos-tab [class*="ev-icon"],
+#filtros-especies [class*="ev-icon"] {
+  background-image: none !important;
 }
 
-#contenedor_grupos small {
-  position: relative;
-  left: -1.5em;
-  color: #333333;
-  font-weight: bold;
+#grupos-tab input {
+  display: none;
 }
-
-
-
-.explora_por{
-    float: left;
-    margin-right: 10px;
-}
-.animalia-ev-icon, .plantae-ev-icon, .fungi-ev-icon, .prokaryotae-ev-icon, .protoctista-ev-icon, .mammalia-ev-icon, .aves-ev-icon, .reptilia-ev-icon, .amphibia-ev-icon, .actinopterygii-ev-icon, .petromyzontidae-ev-icon, .myxini-ev-icon, .chondrichthyes-ev-icon, .cnidaria-ev-icon, .arachnida-ev-icon, .myriapoda-ev-icon, .annelida-ev-icon, .insecta-ev-icon, .porifera-ev-icon, .echinodermata-ev-icon, .mollusca-ev-icon, .crustacea-ev-icon, .invertebrados-ev-icon, .bryophyta-ev-icon, .pteridophyta-ev-icon, .cycadophyta-ev-icon, .gnetophyta-ev-icon, .liliopsida-ev-icon, .coniferophyta-ev-icon, .magnoliopsida-ev-icon{
-  background-image: none!important;
-  border-radius: 50%;
-}
-
-#contenedor_grupos input{display: none;}
-
-#contenedor_grupos span{
-  font-size: 4rem;
+#grupos-tab span {
+  font-size: 2rem;
   cursor: pointer;
   border-radius: 35%;
-  -webkit-transition: border-radius .3s ease-in-out;
-  -moz-transition: border-radius .3s ease-in-out;
-  transition: border-radius .3s ease-in-out;
+  transition: border-radius 0.3s ease-in-out;
 }
 
-#contenedor_grupos input + span{
+#grupos-tab input + span {
   border: 2px solid transparent;
   padding: 2px;
-  -webkit-transition: border-radius .3s ease-in-out;
-  -moz-transition: border-radius .3s ease-in-out;
-  transition: border-radius .3s ease-in-out;
+  transition: border-radius 0.3s ease-in-out;
 }
 
-#contenedor_grupos input:checked + span{
+#grupos-tab input:checked + span {
   border-radius: 50% !important;
-  border: 2px solid #991705!important;
-}
-#contenedor_grupos input + span:hover{
-  border: 2px solid rgba(153, 23, 5, .4);
+  border: 2px solid #991705 !important;
 }
 
-#contenedor_grupos input + span > span{
+#grupos-tab input + span:hover {
+  border: 2px solid rgba(153, 23, 5, 0.4);
+}
+
+#grupos-tab input + span > span {
   border: 1px solid transparent;
 }
 
-#contenedor_grupos input:checked + span > span{
+#grupos-tab input:checked + span > span {
   border-radius: 50% !important;
-  border: 1px solid #991705!important;
-}
-#contenedor_grupos input + span:hover > span{
-  border: 1px solid rgba(153, 23, 5, .4);
+  border: 1px solid #991705 !important;
 }
 
+#grupos-tab input + span:hover > span {
+  border: 1px solid rgba(153, 23, 5, 0.4);
+}
+#busqueda_region{left: 0;}
+#busqueda_region, #contenedor_especies{
+  top: 0;
+  z-index: 1050;
+  pointer-events: none!important;
+}
+.popover{
+  max-width: 405px!important;
+}
+#busqueda_region *, #filtros-especies, #snib, #drag,  #opciones_resultados *, .result-img-container, .result-nombre-container{pointer-events: auto;}
+#contenedor_especies{right: 0;}
 
-div.checkbox.explora_por h6{
-    margin: 3px 6px 0 0;
-    font-size: 10px;
-    text-align: center;
+[id^=especie-container]{background-color: #fafafa30;}
+[id^=especie-container]:hover, .result-nombre-container{background-color: #fafafa;}
+.result-nombre-container{height: 80px; overflow-y: auto;}
+
+#contenedor_resultados{
+  right: 0;
+  top: 0;
+  bottom: 0;
+  transition: all ease-out .5s;
 }
-div.checkbox.explora_por{
-    text-align: center;
+#drag{
+  left: -20px;
+  z-index: 1;
+}
+/*#drag button{cursor: pointer;}*/
+#filtros-especies {}
+
+#contenedor_especies i.ev1-ev-icon {
+  transition: all 0.2s ease;
+  vertical-align: baseline;
+  font-size: 5rem;
+  color: #ababab;
+}
+/*div.result-img-container {height: 10rem;}*/
+#opciones_resultados{bottom: 0;}
+
+.boton-especie-registros {
+  left: 0;
+  bottom: 0;
 }
 
-
-
-.f-fuentes {
-  position: relative;
+#nombre-region-hover {
+  position: fixed;
+  z-index: 1000;
+  background-color: #fff;
+  display: none;
+  padding: 5px;
+  border-radius: 5px;
+  opacity: 0.6;
 }
 
-.f-fuentes:before {
-  left: 0px;
-  position: relative;
-  top: 0px;
-  font-size: 1.75em;
-  margin: 0px !important;
+#contenedor_especies div.result-img-container img {
+  object-fit: cover;
+  height: 10rem;
+  width: 100%;
 }
-.f-fuentes:after {
-  left: 25px;
-  position: absolute;
-  top: 4px;
-  font-size: 1.75em;
-  margin: 0px !important;
+
+#loading{
+  top: 0;
+  z-index: 2000;
+  background-color: rgba(0, 0, 0, 0.3);
 }
-.f-fuentes span.text {
-  position: relative;
-  left: 40px;
-}
-.f-fuentes.opt {
-  padding-left: 1.5rem !important;
+#soulmate{
+  width: 500px;
+  top: 35px;
 }

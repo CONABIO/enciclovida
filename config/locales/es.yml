@@ -1,4 +1,11 @@
 es:
+  anps_tipos:
+    apfyf: Áreas de protección de flora y fauna
+    aprn: Áreas de protección de recursos naturales
+    mn: Monumentos naturales
+    pn: Parques nacionales
+    rb: Reservas de la biosfera
+    sant: Santuarios
   ambiente:
     marino:
       icono: marino.png
@@ -35,6 +42,7 @@ es:
    x_comentario:
     uno: Ver 1 comentario más
     varios: "Ver %{cuantos} comentarios más"
+  conteo_especies: 106 mil especies
   copyright:
     some_rights_reserved_by: (c) %{name}, algunos derechos reservados (%{license_short})
     all_rights_reserved: (c) %{name}, todos los derechos reservados
@@ -270,6 +278,7 @@ es:
     campeche: Campeche
     chiapas: Chiapas
     chihuahua: Chihuahua
+    ciudad-de-mexico: Ciudad de México
     coahuila: Coahuila
     coahuila-de-zaragoza: Coahuila
     colima: Colima
@@ -469,20 +478,25 @@ es:
       nombre_cientifico: Nombre científico
       sis_clas_cat_dicc: Sistema de clasificación, catalogo o diccionario
       updated_at: Fecha de última modificación
+      x_ambiente: Ambiente
+      x_bibliografia : Bibliografía
       x_bdi_fotos: Fotos del Banco de Imágenes - CONABIO
       x_categoria_taxonomica: Categoria taxonómica
       x_cites: Comercio Internacional (CITES)
-      x_estatus: Estatus del nombre científico
+      x_estatus: Estatus
       x_foto_principal: Foto principal
       x_iucn: Unión Internacional para la Conservación de la Naturaleza (IUCN)
       x_naturalista_id: Identificador NaturaLista
       x_naturalista_fotos: Fotos de Naturalista
       x_nom: Norma Oficial Mexicana NOM-059
       x_nombre_comun_principal: Nombre común principal
+      x_num_reg: Número de registros
       x_nombres_comunes: Nombres comúnes
       x_snib_id: Identificador del SNIB
       x_snib_reino: Reino en el SNIB
+      x_taxa_sup: Taxonomía superior
       x_tipo_distribucion: Tipo distribución
+      x_url_ev: 'URL Enciclovida'
     categorias:
       x_reino: Reino
       x_division: división
@@ -610,6 +624,8 @@ es:
     ecorregiones-marinas: Ecorregiones marinas
   short_description: EncicloVida es una plataforma de consulta creada por la Comisión Nacional para el Conocimiento y Uso de la Biodiversidad (CONABIO), sobre las especies que viven en México.
   sinonimo: inactivos
+  sin_descripcion_en_x_para_y: No existe ninguna descripción en %{x} para %{y}
+  sin_descripcion_para_y: No existe ninguna descripción para %{y}
   solo_taxones: Solo especies o grupos
   support:
     array:

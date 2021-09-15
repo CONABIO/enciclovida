@@ -112,7 +112,7 @@ Native FullScreen JavaScript API
 -------------
 Assumes Mozilla naming conventions instead of W3C for now
 
-source : http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugin/
+source : https://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugin/
 
 */
 

@@ -1,5 +1,5 @@
 <div class="dropdown">
-  <button id="menuEsqSupDer" type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  <button id="menuEsqSupDer" type="button" class="btn btn-light shadow dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <%= usuario_signed_in? ? current_usuario.nombre : " Más" %>...
     <i class='vista-<%= I18n.locale.to_s == 'es-cientifico' ? 'especialista' : 'general' %>-ev-icon'></i>
   </button>
@@ -10,10 +10,9 @@
     <div class="dropdown-divider"></div>
     <%= link_to '<b>Validación en línea...</b>'.html_safe, validaciones_path, :role => 'button', data: { turbolinks: false }, class: 'dropdown-item' %>
     <div class="dropdown-divider"></div>
-    <%= link_to '¿Qué es EncicloVida?', inicio_acerca_path << '?tab=queEs', data: { turbolinks: false }, class: 'dropdown-item' %>
-    <div class="dropdown-divider"></div>
     <% if usuario_signed_in? %>
-      <%= link_to 'Administracion de comentarios', admin_path, data: { turbolinks: false }, class: 'dropdown-item' %>
+      <%= link_to 'Administración de comentarios', admin_path, data: { turbolinks: false }, class: 'dropdown-item' %>
+      <%= link_to 'Administración del catálogo', admin_catalogos_path, data: { turbolinks: false }, class: 'dropdown-item' %>
       <%= link_to 'Configuración de tu cuenta', edit_usuario_registration_path, data: { turbolinks: false }, class: 'dropdown-item' %>
       <%= link_to "Cerrar sesión", destroy_usuario_session_path, :method => :delete, data: {confirm: '¿Estás seguro que deseas cerrar la sesión?'.html_safe, turbolinks: false}, class: 'dropdown-item' %>
     <% else %>

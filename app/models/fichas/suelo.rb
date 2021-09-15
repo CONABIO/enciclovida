@@ -5,4 +5,8 @@ class Fichas::Suelo < Ficha
 
 	has_many :habitat, class_name: 'Fichas::Habitat'
 
+	def tiene_datos_amb?
+		return true if descripcion.present?
+	end
+
 end

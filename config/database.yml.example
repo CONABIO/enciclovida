@@ -22,7 +22,7 @@ fichas:
   <<: *login
   database: fichasespecies
 
-snib:
+geoportal:
   adapter: postgresql
   database: snib
   pool: 5

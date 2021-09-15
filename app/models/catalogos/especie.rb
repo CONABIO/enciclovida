@@ -26,9 +26,9 @@ class Especie < ActiveRecord::Base
   alias_attribute :updated_at, :FechaModificacion
 
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
-  attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica,
-                :x_naturalista_obs, :x_snib_registros, :x_geoportal_mapa,
-                :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion, :x_distribucion,
+  attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica, :x_url_ev, 
+                :x_naturalista_obs, :x_snib_registros, :x_geoportal_mapa, :x_num_reg,
+                :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion, :x_distribucion, :x_ambiente,
                 :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista, :x_nombres_comunes_catalogos, :x_nombres_comunes_todos,
                 :x_fotos, :x_foto_principal, :x_square_url, :x_fotos_principales, :x_fotos_totales, :x_naturalista_fotos, :x_bdi_fotos,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
@@ -36,14 +36,16 @@ class Especie < ActiveRecord::Base
                 :x_serie, :x_subserie, :x_especie, :x_subespecie, :x_variedad, :x_subvariedad, :x_forma, :x_subforma,
                 :x_subreino, :x_superphylum, :x_phylum, :x_subphylum, :x_superclase, :x_subterclase, :x_grado, :x_infraclase,
                 :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
-                :x_infraphylum, :x_epiclase, :x_supercohorte, :x_cohorte, :x_grupo_especies, :x_raza, :x_estirpe,
+                :x_infraphylum, :x_epiclase, :x_supercohorte, :x_cohorte, :x_subcohorte, :x_hibrido, :x_grupo_especies, :x_raza, :x_estirpe,
                 :x_subgrupo, :x_hiporden, :x_infraserie,
-                :x_nombre_autoridad, :x_nombre_autoridad_infraespecie, :x_suprafamilia  # Para que en el excel sea mas facil la consulta
+                :x_bibliografia, :x_nombre_autoridad, :x_nombre_autoridad_infraespecie, :x_suprafamilia  # Para que en el excel sea mas facil la consulta
   :x_distancia
   alias_attribute :x_nombre_cientifico, :nombre_cientifico
   attr_accessor :e_geodata, :e_nombre_comun_principal, :e_foto_principal, :e_nombres_comunes, :e_categoria_taxonomica,
                 :e_tipo_distribucion, :e_caracteristicas, :e_bibliografia, :e_fotos  # Atributos para la respuesta en json
   attr_accessor :jres  # Para las respuest en json
+  # Para la parte de validar registros de la especie
+  attr_accessor :coleccion, :formato
 
   has_one :proveedor
   has_one :adicional
@@ -128,24 +130,29 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   scope :nivel_categoria, ->(nivel, categoria) { where("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) #{nivel} '#{categoria}'") }
   # Para que regrese las especies
   scope :solo_especies, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=?", 7,0,0).left_joins(:categoria_taxonomica) }
+  # Regresa solo las categorias obligatorias en categoria taxonomica
+  scope :solo_cat_obligatorias, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}>0 AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=0 AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} IN (?)", CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS) }
   # Para mostrar solo los taxones publicos
   scope :solo_publicos, -> { left_joins(:scat).where("#{Scat.attribute_alias(:publico)}=?", 1) }
   # Para que regrese las especies e inferiores
   scope :especies_e_inferiores, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}>?", 7,0).left_joins(:categoria_taxonomica) }
-  # Scope para cargar el arbol nodo D3 en la ficha de la espcie
-  scope :arbol_nodo_select, -> { Especie.select_basico(['conteo', "#{CategoriaTaxonomica.attribute_alias(:nivel1)} AS nivel1", "#{CategoriaTaxonomica.attribute_alias(:nivel2)} AS nivel2"]).left_joins(:adicional, :categoria_taxonomica, :especie_estadisticas, :scat).where('estadistica_id=?',22).where(estatus: 2).where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=? AND #{Scat.attribute_alias(:publico)}=?",0,0,true) }
-  # Scope para cargar el arbol nodo inical en la ficha de la especie
-  scope :arbol_nodo_inicial, ->(taxon) { arbol_nodo_select.where(id: taxon.path_ids).order("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}") }
-  # Scope para cargar las hojas del arbol nodo inical en la ficha de la especie
-  scope :arbol_nodo_hojas, ->(taxon) { arbol_nodo_select.where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=?",taxon.categoria_taxonomica.nivel1+1).where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,?,%'", taxon.id).order(:nombre_cientifico) }
-  # Scope para cargar el arbol identado en la ficha de la espcie
-  scope :arbol_identado_select, -> { Especie.select_basico(['conteo']).select_nivel_categoria.left_joins(:adicional, :categoria_taxonomica, :especie_estadisticas, :scat).where("estadistica_id=? AND #{Scat.attribute_alias(:publico)}=?",3,true) }
-  # Scope para cargar el arbol identado inical en la ficha de la especie
-  scope :arbol_identado_inicial, ->(taxon) { arbol_identado_select.where(id: taxon.path_ids).order('nivel_categoria DESC') }
-  # Scope para cargar las hojas del arbol identado inical en la ficha de la especie
-  scope :arbol_identado_hojas, ->(taxon) { arbol_identado_select.where(id_nombre_ascendente: taxon.id).where.not(id: taxon.id).order(nombre_cientifico: :asc) }
   # Query que saca los ancestros, nombres cientificos y sus categorias taxonomicas correspondientes
-  scope :asigna_info_ancestros, -> { path.select("#{Especie.attribute_alias(:nombre)}, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)}").left_joins(:categoria_taxonomica) }
+  scope :asigna_info_ancestros, -> { path.select("#{Especie.attribute_alias(:nombre)}, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)}").left_joins(:categoria_taxonomica) }  
+  
+  # Scope para cargar el arbol identado en la ficha de la espcie
+  scope :arbol_select, -> { Especie.select_basico(['conteo']).select_nivel_categoria.left_joins(:adicional, :categoria_taxonomica, :especie_estadisticas) }
+  # Scope para cargar el arbol identado inical en la ficha de la especie
+  scope :arbol_inicial, ->(taxon, estadistica_id) { arbol_select.solo_publicos.where(id: taxon.path_ids).order('nivel_categoria ASC').where("estadistica_id=?",estadistica_id) }
+  # Scope para cargar el arbol identado inical en la ficha de la especie, solo las categorias obligatorias
+  scope :arbol_inicial_obligatorias, ->(taxon, estadistica_id) { arbol_inicial(taxon, estadistica_id).solo_cat_obligatorias.where(estatus: 2) }
+  # Scope para los reinos iniciales en la busqueda por clasificacion
+  scope :arbol_reinos, ->(estadistica_id) { arbol_select.solo_publicos.where("estadistica_id=?",estadistica_id).where(id: [1..5]).order('nivel_categoria ASC') }
+  # Scope para cargar las hojas del arbol
+  scope :arbol_hojas, ->(taxon, estadistica_id, ascendente) { arbol_select.solo_publicos.where("#{attribute_alias(ascendente)}=#{taxon.id}").where.not(id: taxon.id).where("estadistica_id=?",estadistica_id).order(nombre_cientifico: :asc) }
+  scope :arbol_hojas_obligatorias, ->(taxon, estadistica_id, ascendente) { arbol_hojas(taxon, estadistica_id, ascendente).solo_cat_obligatorias.where(estatus: 2) }
+
+  # Scopes de estadisticas
+  scope :conteo_estadisticas, ->(estadisticas, conteo) { left_joins(:estadisticas).where("estadistica_id IN (#{estadisticas})").where("conteo #{conteo} 0") }
 
   CON_REGION = [19, 50]
 
@@ -300,7 +307,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       cat = esp_cat.catalogo
       next unless cat.es_catalogo_permitido?
       nombre_catalogo = cat.dame_nombre_catalogo
-      biblio_cita_completa = esp_cat.especies_catalogos_bibliografias.where(catalogo_id: cat.id).map { |b| b.bibliografia.cita_completa }
+      biblio_cita_completa = esp_cat.biblios.where(catalogo_id: cat.id).map { |b| b.bibliografia.cita_completa }
       seccion = nombre_catalogo.estandariza.to_sym
 
       resp[seccion] = { nombre_catalogo: nombre_catalogo, datos: [] } unless resp[seccion].present?
@@ -637,7 +644,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
   # REVISADO Asigna todas las categorias y nombre cientificos a los ancestros de un taxon, para poder acceder a el mas facil
   def asigna_categorias
-
     path.select("#{Especie.attribute_alias(:nombre)} AS nombret, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica").left_joins(:categoria_taxonomica).each do |ancestro|
       categoria = 'x_' << I18n.transliterate(ancestro.nombre_categoria_taxonomica).gsub(' ','_').downcase
       next unless Lista::COLUMNAS_CATEGORIAS.include?(categoria)
@@ -657,6 +663,87 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
     # Asigna la categoria taxonomica
     self.x_categoria_taxonomica = categoria_taxonomica.nombre_categoria_taxonomica
+  end
+
+  # Condiciones que deben de cumplir
+  def valida_registros
+    # Para no generar descargas arriba de especie
+    return self.jres = { estatus: false, msg: 'No es una especie o subespecie' } unless apta_con_geodatos?
+    # Que haya registro en Scat
+    return self.jres = { estatus: false, msg: 'No existe registro en Scat' } unless s = scat
+    catalogo_id = s.catalogo_id
+    return self.jres = { estatus: false, msg: 'El IdCAT esta vacio' } unless catalogo_id.present?
+    self.jres = { estatus: true, catalogo_id: catalogo_id }
+  end
+
+  # Validacion para saber si la especie es valida para registros
+  def descarga_registros
+    valida_registros
+    return jres unless jres[:estatus]
+
+    geo = Geoportal::Snib.new({ params: { catalogo_id: jres[:catalogo_id], coleccion: coleccion, formato: formato, taxon: self } })
+    geo.guarda_registros
+    self.jres = geo.resp
+  end
+  
+  # REVISADO: Borra todos los json, kml, kmz del taxon en cuestion
+  def borra_geodata
+    ruta = Rails.root.join('public', 'geodatos', id.to_s, "*")
+    archivos = Dir.glob(ruta)
+
+    archivos.each do |a|
+      File.delete(a)
+    end
+  end
+
+  # REVISADO: Devuelve una lista de todas las URLS asociadas a los geodatos
+  def consulta_geodatos
+    geodatos = {}
+    geodatos[:cuales] = []
+
+    # Geoserver
+    if p = proveedor
+      p.dame_geoserver
+      
+      if p.jres[:estatus]
+        geodatos[:cuales] << "geoserver"
+        geodatos[:geoserver_url] = CONFIG.geoserver_url
+        geodatos[:geoserver_urls] = p.jres[:geoserver_urls]
+      end
+    end
+
+    # Validacion para registros del snib y naturalista
+    valida_registros
+    return geodatos unless jres[:estatus]
+    
+    # URL para la consulta de registros
+    url = "#{CONFIG.site_url}especies/#{id}/consulta-registros"
+
+    geo = Geoportal::Snib.new({ params: { catalogo_id: jres[:catalogo_id], coleccion: 'snib' } })
+    geo.tiene_registros?
+    
+    if geo.resp[:estatus]
+      geodatos[:cuales] << "snib"
+      geodatos[:snib_json] = "#{url}.json?coleccion=snib&formato=json"
+      geodatos[:snib_kml] = "#{url}.kml?coleccion=snib&formato=kml"
+      geodatos[:snib_kmz] = "#{url}.kmz?coleccion=snib&formato=kmz"
+      geodatos[:snib_mapa_json] = "#{url}.json?coleccion=snib&formato=mapa-app"
+    end
+    
+    geo = Geoportal::Snib.new({ params: { catalogo_id: jres[:catalogo_id], coleccion: 'naturalista' } })
+    geo.tiene_registros?
+    
+    if geo.resp[:estatus]
+      geodatos[:cuales] << "naturalista"
+      geodatos[:naturalista_json] = "#{url}.json?coleccion=naturalista&formato=json"
+      geodatos[:naturalista_kml] = "#{url}.kml?coleccion=naturalista&formato=kml"
+      geodatos[:naturalista_kmz] = "#{url}.kmz?coleccion=naturalista&formato=kmz"
+      geodatos[:naturalista_mapa_json] = "#{url}.json?coleccion=naturalista&formato=mapa-app"
+    else  # TODO: este else no tiene sentido de ir, es una aberracion hasta que sepamos modificar las apps
+      geodatos[:naturalista_mapa_json] = "#{url}.json?coleccion=naturalista&formato=mapa-app"
+    end
+
+    geodatos
   end
 
 end

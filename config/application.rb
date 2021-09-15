@@ -49,7 +49,7 @@ module Buscador
     ActiveRecord::SessionStore::Session.table_name = 'sessions'
 
     # Devise
-    config.action_mailer.default_url_options = { host: IP, port: PORT }
+    config.action_mailer.default_url_options = { host: CONFIG.site_url }
 
     # Google analytics
     config.middleware.use Rack::GoogleAnalytics, :tracker => CONFIG.google_analytics.tracker_id, :domain => CONFIG.google_analytics.domain_name

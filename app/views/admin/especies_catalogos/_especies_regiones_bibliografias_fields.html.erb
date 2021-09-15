@@ -1,0 +1,25 @@
+<div class='nested-fields'>
+    <%= f.input :especie_id, as: :hidden, required: true %>
+    <%= f.input :catalogo_id, as: :hidden, required: true %>
+    <%= f.input :region_id, as: :hidden, required: true %>
+    <%= f.input :bibliografia_id, as: :hidden, required: true %>
+
+    <div class="d-flex">
+        <div class="mr-auto p-0">
+            <% if f.object.new_record? %>
+            <%= f.input :biblio, as: :text, label: t('simple_form.labels.admin_especie_catalogo.regiones.bibliografias.biblio'), input_html: { class: 'biblio-autocomplete', size: '60x5' } %>
+            <% else %>
+            <% biblio = f.object.bibliografia.cita_completa %>
+            <%= f.input :biblio, as: :text, label: t('simple_form.labels.admin_especie_catalogo.regiones.bibliografias.biblio'), input_html: { class: 'biblio-autocomplete', value: biblio, disabled: true, size: '60x5' } %>
+            <% end %>
+        </div>
+
+        <div class="p-2">
+            <%= link_to_remove_association "Eliminar <i class='fa fa-trash'></i>".html_safe, f %>
+        </div>
+    </div>
+
+    <p class="text-right">¿No encontraste la bibliografía? <%= link_to  "crea una", new_admin_bibliografia_path, target: :_blank %></p>
+
+    <%= f.input :observaciones, as: :text %>
+</div>

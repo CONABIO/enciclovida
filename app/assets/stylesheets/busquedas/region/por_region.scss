@@ -1,14 +1,16 @@
-@import "bootstrap-sprockets";
-@import "custom_bootstrap";
-@import "bootstrap";
-@import "bootstrap/theme";
+@import 'bootstrap-variable-overrides';
+@import 'bootstrap';
+@import "font-awesome";
+@import 'soulmate';
+
 @import 'enciclovida_font_icons';
 @import "animation";
+
 @import 'general';
-@import "dashboard";
-@import "jquery-ui";
+
 @import "lib/Control.FullScreen";
-@import "busquedas";
+@import "busquedas/busquedas";
+//@import "busquedas/avanzada/resultados";
 @import "mapa/marker_cluster_default";
 @import "busquedas/region/por_region_extra";
 @import "mapa/ejemplares_snib";

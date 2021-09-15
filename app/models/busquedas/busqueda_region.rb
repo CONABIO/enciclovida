@@ -1,201 +1,174 @@
 class BusquedaRegion < Busqueda
-  attr_accessor :resp, :key_especies, :key_especies_con_filtro, :url_especies
 
-  # Esta correspondencia no deberia existir pero las regiones en el snib las hicieron con las patas
-  CORRESPONDENCIA = [nil, '08', '01', '07', '23', '26', '10', '32', '16', '13', '24', '25', '04',
-                     '06', '31', '12', '20', '18', '14', '02', '19', '21', '15', '27', '03', '11',
-                     '22', '30', '05', '28', '09', '29', '17']
+  attr_accessor :resp, :num_ejemplares, :original_request
 
-  # REVISADO: Cache para obtener el conteo de especies por grupo
-  def cache_conteo_por_grupo
-    if params[:tipo_region].present?
-      correspondencia_estado
-      return unless resp[:estatus]
+  ESPECIES_POR_PAGINA = 8.freeze
 
-      if params[:estado_id].present? && params[:municipio_id].present?
-        key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}_#{params[:municipio_id]}"
-        url = "#{CONFIG.ssig_api}/taxonMuni/listado/total/#{params[:estado_id]}/#{params[:municipio_id].rjust(3,'0')}?apiKey=enciclovida"
-      elsif params[:estado_id].present?
-        key = "conteo_grupo_#{params[:tipo_region]}_#{params[:estado_id]}"
-        url = "#{CONFIG.ssig_api}/taxonEdo/conteo/total/#{params[:estado_id]}?apiKey=enciclovida"
-      else
-        return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
-      end
+  def initialize
+    self.taxones = []
+    self.totales = 0
+    self.num_ejemplares = 0
+  end
 
-      self.resp = Rails.cache.fetch(key, expires_in: eval(CONFIG.cache.busquedas_region.conteo_grupo)) do
-        respuesta_conteo_por_grupo(url)
-      end
+  # Regresa un listado de especies por pagina, de acuerdo a la region y los filtros seleccionados
+  def especies
+    especies_por_region
+    return unless resp[:estatus]
+    especies_filtros
+    especies_por_pagina
+    asocia_informacion_taxon
 
-    else
-      self.resp = { estatus: false, msg: "El parámetro 'tipo_region' esta vacío." }
+    self.resp[:taxones] = taxones
+    self.resp[:totales] = totales
+    self.resp[:num_ejemplares] = num_ejemplares
+    self.resp[:resultados] = nil
+
+    # Para desplegar las flechas de siguiente o anterior
+    if totales > 0
+      if totales > ESPECIES_POR_PAGINA*params[:pagina].to_i
+        self.resp['carga-siguientes-especies'] = true
+      end  
+      if params[:pagina].to_i > 1
+        self.resp['carga-anteriores-especies'] = true
+      end  
     end
   end
 
-  # Verifica si esta la llave con filtros primero, de lo contrario hace los pasos para obtenerla
-  def especies_por_grupo
-    existe_cache_especies_por_grupo_con_filtros?
-
-    if resp[:estatus]  # Para ver si los parametros son correctos
-      if resp[:key]  # Para ver si la llave existe
-        cache_especies_por_grupo_con_filtros
-      else
-        cache_especies_por_grupo
-        cache_especies_por_grupo_con_filtros
-      end  # End key
-
-      # Esta consulta no va en el cache para poder manejarla de mi aldo y sea mas rapida la respuesta
-      filtro_con_nombre
-    end  # End resp[:estatus]
+  # Consulta los querys guardados en cache o los consulta al vuelo
+  def especies_por_region
+    snib = Geoportal::Snib.new
+    snib.params = params
+    snib.especies
+    self.resp = snib.resp
   end
 
-  def cache_especies_por_grupo
-    self.resp = Rails.cache.fetch(key_especies, expires_in: eval(CONFIG.cache.busquedas_region.especies_grupo)) do
-      respuesta_especies_por_grupo(url_especies)
+  # Manda a llamar al modelo lista para la descarga
+  def descarga_taxa_excel
+    unless Usuario::CORREO_REGEX.match(params[:correo])
+      self.resp = resp.merge({ estatus: false, msg: 'Favor de verificar el correo' })
+      return
     end
-  end
 
-  # Es la busqueda con los filtros, regio y grupo de la busqueda por region
-  def cache_especies_por_grupo_con_filtros
-    self.resp = Rails.cache.fetch(key_especies_con_filtro, expires_in: eval(CONFIG.cache.busquedas_region.especies_grupo)) do
-      # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
-      if resp[:estatus]
-        especies_hash = {}
-
-        resp[:resultados].each do |r|
-          especies_hash[r['idnombrecatvalido']] = r['nregistros'].to_i
-        end
-        especies_hash = especies_hash.sort_by {|key, value| value}.reverse.to_h
-
-        filtros_default(especies_hash.keys)  # Hace el query con los filtros default
-        resultados = taxones.map{|taxon| {id: taxon.id, nombre_cientifico: taxon.nombre_cientifico, catalogo_id: taxon.catalogo_id, nombre_comun: taxon.nombre_comun_principal, foto: taxon.foto_principal}}
-
-        resultados.each do |taxon|
-          especies_hash[taxon[:catalogo_id]] = taxon.merge({nregistros: especies_hash[taxon[:catalogo_id]]})
-        end
-
-        # Para dejar solo lo que coincidio con la consulta
-        especies_hash = especies_hash.map{|k, v| v if v.class == Hash}
-
-        {estatus: true, resultados: especies_hash.compact}
-      else
-        resp
-      end
+    especies_por_region
+    return unless resp[:estatus]
+    especies_filtros
+    especies_por_pagina(especies_excel: true)  # Para que regrese todas las especies que coincidieron
+    
+    unless resp[:estatus] && totales > 0
+      self.resp = resp.merge({ estatus: false, msg: 'Error en la consulta. Favor de verificar tus filtros' })
+      return
     end
+
+    lista = Lista.new
+    lista.columnas = params[:f_desc].join(',')
+    lista.formato = 'xlsx'
+    lista.cadena_especies = original_url
+    lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
+    # El nombre de la lista es cuando la solicito? y el correo
+    lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
+
+    url_limpia = original_url.gsub('/especies.xlsx?','?')
+    if Rails.env.production?
+      lista.delay(queue: 'descargar_taxa').to_excel({ region: true, correo: params[:correo], original_url: url_limpia, hash_especies: resp[:resultados] }) if lista.save
+    else  # Para develpment o test
+      lista.to_excel({ region: true, correo: params[:correo], original_url: url_limpia, hash_especies: resp[:resultados] }) if lista.save
+    end
+
+    self.resp[:resultados] = nil
+    self.resp.merge({ estatus: true, msg: nil })
   end
 
 
   private
 
-  # REVISADO: Consulta el conteo por especie en el servicio de Abraham
-  def respuesta_conteo_por_grupo(url)
-    begin
-      rest = RestClient.get(url)
-      conteo = JSON.parse(rest)
-
-      if conteo.kind_of?(Hash) && conteo['error'].present?
-        {estatus: false, msg: conteo['error']}
-      else
-        conteo = icono_grupo(conteo)
-        {estatus: true, resultados: conteo}
-      end
-    rescue => e
-      {estatus: false, msg: e.message}
-    end
-  end
-
-  def respuesta_especies_por_grupo(url)
-    begin
-      rest = RestClient.get(url)
-      especies = JSON.parse(rest)
-
-      {estatus: true, resultados: especies}
-
-    rescue => e
-      {estatus: false, msg: e.message}
-    end
-  end
-
-  # Para saber si la peticion con la region y los filtros ya existe y consultar directo cache especies_por_grupo
-  def existe_cache_especies_por_grupo_con_filtros?
-    if params[:grupo].present? && params[:tipo_region].present?
-      correspondencia_estado
-      return unless resp[:estatus]
-
-      if params[:estado_id].present? && params[:municipio_id].present?
-        self.key_especies = "especies_grupo_#{params[:tipo_region]}_#{params[:grupo].estandariza}_#{params[:estado_id]}_#{params[:municipio_id]}"
-        self.url_especies = "#{CONFIG.ssig_api}/taxonMuni/listado/#{params[:estado_id]}/#{params[:municipio_id].rjust(3, '0')}/edomun/#{params[:grupo].estandariza}?apiKey=enciclovida"
-      elsif params[:estado_id].present?
-        self.key_especies = "especies_grupo_#{params[:tipo_region]}_#{params[:grupo].estandariza}_#{params[:estado_id]}"
-        self.url_especies = "#{CONFIG.ssig_api}/taxonEdo/conteo/#{params[:estado_id]}/edomun/#{params[:grupo].estandariza}?apiKey=enciclovida"
-      else
-        return self.resp = { estatus: false, msg: 'Los parametros no son correctos.' }
-      end
-
-      # La llave con los diferentes filtros
-      edo_cons = params[:edo_cons].present? ? params[:edo_cons].join('-') : ''
-      dist = params[:dist].present? ? params[:dist].join('-') : ''
-      prior = params[:prior].present? ? params[:prior].join('-') : ''
-      self.key_especies_con_filtro = "#{key_especies}_#{edo_cons}_#{dist}_#{prior}".estandariza
-      self.resp = {estatus: true, key: Rails.cache.exist?(self.key_especies_con_filtro)}
-    else
-      self.resp = {estatus: false, msg: "Por favor verifica tus parámetros, 'grupo' y 'tipo_region' son obligatorios"}
-    end
-  end
-
-  def filtro_con_nombre
-    if params[:nombre].present?
-      if resp[:estatus]
-        self.resp[:resultados] = resp[:resultados].map{|t| t if (/#{params[:nombre].sin_acentos}/.match(t[:nombre_cientifico].sin_acentos) || /#{params[:nombre].sin_acentos}/.match(t[:nombre_comun].try(:sin_acentos)))}.compact
-      end
-    end
-  end
-
-  def filtros_default(ids)
-    self.taxones = taxones.select(:id, :nombre_cientifico).select("nombre_comun_principal, foto_principal, #{Scat.attribute_alias(:catalogo_id)} AS catalogo_id").where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", ids)
-    tipo_distribucion
+  # REVISADO: Regresa los resultados de la busqueda avanzada
+  def especies_filtros
+    return unless tiene_filtros?
+    self.taxones = Especie.select(:id).select("#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id").joins(:scat).distinct
+    por_especie_id
+    por_nombre
+    #estatus
+    #solo_publicos
     estado_conservacion
+    tipo_distribucion
+    uso
+    formas_crecimiento
+    ambiente
+
+    #return unless por_id_o_nombre
+    #categoria_por_nivel
+  end
+  
+  # Por si escribio un nombre pero no lo selecciono de la lista de redis
+  def por_nombre
+    return unless (params[:nombre].present? && params[:especie_id].blank?)
+    self.taxones = taxones.caso_nombre_comun_y_cientifico(params[:nombre].strip).left_joins(:nombres_comunes)
   end
 
-  # Asigna el grupo iconico de enciclovida de acuerdo nombres y grupos del SNIB
-  def icono_grupo(grupos)
-    grupos.each do |g|
+  # REVISADO: Saca los hijos de las categorias taxonomica que especifico , de acuerdo con el especie_id que escogio
+  def por_especie_id
+    return unless params[:especie_id].present?
+    begin
+      self.taxon = Especie.find(params[:especie_id])
+    rescue
+      return
+    end
+    
+    if taxon.especie_o_inferior?  # Manda directo el taxon
+      self.taxones = taxones.where(id: params[:especie_id])
+    else  # Aplica el query para los descendientes
+      self.taxones = taxones.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,#{taxon.id},%'")
 
-      case g['grupo']
-        when 'Anfibios'
-          g.merge!({'icono' => 'amphibia-ev-icon', 'reino' => 'animalia'})
-        when 'Aves'
-          g.merge!({'icono' => 'aves-ev-icon', 'reino' => 'animalia'})
-        when 'Bacterias'
-          g.merge!({'icono' => 'prokaryotae-ev-icon', 'reino' => 'prokaryotae'})
-        when 'Hongos'
-          g.merge!({'icono' => 'fungi-ev-icon', 'reino' => 'fungi'})
-        when 'Invertebrados'
-          g.merge!({'icono' => 'invertebrados-ev-icon', 'reino' => 'animalia'})
-        when 'Mamíferos'
-          g.merge!({'icono' => 'mammalia-ev-icon', 'reino' => 'animalia'})
-        when 'Peces'
-          g.merge!({'icono' => 'actinopterygii-ev-icon', 'reino' => 'animalia'})
-        when 'Plantas'
-          g.merge!({'icono' => 'plantae-ev-icon', 'reino' => 'plantae'})
-        when 'Protoctistas'
-          g.merge!({'icono' => 'protoctista-ev-icon', 'reino' => 'protoctista'})
-        when 'Reptiles'
-          g.merge!({'icono' => 'reptilia-ev-icon', 'reino' => 'animalia'})
+      # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al nivel
+      self.taxones = taxones.where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} IN (?)", ["especie"]).joins(:categoria_taxonomica)
+    end
+  end
+
+  # Asocia la información a desplegar en la vista, iterando los resultados
+  def asocia_informacion_taxon
+    self.taxones = []
+    return unless (resp[:resultados].present? && resp[:resultados].any?)
+    especies = Especie.select_basico(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].keys)
+
+    especies.each do |especie|
+      self.taxones << { especie: especie, nregistros: resp[:resultados][especie.catalogo_id] }
+    end
+
+    self.taxones = taxones.sort_by{ |t| t[:nregistros] }.reverse
+  end
+
+  # Regresa true or false
+  def tiene_filtros?
+    params[:especie_id].present? || params[:nombre].present? || (params[:grupo].present? && params[:grupo].any?) || (params[:dist].present? && params[:dist].any?) || (params[:edo_cons].present? && params[:edo_cons].any?) || (params[:uso].present? && params[:uso].any?) || (params[:ambiente].present? && params[:ambiente].present?) || (params[:forma].present? && params[:forma].present?)
+  end
+
+  # Devuelve las especies de acuerdo al numero de pagina y por pagina definido
+  def especies_por_pagina(opc={})
+    return unless resp[:estatus]
+    self.por_pagina = params[:por_pagina] || ESPECIES_POR_PAGINA
+    self.pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+    offset = (pagina-1)*por_pagina
+    limit = (pagina*por_pagina)-1
+
+    if tiene_filtros?
+      ids = taxones.map(&:catalogo_id) & resp[:resultados].keys
+      idcats = ids.map{ |id| [id, resp[:resultados][id]] }.sort_by(&:last).reverse
+    else  # es la primera pagina
+      idcats = resp[:resultados].to_a
+    end
+    
+    self.totales = idcats.length
+    self.num_ejemplares = idcats.sum {|r| r[1] }
+    
+    if totales > 0
+      if opc[:especies_excel]
+        self.resp[:resultados] = idcats.to_h
+      else
+        self.resp[:resultados] = idcats[offset..limit].to_h
       end
-    end
-
-    grupos
-  end
-
-  # La correspondencia del estado en el servicio de Abraham, debio haber sido la llave priamria ...
-  def correspondencia_estado
-    valor = CORRESPONDENCIA[params[:estado_id].to_i]
-
-    if valor
-      self.params[:estado_id] = valor
-      self.resp = { estatus: true }
     else
-      self.resp = { estatus: false, msg: "El parámetro 'estado_id' no es es correcto." }
+      self.resp[:resultados] = {}
     end
   end
+
 end

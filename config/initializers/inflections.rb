@@ -31,4 +31,9 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'propiedad', 'propiedades'
   inflect.irregular "legislacion", 'legislaciones'
   inflect.irregular 'taxon', 'taxa'
+  inflect.irregular 'bibliografia', 'bibliografias'
+  inflect.irregular 'region', 'regiones'
+  inflect.irregular 'especie_catalogo', 'especies_catalogos'
+  inflect.irregular 'api', 'api'
+  inflect.irregular 'descripcion', 'descripciones'
 end

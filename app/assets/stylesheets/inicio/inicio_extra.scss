@@ -1,0 +1,28 @@
+#content text, #content tspan{
+  font-family: "opensans"!important;
+}
+#como-funciona{
+  background-color: #ffffff;
+}
+#que-es text, #herramientas-busqueda text, #que-es tspan, #herramientas-busqueda tspan, #que-es circle, #herramientas-busqueda circle, #que-es path, #herramientas-busqueda path{
+  fill: #ffffff;
+  font-size: 1.25rem;
+}
+#que-es strong{color: #eeb82c;}
+
+#que-es, #por-que-es-importante {
+  background-color: #829E3D;
+}
+#como-funciona text, #por-que-es-importante text, #como-funciona tspan, #por-que-es-importante tspan, #como-funciona circle, #por-que-es-importante circle, #como-funciona path, #por-que-es-importante path, #por-que-es-importante p{
+  fill: #000000;
+  font-size: 1.25rem;
+  color: #000000;
+}
+.buscadores div{transition: all 300ms ease-in-out;}
+.descripcion-buscador{
+  opacity: 0;
+  top: 0;
+  left: 0;
+}
+.buscadores:hover .portada-buscador{visibility: hidden;}
+.buscadores:hover .descripcion-buscador{opacity: .9;}

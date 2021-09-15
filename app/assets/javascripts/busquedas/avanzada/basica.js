@@ -44,27 +44,28 @@ $(document).ready(function(){
     });
 
     // Para validar una ultima vez cuando paso la validacion del boton
-    $('#modal-descarga-lista').on('click', '#boton-descarga-lista', function(){
+    $('#modal-descarga-avanzada').on('click', '.boton-descarga', function(){
         var url_xlsx = datos_descarga.url.replace("resultados?", "resultados.xlsx?");
-        var correo = $('#correo-lista').val();
+        var correo = $('#modal-descarga-avanzada input[name=correo]').val();
+        var form_serialize = $('#modal-descarga-avanzada form').serialize();
 
         if(correoValido(correo))
         {
             $.ajax({
-                url: url_xlsx + "&correo=" + correo,
+                url: url_xlsx + "&" + form_serialize,
                 type: 'GET',
                 dataType: "json"
             }).done(function(resp) {
-                $('#modal-descarga-lista').modal('toggle');
+                $('#modal-descarga-avanzada').modal('toggle');
 
                 if (resp.estatus == 1)
-                    $('#notice-avanzada').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
+                    $('#notice').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
                 else
-                    $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
+                    $('#notice').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
 
             }).fail(function(){
-                $('#modal-descarga-lista').modal('toggle');
-                $('#notice-avanzada').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
+                $('#modal-descarga-avanzada').modal('toggle');
+                $('#notice').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
             });
 
         } else
@@ -72,5 +73,24 @@ $(document).ready(function(){
     });
 
     // Para la validacion del correo en la descarga de la lista
-    dameValidacionCorreo('lista', '#notice-avanzada');
+    dameValidacionCorreo('avanzada', '#notice');
+
+    // Para validar una ultima vez cuando paso la validacion del boton y quiere descragar el checklist
+    $('#modal-descarga-checklist').on('click', '.boton-descarga', function(){
+        var url = $('#modal-menu-checklist').attr('url');
+
+        var campos = [];
+        $.each($('#modal-descarga-checklist form').serializeArray(), function (index, json) {
+            if (json.name == 'f_desc[]')
+                campos.push(json.name + '=' + json.value);
+        });
+
+        if (campos.length > 0) url = url + '&' + campos.join('&');
+
+        $('#modal-descarga-checklist').modal('toggle');
+        window.open(url,'_blank');
+    });
+
+    // Para la validacion del correo en la descarga del checklist
+    dameValidacionCorreo('checklist', '#notice');    
 });

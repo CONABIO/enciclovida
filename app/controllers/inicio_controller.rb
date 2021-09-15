@@ -1,11 +1,7 @@
 class InicioController < ApplicationController
   def index
-    @news = Hash.new
-    ws = GithubService.new
-
-    ws.dame_issues.each  do |x|
-     @news.merge!({x['title'] => x['body'].html_safe})
-    end
+	  @no_render_busqueda_basica = true
+	  @buscadores = Busqueda::BUSCADORES
   end
 
   def acerca

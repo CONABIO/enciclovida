@@ -1,33 +1,8 @@
 class ValidacionesController < ApplicationController
 
-  skip_before_action  :verify_authenticity_token, :set_locale, only: [:update, :insert, :delete]
-  before_action :authenticate_request!, only: [:update, :insert, :delete]
   before_action :tipo_validacion, only: [:simple, :avanzada]
-  layout false, only: [:update, :insert, :delete]
-
-  def update
-    if params[:tabla] == 'especies'
-      EspecieBio.delay.actualiza(params[:id], params[:base], params[:tabla])
-    else
-      Bases.delay.update_en_volcado(params[:id], params[:base], params[:tabla])
-    end
-    render :text => 'Datos de UPDATE correctos'
-  end
-
-  def insert
-    if params[:tabla] == 'especies'
-      EspecieBio.delay.completa(params[:id], params[:base], params[:tabla])
-    else
-      Bases.delay.insert_en_volcado(params[:id], params[:base], params[:tabla])
-    end
-    render :text => 'Datos de INSERT correctos'
-  end
-
-  def delete
-    Bases.delay.delete_en_volcado(params[:id], params[:base], params[:tabla])
-    render :text => 'Datos de DELETE correctos'
-  end
-
+  layout Proc.new{['update', 'insert', 'delete'].include?(action_name) ? false : 'application_b3'}
+  
   # Vista de la validacion simple y avanzada
   def index
   end
@@ -88,15 +63,6 @@ class ValidacionesController < ApplicationController
 
 
   private
-
-
-  def authenticate_request!
-    return nil unless CONFIG.ip_sql_server.include?(request.remote_ip)
-    return nil unless params[:secret] == CONFIG.secret_sql_server.to_s.parameterize
-    return nil if params[:id].blank? || params[:base].blank? || params[:tabla].blank?
-    return nil unless CONFIG.bases.include?(params[:base])
-    return nil unless Bases::EQUIVALENCIA.include?(params[:tabla])
-  end
 
   def crea_copia_archivo
     nombre_archivo = "#{Time.now.strftime("%Y%m%d%H%M%S")}_#{params[:archivo].original_filename}"

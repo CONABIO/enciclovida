@@ -1,15 +1,15 @@
 <div class="row showInfo">
   <div class="col-md-12 text-justify">
-    <h4>Importancia biológica</h4>
+    <h6>Importancia biológica</h6>
     <p><%=convierte_a_HTML(@historiaNatural.ImportanciaBiologica)%></p>
     <br>
-    <h4>Función ecológica</h4>
+    <h6>Función ecológica</h6>
     <p><%=convierte_a_HTML(@historiaNatural.funcionEcologica)%></p>
     <br>
-    <h4>Importancia económica</h4>
+    <h6>Importancia económica</h6>
     <p><%=convierte_a_HTML(@historiaNatural.importanciaEconomica)%></p>
 
-    <h4>Comercio</h4>
+    <h6>Comercio</h6>
     <ol>
       <li><strong>Comercio nacional </strong> <p><%=convierte_a_HTML(@historiaNatural.comercioNal)%></p>
         <ul>
@@ -37,7 +37,7 @@
     </ol>
     <br>
 
-    <h4>Importancia cultural y usos</h4>
+    <h6>Importancia cultural y usos</h6>
     <p><%=@culturaUsos.present? ? convierte_a_HTML(@culturaUsos.descripcion)  : (@sin_info_msj)%></p>
     <h5>Información adicional</h5>
     <p><%=convierte_a_HTML(@historiaNatural.importanciaEconomica)%></p>

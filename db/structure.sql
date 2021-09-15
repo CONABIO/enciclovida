@@ -2336,4 +2336,3 @@ ALTER TABLE ONLY listas
 
 SET search_path TO "$user",public;
 
-

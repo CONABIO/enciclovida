@@ -5,4 +5,8 @@ class Fichas::Ecosistema < Ficha
 
 	has_many :relEcosistemasHabitats, class_name: 'Fichas::Relecosistemahabitat'
 
+	def tiene_datos_amb?
+		return true if tipoecosistema.present?
+	end
+
 end

@@ -17,7 +17,17 @@ class Busqueda
   GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes
 Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria Porifera)
   GRUPOS_PLANTAS = %w(Bryophyta Anthocerotophyta Polypodiidae Pinidae Cycadidae Lilianae Magnoliidae)
-
+  
+  BUSCADORES = {
+		  clasificacion: {url: "/explora-por-clasificacion", nombre: "Clasificación", descripcion: "¡Explora toda la clasificación taxonómica desde reinos hasta especies!"},
+		  region: {url: "/explora-por-region", nombre: "Región", descripcion: "¡Realiza búsquedas de especies y sus criterios por estados, municipios o áreas naturales protegidas!"},
+		  usos: {url: "/busquedas/resultados?utf8=%E2%9C%93&nombre=&busqueda=avanzada&id=&uso%5B%5D=11-4-0-0-0-0-0&uso%5B%5D=11-16-0-0-0-0-0&uso%5B%5D=11-5-0-0-0-0-0&uso%5B%5D=11-40-1-0-0-0-0&uso%5B%5D=11-40-2-0-0-0-0&uso%5B%5D=11-8-0-0-0-0-0&uso%5B%5D=11-9-0-0-0-0-0&uso%5B%5D=11-10-0-0-0-0-0&uso%5B%5D=11-11-0-0-0-0-0&uso%5B%5D=11-13-0-0-0-0-0&uso%5B%5D=11-15-0-0-0-0-0&uso%5B%5D=11-14-0-0-0-0-0&por_pagina=50&commit=", nombre: "Usos", descripcion: "¡Descubre las especies agrupadas por el uso que tienen!"},
+		  "en-riesgo" => {url: "/busquedas/resultados?utf8=%E2%9C%93&nombre=&busqueda=avanzada&id=&edo_cons%5B%5D=16&edo_cons%5B%5D=14&edo_cons%5B%5D=15&edo_cons%5B%5D=17&edo_cons%5B%5D=25&edo_cons%5B%5D=26&edo_cons%5B%5D=27&edo_cons%5B%5D=28&edo_cons%5B%5D=29&edo_cons%5B%5D=1102&edo_cons%5B%5D=1103&edo_cons%5B%5D=1104&edo_cons%5B%5D=22&edo_cons%5B%5D=23&edo_cons%5B%5D=24&por_pagina=50&commit=", nombre: "En riesgo", descripcion: "Navega por las especies que tienen asociada alguna categoría de riesgo tanto nacional como internacional"},
+		  distribucion: {url: "/busquedas/resultados?utf8=%E2%9C%93&nombre=&busqueda=avanzada&id=&dist%5B%5D=3&dist%5B%5D=7&dist%5B%5D=10&dist%5B%5D=6&por_pagina=50&commit=", nombre: "Distribución", descripcion: "Ubica las especies de acuerdo a su tipo de distribución: endémica, nativa, exótica o exótica invasora"},
+		  "exotica-invasora" => {url: "/exoticas-invasoras", nombre: "Exóticas invasoras", descripcion: "¡Conoce las especies exóticas invasoras en el país!"},
+		  "peces-mariscos-comerciales" => {url: "/peces", nombre: "Consumo marino responsable", descripcion: "¡Informate con el semáforo de consumo responsable acerca de pesquerías sustentables y sus criterios de pesca!"},
+		  avanzada: {url: "/avanzada", nombre: "Avanzada", descripcion: "Combina junto a los criterios de búsqueda anteriores criterios tales como: tipo de ambiente, distribución reportada en literatura y grupo icónico"} }
+  
   # REVISADO: Inicializa los objetos busqueda
   def initialize
     self.taxones = Especie.left_joins(:categoria_taxonomica, :adicional, :scat).distinct
@@ -34,7 +44,46 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
   # Para el select de usos
   def uso
     if params[:uso].present? && params[:uso].any?
-      self.taxones = taxones.where("#{Catalogo.table_name}.#{Catalogo.attribute_alias(:id)} IN (?)", params[:uso]).left_joins(:catalogos)
+      self.taxones = taxones.left_joins(:catalogos)
+      niveles = []
+
+      params[:uso].each_with_index do |uso, i|
+        uso.split('-').each_with_index do |val,index|
+
+          if val.to_i == 0  # cuando el nivel es 0 quiere decir que ya termino de iterar
+            niveles[i] = niveles[i].join(' AND ')
+            break
+          end
+
+          niveles[i] = [] unless niveles[i].present?
+          niveles[i] << "#{Catalogo.table_name}.#{Catalogo.attribute_alias("nivel#{index+1}")}=#{val}"
+        end
+      end
+
+      self.taxones = taxones.where(niveles.join(' OR '))
+    end
+  end
+
+  # Para el select de formas de crecimiento
+  def formas_crecimiento
+    if params[:forma].present? && params[:forma].any?
+      self.taxones = taxones.left_joins(:catalogos)
+      niveles = []
+
+      params[:forma].each_with_index do |uso, i|
+        uso.split('-').each_with_index do |val,index|
+
+          if val.to_i == 0  # Arma el query con la forma de crecimiento
+            niveles[i] = niveles[i].join(' AND ')
+            break
+          end
+
+          niveles[i] = [] unless niveles[i].present?
+          niveles[i] << "#{Catalogo.table_name}.#{Catalogo.attribute_alias("nivel#{index+1}")}=#{val}"
+        end
+      end
+
+      self.taxones = taxones.where(niveles.join(' OR '))      
     end
   end
 
@@ -52,67 +101,33 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
     end
   end
 
-  # Para las estadisticas dinamicas
   def busca_estadisticas
-    if params[:controller]=='estadisticas'
+    return unless params[:controller]=='estadisticas'
 
-      # Si se definió condición para conteo de valores:
-      conteo = '> 0'
-      if params["tipoResultado"].present?
-        case params["tipoResultado"]
-          when 'mayorCero'
-            conteo = '> 0'
-          when 'cero'
-            conteo = '= 0'
-          when 'mayorIgualCero'
-            conteo = '>= 0'
-          else
-            conteo = '> 0'
-        end
-      end
-
-      # Construir la clausula WHERE a partir de los parámetros
-      estadisticas_a_mostrar = []
-      # Si se definieron las estadísticas
-      if params["showEstadisticas"].present?
-        estadisticas_a_mostrar = params["showEstadisticas"]
-      else
-        # Si no, mostrar todas
-        Estadistica.all.each do |estadistica|
-          next if Estadistica::ESTADISTICAS_QUE_NO.index(estadistica.id)
-          estadisticas_a_mostrar << estadistica.id
-        end
-      end
-
-      el_where = "("
-      flag = false
-      estadisticas_a_mostrar.each do |estadistica|
-        unless flag
-          el_where << "enciclovida.especies_estadistica.estadistica_id = #{estadistica}"
-          flag = true
-        else
-          el_where << " OR enciclovida.especies_estadistica.estadistica_id = #{estadistica}"
-        end
-      end
-      el_where << ")"
-      # Agregarle el filtro de conteo
-      el_where << " AND enciclovida.especies_estadistica.conteo #{conteo} "
-
-      # EJECUTAR QUERY con el WHERE CONSTRUIDO
-      resultados = taxones.joins(:especie_estadisticas).distinct.where(el_where).group(:estadistica_id).size
-
-      # Iteramos los resultados y guardamos
-      self.estadisticas = {}
-      resultados.each do |clave, valor|
-        nombre_estd = Estadistica.where("id = #{clave}").first.descripcion_estadistica
-        conteo_estd = valor
-        self.estadisticas[clave] = {
-            'nombre_estadistica': nombre_estd,
-            'conteo': conteo_estd
-        }
-      end
+    case params["tipoResultado"]
+    when 'mayorCero'
+      conteo = '>'
+    when 'cero'
+      conteo = '='
+    when 'mayorIgualCero'
+      conteo = '>='
+    else
+      conteo = '>'
     end
 
+    # Si se definieron las estadísticas
+    estadisticas_a_mostrar = if params["showEstadisticas"].present?
+                               params["showEstadisticas"]
+                             else
+                               Estadistica::ESTADISTICAS_A_MOSTRAR
+                             end
+
+    # Extraer los taxones en hash
+    self.taxones = taxones.conteo_estadisticas(estadisticas_a_mostrar.join(','), conteo)
+    resultados = taxones.select('estadistica_id, descripcion_estadistica, COUNT(estadistica_id) AS conteo').group(:estadistica_id, :descripcion_estadistica)
+
+    self.estadisticas = resultados.map{ |e| { e.estadistica_id => { nombre_estadistica: e.descripcion_estadistica, conteo: e.conteo }}}
+    self.totales = taxones.count
   end
 
   # REVISADO: filtros de categorias de riesgo, nivel de prioridad
@@ -125,9 +140,9 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
 
   # REVISADO: Por si selecciono un grupo iconico, eligio del autocomplete un taxon o escribio un nombre
   def por_id_o_nombre
-    if params[:id].present?  # Tiene mas importancia si escogio por id
+    if params[:id].present? || params[:id_gi].present?  # Tiene mas importancia si escogio por id
       begin
-        self.taxon = Especie.find(params[:id])
+        self.taxon = Especie.find(params[:id].present? ? params[:id] : params[:id_gi])
         true
       rescue
         self.taxones = Especie.none

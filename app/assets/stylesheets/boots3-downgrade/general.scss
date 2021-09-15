@@ -1,0 +1,398 @@
+@font-face {
+  font-family: 'texgyreadventorregular';
+  src: url('/fonts/texgyreadventor-regular-webfont.ttf') format('truetype'),
+  url('/fonts/texgyreadventor-regular-webfont.eot'),
+  url('/fonts/texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'),
+  url('/fonts/texgyreadventor-regular-webfont.woff') format('woff'),
+  url('/fonts/texgyreadventor-regular-webfont.svg#texgyreadventorregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'opensans';
+  src: url('/fonts/opensans-regular-webfont.ttf') format('truetype'),
+  url('/fonts/opensans-regular-webfont.eot'),
+  url('/fonts/opensans-regular-webfont.woff') format('woff'),
+  url('/fonts/opensans-regular-webfont.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'acumin-pro-extra-condensed';
+  src: url('/fonts/acumin-pro-extra-condensed.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/*Brandbar es la plequita negra al inicio de cada página*/
+#brandBar {
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background-position: bottom !important;
+  background-color: rgba(51, 51, 51, 0.75);
+  padding: 30px;
+}
+#brandBar .dropdown {
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1001;
+}
+#menuEsqSupDer{/*Esto es para hacer redondito el icono de "Más..."*/
+  border-bottom-left-radius: 2px;
+  font-weight: bold;
+}
+.vista-general-ev-icon, .vista-especialista-ev-icon{font-size: 1.5em!important; color: #555555;}
+
+#brandBar .form-group{margin: 4px 0;}
+#brandBar .btn-group{min-width: 100%;}
+#brandBar a.btn-busquedas, #brandBar .dropdown > ul{/*Esto es para subir la cajita de texto del botón de allá arriba*/
+  padding: 5px 5%;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+#brandBar .btn-busquedas{
+  outline: 0;
+  background: rgba(255, 255, 255, 0.15);
+}
+#brandBar .btn-busquedas:hover{
+  box-shadow: 3px 3px 5px #424242;
+  background: #ffffff60;
+}
+#brandBar .btn-busquedas i:before, #brandBar .btn-busquedas i:after, .btn-busquedas b{
+  font-size: 2em!important;
+  color: #fafafa !important;
+  text-shadow: 1px 1px 1px #333333;
+  margin-top: 6px;
+  margin-bottom: -5px;
+}
+#brandBar .btn-busquedas:hover i:before, #brandBar .btn-busquedas:hover i:after, .btn-busquedas:hover b{
+  text-shadow: 1px 1px 1px #a0a0a0;
+  color: #423434 !important;
+}
+.contenedor-titulo-busquedas{
+  height: 104px;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(236, 236, 236, 0.8));
+  background: #544a22;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background-position: bottom !important;
+}
+.titulo-busquedas{
+  width: 1032px;
+  margin: 8px auto;
+  font-size: 40px;
+  font-family: "acumin-pro-extra-condensed";
+  -webkit-text-shadow: 2px 2px 2px #000;
+  -moz-text-shadow: 2px 2px 2px #000;
+  -ms-text-shadow: 2px 2px 2px #000;
+  -o-text-shadow: 2px 2px 2px #000;
+  text-shadow: 2px 2px 2px #000;
+  color: #ffffff;
+}
+.contenedor-titulo-busquedas .liner {
+  width: 50px;
+  height: 5px;
+  margin: 15px 0;
+  border: none;
+  background: #fafafa;
+  position: absolute;
+}
+footer {
+  padding: 25px 0;
+  text-align: center;
+}
+footer.social {
+  background-color:#104C5B;
+}
+footer.legal {
+  background-color:#3D3D3D;
+}
+footer.legal p {
+  font-size:12px;
+}
+
+/*Para que los títulos de los buscadores en el inicio y del brandbar, salgan orientados hacia el otro lado*/
+#brandBar .btn-title[tooltip-title]:hover:after, #buscadores .btn-title[tooltip-title]:hover:after{
+  left: initial;
+  right: 50%;
+  top: 95%;
+}
+
+.btn-title:hover {
+  position: relative;
+}
+.btn-title[tooltip-title]:hover:after {
+  content: attr(tooltip-title);
+  font-size: medium;
+  padding: 2px 4px;
+  color: #333;
+  position: absolute;
+  left: 50%;
+  top: 95%;
+  white-space: nowrap;
+  z-index: 9999;
+  -moz-border-radius: 1px;
+  -webkit-border-radius: 1px;
+  border-radius: 1px;
+  -moz-box-shadow: 0px 0px 2px #030303;
+  -webkit-box-shadow: 0px 0px 2px #030303;
+  box-shadow: 0px 0px 2px #030303;
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #fafafa));
+  background-image: -webkit-linear-gradient(top, #eeeeee, #fafafa);
+  background-image: -moz-linear-gradient(top, #eeeeee, #fafafa);
+  background-image: -ms-linear-gradient(top, #eeeeee, #fafafa);
+  background-image: -o-linear-gradient(top, #eeeeee, #fafafa);
+}
+/*para los iconitos de la busqueda básica*/
+#brandBar .btn-title[tooltip-title]:hover:after, .caracteristica-distribucion-ambiente-taxon.btn-title[tooltip-title]:hover:after {
+  left: initial;
+  right: 50%;
+  top: 95%;
+}
+#acercaDe dt, #acercaDe dd{
+  white-space: normal;
+  line-height: 180%;
+}
+
+.acercaDe dd:nth-of-type(odd), .acercaDe dt:nth-of-type(even){
+  background-color: #e9e9e9;
+}
+.enciclovida_correo-ev-icon:before{
+  font-size: large;
+  width: 10em !important;
+  text-decoration: underline;
+}
+.biomex-ev-icon:before, .conabio-ev-icon:before{
+  width: 2.5em !important;
+  font-size: 3em;
+  color: #f7f7f7;
+}
+.enciclo-ev-icon:before, .vida-ev-icon:before, .conabio_completo-ev-icon:before{
+  margin: 0;
+  font-size: 4em;
+  width: 2em !important;
+}
+
+.media-supplier .glyphicon:before, .media-supplier .conabio_completo-ev-icon:before, .bdi-ev-icon:before{font-size: 3em;min-width: 4em!important;}
+
+div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:before, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after, .macaulay_library-ev-icon:before{font-size: 2em;min-width: 9em!important;}
+
+.cornell_lab_colors-ev-icon:before{margin-left: -9.25em; color: #E60000; content: '\e86e';}
+.cornell_lab_colors-ev-icon:after{margin-left: -9.25em; color: #F5E614; content: '\e86f';}
+
+.media-supplier div{margin-bottom: 10px;}
+
+.ev1-ev-icon:after { margin-left: -1.2em; content: '\e861'; }
+.enciclo-ev-icon:before, header .conabio_completo-ev-icon:before, footer .conabio_completo-ev-icon:before{color: #fdfdfd;}
+.vida-ev-icon:before{color: #889b45; margin-left: -2em;}
+.ev2-ev-icon:before{margin-left: -1.25em;}
+
+ul.social-buttons li a {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 40px;
+  outline: 0;
+  color: #104C5B;
+  background-color: #f7f7f7;
+  -webkit-transition: all .3s;
+  -moz-transition: all .3s;
+  transition: all .3s;
+}
+
+ul.social-buttons li a:hover,
+ul.social-buttons li a:focus,
+ul.social-buttons li a:active {
+  background-color: #829e3d;
+}
+.main {
+  padding: 10px 25px;
+  background-color: #ececec;
+}
+/* Las pestañas regresaron al controller inicio, por ello se pegan aqui en gral*/
+#pestañas{
+  /*background-color: transparent;*/
+}
+.panel .nav-tabs > li > a, .panel .nav-stacked > li > a  {
+  border-left: 1px solid #d3d3d3;
+  border-right: 1px solid #d3d3d3;
+  border-top: 1px solid #d3d3d3;
+  border-bottom: 1px solid transparent;
+  color: #777777;
+}
+.panel .nav-stacked > li.active > a, .panel .nav-tabs > li.active > a  {
+  color: #800000;
+  background-color: #ffffff;
+}
+.panel .nav-stacked > li.active, .panel .nav-tabs > li.active{
+  /*filter: drop-shadow(5px -5px 4px #cecece)*/
+}
+#pestañas div.panel-body{
+  background-color: #ffffff;
+  /*padding: 1.5em;*/
+  margin-top: -1px;
+  border-left: 1px solid #d3d3d3;
+  filter: drop-shadow(5px 5px 5px #cecece)
+
+}
+
+#panelCaracteristicaDistribucionAmbiente span:not(.panel-disabled) > i {background-color: #ffffff; border-radius: 50%; -moz-box-shadow: 2px 2px 4px #cccccc;-webkit-box-shadow: 2px 2px 4px #cccccc;box-shadow: 2px 2px 4px #cccccc;}
+.panel-disabled .nom:after, .panel-disabled .sujeta-a-proteccion-especial-pr-ev-icon:after, .panel-disabled .amenazada-a-ev-icon:after, .panel-disabled .en-peligro-de-extincion-p-ev-icon:after, .panel-disabled .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .panel-disabled .tipoDist:after, .panel-disabled .endemica-ev-icon:after, .panel-disabled .nativa-ev-icon:after, .panel-disabled .exotica-ev-icon:after, .panel-disabled .exotica-invasora-ev-icon:after {color: #797979 !important;}
+
+/* NOM-059*/
+.sujeta-a-proteccion-especial-pr-ev-icon {color: #f6b134;}
+.sujeta-a-proteccion-especial-pr-ev-icon:after{ content: '\e81e'; }
+
+.amenazada-a-ev-icon {color: #ef8934;}
+.amenazada-a-ev-icon:after { content: '\e820'; }
+
+.en-peligro-de-extincion-p-ev-icon {color: #e10019;}
+.en-peligro-de-extincion-p-ev-icon:after { content: '\e822'; }
+
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon {color: #444444;}
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after { content: '\e824';}
+
+.nom:after, .sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after {color: #444444; margin-left: -1.2em;}
+/*Termina NOM-059*/
+
+/* Evaluación CONABIO*/
+[class$="evaluacion-conabio-ev-icon"], [class*="evaluacion-conabio-ev-icon "]{
+  color: #800000;
+}
+/* Termina Evaluación CONABIO*/
+
+/* IUCN*/
+.iucn, .preocupacion-menor-lc-ev-icon:before,.casi-amenazado-nt-ev-icon:before,.vulnerable-vu-ev-icon:before, .en-peligro-en-ev-icon:before, .en-peligro-critico-cr-ev-icon:before, .extinto-en-estado-silvestre-ew-ev-icon:before, .extinto-ex-ev-icon:before{color: #de2302;}
+.no-evaluado-ne-ev-icon:before, .datos-insuficientes-dd-ev-icon:before{color: #dc7e72;}
+/* Termina IUCN*/
+
+/* cites */
+.cites, .apendice-i-ev-icon,.apendice-ii-ev-icon,.apendice-iii-ev-icon{color: #095417;}
+/* Termina cites */
+
+/* tipo distribucion */
+.tipoDist,.endemica-ev-icon:before, .nativa-ev-icon:before, .exotica-ev-icon:before, .exotica-invasora-ev-icon:before{color: #f7b234;}
+.tipoDist:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after {color: #595926; margin-left: -1.2em;}
+.exotica-invasora-ev-icon:after {color: #592626; margin-left: -1.2em;}
+.endemica-ev-icon:after { content: '\e832'; }
+.nativa-ev-icon:after { content: '\e834'; }
+.exotica-ev-icon:after{ content: '\e836'; }
+.exotica-invasora-ev-icon:after{ content: '\e86A'; }
+/* Termina tipo distribucion */
+
+/* prioritarias */
+.alta-ev-icon, .media-ev-icon, .menor-ev-icon{color: #ff931e;}
+.alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after {content: '\e837'; color: #555555; margin-left: -1.2em;}
+/* termina prioritarias */
+
+/* ambiente */
+.marino-ev-icon{color: #255E54;}
+.dulceacuicola-ev-icon{color: #58867B;}
+.salobre-ev-icon{color: #81B49B;}
+.terrestre-ev-icon{color: #777442;}
+/* Termina ambiente */
+
+.ev1-ev-icon:before { content: '\e84f'; }
+.vida-ev-icon:before { content: '\e850'; }
+.naturalista-3-ev-icon:before { content: '\e853'; }
+.naturalista-4-ev-icon:before { content: '\e854'; }
+.enciclo-ev-icon:before { content: '\e860'; }
+
+.soulmate_icons i {font-size: 18px; margin: 0 3px;}
+
+.sujeta-a-proteccion-especial-pr-ev-icon:after, .amenazada-a-ev-icon:after, .en-peligro-de-extincion-p-ev-icon:after, .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .endemica-ev-icon:after, .nativa-ev-icon:after, .exotica-ev-icon:after, .exotica-invasora-ev-icon:before, .exotica-invasora-ev-icon:after, .alta-ev-icon:after, .media-ev-icon:after, .menor-ev-icon:after, .ev1-ev-icon:after, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after {
+  font-family: "enciclovida_font_icons";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*TODO tengo entendido esto debería estar en especies.scss*/
+.media-tabs{
+    text-align: center;
+}
+.media-tabs div.result-img-container{
+  display: inline-block;
+  overflow: hidden;
+  max-width: 100%;
+  margin: 0px;
+  position: relative;
+}
+.media-tabs div.result-img-container img{
+  max-height: 210px;
+  margin: -20px;
+  transition: all .3s cubic-bezier(0.62, -0.93, 0.42, 1.85);
+  vertical-align: middle;
+}
+.media-tabs div.result-img-container.cornell-audios img{max-height: 180px;}
+.media-tabs div.result-img-container img:hover{
+  transform:scale(.75);
+  -ms-transform:scale(.75); /* IE 9 */
+  -moz-transform:scale(.75); /* Firefox */
+  -webkit-transform:scale(.75); /* Safari and Chrome */
+  -o-transform:scale(.75); /* Opera */
+}
+.media-tabs div.result-img-container a{
+  cursor: pointer;
+}
+#map .glyphicon, #map span[class$="-ev-icon"]{
+  text-shadow: 2px 1px 1px rgba(255, 255, 255, 0.85);
+}
+.leaflet-control-layers-expanded{
+  background-color:rgba(211, 214, 197, 0.9)!important;
+}
+#map sub{
+  color: #b7b7b7;
+  background-color: #800000;
+}
+sub{
+  border-radius: 8px;
+  color: #333333;
+  background-color: #dddddd;
+  padding: 2px 4px;
+  margin-left: -2px;
+  font-size: .8em;
+  font-weight: bold;
+}
+// El tamaño de las fuentes de los iconos en general
+.f-fuentes
+{
+  font-size: 1.8em;
+}
+// Formato general para el nombre cientifico y comun, no importa la vista
+.f-nom-cientifico
+{
+  font-size: 1em;
+  font-style: italic;
+  color: #828b87;
+  margin-top: 20px;
+}
+.f-nom-comun
+{
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.f-cat-tax
+{
+  font-size: 1em;
+  color: #828b87;
+  margin-top: 20px;
+}

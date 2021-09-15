@@ -13,8 +13,11 @@ var limpiar = function (str)
  * Pone el tamaño inicial al mapa
  */
 var ponTamaño = function () {
-    $('#map').css('height', $('#contenedor_mapa').height() - 30);
+    $('#map').css('height', 0);
+    $('#contenedor_mapa').addClass('embed-responsive embed-responsive-23by9');
+    $('#map').css('height', $('#contenedor_mapa').height());
     map.invalidateSize(true);
+    $('#contenedor_mapa').removeClass('embed-responsive embed-responsive-23by9');
 };
 
 /**
@@ -60,22 +63,16 @@ var cambiaLocale = function(locale){
 /**
  * Pequeño hack para mejorar el title de los iconos, agregar solo clase .btn-title
  */
-var tooltip = function()
-{
-    $('.btn-title').attr('tooltip-title', function(){return $(this).attr('title');}).removeAttr('title');
+var tooltip = function(){
+        $('.btn-title').tooltip({
+        html:true,
+        sanitize:false,
+        container: 'body',
+        placement: 'bottom',
+        boundary: 'window'
+    });
 };
 
-/**
- * Para automáticamente hacer un resize a la cajita de la busqueda básica se puede (y debe) MEJORAR
- */
-var refreshMediaQueries = function()
-{
-    if (window.innerWidth < 992){
-        $('#pestañas > ul.nav').addClass('nav-stacked').removeClass('nav-tabs');
-    }else{
-        $('#pestañas > ul.nav').addClass('nav-tabs').removeClass('nav-stacked');
-    }
-};
 
 /**
  * Para general el scrolling en la pagina
@@ -98,24 +95,24 @@ var scrolling_page = function(objeto, por_pagina, url)
     });
 };
 
+/**
+ * Para validar el correo del lado del cliente 
+ * @param {*} recurso 
+ * @param {*} notice 
+ */
 var dameValidacionCorreo = function(recurso, notice)
-{
-    // Para validar en vivo el correo
-    $('#modal-descarga-' + recurso).on('keyup', '#correo-' + recurso, function(){
+{  
+    $('#modal-descarga-' + recurso).on('keyup', 'input[name=correo]', function(){
         $(notice).empty().addClass('hidden');
 
         if( !correoValido($(this).val()) )
-            $('#boton-descarga-' + recurso).attr('disabled', 'disabled');
+            $('#modal-descarga-' + recurso + ' .boton-descarga').attr('disabled', 'disabled');
         else
-            $('#boton-descarga-' + recurso).removeAttr('disabled');
+            $('#modal-descarga-' + recurso + ' .boton-descarga').removeAttr('disabled');
     });
 };
 
 $(document).ready(function(){
     tooltip();
-
-    $(window).resize(function(){
-        refreshMediaQueries();
-    });
 });
 

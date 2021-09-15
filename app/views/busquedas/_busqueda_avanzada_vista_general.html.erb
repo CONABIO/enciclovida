@@ -5,7 +5,7 @@
     });
 </script>
 
-<div class="col-12">
+<div class="col-12 mb-4">
   <h6 class="btn btn-link" id="por_nombre_fuente"><i class="glyphicon glyphicon-chevron-left"></i><strong>Ir a búsqueda por nombre </strong></h6>
   <h6 class="btn btn-link" id="por_gi_fuente" style="display: none;"><strong>Ir a búsqueda por grupo icónico </strong><i class="glyphicon glyphicon-chevron-right"></i></h6>
 
@@ -14,8 +14,8 @@
   </div>
 
   <div class="form-group row" id="por_nombre" style="display: none;">
-    <div class="col">
-      <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'avanzada' ? params[:nombre_comun] : nil %>
+    <div class="col-12">
+      <%= text_field_tag :nombre, params[:nombre].present? ? params[:nombre] : nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control' %>
     </div>
   </div>
 
@@ -27,43 +27,50 @@
   </div>
 
   <%= hidden_field_tag :busqueda, :avanzada %>
-  <%= hidden_field_tag :id, nil %>
+  <%= hidden_field_tag :id, params[:id].present? ? params[:id] : nil %>
 
 </div>
 
-<div class="col-md">
+<div class="col-12-xs col-12-sm col-6-md mb-4">
   <h6><strong>Categorías de riesgo y comercio internacional</strong></h6>
   <%= checkboxEstadoConservacion.html_safe %>
 </div>
 
-<div class="col-md">
+<div class="col-xs-12 col-sm-12 col-md-6 mb-4">
   <h6><strong>Tipo de distribución</strong></h6>
   <%= checkboxTipoDistribucion.html_safe %>
 </div>
 
-<div class="col-md">
+<div class="col-xs-12 col-sm-12 col-md-6 mb-4">
   <h6><strong>Usos</strong></h6>
   <%= selectUsos.html_safe %>
 </div>
 
-<div class="w-100 mb-4"></div>
+<div class="row">
 
-<div class="col-md">
-  <h6><strong>Ambiente</strong></h6>
-  <%= selectAmbiente.html_safe %>
-</div>
+  <div class="col-xs-12 col-sm-12 col-md-6 mb-4">
+    <h6><strong>Ambiente</strong></h6>
+    <%= selectAmbiente.html_safe %>
+  </div>
 
-<div class="col-md">
-  <h6><strong>Distribución (reportada en literatura)</strong></h6>
-  <%= selectRegiones.html_safe %>
-</div>
+  <div class="col-xs-12 col-sm-12 col-md-6 mb-4">
+    <h6><strong>Distribución (reportada en literatura)</strong></h6>
+    <%= selectDistribuciones.html_safe %>
+  </div>
 
-<div class="col-md">
-  <h6><strong>Especies prioritarias para la conservación</strong></h6>
-  <%= checkboxPrioritaria.html_safe %>
-</div>
+  <div class="col-xs-12 col-sm-12 col-md-6 mb-4">
+    <h6><strong>Especies prioritarias para la conservación</strong></h6>
+    <%= checkboxPrioritaria.html_safe %>
+  </div>
 
-<div class="col-md">
-  <h6><strong>Resultados por página:</strong></h6>
-  <%= select_tag :por_pagina, options_for_select(Busqueda::POR_PAGINA.map{|v| [v, v]}), :class => 'busquedas form-control' %>
+  <div class="col-xs-12 col-sm-12 col-md-6 mb-4">
+    <h6><strong>Forma de crecimiento (plantas)</strong></h6>
+    <%= selectFormaCrecimiento.html_safe %>
+  </div>
+
+  <div class="col-xs-12 col-sm-12 col-md-6 mb-4">
+    <h6><strong>Resultados por página:</strong></h6>
+    <%= selctPorPagina.html_safe %>
+  </div>
+
 </div>

@@ -1,18 +1,15 @@
 class EspeciesController < ApplicationController
 
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
-                                         :fotos_naturalista, :fotos_bdi, :nombres_comunes_naturalista,
-                                         :nombres_comunes_todos, :observaciones_naturalista, :observacion_naturalista,
-                                         :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista, :wikipedia_summary]
-  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :update_photos, :describe,
-                                     :observaciones_naturalista, :observacion_naturalista, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :comentarios, :fotos_bdi, :videos_bdi,
+                                         :fotos_naturalista, :bdi_photos, :bdi_videos, :nombres_comunes_naturalista,
+                                         :nombres_comunes_todos, :consulta_registros, :cambia_id_naturalista, :resumen_wikipedia, :descripcion_iucn]
+
+  before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion, :descripcion_app,
+                                     :consulta_registros, :cat_tax_asociadas,
+                                     :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
-                                     :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :cambia_id_naturalista,
-                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :wikipedia_summary]
-  before_action :only => [:arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas] do
-    set_especie(true)
-  end
+                                     :nombres_comunes_todos, :cambia_id_naturalista,
+                                     :dame_nombre_con_formato, :noticias, :media_tropicos, :resumen_wikipedia, :descripcion_iucn]
 
   before_action :authenticate_usuario!, :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista]
 
@@ -20,14 +17,14 @@ class EspeciesController < ApplicationController
     tiene_permiso?('Administrador')  # Minimo administrador
   end
 
-  layout false, :only => [:describe, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
-                          :arbol, :arbol_nodo_inicial, :arbol_nodo_hojas, :arbol_identado_hojas, :comentarios,
-                          :fotos_referencia, :fotos_bdi, :videos_bdi, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
+  layout false, :only => [:media, :descripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
+                          :comentarios,
+                          :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
-                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :wikipedia_summary]
+                          :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :resumen_wikipedia, :descripcion_iucn]
 
   # Pone en cache el webservice que carga por default
-  caches_action :describe, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
+  caches_action :descripcion, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
 
   # GET /especies
   # GET /especies.json
@@ -39,17 +36,25 @@ class EspeciesController < ApplicationController
   # GET /especies/1.json
   def show
     render 'especies/noPublicos' and return unless @especie.scat.Publico
+    
+    # Para mostrar la taxonomia en la página inicial del show
+    @taxones = Especie.arbol_inicial_obligatorias(@especie, 22)
+
     respond_to do |format|
       format.html do
 
         @datos = {}
+        @datos[:nombre_cientifico] = @especie.nombre_cientifico
+
         if adicional = @especie.adicional
-          @datos[:nombre_comun_principal] =  adicional.nombre_comun_principal
+          @datos[:nombre_comun] =  adicional.nombre_comun_principal
           @datos[:nombres_comunes] =  adicional.nombres_comunes
         end
 
-        @datos[:especie_o_inferior] = @especie.especie_o_inferior?
-
+        # Para los geodatos
+        geodatos = @especie.consulta_geodatos
+        @datos[:geodatos] = geodatos if geodatos[:cuales].any?
+          
         # Para saber si es espcie y tiene un ID asociado a NaturaLista
         if proveedor = @especie.proveedor
           naturalista_id = proveedor.naturalista_id
@@ -57,60 +62,21 @@ class EspeciesController < ApplicationController
             @datos[:naturalista_api] = "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
             @datos[:ficha_naturalista] = "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}"
           end
-
-          if @datos[:especie_o_inferior]
-            geodatos = proveedor.geodatos
-
-            if geodatos[:cuales].any?
-              @datos[:geodatos] = geodatos
-              @datos[:solo_coordenadas] = true
-
-              # Para poner las variable con las que consulto el SNIB
-              if geodatos[:cuales].include?('snib')
-                if geodatos[:snib_mapa_json].present?
-                  @datos[:snib_url] = geodatos[:snib_mapa_json]
-                else
-                  reino = @especie.root.nombre_cientifico.estandariza
-                  catalogo_id = @especie.scat.catalogo_id
-                  @datos[:snib_url] = "#{CONFIG.ssig_api}/snib/getSpecies/#{reino}/#{catalogo_id}?apiKey=enciclovida"
-                end
-              end
-
-              # Para poner las variable con las que consulto de NaturaLista
-              if geodatos[:cuales].include?('naturalista')
-                if geodatos[:naturalista_mapa_json].present?
-                  @datos[:naturalista_url] = geodatos[:naturalista_mapa_json]
-                end
-              end
-
-              # Para poner las variable con las que consulto el Geoserver
-              if geodatos[:cuales].include?('geoserver')
-                if geodatos[:geoserver_url].present?
-                  @datos[:geoserver_url] = geodatos[:geoserver_url]
-                end
-              end
-
-            end  # End gedatos any?
-          end  # End especie o inferior
-        end  # End proveedor existe
+        end
 
         # Para las variables restantes
         @datos[:cuantos_comentarios] = @especie.comentarios.where('comentarios.estatus IN (2,3) AND ancestry IS NULL').count
         @datos[:taxon] = @especie.id
-        @datos[:bdi_api] = "/especies/#{@especie.id}/fotos-bdi.json"
+        @datos[:catalogo_id] = @especie.scat.catalogo_id
+        @datos[:bdi_api] = "/especies/#{@especie.id}/bdi-photos.json"
         @datos[:cual_ficha] = ''
         @datos[:slug_url] = "/especies/#{@especie.id}-#{@especie.nombre_cientifico.estandariza}"
       end
 
       format.json do
         @especie.e_geodata = []
-
-        if @especie.especie_o_inferior?
-          if proveedor = @especie.proveedor
-            geodatos = proveedor.geodatos
-            @especie.e_geodata = geodatos if geodatos[:cuales].any?
-          end
-        end
+        geodatos = @especie.consulta_geodatos
+        @especie.e_geodata = geodatos if geodatos[:cuales].any?
 
         @especie.e_nombre_comun_principal = nil
         @especie.e_foto_principal = nil
@@ -126,7 +92,7 @@ class EspeciesController < ApplicationController
         @especie.e_tipo_distribucion = @especie.tipos_distribuciones.uniq
         @especie.e_caracteristicas = @especie.catalogos
         @especie.e_bibliografia = @especie.bibliografias
-        @especie.e_fotos = ["#{CONFIG.site_url}especies/#{@especie.id}/fotos-bdi.json", "#{CONFIG.site_url}especies/#{@especie.id}/fotos-naturalista.json"]  # TODO: poner las fotos de referencia, actaulmente es un metodo post
+        @especie.e_fotos = ["#{CONFIG.site_url}especies/#{@especie.id}/bdi-photos.json", "#{CONFIG.site_url}especies/#{@especie.id}/fotos-naturalista.json"]  # TODO: poner las fotos de referencia, actaulmente es un metodo post
 
         render json: @especie.to_json(methods: [:e_geodata, :e_nombre_comun_principal, :e_foto_principal,
                                                 :e_nombres_comunes, :e_categoria_taxonomica, :e_tipo_distribucion,
@@ -162,31 +128,8 @@ class EspeciesController < ApplicationController
           @fotos = fotos[:fotos] if fotos[:estatus] && fotos[:fotos].any?
         end
 
-        # wicked_pdf no admite request en ajax, lo llamamos directo antes del view
-        @describers = if CONFIG.taxon_describers
-                        CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                      elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
-                        [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
-                      else
-                        [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
-                      end
-
-        if params[:from].present? && CONFIG.taxon_describers.include?(params[:from].downcase)
-          # Especifico una descripcion y esta dentro de los permitidos
-          d = TaxonDescribers.get_describer(params[:from])
-          @description = d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-
-        else  # No especifico una descripcion y mandara a llamar el que encuentre
-          @describers.each do |d|
-            @describer = d
-            @description = begin
-                             d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-                           rescue OpenURI::HTTPError, Timeout::Error => e
-                             nil
-                           end
-            break unless @description.blank?
-          end
-        end
+        # Ya tiene la descripcion asignada
+        asigna_variables_descripcion
 
         ruta = Rails.root.join('public', 'pdfs').to_s
         fecha = Time.now.strftime("%Y%m%d%H%M%S")
@@ -315,48 +258,7 @@ class EspeciesController < ApplicationController
 
   # REVISADO: Regresa el nombre cientifico con el formato del helper, lo uso mayormente en busquedas por 
   def dame_nombre_con_formato
-  end
-
-  # REVISADO: Despliega el arbol identado o nodo
-  def arbol
-    if I18n.locale.to_s == 'es-cientifico'
-      @taxones = Especie.arbol_identado_inicial(@especie)
-      render :partial => 'especies/arbol/arbol_identado_inicial'
-    else
-      render :partial => 'especies/arbol/arbol_nodo_inicial'
-    end
-  end
-
-  # REVISADO: JSON que se ocupara para desplegar el arbol nodo incial en D3
-  def arbol_nodo_inicial
-    hash_d3 = {}
-    taxones = Especie.arbol_nodo_inicial(@especie)
-
-    taxones.reverse.each do |taxon|
-      if hash_d3.empty?
-        hash_d3 = taxon.arbol_nodo_hash
-      else  # El taxon anterior la pone como hija del taxon actual
-        parent = taxon.arbol_nodo_hash
-        parent[:children] = [hash_d3]
-        hash_d3 = parent
-      end
-    end
-
-    render :json => hash_d3
-  end
-
-  # REVISADO: JSON que despliega los hijosen el arbol nodo, en la ficha de la especie
-  def arbol_nodo_hojas
-    taxones = Especie.arbol_nodo_hojas(@especie)
-    render :json => taxones.map{|t| t.arbol_nodo_hash}
-  end
-
-  # REVISADO: JSON que despliega los hijos en el arbol identado, en la ficha de la especie
-  def arbol_identado_hojas
-    @taxones = Especie.arbol_identado_hojas(@especie)
-    @hojas = true
-
-    render :partial => 'especies/arbol/arbol_identado_hojas'
+    render html: "#{helpers.tituloNombreCientifico(@especie, render: 'link')}".html_safe
   end
 
   # Las fotos en el carrusel inicial, provienen de las fotos de referencia de naturalista o de bdi
@@ -377,9 +279,16 @@ class EspeciesController < ApplicationController
     @foto_default = @fotos.first
   end
 
+  # Acción necesaria para la tab media, similar a describe ¬¬
+  def media
+    render 'especies/media/media'
+  end
+
   # Servicio de lib/bdi_service.rb
-  def fotos_bdi
+  def bdi_photos
     @pagina = params['pagina']
+    type = params['type']
+    page = params['page']
 
     if @pagina.present?
       bdi = @especie.fotos_bdi({pagina: @pagina.to_i})
@@ -408,6 +317,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
+          render 'especies/media/bdi_photos', :locals => {type: type, page: page} and return
         end  # End format html
       end  # End respond
 
@@ -417,8 +327,10 @@ class EspeciesController < ApplicationController
   end
 
   #Videos de BDI
-  def videos_bdi
+  def bdi_videos
     @pagina = params['pagina']
+    type = params['type']
+    page = params['page']
 
     if @pagina.present?
       bdi = @especie.videos_bdi({pagina: @pagina.to_i})
@@ -447,6 +359,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
+          render 'especies/media/bdi_videos', :locals => {type: type, page: page} and return
         end  # End format html
       end  # End respond
 
@@ -463,11 +376,13 @@ class EspeciesController < ApplicationController
     mc = MacaulayService.new
     @array = mc.dameMedia_nc(taxonNC, type, page)
 
-    render :locals => {type: type, page: page}
+    render 'especies/media/media_cornell', :locals => {type: type, page: page}
   end
 
   # Servicio Tropicos
   def media_tropicos
+    type = params['type']
+    page = params['page']
 
     # Crear instancia de servicio trópicos:
     ts_req = Tropicos_Service.new
@@ -516,6 +431,7 @@ class EspeciesController < ApplicationController
     end
 
     @array = [{msg: "Aún no hay imágenes para esta especie :/ "}] if @array[0]["Error"].present?
+    render 'especies/media/media_tropicos', :locals => {type: type, page: page}
   end
 
   def fotos_naturalista
@@ -542,195 +458,101 @@ class EspeciesController < ApplicationController
     @nombres_comunes = @especie.dame_nombres_comunes_todos
   end
 
-  # Viene de la pestaña de la ficha
-  def describe
-    @describers = if CONFIG.taxon_describers
-                    CONFIG.taxon_describers.map{|d| TaxonDescribers.get_describer(d)}.compact
-                  elsif @especie.iconic_taxon_name == "Amphibia" && @especie.especie_o_inferior?
-                    [TaxonDescribers::Wikipedia, TaxonDescribers::AmphibiaWeb, TaxonDescribers::Eol]
-                  else
-                    [TaxonDescribers::Wikipedia, TaxonDescribers::Eol]
-                  end
+  # Viene de la pestaña "Acerca de " de la ficha
+  def descripcion
+    asigna_variables_descripcion
+    render 'especies/descripciones/descripcion'
+  end
 
-    if @describer = TaxonDescribers.get_describer(params[:from])
-      @description = @describer.equal?(TaxonDescribers::EolEs) ? @describer.describe(@especie, :language => 'es') : @describer.describe(@especie)
-    else
-      @describers.each do |d|
-        @describer = d
-        @description = begin
-                         d.equal?(TaxonDescribers::EolEs) ? d.describe(@especie, :language => 'es') : d.describe(@especie)
-                       rescue OpenURI::HTTPError, Timeout::Error => e
-                         nil
-                       end
-        break unless @description.blank?
-      end
-    end
-
-    @describer_url = @describer.page_url(@especie)
-    respond_to do |format|
-      format.html { render :partial => 'description' }
-    end
+  # La respuesta a la ficha en la app
+  def descripcion_app
+    asigna_variables_descripcion(true)
+    render 'especies/descripciones/descripcion_app', layout: 'descripcion_app'
   end
 
   # Regresa el resumen de wikipedia en español o ingles
-  def wikipedia_summary
-    describers = [TaxonDescribers::WikipediaEs, TaxonDescribers::Wikipedia]
+  def resumen_wikipedia
+    opc = { taxon: @especie, locale: params[:locale] }
 
-    if describer = TaxonDescribers.get_describer(params[:from])
-      sumamry = describer.get_summary(@especie)
+    if params[:locale].present?
+      resumen = Api::Wikipedia.new(opc).resumen
     else
-      describers.each do |describer|
-
-        sumamry = begin
-                    describer.get_summary(@especie)
-                  rescue OpenURI::HTTPError, Timeout::Error => e
-                    nil
-                  end
-
-        break unless sumamry.blank?
-      end
+      resumen = Api::Wikipedia.new(opc).resumen_cualquiera
     end
 
-    render json: { estatus: (sumamry.present? ? true : false), sumamry: sumamry }
+    render json: { estatus: (resumen.present? ? true : false), sumamry: resumen }
   end
-
+    
   # Viene de la pestaña de la ficha
   def descripcion_catalogos
+    if params[:app]
+      render 'especies/descripciones/descripcion_catalogos_app'
+    else
+      render 'especies/descripciones/descripcion_catalogos'
+    end
   end
 
-  # Devuelve las observaciones de naturalista en diferentes formatos
-  def observaciones_naturalista
-    if p = @especie.proveedor
+  # La descripcion proveniente de IUCN redlist
+  def descripcion_iucn
+    iucn = IUCNService.new
+    iucn.taxon = @especie
+    iucn.encuentra_descripcion
 
+    @campos = [['geographicrange', 'Geographic Range'], ['habitat', 'Habitat'], ['population', 'Population'], ['populationtrend', 'Population Trend'], ['usetrade', 'Use and Trade'], ['threats', 'Threats'], ['conservationmeasures', 'Conservation Measures'], ['rationale', 'Rationale'], ['taxonomicnotes', 'Taxonomic Notes']]
+
+    @descripcion = iucn.datos
+    render 'especies/descripciones/descripcion_iucn'
+  end
+
+  # Descarga los registros de naturalista, snib y en el formato solicitado. Tambien se incluye para el app
+  def consulta_registros
+    if params[:coleccion].present? && params[:formato].present?
       respond_to do |format|
-        format.json do
-          resp = p.observaciones_naturalista('.json')
+        @especie.coleccion = params[:coleccion]
+        @especie.formato = params[:formato]
+        @especie.descarga_registros
 
+        format.json do
           headers['Access-Control-Allow-Origin'] = '*'
           headers['Access-Control-Allow-Methods'] = 'GET'
           headers['Access-Control-Request-Method'] = '*'
           headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-
-          if resp[:estatus]
-            resp[:resultados] = JSON.parse(File.read(resp[:ruta]))
-            resp.delete(:ruta)
-            render json: resp
+          
+          if @especie.jres[:estatus]
+            if params[:formato] == 'json'
+              archivo = File.read(@especie.jres[:ruta_archivo])
+              send_data archivo, :filename => @especie.jres[:ruta_archivo].split('/').last
+            elsif params[:formato] == 'mapa-app'
+              render json: @especie.jres[:registros]
+            else
+              render json: { estatus: false, msg: 'Parámetros incorrectos' }
+            end
           else
-            resp.delete(:ruta)
-            render json: resp.to_json
+            render json: @especie.jres
           end
         end
 
         format.kml do
-          resp = p.observaciones_naturalista('.kml')
-
-          if resp[:estatus]
-            archivo = File.read(resp[:ruta])
-            send_data archivo, :filename => resp[:ruta].split('/').last
+          if @especie.jres[:estatus]
+            archivo = File.read(@especie.jres[:ruta_archivo])
+            send_data archivo, :filename => @especie.jres[:ruta_archivo].split('/').last
           else
-            resp.delete(:ruta)
-            render json: resp.to_json
+            render json: @especie.jres
           end
         end
 
         format.kmz do
-          resp = p.observaciones_naturalista('.kmz')
-
-          if resp[:estatus]
-            archivo = File.read(resp[:ruta])
-            send_data archivo, :filename => resp[:ruta].split('/').last
+          if @especie.jres[:estatus]
+            archivo = File.read(@especie.jres[:ruta_archivo])
+            send_data archivo, :filename => @especie.jres[:ruta_archivo].split('/').last
           else
-            resp.delete(:ruta)
-            render json: resp.to_json
+            render json: @especie.jres
           end
         end
+
       end  # End respond_to
     else
-      render :_error and return
-    end
-  end
-
-  # Obtiene la informacion de una observacion del archivo .json, esto es para no mostrar toda la informacion cuando se construye el mapa
-  def observacion_naturalista
-    if p = @especie.proveedor
-      headers['Access-Control-Allow-Origin'] = '*'
-      headers['Access-Control-Allow-Methods'] = 'GET'
-      headers['Access-Control-Request-Method'] = '*'
-      headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-
-      resp = p.observacion_naturalista(params['observacion_id'])
-      resp.delete(:ruta) if resp[:ruta].present?
-      render json: resp.to_json
-    else
-      render json: {estatus: false, msg: 'No existe naturalista_id'}.to_json
-    end
-  end
-
-  # Devuelve los ejemplares del SNIB en diferentes formatos
-  def ejemplares_snib
-    if p = @especie.proveedor
-
-      respond_to do |format|
-        format.json do
-          resp = p.ejemplares_snib('.json')
-
-          headers['Access-Control-Allow-Origin'] = '*'
-          headers['Access-Control-Allow-Methods'] = 'GET'
-          headers['Access-Control-Request-Method'] = '*'
-          headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-
-          if resp[:estatus]
-            resp[:resultados] = JSON.parse(File.read(resp[:ruta]))
-            resp.delete(:ruta)
-            render json: resp
-          else
-            resp.delete(:ruta)
-            render json: resp.to_json
-          end
-        end
-
-        format.kml do
-          resp = p.ejemplares_snib('.kml')
-
-          if resp[:estatus]
-            archivo = File.read(resp[:ruta])
-            send_data archivo, :filename => resp[:ruta].split('/').last
-          else
-            resp.delete(:ruta)
-            render json: resp.to_json
-          end
-        end
-
-        format.kmz do
-          resp = p.ejemplares_snib('.kmz')
-
-          if resp[:estatus]
-            archivo = File.read(resp[:ruta])
-            send_data archivo, :filename => resp[:ruta].split('/').last
-          else
-            resp.delete(:ruta)
-            render json: resp.to_json
-          end
-        end
-      end  # End respond_to
-    else
-      render :_error and return
-    end
-  end
-
-  # Obtiene la informacion del ejemplar del archivo .json, esto es para no mostrar toda la informacion cuando se construye el mapa
-  def ejemplar_snib
-    if p = @especie.proveedor
-      headers['Access-Control-Allow-Origin'] = '*'
-      headers['Access-Control-Allow-Methods'] = 'GET'
-      headers['Access-Control-Request-Method'] = '*'
-      headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-
-      resp = p.ejemplar_snib(params['ejemplar_id'])
-      resp.delete(:ruta) if resp[:ruta].present?
-      render json: resp.to_json
-    else
-      render json: {estatus: false, msg: 'No existe en el SNIB'}.to_json
+      render json: { estaus: false, msg: 'Parámetros incorrectos' }
     end
   end
 
@@ -942,7 +764,7 @@ class EspeciesController < ApplicationController
 
   private
 
-  def set_especie(arbol = false)
+  def set_especie
     id = params[:id].split('-').first
 
     if id.numeric?  # Quiere decir que es un ID de la centralizacion o del antiguo de millones
@@ -964,20 +786,17 @@ class EspeciesController < ApplicationController
         render :_error and return
       end
     end
+    
+    # seteo pedir el taxon valido ANTES de correr los servicios debido a que debo actualizar el valido en vez del sinonimo
+    @especie = @especie.dame_taxon_valido
 
-    # Por si no viene del arbol, ya que no necesito encontrar el valido
-    unless arbol
-      # seteo pedir el taxon valido ANTES de correr los servicios debido a que debo actualizar el valido en vez del sinonimo
-      @especie = @especie.dame_taxon_valido
+    # Si llego aqui quiere decir que encontro un id en la centralizacion valido
+    @especie.servicios if params[:action] == 'show' && params[:format].blank?
 
-      # Si llego aqui quiere decir que encontro un id en la centralizacion valido
-      @especie.servicios if params[:action] == 'show' && params[:format].blank?
+    render :_error and return unless @especie
 
-      render :_error and return unless @especie
-
-      if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
-        redirect_to especie_path(@especie) and return
-      end
+    if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
+      redirect_to especie_path(@especie) and return
     end
   end
 
@@ -990,6 +809,26 @@ class EspeciesController < ApplicationController
                                     nombres_regiones_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :_destroy],
                                     nombres_regiones_bibliografias_attributes: [:id, :observaciones, :region_id, :nombre_comun_id, :bibliografia_id, :_destroy]
     )
+  end
+
+  def asigna_variables_descripcion(app=false)
+    if params[:from].present?
+      begin
+        desc = eval("Api::#{params[:from].camelize}")
+        @descripcion = desc.new(taxon: @especie, app: app).dame_descripcion
+        @api = params[:from]
+      rescue => e
+        Rails.logger.info e.inspect
+      end
+    else
+      begin
+        desc = Api::Descripcion.new(taxon: @especie, app: app).dame_descripcion
+        @descripcion = desc[:descripcion]
+        @api = desc[:api]
+      rescue => e
+        Rails.logger.info e.inspect
+      end
+    end
   end
 
   def guardaRelaciones(tipoRelacion)
@@ -1146,7 +985,7 @@ class EspeciesController < ApplicationController
 
   # Este método es necesario para ver params antes de que se inicialice dicha variable (caches_action corre antes q eso)
   def params_from_conabio_present?
-    Rails.env.production? && params.present? && params[:from].present? && params[:from] != 'Conabio'
+    Rails.env.production? && params.present? && params[:from].present? && !params[:from].include?('conabio')
   end
 
 end

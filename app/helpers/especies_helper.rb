@@ -19,65 +19,32 @@ module EspeciesHelper
     "#{enlaces[0..-3]}</td></tr></table>".html_safe
   end
 
-  # REVISADO: Regresa el arbol identado inicial en la ficha de especie
-  def dameArbolIdentadoInicial(taxones)
-    html = ''
-
-    def creaLista(taxon, lista=nil)
-      link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
-                        :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, render: 'arreglo-taxonomico')
-      "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}#{lista.present? ? lista : ''}</li></ul>"
-    end
-
-    taxones.each do |taxon|
-      if html.present?
-        html = creaLista(taxon, html)
-      else
-        html = creaLista(taxon)
-      end
-    end
-
-    html.html_safe
-  end
-
-  # REVISADO: Regresa los taxones hijos del taxon en cuestion
-  def dameArbolIdentadoHojas(taxones)
-    html = ''
-
-    taxones.each do |taxon|
-      link = "#{link_to("<span class='glyphicon glyphicon-plus' aria-hidden='true' id='span_#{taxon.id}'></span>".html_safe, '',
-                        :taxon_id => taxon.id, :class => 'sub_link_taxon btn btn-sm btn-link')}"
-      nombre = tituloNombreCientifico(taxon, render: 'arreglo-taxonomico')
-      html << "<ul id='ul_#{taxon.id}' class='nodo_mayor'><li class='links_arbol'>#{link} #{nombre}</li></ul>"
-    end
-
-    html.html_safe
-  end
-
   # REVISADO: Nombres comunes con su bibliografia como referencia
-  def dameNomComunesBiblio(taxon)
+  def dameNomComunesBiblio(taxon, opc={})
     html = ''
 
     def creaLista(nombre, opc={})
       # TODO: Poner las bibliografias en un modal, el actual esta roto
-      bibliografias = nombre.bibliografias.con_especie(opc[:taxon]).map(&:cita_completa)
       html = "<li>#{nombre.nombre_comun} <sub><i>#{nombre.lengua}</i></sub></li>"
 
-      if bibliografias.any?
-        biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
-        html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+      if !opc[:app]
+        bibliografias = nombre.bibliografias.con_especie(opc[:taxon]).map(&:cita_completa)
+        
+        if bibliografias.any?
+          biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
+          html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
+        end
       end
 
       html
     end
 
     taxon.nombres_comunes.distinct.order(:nombre_comun).each do |nom|
-      html << creaLista(nom, taxon: taxon)
+      html << creaLista(nom, opc.merge(taxon: taxon))
     end
 
-    "<p><strong>Nombres comunes</strong></p><ul>#{html}</ul>".html_safe
+    html.present? ? "<p><strong>Nombres comunes</strong></p><ul>#{html}</ul>".html_safe : html
   end
 
   # REVISADO: Otros atributos simples del modelo especie
@@ -105,17 +72,20 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
   end
 
   # REVISADO: La distribucion reportada en literatura, para el show de especies en la pestaña de catalogos
-  def dameDistribucionLiteratura(taxon)
-    def creaLista(regiones)
+  def dameDistribucionLiteratura(taxon, opc={})
+    def creaLista(regiones, opc={})
       lista = []
 
       regiones.each do |id, datos|
         lista << "<li>#{datos[:nombre]}</li>"
-        lista << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+        
+        if !opc[:app]
+          lista << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>" if datos[:observaciones].present?
+        end
 
         if datos[:reg_desc].any?
-          sub_reg = creaLista(datos[:reg_desc])
+          sub_reg = creaLista(datos[:reg_desc], opc)
           lista << sub_reg
         end
       end
@@ -125,7 +95,7 @@ title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>"
 
     regiones = taxon.regiones.select_observaciones.validas.distinct
     reg_asignadas = Region.regiones_asignadas(regiones)
-    "<p><strong>Distribución reportada en literatura</strong>#{creaLista(reg_asignadas)}</p>".html_safe
+    "<p><strong>Distribución reportada en literatura</strong>#{creaLista(reg_asignadas, opc)}</p>".html_safe
   end
 
   # REVISADO: Una misma funcion para sinonimos u homonimos
@@ -140,12 +110,14 @@ title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>"
       taxones.each do |taxon|
         html << "<li>#{tituloNombreCientifico(taxon, render: 'inline')}</li>"
 
-        bibliografias = taxon.bibliografias.map(&:cita_completa)
-
-        if bibliografias.any?
-          biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b.gsub("\"","'")}</li>" }.join('')}</ul>"
-          html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+        if !opciones[:app]
+          bibliografias = taxon.bibliografias.map(&:cita_completa)
+          
+          if bibliografias.any?
+            biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b.gsub("\"","'")}</li>" }.join('')}</ul>"
+            html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
+          end
         end
       end
 
@@ -236,7 +208,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
         tiene_valor = true
       end
 
-      response << "&nbsp;"*5 if tiene_valor  # Espacios para seprar las categorias
+      response << "&nbsp;"*2 if tiene_valor  # Espacios para seprar las categorias
     end
 
     response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600,
@@ -308,8 +280,8 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     copyright = "BDI - CONABIO"
     case type
     when 'photo'
-      link_to("<img src='#{item.medium_url}' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+      link_to("<img src='#{item.medium_url}' class='rounded-sm border-light' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-type" => 'photo',
               "data-copyright" => copyright,
               "data-url" => item.medium_url,
@@ -318,15 +290,16 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
               "data-observation"=> item.native_page_url
       )
     when 'video' # Datos fasos por ahora
-      link_to("<img src='#{item.preview_img}' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+      link_to("<img src='#{item.preview_img}' class='rounded-sm border-light' />".html_safe, '',
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-type" => 'video',
               "data-copyright" => item.licencia.present? ? "<a href='#{item.licencia}' target='_blank'>#{copyright}</a>" : copyright,
               "data-observation"=> item.href_info,
               "data-url" => item.url_acces,
               "data-author" => item.autor,
               "data-locality" =>  item.localidad.present? ? item.localidad : "No disponible",
-              "data-state" =>  item.municipio.present? ? item.municipio : nil)
+              "data-state" =>  item.municipio.present? ? item.municipio : nil
+      )
     end
   end
 
@@ -335,19 +308,19 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     case type
     when 'photo'
       link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900",
               "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='',
               "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='', "data-copyright" => copyright)
     when 'video'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons",
+              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
               "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
               "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
     when 'audio'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal",
-              "data-target" => "#modal_reproduce", :class => "btn btn-link btn-title modal-buttons", "data-observation"=> item['citationUrl'],
+              "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons", "data-observation"=> item['citationUrl'],
               "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
               "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
@@ -358,7 +331,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     copyright = "Missouri Botanical Garden"
     link_to("<img src='#{item['DetailJpgUrl']}'/>".html_safe, '', "data-toggle" => "modal",
             "data-target" => "#modal_reproduce",
-            :class => "btn btn-link btn-title modal-buttons",
+            :class => "m-1 modal-buttons",
             "data-observation"=> item['DetailUrl'],
             "data-url" => item['DetailJpgUrl'],
             "data-type" => 'photo',
@@ -387,6 +360,10 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
 
   def dejaComentario
     link_to("comentario, sugerencia o corrección <span class='glyphicon glyphicon-comment'></span>".html_safe, new_especie_comentario_path(@especie))
+  end
+
+  def cargandoEspera
+    "<p>Cargando... por favor, espera</p><div class='spinner-border text-secondary' role='status'><span class='sr-only'>Cargando...</span></div>".html_safe
   end
 
 end

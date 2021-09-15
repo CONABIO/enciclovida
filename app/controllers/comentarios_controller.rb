@@ -16,8 +16,7 @@ class ComentariosController < ApplicationController
     @folder = Rails.env.production? ? {inbox: 'INBOX', pendientes: 'Pendientes', resueltos: 'Resueltos', sent: 'SENT'} : {inbox: 'INBOXDEV', pendientes: 'PendientesDEV', resueltos: 'ResueltosDEV', sent: 'SENTDEV'}
   end
 
-  layout false, only:[:update, :show, :dame_correo, :ultimo_id_comentario]
-
+  layout Proc.new{['update', "show", 'dame_correo', 'ultimo_id_comentario'].include?(action_name) ? false : 'application_b3'}
 
   # GET /comentarios
   # GET /comentarios.json

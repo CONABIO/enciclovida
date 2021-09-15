@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20191015004756) do
+=======
+ActiveRecord::Schema.define(version: 20200214232856) do
+>>>>>>> origin/master
 
   create_table "adicionales", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "especie_id", null: false
@@ -149,6 +153,7 @@ ActiveRecord::Schema.define(version: 20191015004756) do
     t.datetime "updated_at"
   end
 
+<<<<<<< HEAD
   create_table "categoriataxonomica", primary_key: "IdCategoriaTaxonomica", id: :integer, comment: "Identificador único para cada elemento de la tabla Categoría Taxonómica (asignación de un número consecutivo para cada registro adicionado).", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", comment: "Son las categorias (Nivel o rango jerarquico) que se le asig" do |t|
     t.string "NombreCategoriaTaxonomica", limit: 15, null: false, comment: "Nombre de la categoría taxonómica."
     t.integer "IdNivel1", limit: 2, null: false, comment: "Identificador consecutivo de la categoría."
@@ -179,6 +184,9 @@ ActiveRecord::Schema.define(version: 20191015004756) do
   end
 
   create_table "comentarios", primary_key: "idConsecutivo", id: :integer, force: :cascade, options: "ENGINE=MyISAM DEFAULT CHARSET=utf8" do |t|
+=======
+  create_table "comentarios", primary_key: "idConsecutivo", id: :integer, force: :cascade, options: "ENGINE=Aria DEFAULT CHARSET=utf8 PAGE_CHECKSUM=1" do |t|
+>>>>>>> origin/master
     t.text "comentario", limit: 4294967295, null: false
     t.string "correo"
     t.string "nombre"
@@ -349,6 +357,7 @@ ActiveRecord::Schema.define(version: 20191015004756) do
     t.string "descripcion_estadistica"
     t.datetime "created_at"
     t.datetime "updated_at"
+<<<<<<< HEAD
   end
 
   create_table "estudio", primary_key: "IdEstudio", id: :integer, comment: "Identificador único del estudio (asignación de un número consecutivo para cada registro adicionado).", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
@@ -501,6 +510,8 @@ ActiveRecord::Schema.define(version: 20191015004756) do
     t.string "Familia_IUCN"
     t.string "Homonimosgenero"
     t.string "FamiliaCATCentralizado"
+=======
+>>>>>>> origin/master
   end
 
   create_table "listas", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -573,7 +584,7 @@ ActiveRecord::Schema.define(version: 20191015004756) do
     t.integer "naturalista_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "geoserver_info"
+    t.text "geoserver_info"
     t.string "tropico_id"
   end
 
@@ -608,7 +619,7 @@ ActiveRecord::Schema.define(version: 20191015004756) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
-  create_table "usuarios", id: :integer, force: :cascade, options: "ENGINE=MyISAM DEFAULT CHARSET=utf8" do |t|
+  create_table "usuarios", id: :integer, force: :cascade, options: "ENGINE=Aria DEFAULT CHARSET=utf8 PAGE_CHECKSUM=1" do |t|
     t.string "nombre", null: false
     t.string "apellido", null: false
     t.string "institucion"

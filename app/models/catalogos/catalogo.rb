@@ -13,17 +13,20 @@ class Catalogo < ActiveRecord::Base
   alias_attribute :nivel3, :Nivel3
   alias_attribute :nivel4, :Nivel4
   alias_attribute :nivel5, :Nivel5
+  alias_attribute :nivel6, :Nivel6
+  alias_attribute :nivel7, :Nivel7
 
   scope :nom, -> { where(nivel1: 4, nivel2: 1).where("#{attribute_alias(:nivel3)} > 0") }
   scope :iucn, -> { where(nivel1: 4, nivel2: 2).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: 'Riesgo bajo (LR): Dependiente de conservación (cd)') }
   scope :cites, -> { where(nivel1: 4, nivel2: 3).where("#{attribute_alias(:nivel3)} > 0") }
   scope :prioritarias, -> { where(nivel1: 4, nivel2: 4).where("#{attribute_alias(:nivel3)} > 0") }
   scope :ambientes, -> { where(nivel1: 2, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: AMBIENTE_EQUIV_MARINO) }
-  scope :usos, -> { where(nivel1: 11, descripcion: USOS) }
-  scope :evaluacion_conabio, -> { where(nivel1: 4, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: EVALUACION) }
+  scope :usos, -> { where(id: USOS).order(:descripcion) }
+  scope :evaluacion_conabio, -> { where(nivel1: 4, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where("#{attribute_alias(:nivel3)} < 4") }
+  scope :formas_crecimiento, -> { where(nivel1: 18, nivel3: 0).where("#{attribute_alias(:nivel2)} > 0").order(:descripcion) }
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
-  USOS = ['Medicinal','Ornamental','Alimentación animal','Alimentación humana','Ambiental','Artesanía','Combustible','Industrial','Manejo de plagas','Materiales','Melíferas','Sociales/religiosos']
+  USOS = [1216, 1217, 464, 1058, 465, 468, 469, 470, 471, 1055, 1057, 1056, 2381]
   EVALUACION = ['Extinto (EX)','Extinto en estado silvestre (EW)','Datos insuficientes (DD)']  # Evaluaciones que no tienen datos, se quitan de la bsuqueda
 
   # REVISADO: Regresa true or false si el catalogo es de los permitidos a mostrar
@@ -60,8 +63,7 @@ class Catalogo < ActiveRecord::Base
     iucn = [iucn[0],iucn[1],iucn[2],iucn[3],iucn[4]]  # Orden propuesto por cgalindo
     cites = self.cites
 
-    eval = self.evaluacion_conabio
-    evaluacion_conabio = [eval[3],eval[0],eval[4],eval[1],eval[6],eval[5],eval[7]]
+    evaluacion_conabio = self.evaluacion_conabio
     evaluacion_conabio.each do |eval|
       eval.sigla = eval.descripcion.split('(')[1].gsub(')','')
       eval.descripcion = eval.descripcion + ' Evaluación CONABIO'
