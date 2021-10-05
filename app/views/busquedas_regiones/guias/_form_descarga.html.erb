@@ -1,0 +1,28 @@
+<div class="modal fade" id="modal-descarga-guia" tabindex="-1" role="dialog" aria-labelledby="modal-descarga-label-guia">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-descarga-label-guia">Descarga la guía en PDF de las <%= totales %> especies</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body" id="modal-descarga-body-guia">
+        <p>
+          <i>Toma en cuenta que entre más especies sean podría tardar más en generarlo </i>
+        </p>
+
+        <div class="form-group has-feedback">
+          <%= form_with(url: '', method: 'get') do %>
+            <div class="col-12 mb-3">
+              <%= campoCorreo("guia") %>
+            </div>
+          <% end %>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <%= botonDescarga("guia") %>
+      </div>
+    </div>
+  </div>
+</div>

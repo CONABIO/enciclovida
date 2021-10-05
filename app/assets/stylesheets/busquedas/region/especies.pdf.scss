@@ -1,28 +1,80 @@
-.row {
-  display: flex; /* equal height of the children */
-}
-
 h1 {
-  /* font-size: 3em;*/
+  text-align: center;
+  font-size: 2em;
+  line-height: 2em;
 }
 
 body {
-  font-size: 3em;
+  font-size: 2em;
 }
-* {
-  border: 1px solid black;
+
+.enciclo-ev-icon:before { content: '\e80e'; color: #104C5B!important}
+.enciclo-ev-icon:after { content: '\e80f'; color: #889b45; margin-left: -3em;}
+.enciclo-ev-icon { font-size: 150px; }
+
+.conabio_completo-ev-icon { color: #800000; font-size: 150px; }
+
+.logo-guia img {
+  width: 150px;
+  float: left;
+}
+
+.logo-guia {
+  width: 20% !important;
+}
+
+.header-guia {
+  margin-top: auto;
+  margin-bottom: auto;
+  display: block;
+}
+
+.titulo-guia {
+  width: 60% !important;
+}
+
+.titulo-guia-1 {
+  font-size: 130px;
+  font-family: "Open Sans script=latin rev=2";
+  font-weight: 800;
+  font-style: normal;
+  line-height: initial;  
+}
+
+.titulo-guia-2 {
+  font-size: 70px;
+  font-family: "Open Sans script=latin rev=2";
+  font-style: normal;
+  line-height: initial;  
+}
+
+.texto-footer-guia {
+  font-size: 50px;
+  color: #a7a7a7;
+  font-family: "Open Sans script=latin rev=2";
+  font-style: normal;
+  line-height: initial;
+  text-overflow: ellipsis;
+  white-space: nowrap;  
+}
+
+.linea-guia {
+  border-top: 6px solid black;
 }
 
 div.alwaysbreak {
-  /*  page-break-before: always;*/
+  page-break-before: always;
 }
 
-/* Create two equal columns that floats next to each other */
+.contenido-principal {
+  align-content: center;
+}
+
 .column {
   float: left;
   width: 50%;
   padding: 10px;
-  height: 300px; /* Should be removed. Only for demonstration */
+  vertical-align: middle;
 }
 
 /* Clear floats after the columns */
@@ -30,4 +82,46 @@ div.alwaysbreak {
   content: "";
   display: table;
   clear: both;
+}
+
+.false-column {
+  height: 300px;
+}
+
+.contenido-principal img {
+  height: 750px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.column p {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+p {
+  font-size: 1.5em;
+}
+
+.ev1-icon-size {
+  font-size: 11em;
+  color: #a7a7a7;
+}
+
+.nombre-comun-guia {
+  font-family: "Open Sans script=latin rev=2";
+  font-weight: 700;
+  font-style: normal;
+  line-height: initial;
+  font-size: 60px;
+}
+
+.nombre-cientifico-guia {
+  font-family: "Open Sans script=latin rev=2";
+  font-weight: 600;
+  font-style: normal;
+  line-height: initial;
+  font-size: 60px;
 }

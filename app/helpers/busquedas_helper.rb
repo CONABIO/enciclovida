@@ -118,9 +118,40 @@ module BusquedasHelper
     html.html_safe
   end
 
+  # Es una especie para desplegar en la guia en PDF
+  def especie_guia(taxon)
+    html = ''
+    html << '<div class="column">'
+    html << '<div>'
+    html << '<br/>'
+
+    if taxon.foto_principal.present?
+      html << '<img src="' + taxon.foto_principal + 'class="img-fluid">'
+    else
+      html << '<p class="text-center"><i class="ev1-ev-icon ev1-icon-size"></i></p>'
+    end
+
+    html << '<div class="my-5">'
+    html << '<p class="text-center mb-0 nombre-cientifico-guia">'
+    html << '<a href="https://enciclovida.mx/especies/' + taxon.id.to_s + '-' + taxon.nombre_cientifico.estandariza + '"><i>' + taxon.nombre_cientifico + '</i></a>'
+    html << '</p>'
+
+    if taxon.nombre_comun_principal.present?
+      html << '<p class="text-center mt-0 nombre-comun-guia">' + taxon.nombre_comun_principal + '</p>'
+    else
+      html << '<p class="text-center mt-0"></p>'
+    end
+
+    html << "</div>"
+
+    html << '</div>'
+    html << '</div>'
+  end
+
+
   # El boton de las descargas
   def botonDescarga(tipo_descarga)
-    if usuario_signed_in? || tipo_descarga == 'checklist'
+    if usuario_signed_in? || tipo_descarga == 'checklist' || tipo_descarga == 'guia'
       "<button type='button' class='btn btn-success boton-descarga'>Enviar</button>".html_safe  
     else
       "<button type='button' class='btn btn-success boton-descarga' disabled='disabled'>Enviar</button>".html_safe

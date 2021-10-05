@@ -45,6 +45,7 @@
 			<% if @resp[:totales].present? %>
 				<% if @resp[:totales] > 0 && @resp[:totales] < 60000 %>
 					<%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
+					<%= render partial: 'busquedas_regiones/guias/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ',') } %>
 					
 					<div class="btn-group dropup">
 						<button class="btn btn-outline-info btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -52,7 +53,10 @@
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 							<%= button_tag("Lista en excel", type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-region', class: 'dropdown-item') %>
-							<%#= link_to("Guía de campo en PDF", nil, url: checklist({ request: request.original_url, totales: @totales }), 'data-togle': 'modal', 'data-target': '#modal-descarga-checklist', 'onclick': "$('#modal-descarga-checklist').modal('toggle');return false;", class: 'dropdown-item', id: 'modal-menu-checklist') %>
+							
+							<% if @valida_guia %>
+								<%= button_tag("Guía de campo en PDF", type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-guia', class: 'dropdown-item') %>
+							<% end %>
 						</div>
 					</div>
 				<% end %>

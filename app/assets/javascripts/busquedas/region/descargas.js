@@ -33,4 +33,43 @@ $(document).ready(function(){
 
     // Para la validacion del correo en la descarga de la lista
     dameValidacionCorreo('region', '#notice');
+
+    // Para al descarga en PDF de la guia
+    $('#modal-descarga-guia').on('click', '.boton-descarga', function(event){
+        var correo = $('#modal-descarga-guia input[name=correo]').val();
+        var form_serialize = $('#modal-descarga-guia form').serialize();
+
+        url_guia = window.location.href.replace("/explora-por-region", "/explora-por-region/especies.pdf")
+        window.open(url_guia, '_blank');
+
+        url_guia = url_guia + '&' + form_serialize
+        console.log(url_guia)
+        
+
+        if(correoValido(correo))
+        {
+            $.ajax({
+                url: '/explora-por-region/especies.xlsx',
+                type: 'GET',
+                dataType: "json",
+                data: serializeParametros() + '&' + form_serialize
+            }).done(function(resp) {
+                $('#modal-descarga-guia').modal('toggle');
+
+                if (resp.estatus)
+                    $('#notice').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
+                else
+                    $('#notice').empty().html('Lo sentimos no se pudo procesar tu petición, verifica tus filtros y correo.').removeClass('d-none').slideDown(600);
+
+            }).fail(function(){
+                $('#modal-descarga-guia').modal('toggle');
+                $('#notice').empty().html('Lo sentimos no se pudo procesar tu petición, verifica tus filtros y correo.').removeClass('d-none').slideDown(600);
+            });
+
+        } else {
+            $('#modal-descarga-guia').modal('toggle');
+            $('#notice').empty().html('Lo sentimos no se pudo procesar tu petición, asegurate de haber anotado correctamente tu correo e inténtalo de nuevo.').removeClass('d-none').slideDown(600);
+            event.preventDefault();
+        }
+    });    
 });

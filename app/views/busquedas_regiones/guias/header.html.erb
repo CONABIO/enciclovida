@@ -1,7 +1,26 @@
 <!DOCTYPE html>
 <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
 
+<head>
+  <%= wicked_pdf_stylesheet_link_tag 'application_guias' %>
+  <%= wicked_pdf_stylesheet_link_tag 'busquedas/region/especies.pdf' %>
+</head>
+
+<div class="container header-guia">
+  <div class="row">
+    <div class="column logo-guia">
+      <i class="conabio_completo-ev-icon"></i>
+    </div>
+
+    <div class="column titulo-guia text-center">
+      <div class="titulo-guia-1"><%= @resp[:titulo_guia][0].html_safe %></div>
+      <div class="titulo-guia-2"><%= @resp[:titulo_guia][1].html_safe %></div>
+    </div>
+
+    <div class="column logo-guia">
+      <i class="enciclo-ev-icon"></i>
+    </div>
+  </div>
 <div>
-  <%= image_tag "#{CONFIG.site_url}assets/conabio_logo.png", style: 'width: 60px;float: left;' %>
-  <h1 style="text-align: center;font-size: 18pt;line-height: 2em;">Guías de especies</h1>
-</div>
+
+<br/><br/>

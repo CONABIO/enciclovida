@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
 
-<div>
-  <p style="font-size: 14pt;">Comisión Nacional para el Conocimiento y Uso de la Biodiversidad - CONABIO</p>
+<head>
+  <%= wicked_pdf_stylesheet_link_tag 'application_guias' %>
+  <%= wicked_pdf_stylesheet_link_tag 'busquedas/region/especies.pdf' %>
+</head>
+
+<hr class="linea-guia mb-5"/>
+<div class="texto-footer-guia">
+  <span>Enciclovida, consultado el <%= Time.zone.now.day %> de <%= I18n.l(Time.now, format: "%B") %> de <%= Time.zone.now.year %>, Comisión Nacional para el Conocimiento y Uso de la Biodiversidad.</span><br />
+  <span><%= @url_enciclovida %></span>
 </div>

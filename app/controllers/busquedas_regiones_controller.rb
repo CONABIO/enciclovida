@@ -17,12 +17,17 @@ class BusquedasRegionesController < ApplicationController
   def especies
     br = BusquedaRegion.new
     br.params = params
+    
+    br_guia = BusquedaRegion.new
+    br_guia.params = params
+    br_guia.valida_descarga_guia
 
     respond_to do |format|
       format.html do
         cache_filtros_ev
         br.especies
         @resp = br.resp 
+        @valida_guia = br_guia.resp[:estatus]
       end
       format.xlsx do
         br.original_url = request.original_url
@@ -38,9 +43,9 @@ class BusquedasRegionesController < ApplicationController
 
         if br.resp[:estatus]
           cache_filtros_ev
-          br.especies
-          @resp = br.resp    
-          #localhost:3000/explora-por-region/especies.pdf?utf8=✓&nombre_region=Agua%20Prieta%2C%20Sonora&region_id=1832&tipo_region=municipio&especie_id=22654&pagina=1&nivel=%3D&cat=7100&id_gi=22654#10/31.0218/-108.7207
+          br.descarga_taxa_guia
+          @resp = br.resp 
+          @url_enciclovida = request.url.gsub('/especies.pdf', '') 
           
           render pdf: 'Guía de especies',
                  template: 'busquedas_regiones/guias/especies.pdf.erb',
@@ -48,26 +53,21 @@ class BusquedasRegionesController < ApplicationController
                  wkhtmltopdf: CONFIG.wkhtmltopdf_path,
                  page_size: 'Letter',
                  disposition: 'attachment',
-                 orientation: 'Landscape',
                  #show_as_html: true,
                  header: {
                      html: {
                          template: 'busquedas_regiones/guias/header.html.erb'
-                     },
-                     line: true,
-                     spacing: 5,
+                     }
                  },
                  footer: {
                      html: {
                          template: 'busquedas_regiones/guias/footer.html.erb'
                      },
-                     right: '[page] de [topage]',
-                     line: true,
-                     spacing: 3
+                     right: '[page] de [topage]'
                  },
                  margin: {
-                     top: 23,
-                     bottom: 20
+                     top: 35,
+                     bottom: 18
                  }      
         else
           render json: br.resp

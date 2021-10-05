@@ -78,6 +78,24 @@ class BusquedaRegion < Busqueda
     self.resp.merge({ estatus: true, msg: nil })
   end
 
+  # Para descargar la informacion de la guia
+  def descarga_taxa_guia
+    especies_por_region
+    return unless resp[:estatus]
+    especies_filtros
+    especies_por_pagina(especies_guia: true)
+    asocia_informacion_taxon
+
+    self.resp[:taxones] = taxones
+    self.resp[:totales] = totales
+    self.resp[:num_ejemplares] = num_ejemplares
+    self.resp[:resultados] = nil
+    
+    # Para armar el titulo de la guia
+    self.resp[:titulo_guia] = titulo_guia
+
+  end
+
   # Valida que los campos seleccionados sean validos para una posible descarga de guia
   def valida_descarga_guia
     if params[:especie_id].present?
@@ -85,18 +103,18 @@ class BusquedaRegion < Busqueda
         t = Especie.find(params[:especie_id])
         cat = t.categoria_taxonomica
         
-        if %(3 4 5).include?(cat.nivel1)
+        if [3,4,5].include?(cat.nivel1)
           self.resp = { estatus: true }
         else
-          self.resp = { estatus: false, msg: 'El taxón no es una clase, orden o familia' }
+          return self.resp = { estatus: false, msg: 'El taxón no es una clase, orden o familia' }
         end
 
-      rescue
-        self.resp = { estatus: false, msg: 'El taxón seleccionado no existe' }
+      rescue => e
+        return self.resp = { estatus: false, msg: 'El taxón seleccionado no existe' + e.inspect }
       end 
       
     else
-      self.resp = { estatus: false, msg: 'Se debe escoger un taxón' }  
+      return self.resp = { estatus: false, msg: 'Se debe escoger un taxón' }  
     end
 
     if params[:region_id].present? && (params[:tipo_region].present? && %(municipio anp).include?(params[:tipo_region]))
@@ -189,7 +207,7 @@ class BusquedaRegion < Busqueda
     self.num_ejemplares = idcats.sum {|r| r[1] }
     
     if totales > 0
-      if opc[:especies_excel]
+      if opc[:especies_excel] || opc[:especies_guia]
         self.resp[:resultados] = idcats.to_h
       else
         self.resp[:resultados] = idcats[offset..limit].to_h
@@ -197,6 +215,25 @@ class BusquedaRegion < Busqueda
     else
       self.resp[:resultados] = {}
     end
+  end
+
+  # Establece el titulo de acuerdo a la seleccion
+  def titulo_guia
+    titulo = []
+
+    t = Especie.find(params[:especie_id])
+    a = t.adicional
+
+    tipo_region = params[:tipo_region] == "anp" ? "ANP " : "Municipio de "
+    
+    if a.nombre_comun_principal.present?
+      titulo[0] = "Guía de #{a.nombre_comun_principal}"
+    else
+      titulo[0] = "Guía de #{t.nombre_cientifico}"
+    end
+
+    titulo[1] = tipo_region + params[:nombre_region]
+    titulo
   end
 
 end
