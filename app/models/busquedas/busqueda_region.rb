@@ -84,7 +84,7 @@ class BusquedaRegion < Busqueda
     return unless resp[:estatus]
     especies_filtros
     especies_por_pagina(especies_guia: true)
-    asocia_informacion_taxon
+    asocia_informacion_taxon(especies_guia: true)
 
     self.resp[:taxones] = taxones
     self.resp[:totales] = totales
@@ -171,13 +171,23 @@ class BusquedaRegion < Busqueda
   end
 
   # Asocia la información a desplegar en la vista, iterando los resultados
-  def asocia_informacion_taxon
+  def asocia_informacion_taxon(opc={})
     self.taxones = []
     return unless (resp[:resultados].present? && resp[:resultados].any?)
     especies = Especie.select_basico(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].keys)
 
+    if opc[:especies_guia]
+      especies = especies.includes(:catalogos, :tipos_distribuciones)
+    end
+
     especies.each do |especie|
-      self.taxones << { especie: especie, nregistros: resp[:resultados][especie.catalogo_id] }
+      if opc[:especies_guia]
+        cat_riesgo = asocia_cat_riesgo(especie)
+        tipo_dist = asocia_tipo_dist(especie)
+        self.taxones << { especie: especie, nregistros: resp[:resultados][especie.catalogo_id], cat_riesgo: cat_riesgo, tipo_dist: tipo_dist }
+      else
+        self.taxones << { especie: especie, nregistros: resp[:resultados][especie.catalogo_id] }
+      end
     end
 
     self.taxones = taxones.sort_by{ |t| t[:nregistros] }.reverse
@@ -235,5 +245,37 @@ class BusquedaRegion < Busqueda
     titulo[1] = tipo_region + params[:nombre_region]
     titulo
   end
+
+  # Asocia las categorias de riesgo y comercio int solo para la guia de especie
+  def asocia_cat_riesgo(especie)
+    cat_riesgo = []
+    
+    especie.catalogos.each do |cat|
+      if [2,4].include?(cat.nivel1) && !(Catalogo::EVALUACION + Catalogo::AMBIENTE_EQUIV_MARINO + ["Riesgo bajo (LR): Dependiente de conservación (cd)"]).include?(cat.descripcion)
+        cat_riesgo << cat.descripcion.estandariza
+      end
+    end
+
+    cat_riesgo.uniq
+  end
+
+  # Asocia el tipo de distribucion solo para la guia de especie
+  def asocia_tipo_dist(especie)
+    tipo_dist = []
+    
+    especie.tipos_distribuciones.each do |dist|
+      if TipoDistribucion::DISTRIBUCIONES_VISTA_GENERAL.include?(dist.descripcion)
+        tipo_dist << dist.descripcion.estandariza
+      end
+    end
+
+    tipo_dist.uniq!
+
+    if tipo_dist.include?('endemica') && tipo_dist.include?('nativa')
+      tipo_dist.delete('nativa')
+    end
+
+    tipo_dist
+  end  
 
 end

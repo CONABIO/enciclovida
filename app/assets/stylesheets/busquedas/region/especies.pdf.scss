@@ -11,13 +11,8 @@ body {
 .enciclo-ev-icon:before { content: '\e80e'; color: #104C5B!important}
 .enciclo-ev-icon:after { content: '\e80f'; color: #889b45; margin-left: -3em;}
 .enciclo-ev-icon { font-size: 150px; }
-
-.conabio_completo-ev-icon { color: #800000; font-size: 150px; }
-
-.logo-guia img {
-  width: 150px;
-  float: left;
-}
+.conabio_vertical_1-ev-icon { font-size: 3em!important; }
+.conabio_vertical_1-ev-icon:after{color: #717472!important; margin-left: -3.3em!important;}
 
 .logo-guia {
   width: 20% !important;
@@ -105,9 +100,14 @@ p {
   font-size: 1.5em;
 }
 
-.ev1-icon-size {
+.ev1-ev-icon {
   font-size: 11em;
   color: #a7a7a7;
+}
+
+.ev-icon-guia {
+  margin-top: 135px;
+  margin-bottom: 135px;
 }
 
 .nombre-comun-guia {

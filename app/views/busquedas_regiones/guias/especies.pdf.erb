@@ -24,7 +24,7 @@
                     <% if taxon[:especie].foto_principal.present? %>
                         <img src="<%= taxon[:especie].foto_principal %>" class="img-fluid">
                     <% else %>
-                        <p class="text-center"><i class="ev1-ev-icon ev1-icon-size"></i></p>
+                        <p class="text-center ev-icon-guia"><i class="ev1-ev-icon"></i></p>
                     <% end %>
 
                     <div class="my-5">
@@ -37,14 +37,20 @@
                         <p class="text-center mb-0 nombre-cientifico-guia">
                             <a href="https://enciclovida.mx/especies/<%= taxon[:especie].id %>-<%= taxon[:especie].nombre_cientifico.estandariza %>">
                                 <i><%= taxon[:especie].nombre_cientifico %></i>
+
+                                <% taxon[:tipo_dist].each do |dist| %>
+                                    <i class="<%= dist %>-ev-icon"></i>
+                                <% end %>
+
+                                <% taxon[:cat_riesgo].each do |cat| %>
+                                    <i class="<%= cat %>-ev-icon"></i>
+                                <% end %>
                             </a>
                         </p>
                     </div>
 
                 </div>
             </div>
-
-            <%#= especie_guia(taxon[:especie]).html_safe %>
 
             <% if (index+1)%2 == 0 %>
                 </div>

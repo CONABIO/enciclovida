@@ -47,18 +47,17 @@
 					<%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
 					<%= render partial: 'busquedas_regiones/guias/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ',') } %>
 					
-					<div class="btn-group dropup">
+					<%# <div class="btn-group dropup">
 						<button class="btn btn-outline-info btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							Descargas
-						</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<%= button_tag("Lista en excel", type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-region', class: 'dropdown-item') %>
-							
+						</button> %>
+						<div class="d-flex flex-row">
+							<%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-region', class: 'btn btn-info btn-sm mr-3', title: "Algo") %>
 							<% if @valida_guia %>
-								<%= button_tag("Guía de campo en PDF", type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-guia', class: 'dropdown-item') %>
+								<%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-guia', class: 'btn btn-info btn-sm') %>
 							<% end %>
 						</div>
-					</div>
+					<%# </div> %>
 				<% end %>
 			<% end %>
 		</div>
