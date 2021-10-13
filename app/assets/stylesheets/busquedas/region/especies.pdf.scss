@@ -11,11 +11,13 @@ body {
 .enciclo-ev-icon:before { content: '\e80e'; color: #104C5B!important}
 .enciclo-ev-icon:after { content: '\e80f'; color: #889b45; margin-left: -3em;}
 .enciclo-ev-icon { font-size: 150px; }
-.conabio_vertical_1-ev-icon { font-size: 3em!important; }
-.conabio_vertical_1-ev-icon:after{color: #717472!important; margin-left: -3.3em!important;}
 
 .logo-guia {
   width: 20% !important;
+}
+
+.logo-guia img {
+  width: 400px;
 }
 
 .header-guia {

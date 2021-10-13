@@ -72,6 +72,7 @@ db/snib/adicionales_faltantes.sql
 public/javascripts
 public/IUCN
 public/assets/
+public/descargas_guias/
 
 tools/naturalista/log/
 log
@@ -82,3 +83,6 @@ vendor/SNIBappRest_old/controller/config.js
 vendor/SNIBappRest_old/node_modules
 vendor/SNIBappRest/node_modules
 vendor/SNIBappRest/controller/config.js
+
+.DS_Store
+*.rdb

@@ -1,6 +1,6 @@
 $(document).ready(function(){
     // Incluir en donde se genera el contenido dinamico
-    $('#modal-descarga-region').on('click', '.boton-descarga', function(event){
+    $('#modal-descarga-region').on('click', '.boton-descarga', function (event) {
         var correo = $('#modal-descarga-region input[name=correo]').val();
         var form_serialize = $('#modal-descarga-region form').serialize();
 

@@ -42,23 +42,23 @@
 	
 	<div id="opciones_resultados" class="w-100 bg-light py-1 px-2 rounded-top mt-auto d-inline-flex">
 		<div class="w-25">
-			<% if @resp[:totales].present? %>
-				<% if @resp[:totales] > 0 && @resp[:totales] < 60000 %>
-					<%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
-					<%= render partial: 'busquedas_regiones/guias/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ',') } %>
-					
-					<%# <div class="btn-group dropup">
-						<button class="btn btn-outline-info btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Descargas
-						</button> %>
-						<div class="d-flex flex-row">
-							<%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-region', class: 'btn btn-info btn-sm mr-3', title: "Algo") %>
-							<% if @valida_guia %>
-								<%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-guia', class: 'btn btn-info btn-sm') %>
-							<% end %>
-						</div>
-					<%# </div> %>
-				<% end %>
+			<% if @resp[:totales].present? && @resp[:totales] > 0 && @resp[:totales] < 60000 %>
+				<%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
+				<%= render partial: 'busquedas_regiones/guias/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ',') } %>
+				
+				<div class="d-flex flex-row">
+					<%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-region', class: 'btn btn-info btn-sm mr-3') %>
+					<% if @valida_guia %>
+						<%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-guia', class: 'btn btn-info btn-sm') %>
+					<% else %>	
+						<%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-title disabled', title: "Hay que seleccionar una región (municipio o ANP) y un grupo taxonómico (clase, orden o familia)") %>
+					<% end %>
+				</div>
+			<% else %>
+				<div class="d-flex flex-row">
+					<%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm mr-3 btn-title disabled', title: "Hay que seleccionar al menos un filtro") %>
+					<%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-title disabled', title: "Hay que seleccionar una región (municipio o ANP) y un grupo taxonómico (clase, orden o familia)") %>
+				</div>						
 			<% end %>
 		</div>
 		
