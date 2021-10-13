@@ -39,6 +39,13 @@ class EnviaCorreo < Devise::Mailer
     mail(:to => enviar_a?(correo), :subject => 'EncicloVida: Descargar taxa')
   end
 
+  def descargar_guia(ruta, correo, original_url=nil)
+    @ruta = ruta
+    @correos = correo
+    @original_url = original_url if original_url
+    mail(:to => enviar_a?(correo), :subject => 'EncicloVida: Descargar guía')
+  end
+
   def avisar_responsable_contenido(comentario,correos)
     completa_datos_comentario(comentario)
     @correos = correos

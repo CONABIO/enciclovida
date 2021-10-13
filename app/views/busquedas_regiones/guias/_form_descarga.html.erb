@@ -7,13 +7,14 @@
       </div>
       <div class="modal-body" id="modal-descarga-body-guia">
         <p>
-          <i>Toma en cuenta que entre más especies sean podría tardar más en generarlo </i>
+          <i>Toma en cuenta que entre más especies sean podría tardar más en generarlo, se te enviará un correo cuando se genere el PDF.</i>
         </p>
 
         <div class="form-group has-feedback">
           <%= form_with(url: '', method: 'get') do %>
             <div class="col-12 mb-3">
               <%= campoCorreo("guia") %>
+              <%= hidden_field_tag('job', '1') %>
             </div>
           <% end %>
         </div>

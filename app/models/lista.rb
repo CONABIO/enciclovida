@@ -158,6 +158,37 @@ class Lista < ActiveRecord::Base
 
   end
 
+  def to_pdf(opts={})
+    fecha = Time.now.strftime("%Y-%m-%d")
+    self.cadena_especies = cadena_especies.gsub("&job=1", "")
+    self.cadena_especies = cadena_especies + "&fecha=" + fecha + "&nombre_guia=" + nombre_lista
+    
+    ruta_dir = Rails.root.join('public','descargas_guias', fecha)
+    FileUtils.mkpath(ruta_dir, :mode => 0755) unless File.exists?(ruta_dir)    
+    
+    uri = URI(cadena_especies)
+    res = Net::HTTP.get_response(uri)
+    
+    if res.is_a?(Net::HTTPSuccess)
+      ruta_pdf = Rails.root.join('public','descargas_guias', fecha, "#{nombre_lista}.pdf")
+
+      if File.exists? ruta_pdf
+        pdf_url = "#{CONFIG.site_url}descargas_guias/#{fecha}/#{nombre_lista}.pdf"
+  
+        if opts[:correo].present?
+          EnviaCorreo.descargar_guia(pdf_url, opts[:correo], opts[:original_url].gsub("/especies.pdf?", "?").gsub("&job=1", "")).deliver
+        end
+  
+        {estatus: true, pdf_url: pdf_url}
+      else
+        {estatus: true, msg: 'No pudo guardar el archivo'}
+      end    
+
+    else
+      {estatus: true, msg: 'No pudo guardar el archivo'}
+    end
+  end
+
   # Para asignar los datos de una lista de ids de especies, hacia un excel o csv, el recurso puede ser un string o un objeto
   def datos(opc={})
     return [] unless cadena_especies.present?

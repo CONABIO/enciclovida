@@ -17,13 +17,13 @@ class BusquedasRegionesController < ApplicationController
   def especies
     br = BusquedaRegion.new
     br.params = params
-    
-    br_guia = BusquedaRegion.new
-    br_guia.params = params
-    br_guia.valida_descarga_guia
 
     respond_to do |format|
       format.html do
+        br_guia = BusquedaRegion.new
+        br_guia.params = params
+        br_guia.valida_descarga_guia
+
         cache_filtros_ev
         br.especies
         @resp = br.resp 
@@ -38,22 +38,34 @@ class BusquedasRegionesController < ApplicationController
         br.especies
         render json: br.resp 
       end
-      format.pdf do
-        br.valida_descarga_guia
 
-        if br.resp[:estatus]
-          cache_filtros_ev
-          br.descarga_taxa_guia
+      format.pdf do
+        br = BusquedaRegion.new
+        br.params = params
+        
+        if params[:job].present? && params[:job] == "1"
+          br.original_url = request.original_url
+          br.valida_descarga_guia
+          
+          if br.resp[:estatus]
+            br.descarga_taxa_pdf
+          end
+
+          render json: br.resp and return
+        
+        else
+          br.descarga_taxa_pdf
           @resp = br.resp 
           @url_enciclovida = request.url.gsub('/especies.pdf', '') 
           
           render pdf: 'Guía de especies',
                  template: 'busquedas_regiones/guias/especies.pdf.erb',
                  encoding: 'UTF-8',
-                 wkhtmltopdf: CONFIG.wkhtmltopdf_path,
+                 wkhtmltopdf: CONFIG.wkhtmltopdf_path, 
+                 save_to_file: Rails.root.join('public','descargas_guias', params[:fecha], "#{params[:nombre_guia]}.pdf"),
+                 save_only: true,                  
                  page_size: 'Letter',
                  disposition: 'attachment',
-                 #show_as_html: true,
                  header: {
                      html: {
                          template: 'busquedas_regiones/guias/header.html.erb'
@@ -68,12 +80,12 @@ class BusquedasRegionesController < ApplicationController
                  margin: {
                      top: 35,
                      bottom: 18
-                 }      
-        else
-          render json: br.resp
+                 }
+                 
+          render json: { estatus: true } and return
         end
-        
-      end      
+      end 
+
     end
   end
 
@@ -111,44 +123,6 @@ class BusquedasRegionesController < ApplicationController
     end
 
     render json: resp
-  end
-
-  # Descarga el listado de especies por region
-  def descarga_taxa
-    lista = Lista.new
-    columnas = Lista::COLUMNAS_DEFAULT + Lista::COLUMNAS_RIESGO_COMERCIO + Lista::COLUMNAS_CATEGORIAS_PRINCIPALES
-    lista.columnas = columnas.join(',')
-    lista.formato = 'xlsx'
-    lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
-
-    # Para saber si el correo es correcto y poder enviar la descarga
-    if  Usuario::CORREO_REGEX.match(params[:correo]) ? true : false
-      # el nombre de la lista es cuando la solicito y el correo
-      lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_taxa_EncicloVida|#{params[:correo]}"
-
-      br = BusquedaRegion.new
-      br.params = params
-      #br.especies_por_grupo
-
-      # Una vez obtenida la respuesta del servicio o del cache iteramos en la base
-      if br.resp[:estatus]
-        lista.cadena_especies = br.resp[:resultados].map{|t| t[:id]}.join(',')
-
-        if Rails.env.production?
-          lista.delay(queue: 'descargar_taxa').to_excel({ubicaciones: true, correo: params[:correo]}) if lista.save
-        else  # Para develpment o test
-          lista.to_excel({ubicaciones: true, correo: params[:correo]}) if lista.save
-        end
-
-        render json: {estatus: true}
-
-      else
-        render json: br.resp
-      end
-
-    else  # Por si no puso un correo valido
-      render json: {estatus: false, msg: 'El correo no es válido.'}
-    end
   end
 
 end
