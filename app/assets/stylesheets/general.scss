@@ -157,8 +157,9 @@ div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:
 .cites:before, .apendice-i-ev-icon:before,.apendice-ii-ev-icon:before,.apendice-iii-ev-icon:before{color: #095417;}
 /* Termina cites */
 
-/* tipo distribucion se comenta el color para q se vea uniforme los buscadores en el inicio*/
+/* tipo distribucion*/
 .tipoDist,.endemica-ev-icon:before, .nativa-ev-icon:before, .exotica-ev-icon:before, .exotica-invasora-ev-icon:before{color: #2f4a4c;}
+.portada-buscador .exotica-invasora-ev-icon:before{color: #343a40!important;}/*Hack para q no se vea disparejo el inicio*/
 /* Termina tipo distribucion */
 
 /* prioritarias */
