@@ -136,10 +136,10 @@ div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:
 .panel-disabled .nom:after, .panel-disabled .sujeta-a-proteccion-especial-pr-ev-icon:after, .panel-disabled .amenazada-a-ev-icon:after, .panel-disabled .en-peligro-de-extincion-p-ev-icon:after, .panel-disabled .probablemente-extinta-en-el-medio-silvestre-e-ev-icon:after, .panel-disabled .tipoDist:after, .panel-disabled .endemica-ev-icon:after, .panel-disabled .nativa-ev-icon:after, .panel-disabled .exotica-ev-icon:after, .panel-disabled .exotica-invasora-ev-icon:after {color: #797979 !important;}
 
 /* NOM-059*/
-.sujeta-a-proteccion-especial-pr-ev-icon:before {color: #f6b134;}
-.amenazada-a-ev-icon:before {color: #ef8934;}
-.en-peligro-de-extincion-p-ev-icon:before {color: #e10019;}
-.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:before {color: #444444;}
+.sujeta-a-proteccion-especial-pr-ev-icon:before {color: #99991e;}
+.amenazada-a-ev-icon:before {color: #CA7016;}
+.en-peligro-de-extincion-p-ev-icon:before {color: #9D1915;}
+.probablemente-extinta-en-el-medio-silvestre-e-ev-icon:before {color: #B3B3B2;}
 /*Termina NOM-059*/
 
 /* Evaluación CONABIO*/
@@ -157,19 +157,20 @@ div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:
 .cites:before, .apendice-i-ev-icon:before,.apendice-ii-ev-icon:before,.apendice-iii-ev-icon:before{color: #095417;}
 /* Termina cites */
 
-/* tipo distribucion se comenta el color para q se vea uniforme los buscadores en el inicio*/
-/*.tipoDist,.endemica-ev-icon:before, .nativa-ev-icon:before, .exotica-ev-icon:before, .exotica-invasora-ev-icon:before{color: #f7b234;}*/
+/* tipo distribucion*/
+.tipoDist,.endemica-ev-icon:before, .nativa-ev-icon:before, .exotica-ev-icon:before, .exotica-invasora-ev-icon:before{color: #2f4a4c;}
+.portada-buscador .exotica-invasora-ev-icon:before{color: #343a40!important;}/*Hack para q no se vea disparejo el inicio*/
 /* Termina tipo distribucion */
 
 /* prioritarias */
-.alta-ev-icon:before, .media-ev-icon:before, .menor-ev-icon:before{color: #ff931e;}
+.alta-ev-icon:before, .media-ev-icon:before, .menor-ev-icon:before{color: #631d28;}
 /* termina prioritarias */
 
 /* ambiente */
-.marino-ev-icon:before{color: #255E54;}
-.dulceacuicola-ev-icon:before{color: #58867B;}
-.salobre-ev-icon:before{color: #81B49B;}
-.terrestre-ev-icon:before{color: #777442;}
+.marino-ev-icon:before{color: #08557C;}
+.dulceacuicola-ev-icon:before{color: #007385;}
+.salobre-ev-icon:before{color: #08557C;}
+.terrestre-ev-icon:before{color: #5C2200;}
 /* Termina ambiente */
 
 /*.ev1-ev-icon:before { content: '\e84f'; }*/

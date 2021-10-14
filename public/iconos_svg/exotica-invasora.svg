@@ -6,27 +6,29 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    version="1.1"
-   id="svg8"
+   id="Capa_1"
    x="0px"
    y="0px"
-   viewBox="0 0 2267.7 2267.7"
-   style="enable-background:new 0 0 2267.7 2267.7;"
-   xml:space="preserve"><metadata
-   id="metadata10"><rdf:RDF><cc:Work
+   viewBox="0 0 2267.7004 2266.8528"
+   xml:space="preserve"
+   width="2267.7004"
+   height="2266.8528"><metadata
+   id="metadata63"><rdf:RDF><cc:Work
        rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
          rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
-   id="defs8" />
+   id="defs61" />
 <style
    type="text/css"
-   id="style2">
-	.st0{fill:none;stroke:#000000;stroke-width:0.25;stroke-miterlimit:10;}
+   id="style54">
+	.st0{fill:#1D1D1B;}
 </style>
-
 <path
-   style="fill:none"
-   d="M 525.5246,385.11424 C 217.18607,555.80164 8.4003877,884.2994 8.4003877,1261.7299 c 0,553.0023 448.2986423,1001.3898 1001.3897123,1001.3898 540.2141,0 980.1649,-427.873 1000.4129,-963.1139 L 528.27762,1924.1427 Z"
-   id="path5" />
-<path
-   style="fill:none;stroke:#000000;stroke-width:0.257646"
-   d="M 1805.1102,-69.221445 C 1254.7443,10.018007 1046.9678,360.60768 1046.9678,360.60768 L 754.63644,130.37415 768.03218,1642.9096 2048.1337,1034.1431 1686.4485,797.12326 c 0,0 45.9826,-241.21129 405.2927,-382.72456 353.0398,-139.01834 800.1347,9.38099 800.1347,9.38099 0,0 -567.2766,-567.74968 -1086.7657,-493.001135 z"
-   id="path838" /></svg>
+   class="st0"
+   d="M 2273.2836,1.2941573 707.17575,-0.4236084 C 315.79184,5.3022705 -0.0618537,330.53228 5.6601363,722.7551 L 5.136076,1396.8468 C 112.07991,914.76801 581.26697,834.88199 1054.7737,797.72323 L 1052.9443,351.00309 2149.029,1119.092 1052.9443,1971.4317 V 1515.8235 C 733.8176,1462.7736 5.7426069,1609.2438 6.0648568,2267.2764 L 1568.1109,2264.9136 c 391.3839,-5.7259 709.1781,-351.7479 703.4561,-743.9707 z"
+   id="path45"
+   style="fill:none;stroke-width:5.72393" />
+<style
+   type="text/css"
+   id="style476">
+	.st0{fill:#1D1D1B;}
+</style></svg>
