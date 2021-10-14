@@ -8,6 +8,11 @@
 
 <hr class="linea-guia mb-5"/>
 <div class="texto-footer-guia">
-  <span>Enciclovida, consultado el <%= Time.zone.now.day %> de <%= I18n.l(Time.now, format: "%B") %> de <%= Time.zone.now.year %>, Comisión Nacional para el Conocimiento y Uso de la Biodiversidad.</span><br />
+  <span>
+    <a href="<%= @url_enciclovida %>" download>
+      Enciclovida, consultado el <%=Time.zone.now.day %> de <%= I18n.l(Time.now, format: "%B") %> de <%= Time.zone.now.year %>
+    </a> , Comisión Nacional para el Conocimiento y Uso de la Biodiversidad.
+  </span>
+  <br />
   <span><%= @url_enciclovida %></span>
 </div>

@@ -66,6 +66,8 @@ class BusquedasRegionesController < ApplicationController
                  save_only: true,                  
                  page_size: 'Letter',
                  disposition: 'attachment',
+                 disable_internal_links: false,
+                 disable_external_links: false,                 
                  header: {
                      html: {
                          template: 'busquedas_regiones/guias/header.html.erb'
@@ -75,7 +77,6 @@ class BusquedasRegionesController < ApplicationController
                      html: {
                          template: 'busquedas_regiones/guias/footer.html.erb'
                      },
-                     right: '[page] de [topage]'
                  },
                  margin: {
                      top: 35,
