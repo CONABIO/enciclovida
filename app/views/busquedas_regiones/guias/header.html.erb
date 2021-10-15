@@ -1,26 +1,12 @@
-<!DOCTYPE html>
-<meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
-
-<head>
-  <%= wicked_pdf_stylesheet_link_tag 'application_guias' %>
-  <%= wicked_pdf_stylesheet_link_tag 'busquedas/region/especies.pdf' %>
-</head>
-
-<div class="container header-guia">
-  <div class="row">
-    <div class="column logo-guia">
-      <img src=" <%= CONFIG.site_url %>assets/conabio_logo_vertical.png">
-    </div>
-
-    <div class="column titulo-guia text-center">
-      <div class="titulo-guia-1"><%= @resp[:titulo_guia][0].html_safe %></div>
-      <div class="titulo-guia-2"><%= @resp[:titulo_guia][1].html_safe %></div>
-    </div>
-
-    <div class="column logo-guia">
-      <i class="enciclo-ev-icon"></i>
-    </div>
-  </div>
-<div>
-
-<br/><br/>
+<div class="w-100 my-auto d-inline-block">
+	<div class="w-25  m-0 p-0 float-left d-inline-block">
+		<i class="conabio_vertical_1-ev-icon"></i>
+	</div>
+	<div class="w-50 float-left d-inline-block text-center">
+		<p class="h1 font-weight-bold"><%= @resp[:titulo_guia][0].html_safe %></p>
+		<p class="h3"><%= @resp[:titulo_guia][1].html_safe %></p>
+	</div>
+	<div class="w-25 float-left d-inline-block">
+		<i class="enciclo-ev-icon"></i>
+	</div>
+</div>

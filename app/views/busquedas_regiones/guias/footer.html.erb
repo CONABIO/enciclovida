@@ -1,18 +1,6 @@
-<!DOCTYPE html>
-<meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
-
-<head>
-  <%= wicked_pdf_stylesheet_link_tag 'application_guias' %>
-  <%= wicked_pdf_stylesheet_link_tag 'busquedas/region/especies.pdf' %>
-</head>
-
-<hr class="linea-guia mb-5"/>
-<div class="texto-footer-guia">
-  <span>
-    <a href="<%= @url_enciclovida %>" download>
-      Enciclovida, consultado el <%=Time.zone.now.day %> de <%= I18n.l(Time.now, format: "%B") %> de <%= Time.zone.now.year %>
-    </a> , Comisión Nacional para el Conocimiento y Uso de la Biodiversidad.
-  </span>
-  <br />
-  <span><%= @url_enciclovida %></span>
+<div class="h3 border-top border-dark my-2 py-3">
+	<p>
+		Enciclovida, consultado el <%=Time.zone.now.day %> de <%= I18n.l(Time.now, format: "%B") %> de <%= Time.zone.now.year %>, Comisión Nacional para el Conocimiento y Uso de la Biodiversidad.
+	</p>
+	<p class="small text-nowrap"><%= @url_enciclovida %></p>
 </div>

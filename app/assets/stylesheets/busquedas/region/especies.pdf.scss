@@ -1,67 +1,14 @@
-h1 {
-  text-align: center;
-  font-size: 2em;
-  line-height: 2em;
-}
-
-body {
-  font-size: 2em;
+body{
+  font-family: "opensans";
 }
 
 .enciclo-ev-icon:before { content: '\e80e'; color: #104C5B!important}
 .enciclo-ev-icon:after { content: '\e80f'; color: #889b45; margin-left: -3em;}
-.enciclo-ev-icon { font-size: 150px; }
-
-.logo-guia {
-  width: 20% !important;
-}
-
-.logo-guia img {
-  width: 400px;
-}
-
-.header-guia {
-  margin-top: auto;
-  margin-bottom: auto;
-  display: block;
-}
-
-.titulo-guia {
-  width: 60% !important;
-}
-
-.titulo-guia-1 {
-  font-size: 130px;
-  font-family: "Open Sans script=latin rev=2";
-  font-weight: 800;
-  font-style: normal;
-  line-height: initial;  
-}
-
-.titulo-guia-2 {
-  font-size: 70px;
-  font-family: "Open Sans script=latin rev=2";
-  font-style: normal;
-  line-height: initial;  
-}
-
-.texto-footer-guia {
-  font-size: 50px;
-  color: #a7a7a7;
-  font-family: "Open Sans script=latin rev=2";
-  font-style: normal;
-  line-height: initial;
-  /*text-overflow: ellipsis;
-  white-space: nowrap;  */
-}
-
-.linea-guia {
-  border-top: 6px solid black;
-}
-
-div.alwaysbreak {
-  page-break-before: always;
-}
+.enciclo-ev-icon{ font-size: 4em; }
+.conabio_vertical_1-ev-icon{font-size: 5em!important; }
+.conabio_vertical_1-ev-icon:before{content: '\e817'; color: #800000!important;}
+.conabio_vertical_1-ev-icon:after{content: '\e823'; color: #3b3b3b!important; margin-left: -3em;}
+.ev1-ev-icon {font-size: 10em; olor: #cacaca;}
 
 .contenido-principal {
   align-content: center;
@@ -70,7 +17,6 @@ div.alwaysbreak {
 .column {
   float: left;
   width: 50%;
-  padding: 10px;
   vertical-align: middle;
 }
 
@@ -81,49 +27,13 @@ div.alwaysbreak {
   clear: both;
 }
 
-.false-column {
-  height: 300px;
-}
-
 .contenido-principal img {
-  height: 750px;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
+  min-height: 275px;
+  /*min-width: 350px;*/
 }
 
 .column p {
   margin-left: auto;
   margin-right: auto;
   display: block;
-}
-
-p {
-  font-size: 1.5em;
-}
-
-.ev1-ev-icon {
-  font-size: 11em;
-  color: #a7a7a7;
-}
-
-.ev-icon-guia {
-  margin-top: 135px;
-  margin-bottom: 135px;
-}
-
-.nombre-comun-guia {
-  font-family: "Open Sans script=latin rev=2";
-  font-weight: 700;
-  font-style: normal;
-  line-height: initial;
-  font-size: 60px;
-}
-
-.nombre-cientifico-guia {
-  font-family: "Open Sans script=latin rev=2";
-  font-weight: 600;
-  font-style: normal;
-  line-height: initial;
-  font-size: 60px;
 }
