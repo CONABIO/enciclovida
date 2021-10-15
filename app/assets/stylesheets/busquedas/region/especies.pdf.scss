@@ -8,7 +8,7 @@ body{
 .conabio_vertical_1-ev-icon{font-size: 5em!important; }
 .conabio_vertical_1-ev-icon:before{content: '\e817'; color: #800000!important;}
 .conabio_vertical_1-ev-icon:after{content: '\e823'; color: #3b3b3b!important; margin-left: -3em;}
-.ev1-ev-icon {font-size: 10em; olor: #cacaca;}
+.ev1-ev-icon {font-size: 10em; color: #cacaca;}
 
 .contenido-principal {
   align-content: center;
@@ -28,8 +28,7 @@ body{
 }
 
 .contenido-principal img {
-  min-height: 275px;
-  /*min-width: 350px;*/
+  height: 275px;
 }
 
 .column p {
