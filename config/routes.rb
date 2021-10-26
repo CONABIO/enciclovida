@@ -145,6 +145,7 @@ Buscador::Application.routes.draw do
   get 'explora-por-region/ejemplares' => 'busquedas_regiones#ejemplares'
   get 'explora-por-region/ejemplar' => 'busquedas_regiones#ejemplar'
   get 'explora-por-region/descarga-taxa' => 'busquedas_regiones#descarga_taxa'
+  get 'explora-por-region/portada' => 'busquedas_regiones#portada_guia'
 
   # Paginas del inicio
   get "inicio/comentarios"

@@ -13,6 +13,49 @@ class BusquedasRegionesController < ApplicationController
 		cache_filtros_ev
 	end
 	
+	# La portada se genera aparte ya que rompe con el header y footer
+	def portada_guia
+		br = BusquedaRegion.new
+		br.params = params
+		
+		respond_to do |format|
+			format.pdf do
+				@titulo_guia = 'Titulo guia'
+				@lugar_guia= 'Lugar guia'
+				@url_enciclovida = request.url.gsub('/especies.pdf', '')
+				
+				render pdf: 'Portada guía',
+						layout: 'guias.pdf.erb',
+						template: 'busquedas_regiones/guias/portada.pdf.erb',
+						encoding: 'UTF-8',
+						wkhtmltopdf: CONFIG.wkhtmltopdf_path,
+						#save_to_file: Rails.root.join('public','descargas_guias', params[:fecha], "#{params[:nombre_guia]}.pdf"),
+						save_to_file: Rails.root.join('public','descargas_guias', "2021-10-25", "portada.pdf"),
+						save_only: true,
+						page_size: 'Letter',
+						page_height: 279,
+						page_width:  215,
+						orientation: 'Portrait',
+						disposition: 'attachment',
+						disable_internal_links: false,
+						disable_external_links: false,
+						header: {
+								html: {
+										template: 'busquedas_regiones/guias/header_portada.html.erb'
+								}
+						},
+						footer: {
+								html: {
+										template: 'busquedas_regiones/guias/footer_portada.html.erb'
+								},
+						}
+				
+				render json: { estatus: true } and return
+			end
+		
+		end		
+	end
+
 	# Servicio para consultar las especies por region, contempla filtros y cache
 	def especies
 		br = BusquedaRegion.new
@@ -127,4 +170,3 @@ class BusquedasRegionesController < ApplicationController
 	end
 
 end
-
