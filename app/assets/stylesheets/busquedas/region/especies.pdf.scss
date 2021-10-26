@@ -10,6 +10,10 @@ body{
 .conabio_vertical_1-ev-icon:after{content: '\e823'; color: #3b3b3b!important; margin-left: -3em;}
 .ev1-ev-icon {font-size: 10em; color: #cacaca;}
 
+div.alwaysbreak { page-break-before: always; }
+div.nobreak:before { clear:both; }
+div.nobreak { page-break-inside: avoid; }
+
 .contenido-principal {
   align-content: center;
 }
