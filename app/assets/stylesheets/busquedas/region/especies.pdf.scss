@@ -41,10 +41,11 @@ div.nobreak { page-break-inside: avoid; }
   display: block;
 }
 
-.iconos-portada i {
+.iconos-portada i{
   font-size: 3em;
 }
-
-.recuadro-guia {
-  background-color: #cacaca;
+.iconos-portada p{
+  width: 6em;
+  line-height: 1em;
+  vertical-align: top;
 }
