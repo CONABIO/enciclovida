@@ -12,7 +12,7 @@ class BusquedasRegionesController < ApplicationController
 		@no_render_busqueda_basica = true
 		cache_filtros_ev
 	end
-	
+
 	# Servicio para consultar las especies por region, contempla filtros y cache
 	def especies
 		br = BusquedaRegion.new
@@ -127,4 +127,3 @@ class BusquedasRegionesController < ApplicationController
 	end
 
 end
-

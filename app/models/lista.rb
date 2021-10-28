@@ -167,8 +167,11 @@ class Lista < ActiveRecord::Base
     FileUtils.mkpath(ruta_dir, :mode => 0755) unless File.exists?(ruta_dir)    
     
     uri = URI(cadena_especies)
-    res = Net::HTTP.get_response(uri)
-    
+    res = Net::HTTP.start(uri.host, uri.port, :read_timeout => 50000) do |http|
+      request = Net::HTTP::Get.new uri
+      response = http.request request
+    end
+
     if res.is_a?(Net::HTTPSuccess)
       ruta_pdf = Rails.root.join('public','descargas_guias', fecha, "#{nombre_lista}.pdf")
 

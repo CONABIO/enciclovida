@@ -199,7 +199,7 @@ class BusquedaRegion < Busqueda
     especies = Especie.select_basico(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].keys)
 
     if opc[:especies_guia]
-      especies = especies.includes(:catalogos, :tipos_distribuciones)
+      especies = especies.includes(:catalogos, :tipos_distribuciones).order(ancestry_ascendente_directo: :desc)
     end
 
     especies.each do |especie|
@@ -212,7 +212,9 @@ class BusquedaRegion < Busqueda
       end
     end
 
-    self.taxones = taxones.sort_by{ |t| t[:nregistros] }.reverse
+    if opc[:especies_guia].nil?
+      self.taxones = taxones.sort_by{ |t| t[:nregistros] }.reverse
+    end
   end
 
   # Regresa true or false
