@@ -166,13 +166,9 @@ class Lista < ActiveRecord::Base
     ruta_dir = Rails.root.join('public','descargas_guias', fecha)
     FileUtils.mkpath(ruta_dir, :mode => 0755) unless File.exists?(ruta_dir)    
     
-    uri = URI(cadena_especies)
-    res = Net::HTTP.start(uri.host, uri.port, :read_timeout => 50000) do |http|
-      request = Net::HTTP::Get.new uri
-      response = http.request request
-    end
+    begin
+      RestClient::Request.execute(method: :get, url: cadena_especies, timeout: 10*6)
 
-    if res.is_a?(Net::HTTPSuccess)
       ruta_pdf = Rails.root.join('public','descargas_guias', fecha, "#{nombre_lista}.pdf")
 
       if File.exists? ruta_pdf
@@ -184,11 +180,11 @@ class Lista < ActiveRecord::Base
   
         {estatus: true, pdf_url: pdf_url}
       else
-        {estatus: true, msg: 'No pudo guardar el archivo'}
-      end    
+        {estatus: false, msg: 'No pudo guardar el archivo'}
+      end   
 
-    else
-      {estatus: true, msg: 'No pudo guardar el archivo'}
+    rescue
+      {estatus: false, msg: 'Hubo problemas al cargar la URL del PDF'}
     end
   end
 
