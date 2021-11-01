@@ -35,7 +35,7 @@ $(document).ready(function(){
     $('#modal-descarga-guia').on('click', '.boton-descarga', function (event) {
         var correo = $('#modal-descarga-guia input[name=correo]').val();
         var form_serialize = $('#modal-descarga-guia input').serialize();
-        var url_guia = window.location.href.replace("/explora-por-region", "/explora-por-region/especies.pdf")
+        var url_guia = window.location.href.replace("/explora-por-region", "/explora-por-region/especies.json")
 
         if(correoValido(correo))
         {
