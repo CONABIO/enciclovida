@@ -1,5 +1,11 @@
+<div>
+	<%= render partial: 'busquedas_regiones/guias/portada.html.erb' %>
+</div>
+
+<div class="alwaysbreak"></div>
+
 <div class="container contenido-principal">
-	<% @resp[:taxones].each_with_index do |taxon, index| %>
+	<% resp[:taxones].each_with_index do |taxon, index| %>
 		
 		<% if (index+1)%2 != 0 %>
 			<div class="row">

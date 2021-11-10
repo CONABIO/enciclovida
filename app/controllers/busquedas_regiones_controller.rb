@@ -12,7 +12,7 @@ class BusquedasRegionesController < ApplicationController
 		@no_render_busqueda_basica = true
 		cache_filtros_ev
 	end
-	
+
 	# Servicio para consultar las especies por region, contempla filtros y cache
 	def especies
 		br = BusquedaRegion.new
@@ -35,8 +35,19 @@ class BusquedasRegionesController < ApplicationController
 				render json: br.resp
 			end
 			format.json do
-				br.especies
-				render json: br.resp
+				if params[:guia] = "1"
+					br.original_url = request.original_url
+					br.valida_descarga_guia
+					
+					if br.resp[:estatus]
+						br.descarga_taxa_pdf
+					end
+					
+					render json: br.resp and return
+				else
+					br.especies
+					render json: br.resp and return
+				end
 			end
 			
 			format.pdf do
@@ -89,6 +100,10 @@ class BusquedasRegionesController < ApplicationController
 		
 		end
 	end
+
+	def guia
+		render 'busquedas_regiones/guias/especies'
+	end
 	
 	# Regresa todos los registros de la especie seleccionada
 	def ejemplares
@@ -127,4 +142,3 @@ class BusquedasRegionesController < ApplicationController
 	end
 
 end
-
