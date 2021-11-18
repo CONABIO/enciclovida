@@ -1,0 +1,24 @@
+<div class="d-flex flex-column flex-md-row mb-3 h1">
+    <% icono = {'photo' => 'camera', 'video' => 'film', 'audio' => 'volume-up'} %>
+    <i class='fa fa-<%=icono[type]%>'></i>
+    <span>Cantos</span>
+</div>
+<div class="d-flex justify-content-center pt-3" id="paginado-xenocanto" >
+    <%if !@cantos[0].has_key?(:msg)%>
+        <div class="row align-items-center">
+            <% @cantos.each do |canto| %>
+                <%= imprime_canto(canto) %>
+            <%end%>
+        </div>
+</div>
+        <div class="d-flex justify-content-center">
+            <ul id="pagin"></ul>
+        </div>
+        <script>
+        $(document).ready(function () {
+            paginadoXenoCanto();
+        });
+        </script>
+    <%else%>
+        <p>No hay contenido disponible para esta especie.</p>
+    <%end%>
