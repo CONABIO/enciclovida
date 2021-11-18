@@ -327,6 +327,26 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     end
   end
 
+  def imprime_canto(item)
+    copyright = "Xeno Canto"
+    tag('audio', src: "https://#{item['file']}", class: "audio-element col-md-4", controls: true, data: { 
+      generic_name: item['gen'],
+      specific_name: item['sp'],
+      subspecies_name: item['ssp'],
+      english_name: item['en'],
+      country_recording: item['cnt'],
+      locality: item['loc'],
+      url: item['url'],
+      file_name: item['file-name'],
+      license: item['lic'],
+      length: item['length'],
+      time: item['time'],
+      date: item['date'],
+      remarks: item['rmk'],
+      copyright: copyright
+    })
+  end
+
   def imprime_img_tropicos(item)
     copyright = "Missouri Botanical Garden"
     link_to("<img src='#{item['DetailJpgUrl']}'/>".html_safe, '', "data-toggle" => "modal",
