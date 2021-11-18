@@ -1,6 +1,6 @@
 class BusquedaRegion < Busqueda
 
-  attr_accessor :resp, :num_ejemplares, :original_request
+  attr_accessor :resp, :num_ejemplares
 
   ESPECIES_POR_PAGINA = 8.freeze
 
@@ -78,6 +78,71 @@ class BusquedaRegion < Busqueda
     self.resp.merge({ estatus: true, msg: nil })
   end
 
+  # Para descargar la informacion de la guia
+  def descarga_taxa_pdf
+    unless Usuario::CORREO_REGEX.match(params[:correo])
+      return self.resp = { estatus: false, msg: 'Favor de verificar el correo' }
+    end    
+        
+    lista = Lista.new
+    lista.formato = 'pdf'
+    lista.cadena_especies = original_url
+    lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
+    lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_guia_EncicloVida"
+
+    if Rails.env.production?
+      lista.delay(queue: 'descargar_taxa').to_pdf({ fecha: Time.now.strftime("%Y-%m-%d"), original_url: original_url }) if lista.save
+    else  # Para que en development no la guarde en un trabajo
+      lista.to_pdf({ fecha: Time.now.strftime("%Y-%m-%d"), original_url: original_url }) if lista.save
+    end
+
+    self.resp.merge({ estatus: true, msg: nil })      
+  end
+
+  def informacion_descarga_guia
+    especies_por_region
+    return unless resp[:estatus]
+    especies_filtros
+    especies_por_pagina(especies_guia: true)
+    asocia_informacion_taxon(especies_guia: true)
+
+    self.resp[:taxones] = taxones
+    self.resp[:totales] = totales
+    self.resp[:num_ejemplares] = num_ejemplares
+    self.resp[:resultados] = nil
+    
+    # Para armar el titulo de la guia
+    self.resp[:titulo_guia] = titulo_guia   
+  end
+
+  # Valida que los campos seleccionados sean validos para una posible descarga de guia
+  def valida_descarga_guia
+    if params[:especie_id].present?
+      begin
+        t = Especie.find(params[:especie_id])
+        cat = t.categoria_taxonomica
+        
+        if [3,4,5].include?(cat.nivel1)
+          self.resp = { estatus: true }
+        else
+          return self.resp = { estatus: false, msg: 'El taxón no es una clase, orden o familia' }
+        end
+
+      rescue => e
+        return self.resp = { estatus: false, msg: 'El taxón seleccionado no existe' + e.inspect }
+      end 
+      
+    else
+      return self.resp = { estatus: false, msg: 'Se debe escoger un taxón' }  
+    end
+
+    if params[:region_id].present? && (params[:tipo_region].present? && %(municipio anp).include?(params[:tipo_region]))
+      self.resp = { estatus: true }
+    else
+      self.resp = { estatus: false, msg: 'La región seleccionada no es un municipio o ANP' }
+    end
+  end
+
 
   private
 
@@ -125,16 +190,28 @@ class BusquedaRegion < Busqueda
   end
 
   # Asocia la información a desplegar en la vista, iterando los resultados
-  def asocia_informacion_taxon
+  def asocia_informacion_taxon(opc={})
     self.taxones = []
     return unless (resp[:resultados].present? && resp[:resultados].any?)
     especies = Especie.select_basico(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].keys)
 
-    especies.each do |especie|
-      self.taxones << { especie: especie, nregistros: resp[:resultados][especie.catalogo_id] }
+    if opc[:especies_guia]
+      especies = especies.includes(:catalogos, :tipos_distribuciones).order(ancestry_ascendente_directo: :desc)
     end
 
-    self.taxones = taxones.sort_by{ |t| t[:nregistros] }.reverse
+    especies.each do |especie|
+      if opc[:especies_guia]
+        cat_riesgo = asocia_cat_riesgo(especie)
+        tipo_dist = asocia_tipo_dist(especie)
+        self.taxones << { especie: especie, nregistros: resp[:resultados][especie.catalogo_id], cat_riesgo: cat_riesgo, tipo_dist: tipo_dist }
+      else
+        self.taxones << { especie: especie, nregistros: resp[:resultados][especie.catalogo_id] }
+      end
+    end
+
+    if opc[:especies_guia].nil?
+      self.taxones = taxones.sort_by{ |t| t[:nregistros] }.reverse
+    end
   end
 
   # Regresa true or false
@@ -161,7 +238,7 @@ class BusquedaRegion < Busqueda
     self.num_ejemplares = idcats.sum {|r| r[1] }
     
     if totales > 0
-      if opc[:especies_excel]
+      if opc[:especies_excel] || opc[:especies_guia]
         self.resp[:resultados] = idcats.to_h
       else
         self.resp[:resultados] = idcats[offset..limit].to_h
@@ -170,5 +247,56 @@ class BusquedaRegion < Busqueda
       self.resp[:resultados] = {}
     end
   end
+
+  # Establece el titulo de acuerdo a la seleccion
+  def titulo_guia
+    titulo = []
+
+    t = Especie.find(params[:especie_id])
+    a = t.adicional
+
+    tipo_region = params[:tipo_region] == "anp" ? "ANP " : "Municipio de "
+    
+    if a.nombre_comun_principal.present?
+      titulo[0] = "Guía de #{a.nombre_comun_principal}"
+    else
+      titulo[0] = "Guía de #{t.nombre_cientifico}"
+    end
+
+    titulo[1] = tipo_region + params[:nombre_region]
+    titulo
+  end
+
+  # Asocia las categorias de riesgo y comercio int solo para la guia de especie
+  def asocia_cat_riesgo(especie)
+    cat_riesgo = []
+    
+    especie.catalogos.each do |cat|
+      if [2,4].include?(cat.nivel1) && !(Catalogo::EVALUACION + Catalogo::AMBIENTE_EQUIV_MARINO + ["Riesgo bajo (LR): Dependiente de conservación (cd)"]).include?(cat.descripcion)
+        cat_riesgo << cat.descripcion.estandariza
+      end
+    end
+
+    cat_riesgo.uniq
+  end
+
+  # Asocia el tipo de distribucion solo para la guia de especie
+  def asocia_tipo_dist(especie)
+    tipo_dist = []
+    
+    especie.tipos_distribuciones.each do |dist|
+      if TipoDistribucion::DISTRIBUCIONES_VISTA_GENERAL.include?(dist.descripcion)
+        tipo_dist << dist.descripcion.estandariza
+      end
+    end
+
+    tipo_dist.uniq!
+
+    if tipo_dist.include?('endemica') && tipo_dist.include?('nativa')
+      tipo_dist.delete('nativa')
+    end
+
+    tipo_dist
+  end  
 
 end

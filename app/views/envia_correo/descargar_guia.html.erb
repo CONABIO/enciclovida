@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<h1>Servicio de descarga</h1>
+<p>Puedes descargar la guía en PDF en el siguiente <a href="<%= @ruta %>">enlace</a>
+
+  <% if @original_url.present? %>
+    <br />
+    <p>
+      Si deseas consultar cual fue tu criterio de búsqueda para esta guía, puedes verlo en este <%= link_to 'enlace', @original_url %>
+    </p>
+  <% end %>
+  </body>
+</html>

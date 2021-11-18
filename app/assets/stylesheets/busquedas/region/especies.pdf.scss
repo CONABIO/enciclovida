@@ -1,0 +1,51 @@
+body{
+  font-family: "opensans";
+}
+
+.enciclo-ev-icon:before { content: '\e80e'; color: #104C5B!important}
+.enciclo-ev-icon:after { content: '\e80f'; color: #889b45; margin-left: -3em;}
+.enciclo-ev-icon{ font-size: 4em; }
+.conabio_vertical_1-ev-icon{font-size: 5em!important; }
+.conabio_vertical_1-ev-icon:before{content: '\e817'; color: #800000!important;}
+.conabio_vertical_1-ev-icon:after{content: '\e823'; color: #3b3b3b!important; margin-left: -3em;}
+.ev1-ev-icon {font-size: 10em; color: #cacaca;}
+
+div.alwaysbreak { page-break-before: always; }
+div.nobreak:before { clear:both; }
+div.nobreak { page-break-inside: avoid; }
+
+.contenido-principal {
+  align-content: center;
+}
+
+.column {
+  float: left;
+  width: 50%;
+  vertical-align: middle;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.contenido-principal img {
+  height: 275px;
+}
+
+.column p {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.iconos-portada i{
+  font-size: 3em;
+}
+.iconos-portada p{
+  width: 6em;
+  line-height: 1em;
+  vertical-align: top;
+}

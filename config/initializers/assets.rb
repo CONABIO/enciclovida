@@ -19,4 +19,4 @@ boots3-downgrade/bootstrap.js boots3-downgrade/bootstrap-sprockets.js
 boots3-downgrade/boots3/bootstrap/_bootstrap.scss boots3-downgrade/busquedas/avanzada/checklist.css boots3-downgrade/busquedas/region/por_region.css boots3-downgrade/metamares/metamares.css boots3-downgrade/metamares/metamares_b4.css boots3-downgrade/metamares/graficas.css
 jquery-ui.js
 boots3-downgrade/busquedas.css busquedas/avanzada/checklist.css
-)
+application_guias.scss)

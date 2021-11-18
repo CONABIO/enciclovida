@@ -1,0 +1,50 @@
+<div>
+	<%= render partial: 'busquedas_regiones/guias/portada.html.erb' %>
+</div>
+
+<div class="alwaysbreak"></div>
+
+<div class="container contenido-principal">
+	<% resp[:taxones].each_with_index do |taxon, index| %>
+		
+		<% if (index+1)%2 != 0 %>
+			<div class="row">
+		<% end %>
+		
+		<div class="column p-2">
+			<% if taxon[:especie].foto_principal.present? %>
+				<img src="<%= taxon[:especie].foto_principal %>" class="img-fluid img-thumbnail mx-auto d-block" />
+			<% else %>
+				<p class="text-center py-4 my-2"><i class="ev1-ev-icon"></i></p>
+			<% end %>
+			
+			<div class="mb-3 mt-1">
+				<% if taxon[:especie].nombre_comun_principal.present? %>
+					<p class="text-center mt-0 font-weight-bold h4"><%= taxon[:especie].nombre_comun_principal %></p>
+				<% else %>
+					<p class="text-center mt-0">&middot;</p>
+				<% end %>
+				
+				<p class="text-center mb-0 h4">
+					<a href="https://enciclovida.mx/especies/<%= taxon[:especie].id %>-<%= taxon[:especie].nombre_cientifico.estandariza %>">
+						<i><%= taxon[:especie].nombre_cientifico %></i>
+						
+						<% taxon[:tipo_dist].each do |dist| %>
+							<i class="<%= dist %>-ev-icon"></i>
+						<% end %>
+						
+						<% taxon[:cat_riesgo].each do |cat| %>
+							<i class="<%= cat %>-ev-icon"></i>
+						<% end %>
+					</a>
+				</p>
+			</div>
+		
+		</div>
+		
+		<% if (index+1)%2 == 0 %>
+			</div>
+		<% end %>
+	
+	<% end %>
+</div>

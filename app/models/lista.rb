@@ -158,6 +158,74 @@ class Lista < ActiveRecord::Base
 
   end
 
+  def to_pdf(opts={})
+    uri = URI::parse(cadena_especies)
+    params = Rack::Utils.parse_query(uri.query).symbolize_keys
+
+    br = BusquedaRegion.new
+    br.params = params
+    br.informacion_descarga_guia
+
+    resp = br.resp
+    url_enciclovida = opts[:original_url]
+    url_enciclovida.gsub!("/especies.json", "").gsub!("guia=1", "")
+
+    pdf_html = ActionController::Base.new.render_to_string(   
+        template: 'busquedas_regiones/guias/especies', 
+        layout: 'guias.pdf.erb',
+        locals: { resp: resp }, 
+    )
+
+    pdf = WickedPdf.new.pdf_from_string(
+        pdf_html,
+        encoding: 'UTF-8',
+        wkhtmltopdf: CONFIG.wkhtmltopdf_path,
+        page_size: 'Letter',
+        page_height: 279,
+        page_width:  215,
+        orientation: 'Portrait',
+        disposition: 'attachment',
+        disable_internal_links: false,
+        disable_external_links: false,     
+        header: {
+            content: ActionController::Base.new.render_to_string(
+                'busquedas_regiones/guias/header',
+                layout: 'guias.pdf.erb',
+                locals: { titulo_guia: resp[:titulo_guia] },
+            ),
+        },    
+        footer: {
+            content: ActionController::Base.new.render_to_string(
+                'busquedas_regiones/guias/footer',
+                layout: 'guias.pdf.erb',
+                locals: { url_enciclovida: url_enciclovida },
+            ),
+        },    
+    )
+
+    ruta_dir = Rails.root.join('public','descargas_guias', opts[:fecha])
+    FileUtils.mkpath(ruta_dir, :mode => 0755) unless File.exists?(ruta_dir)
+    ruta_pdf = ruta_dir.join("#{nombre_lista}.pdf")
+
+    File.open(ruta_pdf, 'wb') do |file|
+      file << pdf
+    end
+  
+    # Verifica que el PDF exista
+    if File.exists? ruta_pdf
+      pdf_url = "#{CONFIG.site_url}descargas_guias/#{opts[:fecha]}/#{nombre_lista}.pdf"
+
+      if params[:correo].present?
+        EnviaCorreo.descargar_guia(pdf_url, params[:correo], url_enciclovida).deliver
+      end
+
+      { estatus: true, pdf_url: pdf_url }
+    else
+      { estatus: false, msg: 'No pudo guardar el archivo' }
+    end    
+
+  end
+
   # Para asignar los datos de una lista de ids de especies, hacia un excel o csv, el recurso puede ser un string o un objeto
   def datos(opc={})
     return [] unless cadena_especies.present?
