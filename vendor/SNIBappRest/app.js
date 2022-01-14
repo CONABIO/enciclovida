@@ -151,6 +151,8 @@ server.register(
             url += "&id=" + req.id;
             if (req.cat !== undefined && req.nivel !== undefined)
               url += "&cat=" + req.cat + "&nivel=" + req.nivel;
+          } else if (req.cat !== undefined && req.nivel !== undefined) {
+            url += "&cat=" + req.cat + "&nivel=" + req.nivel;
           } else {
             if (req.nombre !== undefined) url += "&nombre=" + req.nombre;
           }
