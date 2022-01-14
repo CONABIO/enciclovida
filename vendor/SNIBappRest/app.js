@@ -136,7 +136,7 @@ server.register(
               .default(1)
               .description("El número de pagina"),
             por_pagina: Joi.string()
-              .default(50)
+              .default("50")
               .valid(["50", "100", "200", "500", "1000"])
               .description("Los resultados por pagina"),
           },
