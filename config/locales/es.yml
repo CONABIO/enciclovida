@@ -483,12 +483,15 @@ es:
       x_bdi_fotos: Fotos del Banco de Imágenes - CONABIO
       x_categoria_taxonomica: Categoria taxonómica
       x_cites: Comercio Internacional (CITES)
+      x_cites_obs: Observaciones CITES
       x_estatus: Estatus
       x_foto_principal: Foto principal
       x_iucn: Unión Internacional para la Conservación de la Naturaleza (IUCN)
+      x_iucn_obs: Observaciones IUCN
       x_naturalista_id: Identificador NaturaLista
       x_naturalista_fotos: Fotos de Naturalista
       x_nom: Norma Oficial Mexicana NOM-059
+      x_nom_obs: Observaciones NOM 059
       x_nombre_comun_principal: Nombre común principal
       x_num_reg: Número de registros
       x_nombres_comunes: Nombres comunes

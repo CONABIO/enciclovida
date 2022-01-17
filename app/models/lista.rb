@@ -24,7 +24,7 @@ class Lista < ActiveRecord::Base
   # Columnas permitidas a exportar por el usuario
   COLUMNAS_PROVEEDORES = %w(catalogo_id x_naturalista_id x_snib_id x_snib_reino)
   COLUMNAS_GEODATOS = %w(x_naturalista_obs x_snib_registros x_geoportal_mapa)
-  COLUMNAS_RIESGO_COMERCIO = %w(x_nom x_iucn x_cites)
+  COLUMNAS_RIESGO_COMERCIO = %w(x_nom x_nom_obs x_iucn x_iucn_obs x_cites x_cites_obs)
   COLUMNAS_CATEGORIAS = CategoriaTaxonomica::CATEGORIAS.map{|cat| "x_#{cat}"}
   COLUMNAS_CATEGORIAS_PRINCIPALES = %w(x_reino x_division x_phylum x_clase x_orden x_familia x_genero x_especie)
   COLUMNAS_FOTOS = %w(x_foto_principal x_naturalista_fotos x_bdi_fotos)
@@ -302,47 +302,41 @@ class Lista < ActiveRecord::Base
         next unless tipos_distribuciones.any?
         self.taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
       when 'x_nom'  # TODO: homologar las demas descargas
-        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
-          nom = []
-          taxon.catalogos.each do |catalogo|
-            if catalogo.nivel1 == 4 && catalogo.nivel2 == 1
-              nom << catalogo
-            end
-          end
-        else
-          nom = taxon.catalogos.nom.distinct
-        end
-
+        nom = taxon.catalogos.nom.distinct
         next unless nom.any?
         self.taxon.x_nom = nom.map(&:descripcion).join(', ')
-      when 'x_iucn'  # TODO: homologar las demas descargas
-        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
-          iucn = []
-          taxon.catalogos.each do |catalogo|
-            if catalogo.nivel1 == 4 && catalogo.nivel2 == 2
-              iucn << catalogo
-            end
-          end
-        else
-          iucn = taxon.catalogos.iucn.distinct
+        
+        # Para las observaciones
+        obs = []
+        taxon.especies_catalogos.each do |cat|
+          obs << cat.observaciones if [14,15,16,17].include?(cat.catalogo_id)
         end
-
+        
+        self.taxon.x_nom_obs = obs.join(', ')
+      when 'x_iucn'  # TODO: homologar las demas descargas
+        iucn = taxon.catalogos.iucn.distinct
         next unless iucn.any?
         self.taxon.x_iucn = iucn.map(&:descripcion).join(', ')
-      when 'x_cites'  # TODO: homologar las demas descargas
-        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
-          cites = []
-          taxon.catalogos.each do |catalogo|
-            if catalogo.nivel1 == 4 && catalogo.nivel2 == 3
-              cites << catalogo
-            end
-          end
-        else
-          cites = taxon.catalogos.cites.distinct
+        
+        # Para las observaciones
+        obs = []
+        taxon.especies_catalogos.each do |cat|
+          obs << cat.observaciones if [25,26,27,28,29,30,31,32,1022,1023].include?(cat.catalogo_id)
         end
-
+        
+        self.taxon.x_iucn_obs = obs.join(', ')
+      when 'x_cites'  # TODO: homologar las demas descargas
+        cites = taxon.catalogos.cites.distinct
         next unless cites.any?
-        self.taxon.x_cites = cites.map(&:descripcion).join(', ')        
+        self.taxon.x_cites = cites.map(&:descripcion).join(', ')   
+
+        # Para las observaciones
+        obs = []
+        taxon.especies_catalogos.each do |cat|
+          obs << cat.observaciones if [22,23,24].include?(cat.catalogo_id)
+        end
+        
+        self.taxon.x_cites_obs = obs.join(', ')  
       when 'x_ambiente'  # TODO: homologar las demas descargas
         if hash_especies.present?  # Quiere decir que viene de las descargas pr region
           ambiente = []
