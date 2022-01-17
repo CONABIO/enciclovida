@@ -34,6 +34,9 @@ class Lista < ActiveRecord::Base
   COLUMNAS_BASICAS = %w(id nombre_cientifico x_categoria_taxonomica x_estatus)                        
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
 
+  # El orden absoluto de las columnas en el excel
+  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes) + COLUMNAS_CATEGORIAS_PRINCIPALES + COLUMNAS_RIESGO_COMERCIO + %w(x_tipo_distribucion x_ambiente x_num_reg id x_categoria_taxonomica x_estatus x_url_ev x_bibliografia)
+
   def after_initialize
     self.taxones = []
     self.columnas_array = []
@@ -64,12 +67,15 @@ class Lista < ActiveRecord::Base
     sheet.sheet_name = 'Resultados'
     fila = 1  # Para no sobreescribir la cabecera
     columna = 0
-    
-    cols = if columnas_array.present?
-              columnas_array
-           else
-              columnas.split(',') if columnas.present?
-           end
+
+    # cols = if columnas_array.present?
+    #           columnas_array
+    #        else
+    #           columnas.split(',') if columnas.present?
+    #        end
+
+    ordena_columnas
+    cols = columnas_array
 
     # Para la cabecera
     cols.each do |a|
@@ -423,6 +429,16 @@ class Lista < ActiveRecord::Base
 
     self.columnas_array = columnas_array.flatten
     self.columnas = columnas_array.join(',')
+  end
+
+  def ordena_columnas
+    cols = if columnas_array.present?
+              columnas_array
+            else
+              columnas.split(',') if columnas.present?
+            end 
+            
+    self.columnas_array = COLUMNAS_ORDEN & cols
   end
 
 end
