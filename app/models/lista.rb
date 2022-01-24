@@ -294,9 +294,9 @@ class Lista < ActiveRecord::Base
       when 'x_estatus'
         self.taxon.x_estatus = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
       when 'x_nombres_comunes'
-        if adicional = taxon.adicional
-          self.taxon.x_nombres_comunes = adicional.nombres_comunes
-        end
+        nombres_comunes = taxon.nombres_comunes.map{ |nom| nom.nombre_comun.capitalize }.uniq.sort
+        next unless nombres_comunes.any?
+        self.taxon.x_nombres_comunes = nombres_comunes.join(', ')
       when 'x_tipo_distribucion'
         tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
         next unless tipos_distribuciones.any?
