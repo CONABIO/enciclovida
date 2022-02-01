@@ -36,9 +36,9 @@ class Api::ConabioPlinian < Api::Conabio
     return nil unless ficha
 
     if ficha.tipoficha == 'DGCC'
-      solicita("fichas/front/#{q}/dgcc")
+      solicita("fichas/front/#{ficha.especieId}/dgcc")
     else
-      solicita("fichas/front/#{q}")  
+      solicita("fichas/front/#{ficha.especieId}")  
     end
   end
 

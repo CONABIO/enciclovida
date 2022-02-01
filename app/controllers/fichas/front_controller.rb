@@ -256,7 +256,7 @@ class Fichas::FrontController < Fichas::FichasController
   private
 
   def set_taxon
-    @taxon = Fichas::Taxon.where(IdCat: params[:id]).first  # Obtener el id de especie
+    @taxon = Fichas::Taxon.find(params[:id])  # Obtener el id de especie
   end
 
 end
