@@ -485,7 +485,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
     if jres[:estatus]
       ncn = jres[:nombres_comunes].map do |nc|
-        next if nc['name'].blank? || nc['locale'].blank? || nc['locale'] == 'sci'
+        next if nc['name'].blank? || nc['locale'].blank? || nc['locale'] == 'sci' || NombreComun::LENGUAS_PROHIBIDAS.include?(I18n.t("lenguas.#{nc['locale'].estandariza}", default: "ND"))
 
         # Un nombre de catalogos es igual que uno de Naturalista, conservo el de Naturalista
         if ncc_estandar.present? && ncc_estandar.include?(nc['name'].estandariza)
