@@ -32,15 +32,40 @@ class Api::ConabioPlinian < Api::Conabio
   private
 
   def buscar(q)
-    if ficha = Fichas::Taxon.where(IdCAT: q).first
-      if ficha.tipoficha == 'DGCC'
-        solicita("fichas/front/#{q}/dgcc")
-      else
-        solicita("fichas/front/#{q}")  
-      end
+    ficha = jerarquia_fichas(q)
+    return nil unless ficha
+
+    if ficha.tipoficha == 'DGCC'
+      solicita("fichas/front/#{ficha.especieId}/dgcc")
     else
-      nil
+      solicita("fichas/front/#{ficha.especieId}")  
     end
+  end
+
+  # cuando hay mas de una ficha en conabio
+  def jerarquia_fichas(q)
+    fichas = Fichas::Taxon.where(IdCAT: q)
+    return nil unless fichas.any?
+
+    resp = []
+    fichas.each do |ficha|
+      case ficha.tipoficha.downcase
+        when 'prioritaria'
+          resp[0] = ficha
+        when 'invasora'
+          resp[1] = ficha
+        when 'cites'
+          resp[2] = ficha
+        when 'silvestre'
+          resp[3] = ficha
+        when 'dgcc'
+          resp[4] = ficha
+        else  # Ficha desconocida
+          resp[5] = ficha
+      end
+    end  # end each do
+
+    resp.compact.first
   end
 
 end
