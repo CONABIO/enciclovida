@@ -4,15 +4,16 @@ class MacaulayService
     cornell = Rails.env.production? ? CONFIG.cornell.api : CONFIG.cornell.api_rp
 
     url = "#{cornell}sciName=#{taxonNC.limpiar.gsub(' ','+')}&assetFormatCode=#{type}&taxaLocale=es&page=#{page}&pageSize=#{min_page_size}"
-    url_escape = URI.escape(url)
+    url_escape = URI::Parser.new.escape(url)
     uri = URI.parse(url_escape)
     req = Net::HTTP::Get.new(uri.to_s)
     req['key'] = CONFIG.cornell.key
-
+    
     begin
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       res = http.request(req)
+      puts res.inspect
       jres = JSON.parse(res.body) if res.body.present?
       #Si la especie es correcta pero ya no hay más media q mostrar, no hay error, solo un body vacío
       jres = [{msg: "No hay más resultados para #{taxonNC}", length: res.header['content-length']}] if res.header['content-length'] == "0"
