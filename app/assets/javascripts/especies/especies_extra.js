@@ -2,19 +2,23 @@ $(document).ready(function(){
     $('#navegacion a.load-tab').one('click',function(){
         var idPestaña = $(this).data('params') || this.getAttribute('href').replace('#','');
         var pestaña = '/especies/' + opciones.taxon + '/'+idPestaña;
+        console.log("IdPestaña: " + idPestaña);
+        console.log("Pestaña: " + pestaña);
         $(this.getAttribute('href')).load(pestaña, function () {
             switch (idPestaña) {
                 case 'media':
                     $('#mediaBDI_p').load('/especies/' + opciones.taxon + '/bdi-photos?type=photo', function () {
-                        //$('#mediaBDI_v').load('/especies/' + opciones.taxon + '/bdi-videos?type=video', function () {
-                        $('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {
-                            $('#mediaCornell_v').load('/especies/' + opciones.taxon + '/media-cornell?type=video', function () {
-                                $('#mediaCornell_a').load('/especies/' + opciones.taxon + '/media-cornell?type=audio',function () {
-                                    $('#mediaTropicos').load('/especies/' + opciones.taxon + '/media-tropicos');
+                        $("#xenocanto").load('/especies/' + opciones.taxon + "/xeno-canto?type=audio", function(){
+                            // $('#mediaBDI_v').load('/especies/' + opciones.taxon + '/bdi-videos?type=video', function () {
+                            $('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {
+                                $('#mediaCornell_v').load('/especies/' + opciones.taxon + '/media-cornell?type=video', function () {
+                                    $('#mediaCornell_a').load('/especies/' + opciones.taxon + '/media-cornell?type=audio',function () {
+                                        $('#mediaTropicos').load('/especies/' + opciones.taxon + '/media-tropicos');
+                                    });
                                 });
                             });
+                            // });
                         });
-                        //});
                     });
                     break;
                 case 'descripcion_catalogos':

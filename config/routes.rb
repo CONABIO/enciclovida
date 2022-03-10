@@ -207,6 +207,7 @@ Buscador::Application.routes.draw do
       get ':id/bdi-photos' => 'especies#bdi_photos'
       get ':id/bdi-videos' => 'especies#bdi_videos'
       get ':id/media-cornell' => 'especies#media_cornell'
+      get ':id/xeno-canto' => 'especies#xeno_canto'
       get ':id/media-tropicos' => 'especies#media_tropicos'
       get ':id/fotos-naturalista' => 'especies#fotos_naturalista'
       get ':id/nombres-comunes-naturalista' => 'especies#nombres_comunes_naturalista'
