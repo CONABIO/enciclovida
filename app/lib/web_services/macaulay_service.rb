@@ -3,7 +3,7 @@ class MacaulayService
   def dameMedia_nc(taxonNC, type, page=1, min_page_size = 20)
     cornell = Rails.env.production? ? CONFIG.cornell.api : CONFIG.cornell.api_rp
 
-    url = "#{cornell}sciName=#{taxonNC.limpiar.gsub(' ','+')}&assetFormatCode=#{type}&taxaLocale=es&page=#{page}&pageSize=#{min_page_size}"
+    url = "#{cornell}sciName=#{taxonNC.limpiar.gsub(' ','+')}&mediaType=#{type}&taxaLocale=es&count=#{min_page_size}"
     url_escape = URI::Parser.new.escape(url)
     uri = URI.parse(url_escape)
     req = Net::HTTP::Get.new(uri.to_s)
@@ -26,4 +26,3 @@ class MacaulayService
   end
 
 end
-
