@@ -30,7 +30,7 @@ gem 'jquery-ui-rails'
 gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'mail'
 gem 'mime-types'
-gem 'mini_racer', github: 'rubyjs/mini_racer', branch: 'refs/pull/186/head'
+gem 'mini_racer', git: 'https://github.com/rubyjs/mini_racer', branch: 'refs/pull/186/head'
 gem 'mysql2'
 gem 'nokogiri', '>= 1.10.8'  # Hacer un parse con xml
 gem 'pg'
@@ -54,6 +54,7 @@ gem 'soulmate', :require => 'soulmate/server'
 gem 'turbolinks', '~> 5'  # Hace mas rapidos los links
 gem 'trollop'
 gem 'uglifier'
+gem 'vinted-blurrily', :require => 'blurrily/server.rb'   # Forza a blurrily a usar rails mayor al 4
 gem 'wash_out'
 gem 'whenever', :require => false
 gem 'wicked_pdf'
@@ -63,10 +64,6 @@ gem 'zip-zip' # Needed by axlsx
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
-end
-
-group :development, :test, :production do
-  gem 'vinted-blurrily', :require => 'blurrily/server.rb'   # Forza a blurrily a usar rails mayor al 4
 end
 
 group :development, :development_mac, :test do

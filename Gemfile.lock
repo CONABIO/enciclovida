@@ -1,12 +1,4 @@
 GIT
-  remote: git://github.com/rubyjs/mini_racer.git
-  revision: 2838212bdf1f545b28d93975cc413d5677dd8901
-  branch: refs/pull/186/head
-  specs:
-    mini_racer (0.3.1)
-      libv8-node (~> 15.12.0.0.beta1)
-
-GIT
   remote: https://github.com/calonsot/ancestry.git
   revision: bfadb2c7ff9813825ce1d5648a06fdb1589f56ef
   ref: bfadb2c
@@ -23,6 +15,14 @@ GIT
       launchy
       rest-client
       rubyzip (~> 1.0)
+
+GIT
+  remote: https://github.com/rubyjs/mini_racer
+  revision: 2838212bdf1f545b28d93975cc413d5677dd8901
+  branch: refs/pull/186/head
+  specs:
+    mini_racer (0.3.1)
+      libv8-node (~> 15.12.0.0.beta1)
 
 GEM
   remote: https://rubygems.org/
