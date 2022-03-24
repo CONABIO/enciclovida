@@ -54,7 +54,7 @@ class Geoportal::Snib < GeoportalAbs
   
   # Actualiza el idnombrecatvalido de las infraespecies para cambiarlo por su especie correspondiente y asigna la especie valida de acuerdo a catalogocentralizado
   def self.actualiza_idnombrecatvalido
-    ids = Geoportal::Snib.all.select(:idnombrecatvalido).group(:idnombrecatvalido).map(&:idnombrecatvalido).sort
+    ids = Geoportal::Snib.all.select(:idnombrecatvalido).where("idnombrecatvalido IS NOT NULL").group(:idnombrecatvalido).map(&:idnombrecatvalido).sort
     ids_count = ids.length
     Rails.logger.debug "Taxones a correr: #{ids_count}"
 
