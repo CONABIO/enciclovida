@@ -281,6 +281,7 @@ class EspeciesController < ApplicationController
 
   # Acción necesaria para la tab media, similar a describe ¬¬
   def media
+    @taxon_especie = Especie.find(params['id']).AscendentesObligatorios
     render 'especies/media/media'
   end
 

@@ -328,23 +328,30 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
   end
 
   def imprime_canto(item)
-    copyright = "Xeno Canto"
-    tag('audio', src: "https://#{item['file']}", class: "audio-element col-md-4", controls: true, data: { 
-      generic_name: item['gen'],
-      specific_name: item['sp'],
-      subspecies_name: item['ssp'],
-      english_name: item['en'],
-      country_recording: item['cnt'],
-      locality: item['loc'],
-      url: item['url'],
-      file_name: item['file-name'],
-      license: item['lic'],
-      length: item['length'],
-      time: item['time'],
-      date: item['date'],
-      remarks: item['rmk'],
-      copyright: copyright
-    })
+    copyright = "Xeno Canto: Sharing bird sounds from around the world"
+    link_to image_tag("https:#{item['sono']['med']}"), "",  class: "m-1 modal-buttons", data: { 
+        toggle: "modal",
+        target: "#modal_reproduce",
+        type: "video",
+        url: "#{item['file']}",
+        observation: "https://#{item['url']}",
+        file: "#{item['file']}",
+        generic_name: item['gen'],
+        specific_name: item['sp'],
+        subspecies_name: item['ssp'],
+        english_name: item['en'],
+        country_recording: item['cnt'],
+        locality: item['loc'],
+        # url: item['url'], # 
+        file_name: item['file-name'],
+        license: item['lic'],
+        length: item['length'],
+        time: item['time'],
+        date: item['date'],
+        remarks: item['rmk'],
+        copyright: copyright,
+        author: item["rec"]
+      }
   end
 
   def imprime_img_tropicos(item)
