@@ -30,7 +30,7 @@ gem 'jquery-ui-rails'
 gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'mail'
 gem 'mime-types'
-gem 'mini_racer', platforms: :ruby
+gem 'mini_racer', github: 'rubyjs/mini_racer', branch: 'refs/pull/186/head'
 gem 'mysql2'
 gem 'nokogiri', '>= 1.10.8'  # Hacer un parse con xml
 gem 'pg'

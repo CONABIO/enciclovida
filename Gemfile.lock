@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/rubyjs/mini_racer.git
+  revision: 2838212bdf1f545b28d93975cc413d5677dd8901
+  branch: refs/pull/186/head
+  specs:
+    mini_racer (0.3.1)
+      libv8-node (~> 15.12.0.0.beta1)
+
+GIT
   remote: https://github.com/calonsot/ancestry.git
   revision: bfadb2c7ff9813825ce1d5648a06fdb1589f56ef
   ref: bfadb2c
@@ -153,7 +161,7 @@ GEM
     exifr (1.3.6)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
-    ffi (1.12.2)
+    ffi (1.15.5)
     font-awesome-rails (4.7.0.5)
       railties (>= 3.2, < 6.1)
     formtastic (3.1.5)
@@ -193,7 +201,7 @@ GEM
       addressable (~> 2.7)
     levenshtein-ffi (1.1.0)
       ffi (~> 1.9)
-    libv8 (7.3.492.27.1)
+    libv8-node (15.12.0.0.beta1)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -213,8 +221,6 @@ GEM
     mini_magick (4.10.1)
     mini_mime (1.1.0)
     mini_portile2 (2.5.0)
-    mini_racer (0.2.14)
-      libv8 (> 7.3)
     minitest (5.14.4)
     mongo (2.11.3)
       bson (>= 4.4.2, < 5.0.0)
@@ -444,7 +450,7 @@ DEPENDENCIES
   listen (>= 3.0.5, < 3.2)
   mail
   mime-types
-  mini_racer
+  mini_racer!
   mysql2
   nokogiri (>= 1.10.8)
   pg
