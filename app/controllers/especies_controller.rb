@@ -19,7 +19,7 @@ class EspeciesController < ApplicationController
 
   layout false, :only => [:media, :descripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :comentarios,
-                          :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :xeno_canto, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
                           :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :resumen_wikipedia, :descripcion_iucn]
 
@@ -281,6 +281,7 @@ class EspeciesController < ApplicationController
 
   # Acción necesaria para la tab media, similar a describe ¬¬
   def media
+    @taxon_especie = Especie.find(params['id']).AscendentesObligatorios
     render 'especies/media/media'
   end
 
@@ -377,6 +378,15 @@ class EspeciesController < ApplicationController
     @array = mc.dameMedia_nc(taxonNC, type, page)
 
     render 'especies/media/media_cornell', :locals => {type: type, page: page}
+  end
+
+  #Servicio Xeno-Canto
+  def xeno_canto
+    type = params['type']
+    taxon = Especie.find(params['id']).nombre_cientifico
+    xeno_c = XenoCantoService.new
+    @cantos = xeno_c.obtener_cantos(taxon)
+    render 'especies/media/xeno_canto', :locals => {type: type}
   end
 
   # Servicio Tropicos

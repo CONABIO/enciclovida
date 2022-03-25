@@ -287,3 +287,40 @@ input.gsc-search-button {border-color: #666666; background-color: #c0c0c0;}
 
 #brandBar .dropdown-menu{z-index: 20001;}
 
+// Clases para paginacion de xeno canto
+.current {
+  color: green;
+  font-weight: bold;
+  font-size: 17px;
+}
+
+#pagin{
+  li {
+    display: inline-block;
+  }
+  a{
+    font-size: 15px ;
+    font-family: opensans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    &:hover{
+      cursor: pointer;
+      font-size: 17px;
+      font-weight: bold;
+    }
+  }
+}
+
+.prev, .next {
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.last{
+  cursor:pointer;
+  margin-left:5px;
+}
+
+.first{
+  cursor:pointer;
+  margin-right:5px;
+}

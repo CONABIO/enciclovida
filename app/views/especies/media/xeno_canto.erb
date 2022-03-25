@@ -1,0 +1,16 @@
+<div class="d-flex flex-column flex-md-row mb-3 h1">
+    <% icono = {'photo' => 'camera', 'video' => 'film', 'audio' => 'volume-up'} %>
+    <i class='fa fa-<%=icono[type]%>'></i> <span class="ml-4">xeno-canto<span>
+    
+</div>
+<div class="paginado-media d-flex align-items-center">
+    <%if !@cantos[0].has_key?(:msg)%>
+        <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-left"></i></button>
+        <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-right"></i></button>
+            <% @cantos.each do |canto| %>
+                <%= imprime_canto(canto) %>
+            <%end%>
+</div>
+    <%else%>
+        <p>No hay contenido disponible para esta especie.</p>
+    <%end%>
