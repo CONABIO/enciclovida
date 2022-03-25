@@ -307,21 +307,21 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     copyright = "Macaulay Library at The Cornell Lab of Ornithology"
     case type
     when 'photo'
-      link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '',
+      link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/320' />".html_safe, '',
               "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
-              "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900",
+              "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}#{item['assetId']}/900",
               "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='',
               "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='', "data-copyright" => copyright)
     when 'video'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '',
               "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
-              "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video',
+              "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}#{item['assetId']}/video", "data-type" => 'video',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
               "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
     when 'audio'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal",
               "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons", "data-observation"=> item['citationUrl'],
-              "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio',
+              "data-url" => "#{item['mlBaseDownloadUrl']}#{item['assetId']}/audio", "data-type" => 'audio',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
               "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
     end
