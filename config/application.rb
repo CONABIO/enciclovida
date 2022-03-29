@@ -23,11 +23,10 @@ SITE_NAME = CONFIG.site_name
 SITE_NAME_SHORT = CONFIG.site_name_short || SITE_NAME
 
 
-unless Rails.env.development_mac?
-  require 'blurrily/client.rb'  #para el fuzzy match
-  FUZZY_NOM_COM = Blurrily::Client.new(:host => IP, :db_name => 'nombres_comunes')
-  FUZZY_NOM_CIEN = Blurrily::Client.new(:host => IP, :db_name => 'nombres_cientificos')
-end
+require 'blurrily/client.rb'  #para el fuzzy match
+FUZZY_NOM_COM = Blurrily::Client.new(:host => IP, :db_name => 'nombres_comunes')
+FUZZY_NOM_CIEN = Blurrily::Client.new(:host => IP, :db_name => 'nombres_cientificos')
+
 
 module Buscador
   class Application < Rails::Application

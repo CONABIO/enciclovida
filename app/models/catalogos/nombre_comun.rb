@@ -51,7 +51,6 @@ adicionales.foto_principal, adicionales.fotos_principales, adicionales.nombre_co
   end
 
   def completa_blurrily
-    return if Rails.env.development_mac?
     FUZZY_NOM_COM.put(nombre_comun, id)
   end
 

@@ -143,10 +143,8 @@ module CacheServices
       categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
       loader = Soulmate::Loader.new(categoria)
 
-      if !Rails.env.development_mac?
-        borra_fuzzy_match
-        FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
-      end
+      borra_fuzzy_match
+      FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
     end
 
     # Borra los actuales
@@ -167,9 +165,7 @@ module CacheServices
         nombre_obj = NombreComun.new({id: id_referencia, nombre_comun: nombre, lengua: lengua})
         loader.add(asigna_redis(opc.merge({nombre_comun: nombre_obj})))
 
-        if !Rails.env.development_mac?
-          FUZZY_NOM_COM.put(nombre, id_referencia) if opc[:loader].nil?
-        end
+        FUZZY_NOM_COM.put(nombre, id_referencia) if opc[:loader].nil?
 
       end
     end
@@ -822,7 +818,6 @@ module CacheServices
 
   # REVISADO: Borra el fuzzy match de los nombres comunes y nombre cientifico
   def borra_fuzzy_match
-    return if Rails.env.development_mac?
     # Borra el nombre cientifico
     FUZZY_NOM_CIEN.delete(id)
 
