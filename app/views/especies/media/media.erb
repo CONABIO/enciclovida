@@ -1,12 +1,17 @@
     <div class="p-3 mx-1 mb-4 shadow media-tabs" id="mediaBDI_p" role="tabpanel" aria-labelledby="mediaBDI_p-tab"><%= cargandoEspera %></div>
+    
     <% if @taxon_especie.include? ",22655," %>
          <div class="p-3 mx-1 mb-4 shadow media-tabs" id="xenocanto" role="tabpanel" aria-labelledby="xenocanto-tab"><%= cargandoEspera %></div>
-     <% end %>    
+    <% end %>    
+    
     <!--div class="p-3 mx-1 mb-4 shadow media-tabs" id="mediaBDI_v" role="tabpanel" aria-labelledby="mediaBDI_v-tab"><%#= cargandoEspera %></div-->
     <div class="p-3 shadow media-tabs" id="mediaCornell_p" role="tabpanel" aria-labelledby="mediaCornell_p-tab"><%= cargandoEspera %></div>
     <div class="p-3 shadow media-tabs" id="mediaCornell_v" role="tabpanel" aria-labelledby="mediaCornell_v-tab"><%= cargandoEspera %></div>
     <div class="p-3 shadow media-tabs" id="mediaCornell_a" role="tabpanel" aria-labelledby="mediaCornell_a-tab"><%= cargandoEspera %></div>
-    <div class="p-3 mx-1 mb-4 shadow media-tabs" id="mediaTropicos" role="tabpanel" aria-labelledby="mediaTropicos-tab"><%= cargandoEspera %></div>
+
+    <% if @taxon_especie.include? ",2," %>
+        <div class="p-3 mx-1 mb-4 shadow media-tabs" id="mediaTropicos" role="tabpanel" aria-labelledby="mediaTropicos-tab"><%= cargandoEspera %></div>
+    <% end %>
 
 <%= javascript_include_tag 'especies/media/multimedia', 'data-turbolinks-track' => true %>
 <%= javascript_include_tag 'especies/media/bdi', 'data-turbolinks-track' => true %>
