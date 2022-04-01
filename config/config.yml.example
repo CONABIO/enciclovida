@@ -140,9 +140,6 @@ base: &base
 development:
     <<: *base
 
-development_mac:
-    <<: *base
-
 test:
     <<: *base
 

@@ -58,12 +58,8 @@ class Validacion
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo levenshtein
         Rails.logger.debug "Tratando de encontrar concidencias con el fuzzy match"
 
-        if Rails.env.development_mac?
-          ids = []
-        else
-          ids = FUZZY_NOM_CIEN.find(nombre_cientifico.limpia, limit=CONFIG.limit_fuzzy).map{ |t| t.first}
-        end
-
+        ids = FUZZY_NOM_CIEN.find(nombre_cientifico.limpia, limit=CONFIG.limit_fuzzy).map{ |t| t.first}
+        
         if ids.present?
           taxones = Especie.solo_publicos.where(id: ids)
           taxones_con_distancia = []
