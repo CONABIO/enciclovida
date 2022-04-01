@@ -1,25 +1,42 @@
-$(document).ready(function(){
-    $('#navegacion a.load-tab').one('click',function(){
+$(document).ready(function () {
+
+    $('#navegacion a.load-tab').one('click', function () {
         var idPestaña = $(this).data('params') || this.getAttribute('href').replace('#','');
         var pestaña = '/especies/' + opciones.taxon + '/'+idPestaña;
-        console.log("IdPestaña: " + idPestaña);
-        console.log("Pestaña: " + pestaña);
+
         $(this.getAttribute('href')).load(pestaña, function () {
             switch (idPestaña) {
                 case 'media':
                     $('#mediaBDI_p').load('/especies/' + opciones.taxon + '/bdi-photos?type=photo', function () {
-                        $("#xenocanto").load('/especies/' + opciones.taxon + "/xeno-canto?type=audio", function(){
-                            // $('#mediaBDI_v').load('/especies/' + opciones.taxon + '/bdi-videos?type=video', function () {
-                            $('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {
-                                $('#mediaCornell_v').load('/especies/' + opciones.taxon + '/media-cornell?type=video', function () {
-                                    $('#mediaCornell_a').load('/especies/' + opciones.taxon + '/media-cornell?type=audio',function () {
-                                        $('#mediaTropicos').load('/especies/' + opciones.taxon + '/media-tropicos');
-                                    });
-                                });
-                            });
-                            // });
-                        });
+                        $(this).removeClass("d-none");  // Esta es la unica que se queda si no hay contenido, para que puedan aportar fotos
                     });
+
+                    if (opciones.ancestry.includes(",22655,")) {  // Si es una ave
+                        $("#xenocanto").load('/especies/' + opciones.taxon + "/xeno-canto?type=audio", function () {
+                            if ($(this).html() != "") $(this).removeClass("d-none");
+                        });
+                    }
+
+                    // $('#mediaBDI_v').load('/especies/' + opciones.taxon + '/bdi-videos?type=video', function () {
+                    // });                    
+                    $('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {
+                        if($(this).html() != "") $(this).removeClass("d-none");
+                    });
+
+                    $('#mediaCornell_v').load('/especies/' + opciones.taxon + '/media-cornell?type=video', function () {
+                        if($(this).html() != "") $(this).removeClass("d-none");
+                    });
+
+                    $('#mediaCornell_a').load('/especies/' + opciones.taxon + '/media-cornell?type=audio', function () {
+                        if($(this).html() != "") $(this).removeClass("d-none");
+                    });
+
+                    if (opciones.ancestry.includes(",2,")) {  // Si es una planta
+                        $('#mediaTropicos').load('/especies/' + opciones.taxon + '/media-tropicos', function () {
+                            if ($(this).html() != "") $(this).removeClass("d-none"); 
+                        });
+                    }
+                            
                     break;
                 case 'descripcion_catalogos':
                     $('.biblio-cat').popover({html: true});

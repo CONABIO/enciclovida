@@ -99,8 +99,6 @@ class BDIService
 
     begin
       res = Net::HTTP.start(uri.host, uri.port) {|http| http.request(req) }
-      puts res.body.class.inspect
-      puts res.body.inspect
       JSON.parse(res.body)
     rescue
       {'data' => []}
@@ -127,7 +125,6 @@ class BDIService
     end
 
     reino = taxon.root.nombre_cientifico.strip
-    puts reino.inspect
     ancestros = taxon.path_ids
     case reino
     when 'Animalia', 'Protoctista'

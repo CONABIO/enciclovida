@@ -1,4 +1,4 @@
-<% if page.nil? %>
+<% if @array.any? && @array.first[:msg].blank? %>
   <div class="d-flex flex-column flex-md-row mb-3 h1">
     <% icono = {'photo' => 'camera', 'video' => 'film', 'audio' => 'volume-up'} %>
     <i class='fa fa-<%=icono[type]%>'></i>
@@ -8,21 +8,12 @@
       <i class ='cornell_lab_colors-ev-icon'></i>
     </span>
   </div>
+
   <div class="paginado-media d-flex align-items-center">
+    <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-left"></i></button>
+    <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-right"></i></button>
+    <% @array.each do |item|  %>
+      <%= imprimeMediaCornell(item,type) %>
+    <% end %>
+  </div>  
 <% end %>
-
-<% if @array[0][:msg].present? %>
-  <p><strong><%= @array[0][:msg] %></strong></p>
-<% else %>
-  <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-left"></i></button>
-  <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-right"></i></button>
-  <% @array.each do |item|  %>
-    <%= imprimeMediaCornell(item,type) %>
-  <% end %>
-<% end %>
-
-<% if page.nil? %>
-  <!--b class="next"><a href data-params="media-cornell?type=<%#= type %>" data-direccion="1"> <span aria-hidden="true">&rarr;</span></a></b-->
-  </div>
-<% end %>
-

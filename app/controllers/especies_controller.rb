@@ -71,6 +71,7 @@ class EspeciesController < ApplicationController
         @datos[:bdi_api] = "/especies/#{@especie.id}/bdi-photos.json"
         @datos[:cual_ficha] = ''
         @datos[:slug_url] = "/especies/#{@especie.id}-#{@especie.nombre_cientifico.estandariza}"
+        @datos[:ancestry] = @especie.ancestry_ascendente_obligatorio
       end
 
       format.json do
@@ -281,7 +282,6 @@ class EspeciesController < ApplicationController
 
   # Acción necesaria para la tab media, similar a describe ¬¬
   def media
-    @taxon_especie = Especie.find(params['id']).AscendentesObligatorios
     render 'especies/media/media'
   end
 

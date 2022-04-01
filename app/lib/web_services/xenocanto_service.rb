@@ -9,11 +9,7 @@ class XenoCantoService
 
             if jres['numRecordings'].to_i > 0 # 
                 i = 0
-                # while i < jres['recordings'].length
                 while i < 24
-                    # file = jres['recordings'][i]['file']
-                    # file = file[2..file.length]
-                    # jres['recordings'][i]['file'] = file
                     file = jres['recordings'][i]['url']
                     file = file[2..file.length]
                     jres['recordings'][i]['url'] = file
