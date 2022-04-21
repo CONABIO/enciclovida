@@ -68,13 +68,7 @@ class Lista < ActiveRecord::Base
     fila = 1  # Para no sobreescribir la cabecera
     columna = 0
 
-    # cols = if columnas_array.present?
-    #           columnas_array
-    #        else
-    #           columnas.split(',') if columnas.present?
-    #        end
-
-    ordena_columnas
+    ordena_columnas(opts)
     cols = columnas_array
 
     # Para la cabecera
@@ -84,7 +78,7 @@ class Lista < ActiveRecord::Base
     end
 
     # Elimina las 3 primeras, para que no trate de evaluarlas mas abajo
-    cols.slice!(0..2) if opts[:asignar]
+    cols.slice!(0..2) if opts[:validacion]
 
     if opts[:es_busqueda]  # Busqueda basica o avanzada
       r = Especie.find_by_sql(opts[:busqueda])
@@ -96,7 +90,7 @@ class Lista < ActiveRecord::Base
     end
 
     taxones.each do |taxon|
-      if opts[:asignar]
+      if opts[:validacion]
         # Viene del controlador validaciones, taxon contiene, estatus, el taxon y mensaje
         if taxon[:estatus]  # Si es un sinónimo
           if taxon[:taxon_valido].present?
@@ -405,7 +399,7 @@ class Lista < ActiveRecord::Base
     if columnas_array.blank? && columnas.present?
       self.columnas_array = columnas.split(',')
     end
-    
+
     if columnas_array.include?('x_cat_riesgo')
       self.columnas_array = columnas_array << COLUMNAS_RIESGO_COMERCIO
       self.columnas_array.delete('x_cat_riesgo')
@@ -425,14 +419,16 @@ class Lista < ActiveRecord::Base
     self.columnas = columnas_array.join(',')
   end
 
-  def ordena_columnas
+  def ordena_columnas(opts={})
     cols = if columnas_array.present?
               columnas_array
             else
               columnas.split(',') if columnas.present?
             end 
-            
-    self.columnas_array = COLUMNAS_ORDEN & cols
+
+    if !opts[:validacion]
+      self.columnas_array = COLUMNAS_ORDEN & cols
+    end
   end
 
 end

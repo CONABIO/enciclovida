@@ -474,8 +474,11 @@ es:
       created_at: Fecha de creación
       fuente: Fuente
       id: Identificador único
+      mensaje: Observaciones
       nombre_autoridad: Nombre autoridad
       nombre_cientifico: Nombre científico
+      nombre_original: Nombre científico original del archivo
+      nombre_valido_enciclovida: Nombre valido en enciclovida
       sis_clas_cat_dicc: Sistema de clasificación, catalogo o diccionario
       updated_at: Fecha de última modificación
       x_ambiente: Ambiente

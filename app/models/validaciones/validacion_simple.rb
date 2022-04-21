@@ -15,7 +15,6 @@ class ValidacionSimple < Validacion
     super
 
     sheet.parse(cabecera).each_with_index do |f, index|
-      next if index == 0
       self.nombre_cientifico = f['nombre_cientifico']
       encuentra_por_nombre
       quita_sinonimos_coincidencias if validacion[:taxones].present?
@@ -54,6 +53,6 @@ class ValidacionSimple < Validacion
     lista = Lista.new
     lista.columnas_array = (COLUMNAS_DEFAULT + Lista::COLUMNAS_GENERALES + Lista::COLUMNAS_FOTOS)
     lista.taxones = recurso_validado
-    lista.to_excel(asignar: true)  # Para que asigne los valores de las columnas
+    lista.to_excel(validacion: true)  # Para que asigne los valores de las columnas
   end
 end
