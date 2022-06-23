@@ -39,7 +39,6 @@ typedef struct pubsubtype {
     dict **serverPubSubChannels;
     robj **subscribeMsg;
     robj **unsubscribeMsg;
-    robj **messageBulk;
 }pubsubtype;
 
 /*
@@ -79,7 +78,6 @@ pubsubtype pubSubType = {
     .serverPubSubChannels = &server.pubsub_channels,
     .subscribeMsg = &shared.subscribebulk,
     .unsubscribeMsg = &shared.unsubscribebulk,
-    .messageBulk = &shared.messagebulk,
 };
 
 /*
@@ -91,8 +89,7 @@ pubsubtype pubSubShardType = {
     .subscriptionCount = clientShardSubscriptionsCount,
     .serverPubSubChannels = &server.pubsubshard_channels,
     .subscribeMsg = &shared.ssubscribebulk,
-    .unsubscribeMsg = &shared.sunsubscribebulk,
-    .messageBulk = &shared.smessagebulk,
+    .unsubscribeMsg = &shared.sunsubscribebulk
 };
 
 /*-----------------------------------------------------------------------------
@@ -104,12 +101,12 @@ pubsubtype pubSubShardType = {
  * message. However if the caller sets 'msg' as NULL, it will be able
  * to send a special message (for instance an Array type) by using the
  * addReply*() API family. */
-void addReplyPubsubMessage(client *c, robj *channel, robj *msg, robj *message_bulk) {
+void addReplyPubsubMessage(client *c, robj *channel, robj *msg) {
     if (c->resp == 2)
         addReply(c,shared.mbulkhdr[3]);
     else
         addReplyPushLen(c,3);
-    addReply(c,message_bulk);
+    addReply(c,shared.messagebulk);
     addReplyBulk(c,channel);
     if (msg) addReplyBulk(c,msg);
 }
@@ -464,7 +461,7 @@ int pubsubPublishMessageInternal(robj *channel, robj *message, pubsubtype type) 
         listRewind(list,&li);
         while ((ln = listNext(&li)) != NULL) {
             client *c = ln->value;
-            addReplyPubsubMessage(c,channel,message,*type.messageBulk);
+            addReplyPubsubMessage(c,channel,message);
             updateClientMemUsage(c);
             receivers++;
         }
@@ -607,10 +604,10 @@ void pubsubCommand(client *c) {
 "    Return number of subscriptions to patterns.",
 "NUMSUB [<channel> ...]",
 "    Return the number of subscribers for the specified channels, excluding",
-"    pattern subscriptions(default: no channels).",
+"    pattern subscriptions(default: no channels)."
 "SHARDCHANNELS [<pattern>]",
 "    Return the currently active shard level channels matching a <pattern> (default: '*').",
-"SHARDNUMSUB [<shardchannel> ...]",
+"SHARDNUMSUB [<channel> ...]",
 "    Return the number of subscribers for the specified shard level channel(s)",
 NULL
         };
@@ -642,7 +639,7 @@ NULL
         sds pat = (c->argc == 2) ? NULL : c->argv[2]->ptr;
         channelList(c,pat,server.pubsubshard_channels);
     } else if (!strcasecmp(c->argv[1]->ptr,"shardnumsub") && c->argc >= 2) {
-        /* PUBSUB SHARDNUMSUB [ShardChannel_1 ... ShardChannel_N] */
+        /* PUBSUB SHARDNUMSUB [Channel_1 ... Channel_N] */
         int j;
 
         addReplyArrayLen(c, (c->argc-2)*2);
@@ -679,7 +676,7 @@ void channelList(client *c, sds pat, dict *pubsub_channels) {
     setDeferredArrayLen(c,replylen,mblen);
 }
 
-/* SPUBLISH <shardchannel> <message> */
+/* SPUBLISH <channel> <message> */
 void spublishCommand(client *c) {
     int receivers = pubsubPublishMessageAndPropagateToCluster(c->argv[1],c->argv[2],1);
     if (!server.cluster_enabled)
@@ -687,7 +684,7 @@ void spublishCommand(client *c) {
     addReplyLongLong(c,receivers);
 }
 
-/* SSUBSCRIBE shardchannel [shardchannel ...] */
+/* SSUBSCRIBE channel [channel ...] */
 void ssubscribeCommand(client *c) {
     if (c->flags & CLIENT_DENY_BLOCKING) {
         /* A client that has CLIENT_DENY_BLOCKING flag on
@@ -711,7 +708,7 @@ void ssubscribeCommand(client *c) {
 }
 
 
-/* SUNSUBSCRIBE [shardchannel [shardchannel ...]] */
+/* SUNSUBSCRIBE [channel ...] */
 void sunsubscribeCommand(client *c) {
     if (c->argc == 1) {
         pubsubUnsubscribeShardAllChannels(c, 1);

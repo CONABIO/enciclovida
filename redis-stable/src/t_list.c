@@ -679,8 +679,7 @@ void lposCommand(client *c) {
                 return;
             if (rank == 0) {
                 addReplyError(c,"RANK can't be zero: use 1 to start from "
-                                "the first match, 2 from the second ... "
-                                "or use negative to start from the end of the list");
+                                "the first match, 2 from the second, ...");
                 return;
             }
         } else if (!strcasecmp(opt,"COUNT") && moreargs) {
@@ -1198,12 +1197,12 @@ void lmpopGenericCommand(client *c, int numkeys_idx, int is_block) {
     }
 }
 
-/* LMPOP numkeys <key> [<key> ...] (LEFT|RIGHT) [COUNT count] */
+/* LMPOP numkeys [<key> ...] LEFT|RIGHT [COUNT count] */
 void lmpopCommand(client *c) {
     lmpopGenericCommand(c, 1, 0);
 }
 
-/* BLMPOP timeout numkeys <key> [<key> ...] (LEFT|RIGHT) [COUNT count] */
+/* BLMPOP timeout numkeys [<key> ...] LEFT|RIGHT [COUNT count] */
 void blmpopCommand(client *c) {
     lmpopGenericCommand(c, 2, 1);
 }

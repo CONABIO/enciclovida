@@ -14,7 +14,7 @@
         ],
         "arguments": [
             {
-                "name": "shardchannel",
+                "name": "channel",
                 "type": "string",
                 "multiple": true
             }

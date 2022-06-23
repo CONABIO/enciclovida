@@ -9,10 +9,15 @@
         img_normal = f.large_url || f.best_photo
         next unless img_normal.present?
       -%>
-
-      <a class="btn-title px-1" href="<%= f.native_page_url %>" title="<%= f.attribution_txt %>">
-        <img src="<%= img_normal %>"  alt="<%= f.attribution_txt %>">
-      </a>
+      <% if f.native_page_url.present? %>
+        <a class="btn-title px-1" href="<%= f.native_page_url %>" title="<%= f.attribution_txt %>" target="_blank">
+          <img src="<%= img_normal %>"  alt="<%= f.attribution_txt %>">
+        </a>      
+      <% else %>
+        <a class="btn-title px-1" href="<%= f.original_url %>" title="<%= f.attribution_txt %>" target="_blank">
+          <img src="<%= img_normal %>"  alt="<%= f.attribution_txt %>">
+        </a>        
+      <% end %>
     <% end %>
   </div>
 </div>

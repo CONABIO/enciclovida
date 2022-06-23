@@ -45,11 +45,7 @@ def argument arg
     name = arg["name"].is_a?(Array) ? arg["name"].join(" ") : arg["name"]
   end
   if arg["multiple"]
-    if arg["multiple_token"]
-      name = "#{name} [#{arg["token"]} #{name} ...]"
-    else
-      name = "#{name} [#{name} ...]"
-    end
+    name = "#{name} [#{name} ...]"
   end
   if arg["token"]
     name = [arg["token"], name].compact.join " "
