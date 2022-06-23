@@ -274,7 +274,6 @@ class EspeciesController < ApplicationController
       f_obj.large_url = f['large_url']
       f_obj.square_url = f['square_url']
       f_obj.attribution_txt = f['attribution']
-      f_obj.original_url = f['original_url']
       @fotos << f_obj
     end
 

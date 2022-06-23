@@ -3,7 +3,6 @@
     <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-left"></i></button>
     <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-right"></i></button>
     <% @fotos.each do |f|%>
-
       <%-
         next unless f.square_url.present?
         img_square = f.square_url
@@ -11,16 +10,9 @@
         next unless img_normal.present?
       -%>
 
-      <% if f.native_page_url.present? %>
-        <a class="btn-title px-1" href="<%= f.native_page_url %>" title="<%= f.attribution_txt %>" target="_blank">
-          <img src="<%= img_normal %>"  alt="<%= f.attribution_txt %>">
-        </a>      
-      <% else %>
-        <a class="btn-title px-1" href="<%= f.original_url %>" title="<%= f.attribution_txt %>" target="_blank">
-          <img src="<%= img_normal %>"  alt="<%= f.attribution_txt %>">
-        </a>        
-      <% end %>
-
+      <a class="btn-title px-1" href="<%= f.native_page_url %>" title="<%= f.attribution_txt %>">
+        <img src="<%= img_normal %>"  alt="<%= f.attribution_txt %>">
+      </a>
     <% end %>
   </div>
 </div>
