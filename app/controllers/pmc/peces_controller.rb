@@ -11,7 +11,6 @@ class Pmc::PecesController < Pmc::PmcController
   end
 
   def index
-    @b4 = true 
     @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/diversidad/alimentos/peces/")).css('#introenciclovida, #introenciclovida2')
     @doc.xpath('//comment()').remove
 

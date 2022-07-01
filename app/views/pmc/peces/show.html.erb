@@ -19,7 +19,7 @@
 
 <% if @pez.imagen =~ URI::regexp %>
   <div class="img_pez col-12 text-center mb-5">
-    <%= image_tag(@pez.imagen, class: "img-responsive img-thumbnail img-rounded") %>
+    <%= image_tag(@pez.imagen, class: "img-fluid img-thumbnail rounded") %>
   </div>
 <% end %>
 
@@ -108,7 +108,7 @@
     <div class="col">
       <hr />
       <h4 class="text-center">
-        <span class="label btn-zona-v">Menor a 5 es recomendable</span> - <span class="label btn-zona-a">De 5 a 19 consume con cautela</span> - <span class="label btn-zona-r">Más de 20 evita</span>
+        <span class="badge btn-zona-v">Menor a 5 es recomendable</span> - <span class="badge btn-zona-a">De 5 a 19 consume con cautela</span> - <span class="badge btn-zona-r">Más de 20 evita</span>
       </h4>
     </div>
 
