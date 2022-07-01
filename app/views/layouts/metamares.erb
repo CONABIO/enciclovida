@@ -26,12 +26,9 @@
 			I18n.locale = "<%= I18n.locale %>";
 			I18n.fallbacks = true;
 	</script>
-	<% puts @b4.inspect %>
-	<% if @b4.present? %>
-		<%= stylesheet_link_tag 'boots3-downgrade/metamares/metamares_b4', 'data-turbolinks-track' => true %>
-	<% else %>
-		<%= stylesheet_link_tag 'boots3-downgrade/metamares/metamares', 'data-turbolinks-track' => true %>
-	<% end %>
+
+	<%= stylesheet_link_tag 'boots3-downgrade/metamares/metamares_b4', 'data-turbolinks-track' => true %>
+
 	
 	
 	<%= csrf_meta_tags %>
