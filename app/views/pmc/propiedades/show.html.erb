@@ -1,11 +1,11 @@
 <p id="notice"><%= notice %></p>
 
-<div class="panel panel-primary">
-  <div class="panel-heading">
+<div class="card text-white bg-primary">
+ <div class="card-header">
     ID: <%= @propiedad.id %><h3 class="panel-title"><%= "#{@propiedad.tipo_propiedad} - #{@propiedad.nombre_propiedad}" %></h3>
   </div>
 
-  <div class="panel-body">
+  <div class="card-body">
 
     <% if @propiedad.is_root? %>
       <i>Esta propiedad es un elemento padre</i>
@@ -28,7 +28,7 @@
 
   </div>
 
-  <div class="panel-footer"><%= link_to "<i class='glyphicon glyphicon-pencil'></i>".html_safe, edit_pmc_propiedad_path(@propiedad) %></div>
+  <div class="card-footer"><%= link_to "<i class='glyphicon glyphicon-pencil'></i>".html_safe, edit_pmc_propiedad_path(@propiedad) %></div>
 </div>
 
 <%= link_to 'Regresar a todas las propiedades', pmc_propiedades_path %>
