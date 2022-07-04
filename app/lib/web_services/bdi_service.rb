@@ -18,6 +18,9 @@ class BDIService
 
   ALBUM_ILUSTRACIONES = ['5035-Ilustraciones']
 
+  # En teoria son las mejores fotos, por lo cual tienen preferencia a los otros album
+  ALBUM_MN = ['5091-Concurso%20Mosaico%20Natura']
+
   ALBUM_VIDEOS = ['5121-Video']
 
   def dameFotos(opts)
@@ -121,8 +124,14 @@ class BDIService
     # Solo para el caso de las ilustraciones
     if opts[:ilustraciones]
       opts.merge!({album: ALBUM_ILUSTRACIONES.first, nombre: taxon.nombre_cientifico})
-      return tiene_fotos?(opts)
+      jres = tiene_fotos?(opts)
+      return jres if jres['data'].any?
     end
+
+    # Para el concurso de MN (son las mejores fotos)
+    opts.merge!({album: ALBUM_MN.first, nombre: taxon.nombre_cientifico})
+    jres = tiene_fotos?(opts)
+    return jres if jres['data'].any?
 
     reino = taxon.root.nombre_cientifico.strip
     ancestros = taxon.path_ids
