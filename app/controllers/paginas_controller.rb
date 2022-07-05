@@ -2,7 +2,7 @@
 class PaginasController < ApplicationController
   skip_before_action :set_locale
 
-  layout Proc.new{['exoticas_invasoras_paginado'].include?(action_name) ? false : 'application_b3'}
+  layout Proc.new{['exoticas_invasoras_paginado'].include?(action_name) ? false : 'application'}
 
   # La pagina cuando entran por get
   def exoticas_invasoras
