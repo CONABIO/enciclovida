@@ -53,20 +53,20 @@
 <% content_for(:extra_title_header) do %>
   <%= render :partial => 'shared_b4/tituloBuscador', locals: { icon_class: 'exotica-invasora', titulo: "Búsqueda de especies exóticas invasoras" } %>
 <% end %>
+<div class="col ">
+  <div class="dropdown float-right">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Descarga la lista
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+      <li><%= link_to 'Excel', '/exoticas_invasoras/lista_sp_2020.xlsx' %></li>
+      <li><%= link_to 'PDF', '/exoticas_invasoras/lista_sp_enciclovida_2020.pdf' %></li>
+    </ul>
+  </div>
 
-<div class="dropdown float-right">
-  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Descarga la lista
-  <span class="caret"></span></button>
-  <ul class="dropdown-menu">
-    <li><%= link_to 'Excel', '/exoticas_invasoras/lista_sp_2020.xlsx' %></li>
-    <li><%= link_to 'PDF', '/exoticas_invasoras/lista_sp_enciclovida_2020.pdf' %></li>
-  </ul>
+  <div class="text-center page-selection1"></div>
+
+  <div class="float-left" id="num-res-exoticas"></div>
 </div>
-
-<div class="text-center page-selection1"></div>
-
-<div class="float-left" id="num-res-exoticas"></div>
-
 <form method="get" action="/exoticas-invasoras" id="form-exoticas">
   <table class="table table-responsive table-hover">
 
