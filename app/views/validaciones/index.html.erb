@@ -1,11 +1,9 @@
 <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-    $(document).ready(function() {
-        $('#pestañas').tabs(); // Inicia los tabs
-        $('#pestañas > .nav a').click(function(){
-            $('#pestañas > .nav li').removeClass("active");
-            $(this).parent().addClass("active");
-        });
-    });
+$(document).ready(function(){
+  $(".nav-tabs a").click(function(){
+    $(this).tab('show');
+  });
+});
 </script>
 
 
