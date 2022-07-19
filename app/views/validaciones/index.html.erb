@@ -6,7 +6,9 @@ $(document).ready(function(){
 });
 </script>
 
-
+<% content_for(:extra_title_header) do %>
+  <%= render :partial => 'shared_b4/tituloBuscador', locals: { icon_class: '', titulo: "Validaciones" } %>
+<% end %>
 
 <div class="col-12 col-md-12 col-lg-10 col-xl-10 offset-0 offset-sm-0 offset-md-1 offset-lg-1">
   <h4 class="text-left text-success"><strong>Validaciones</strong><br /><small>(puedes validar una lista de taxones o subir un archivo)</small></h4><hr />
