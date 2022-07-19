@@ -1,6 +1,6 @@
 <div class="form-group">
   <label for="archivo">Archivo</label>
-  <%= file_field_tag :archivo, class: 'btn btn-default btn-file form-control' %>
+  <%= file_field_tag :archivo, class: 'btn btn-secondary btn-file form-control' %>
   <small class="text-muted"><%= archivo_label.html_safe %></small>
 </div>
 
@@ -13,4 +13,4 @@
 <% end %>
 
 <hr />
-<%= submit_tag :Envia, class: 'btn btn-success pull-right', 'data-disable-with' => 'Procesando ...' %>
+<%= submit_tag :Envia, class: 'btn btn-success float-right', 'data-disable-with' => 'Procesando ...' %>
