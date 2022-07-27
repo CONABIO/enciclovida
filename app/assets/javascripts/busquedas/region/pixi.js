@@ -258,7 +258,6 @@ var cargaEjemplares = function (url) {
                 //map.off("mousemove");
 
                 var colecciones = [1, 2, 3, 4, 5];
-                tree_complete = [];
                 tree = [];
 
                 colecciones.forEach(function (coleccion) {
@@ -348,10 +347,9 @@ var porColeccion = function (markers, coleccion) {
             });
           });
 
-          tree_complete = tree_complete.concat(innerContainer.children);
           tree = d3
             .quadtree()
-            .addAll(tree_complete.map((p) => [p.x, p.y, p.id]));
+            .addAll(innerContainer.children.map((p) => [p.x, p.y, p.id]));
 
           if (opciones.pixi.click == undefined) {
             map.on("click", function (e) {
