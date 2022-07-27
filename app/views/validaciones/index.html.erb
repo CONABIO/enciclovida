@@ -14,12 +14,12 @@ $(document).ready(function(){
   <h4 class="text-left text-success mt-3"><strong>Validaciones</strong><br /><small>(puedes validar una lista de taxones o subir un archivo)</small></h4><hr />
   <div id="pestañas" class="card">
     <ul class="nav nav-tabs nav-justified" role="tablist">
-      <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#simple"><span>Validación por nombre científico</span></a></li>
+      <li class="nav-item "><a class="nav-link active" data-toggle="tab" href="#simple"><span>Validación por nombre científico</span></a></li>
       <li class="nav-item "><a class="nav-link" data-toggle="tab" href="#excel"><span>Validación con más campos</span></a></li>
     </ul>
     <div class="tab-content">
-      <div id="simple" class="tab-pane active mt-3" role="tabpanel"><%= render partial: 'simple' %></div>
-      <div id="excel" class="tab-pane mt-3" role="tabpanel"><%= render partial: 'avanzada' %></div>
+      <div id="simple" class="tab-pane active mt-3 pl-4 pr-4" role="tabpanel"><%= render partial: 'simple' %></div>
+      <div id="excel" class="tab-pane mt-3 pl-4 pr-4" role="tabpanel"><%= render partial: 'avanzada' %></div>
     </div>
   </div>
 </div>
