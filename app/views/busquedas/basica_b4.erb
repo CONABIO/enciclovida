@@ -13,7 +13,7 @@
 
   <div class="input-group">
     <div class="w-100 text-center h5">
-      <label class="font-weight-bold text-white" for="nombre">Busca entre más de <%= Especie.conteo_especies_home %> mil especies</label>
+      <label class="font-weight-bold text-white" for="nombre">Busca entre más de <%= Especie.conteo_especies_home %> mil especies, válidas o aceptadas y su sinonimia</label>
     </div>
     <%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil %>
     <div class="input-group-append">

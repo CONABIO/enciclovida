@@ -13,7 +13,7 @@
 		
 		<%= hidden_field_tag :busqueda, :basica %>
 		<%= hidden_field_tag :id %>
-		<p class="w-100 mt-3 text-center font-weight-bold text-white h2" for="nombre">Busca entre más de <%= Especie.conteo_especies_home %> mil especies</p>
+		<p class="w-100 mt-3 text-center font-weight-bold text-white h2" for="nombre">Busca entre más de <%= Especie.conteo_especies_home %> mil especies, válidas o aceptadas y su sinonimia</p>
 		<%= text_field_tag :nombre, nil, :maxlength => 255, :placeholder => 'Escribe un nombre común o científico ...', :autocomplete => :off, :class => 'form-control form-control-lg border-warning text-info', :value => params[:busqueda] == 'nombre_comun' ? params[:nombre_comun] : nil, :style => "border-radius: 50rem 0 0 50rem;" %>
 		<div class="input-group-append">
 			<%= button_tag "<i class='fa fa-search text-info'></i>".html_safe, data: { disable_with: 'Procesando...' },:class => "btn btn-warning btn-lg", :title=>'Buscar', :style => "border-radius: 0 50rem 50rem 0;" %>
