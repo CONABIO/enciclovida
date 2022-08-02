@@ -9,9 +9,9 @@
 <hr />
 
 <h4>Colecciones: <%= @totales %></h4>
-<table class="table table-bordered table-striped table-hover table-responsive">
+<table class="table table-bordered table-hover table-responsive">
   <thead>
-  <tr class="active">
+  <tr class="active table-secondary">
     <th><%= t('simple_form.labels.metamares_proyecto.id') %></th>
     <th><%= t('simple_form.labels.metamares_proyecto.nombre_proyecto') %></th>
     <th><%= t('simple_form.labels.metamares_proyecto.dato.titulo_compilacion') %></th>
@@ -52,3 +52,4 @@
       paginadoMetamares(<%= @paginas %>, <%= @pagina %>);
   </script>
 <% end %>
+
