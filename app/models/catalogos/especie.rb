@@ -131,7 +131,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Para que regrese las especies
   scope :solo_especies, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=?", 7,0,0).left_joins(:categoria_taxonomica) }
   # Se ocupa en el home
-  scope :conteo_especies_publicas, -> { solo_especies.solo_publicos.count }
+  scope :conteo_especies_publicas_validas, -> { solo_especies.solo_publicos.where(estatus: 2).count }
   # Regresa solo las categorias obligatorias en categoria taxonomica
   scope :solo_cat_obligatorias, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}>0 AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=0 AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} IN (?)", CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS) }
   # Para mostrar solo los taxones publicos
