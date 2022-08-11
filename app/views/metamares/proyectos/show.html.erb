@@ -29,10 +29,10 @@
 
     <% if tiene_permiso_metamares?('AdminInfoceanosManager') || es_propietario_metamares?(@proyecto) %>
       <li role="presentation" class="nav-item">
-        <%= link_to '<span class="glyphicon glyphicon-pencil"></span>'.html_safe, edit_metamares_proyecto_path(@proyecto), :class => 'nav-link float-right btn btn-sm btn-warning' %>
+        <%= link_to '<span class="glyphicon glyphicon-pencil">Editar</span>'.html_safe, edit_metamares_proyecto_path(@proyecto), :class => 'nav-link float-right btn btn-sm btn-warning' %>
       </li>
       <li role="presentation" class="nav-item">
-        <%= link_to '<span class="glyphicon glyphicon-trash"></span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
+        <%= link_to '<span class="glyphicon glyphicon-trash">Eliminar</span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
                     class: 'nav-link float-right btn btn-sm btn-warning', data: { confirm: 'Are you sure?' } %>
       </li>
     <% end %>

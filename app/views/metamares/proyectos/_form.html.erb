@@ -38,7 +38,7 @@
         <%= link_to 'Palabras clave', '#keywords', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
       </li>
       <li role="presentation" class="nav-item">
-        <%= link_to('<span class="glyphicon glyphicon-trash"></span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
+        <%= link_to('<span class="glyphicon glyphicon-trash">Eliminar colección</span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
                     class: 'float-right nav-link btn btn-sm btn-warning', data: { confirm: '¿Estás seguro de eliminar esta colección?' }) if !@proyecto.new_record? %>
       </li>
     </ul>
