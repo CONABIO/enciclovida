@@ -889,4 +889,12 @@ module CacheServices
     estadistica.save
   end
 
+  # Para el conteo del home
+  def Especie.conteo_especies_home
+    Rails.cache.fetch("conteo_especies_home", expires_in: eval(CONFIG.cache.conteo_especies_home)) do
+      Rails.logger.debug "Creando el cache del conteo por especies en el home ..."
+      Especie.conteo_especies_publicas_validas/1000
+    end    
+  end  
+
 end
