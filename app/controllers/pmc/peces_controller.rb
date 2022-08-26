@@ -100,6 +100,9 @@ class Pmc::PecesController < Pmc::PmcController
   def show
     criterios = @pez.criterio_propiedades.select('*, valor').order(:ancestry)
     @criterios = acomoda_criterios(criterios)
+    grupo = @pez.propiedades.where(ancestry: Pmc::Propiedad::GRUPO_ID).first
+    @grupo = grupo.present? ? grupo.nombre_propiedad : ''
+
     respond_to do |format|
       if params[:mini].present?
         @zonas = Pmc::Propiedad.zonas
