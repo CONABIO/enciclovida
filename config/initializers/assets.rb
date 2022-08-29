@@ -17,5 +17,5 @@ admin/admin.js admin/catalogos/catalogos_extra.js
 lib/bootstrap-select.min.css lib/bootstrap-select.min.js
 busquedas/region/por_region.scss metamares/metamares.css metamares/metamares_b4.css metamares/graficas.css
 jquery-ui.js
-boots3-downgrade/busquedas.css busquedas/avanzada/checklist.css
+busquedas/busquedas.css busquedas/avanzada/checklist.css
 application_guias.scss)
