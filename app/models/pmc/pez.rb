@@ -59,6 +59,10 @@ class Pmc::Pez < ActiveRecord::Base
     especie.guarda_redis(loader: 'peces', foto_principal: imagen)
   end
 
+  def pesquerias_sustentables
+    criterio_propiedades.where(tipo_propiedad: "Pesquerías en vías de sustentabilidad")
+  end
+
   # REVISADO: Actualiza todos los servicios
   def self.actualiza_todo
     all.each do |p|
