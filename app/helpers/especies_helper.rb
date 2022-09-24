@@ -212,13 +212,14 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     end
 
     # Pesquerias sustentables del semaforo
-    # if pez = taxon.pez
-    #   if pez.con_estella
-    #     response << link_to('<i class="certificacion-ev-icon"></i>'.html_safe, busqueda_pmc_pez_index_path)
-    #   else
-    #     # TODO
-    #   end
-    # end
+    if pez = taxon.pez
+	     
+      if pez.con_estrella
+         response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='Pez o marisco comercial con certificación' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-certificacion-ev-icon'></i></span>"
+      else
+	      response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='Pez o marisco comercial' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-ev-icon'></i></span>"
+       end
+     end
 
 
     if response.any? 

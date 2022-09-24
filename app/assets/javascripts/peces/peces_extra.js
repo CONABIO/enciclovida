@@ -23,32 +23,7 @@ $(document).ready(function(){
     TYPES = ['peces'];
     soulmateAsigna('peces');
 
-    $('[data-toggle="popover"]').one('click', function(){
-        var button = $(this);
-        var idEspecie = $(button).data('especie-id');
-        var pestaña = '/pmc/peces/'+idEspecie+'?mini=true';
-        $('[data-toggle="popover"]').popover('hide');
-        jQuery.get(pestaña).done(function(data){
-            button.popover({
-                html:true,
-                sanitize:false,
-                container: 'body',
-                placement: function(){
-                    if($(window).width() < 990){
-                        return 'bottom'
-                    }else{
-                        if(($(window).width() - button.offset().left) < $(window).width()/2){
-                            return 'left';
-                        }else{
-                            return 'right';
-                        }
-                    }
-                },
-                trigger: 'manual',
-                content: data,
-            }).popover('show').attr('onclick',"$('[data-toggle=\"popover\"]').not(this).popover('hide'); $(this).popover('show');");
-        });
-    });
+
 
     $("path[id^=path_zonas_]").on('click', function(){
         $(this).toggleClass('zona-seleccionada');

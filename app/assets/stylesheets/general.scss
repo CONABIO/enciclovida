@@ -187,8 +187,9 @@ div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:
 .conabio_vertical_1-ev-icon:after{ content: '\e823'; }
 
 /** Icono de las pesquerias certificadas */
-.certificacion-ev-icon{ color: #b98303 }
-
+.certificacion-ev-icon, .pmc .peces-mariscos-comerciales-certificacion-ev-icon{ color: #b98303 }
+.pmc .peces-mariscos-comerciales-ev-icon{ color: #002B3E }
+.pmc{cursor: pointer;}
 
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 
