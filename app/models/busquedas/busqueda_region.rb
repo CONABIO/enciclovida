@@ -3,6 +3,7 @@ class BusquedaRegion < Busqueda
   attr_accessor :resp, :num_ejemplares
 
   ESPECIES_POR_PAGINA = 8.freeze
+  ESPECIES_POR_PAGINA_API = [50, 100, 200]
 
   def initialize
     self.taxones = []
@@ -222,7 +223,7 @@ class BusquedaRegion < Busqueda
   # Devuelve las especies de acuerdo al numero de pagina y por pagina definido
   def especies_por_pagina(opc={})
     return unless resp[:estatus]
-    self.por_pagina = params[:por_pagina] || ESPECIES_POR_PAGINA
+    self.por_pagina = (params[:por_pagina] || ESPECIES_POR_PAGINA).to_i
     self.pagina = params[:pagina].present? ? params[:pagina].to_i : 1
     offset = (pagina-1)*por_pagina
     limit = (pagina*por_pagina)-1

@@ -211,9 +211,22 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
       response << "&nbsp;"*2 if tiene_valor  # Espacios para seprar las categorias
     end
 
-    response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600,
-'easeOutBounce')\" style='cursor: pointer; margin-left: 10px;'></small>" if response.any?
-    response.join.html_safe
+    # Pesquerias sustentables del semaforo
+    if pez = taxon.pez
+	     
+      if pez.con_estrella
+         response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='Pez o marisco comercial con certificación' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-certificacion-ev-icon'></i></span>"
+      else
+	      response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='Pez o marisco comercial' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-ev-icon'></i></span>"
+       end
+     end
+
+
+    if response.any? 
+      response.join.html_safe 
+    else
+      response
+    end
   end
 
   # REVISADO: Pone la simbologia en la ficha de la especie
