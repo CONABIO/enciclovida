@@ -46,6 +46,78 @@
 #panelCaracteristicaDistribucionAmbiente div {
   min-height: 150px;
 }
+
+/* Estilos para el popover de peces en el show de especies */
+.popover{max-width: none; background-color: #efefef;}
+.popover i:not(.fa-exclamation){font-size: 2.25em;}
+.popover i.fa-exclamation{font-size: 1.5em;}
+.popover-title{font-weight: bolder; text-align: center;}
+.popover-content span:not(.btn-zona-n) b{color: #505050; text-shadow: none;}
+.popover-content button{font-size: 1.5em!important;}
+.popover a.btn-zona-star{background: none; border-radius: 2em;}
+.popover a.btn-zona-star:hover i{color: #444444!important;}
+.popover .btn-title + .popover-certificacion, .popover .btn-title + .popover-veda{
+  visibility: hidden;
+  padding: 5px 10px;
+  position: absolute;
+  border-radius: 2px;
+  box-shadow: 1px 1px 2px #c5c5c5;
+  background: #ececec;
+  text-align: left;
+}
+.popover .btn-title + .popover-certificacion{
+  color: #b98303;
+  white-space: nowrap;
+  text-shadow: 1px 1px 1px #fffebf;
+}
+.popover .btn-title + .popover-certificacion, .popover .btn-title + .popover-veda{
+  color: #333333;
+  border-radius: 4px;
+  margin-top: -20px;
+}
+.popover .btn-title:hover + .popover-certificacion, .popover .btn-title:hover + .popover-veda{
+  visibility: visible;
+}
+.popover .fa-exclamation{
+  font-size: x-large;
+  text-shadow: 1px 1px 1px #9e9e9e;
+}
+.popover .fa-exclamation:hover{
+  text-shadow: none;
+  color: #666666;
+}
+.btn-zona{
+  display: inline-block;
+  background: none!important;
+  line-height: 35px;
+}
+.btn-zona-star{
+  fill: #DAA621;
+  color: #DAA621;
+  text-shadow: -1px 0px 0px #fafafa!important;
+}
+.btn-zona-v{
+  color: #9ab635;
+  fill: #9ab635;
+}
+.btn-zona-a{
+  color: #ffc42d;
+  fill: #ffc42d;
+}
+.btn-zona-r{
+  color: #db0510;
+  fill: #db0510;
+}
+.btn-zona-n{
+  color: #ece4e4;
+  fill: #ece4e4;
+}
+.btn-zona-sn, .popover-content .btn-zona-sn, .filtrosUsados .btn-zona-sn{
+  color: #9a9a9a;
+  fill: #9a9a9a;
+}
+/*  */
+
 .panel-shadow {
   -webkit-box-shadow: 13px 13px 20px 0px rgba(50, 50, 50, 0.5);
   -moz-box-shadow: 13px 13px 20px 0px rgba(50, 50, 50, 0.5);
@@ -127,13 +199,4 @@ input:checked + .btn-basica,
   -webkit-transform: scale(0.95); /* Safari and Chrome */
   -o-transform: scale(0.95); /* Opera */
 }
-.paginado-media a {
-  //cursor: pointer;
-}
 
-/*
-.paginado-media img{
-  height: 250px;
-  width: auto;
-}
-*/
