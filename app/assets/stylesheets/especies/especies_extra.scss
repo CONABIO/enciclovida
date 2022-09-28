@@ -78,6 +78,9 @@
 .popover .btn-title:hover + .popover-certificacion, .popover .btn-title:hover + .popover-veda{
   visibility: visible;
 }
+.tooltip a {
+  color: white!important;
+}
 .popover .fa-exclamation{
   font-size: x-large;
   text-shadow: 1px 1px 1px #9e9e9e;
