@@ -108,8 +108,12 @@ footer .list-group-item {
   margin: 0;
   width: 3em !important;
 }
+.ipescado-ev-icon:before {
+  width: 5em !important;
+  text-align: left;
+}
 
-.media-supplier .fa:before, .media-supplier .conabio_completo-ev-icon:before, .bdi-ev-icon:before{/*font-size: 3em*/;min-width: 4em!important;}
+.media-supplier .fa:before, .media-supplier .conabio_completo-ev-icon:before, .bdi-ev-icon:before{/*font-size: 3em*/min-width: 4em!important;}
 
 div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:before, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after, .macaulay_library-ev-icon:before{min-width: 9em!important;}
 
@@ -181,6 +185,11 @@ div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:
 .naturalista-ev-icon:after{ content: '\e857'; }
 .conabio_vertical_1-ev-icon:before{ content: '\e817'; }
 .conabio_vertical_1-ev-icon:after{ content: '\e823'; }
+
+/** Icono de las pesquerias certificadas */
+.certificacion-ev-icon, .pmc .peces-mariscos-comerciales-certificacion-ev-icon{ color: #b98303 }
+.pmc .peces-mariscos-comerciales-ev-icon{ color: #002B3E }
+.pmc{cursor: pointer;}
 
 .soulmate_icons i {font-size: 18px; margin: 0 3px;}
 

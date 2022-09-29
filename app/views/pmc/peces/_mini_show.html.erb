@@ -52,9 +52,24 @@
   </p>
 <% end %>
 
-<h5 class="float-left">
-  <%= link_to '¿Comentarios? <i class="fa fa-comments" aria-hidden="true"></i>'.html_safe, new_especie_comentario_path(@pez, {categorias_contenido_id: 36}), class: 'btn btn-outline-info btn-sm', target: '_blank' %>
-</h5>
+<div class='d-flex-inline'>
+<div class='w-100'>
+<% if @grupo.present? %>
+<p class='m-0 p-2 h5 font-weigth-bolder'>
+¿Quieres saber donde comprarlo?
+
+<%= link_to '<br>Conoce más en:<br><i class="ipescado-ev-icon"></i>'.html_safe, "https://ipescado.com/?s=#{@grupo}", target: :_blank, class: 'btn btn-link btn-sm text-info' %>
+</p>
+
+<% end %>
+</div>
+<hr>
+<div class='w-100 px-4'>
+
+<%= link_to '¿Comentarios? <i class="fa fa-comments" aria-hidden="true"></i>'.html_safe, new_especie_comentario_path(@pez, {categorias_contenido_id: 36}), class: 'btn btn-outline-info btn-sm btn-block', target: '_blank' %>
+</div>
+
+</div>
 
 
 <% if tiene_permiso?('AdminPeces') %>

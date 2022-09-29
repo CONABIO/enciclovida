@@ -35,7 +35,7 @@ class BusquedasRegionesController < ApplicationController
 				render json: br.resp
 			end
 			format.json do
-				if params[:guia] = "1"
+				if params[:guia] == "1"
 					br.original_url = request.original_url
 					br.valida_descarga_guia
 					

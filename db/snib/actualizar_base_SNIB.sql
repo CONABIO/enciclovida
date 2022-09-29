@@ -30,6 +30,7 @@ WHERE idnombrecatvalido <> '' AND especievalidabusqueda <> '' AND comentarioscat
 ALTER TABLE snib_ev ADD COLUMN id SERIAL PRIMARY KEY;
 
 -- 5.
+CREATE INDEX idx_snib_ev_idejemplar ON snib_ev USING btree (idejemplar);
 CREATE INDEX idx_snib_ev_idnombrecatvalido ON snib_ev USING btree (idnombrecatvalido);
 CREATE INDEX idx_snib_ev_entid ON snib_ev USING btree (entid);
 CREATE INDEX idx_snib_ev_munid ON snib_ev USING btree (munid);
