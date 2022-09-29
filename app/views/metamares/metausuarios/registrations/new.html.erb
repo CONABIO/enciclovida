@@ -11,25 +11,25 @@
   </div>
 
   <h2 class="text-center">Tus datos personales</h2>
-  <div class="form-group">
+  <div class="form-group font-weight-bold">
     <%= f.label :nombre %>:
     <%= f.text_field :nombre, class: 'form-control' %>
   </div>
-  <div class="form-group">
+  <div class="form-group font-weight-bold">
     <%= f.label :apellido %>:
     <%= f.text_field :apellido, class: 'form-control' %>
   </div>
-  <div class="form-group">
-    <%= f.label :institucion %><small><i> (opcional)</i></small>:
+  <div class="form-group font-weight-bold">
+    <%= f.label :institucion %><small><i> :(opcional)</i></small>
     <%= f.text_field :institucion, class: 'form-control' %>
   </div>
 
-  <div class="form-group form-inline">
-    <%= f.label :password %>
-    <%= f.password_field :password, autocomplete: "off", class: 'form-control' %>
+  <div class="form-group form-inline  font-weight-bold">
+    <%= f.label :password %>   
+    <%= f.password_field :password, autocomplete: "off", class: 'form-control ml-2 mr-2' %>
     <b> &middot; </b>
-    <%= f.label :password_confirmation %>
-    <%= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control' %>
+    <%= f.label :password_confirmation , class: "ml-2"%>
+    <%= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control ml-2' %>
   </div>
   <%= f.submit 'Crear cuenta', class: 'btn btn-lg btn-block btn-success' %>
 <% end %>

@@ -42,10 +42,14 @@ var paginadoMetamares = function(paginas, pagina)
         leaps: true,         // next/prev leaps through maxVisible
         firstLastUse: true,
         first: '←',
-        last: '→'
+        last: '→',
+        wrapClass: 'justify-content-center pagination'
     }).on("page", function(event, /* page number here */ num){
         window.location.replace(href + param + "pagina=" + num);
     });
+
+    jQuery('ul li a').addClass('page-link');
+    jQuery('ul li').addClass('page-item');
 };
 
 /**
