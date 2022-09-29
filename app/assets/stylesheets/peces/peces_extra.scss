@@ -91,8 +91,8 @@
   height: 40px;
 }
 .popover{max-width: none; background-color: #efefef;}
-.popover i:not(.glyphicon-exclamation-sign){font-size: 2.25em;}
-.popover i.glyphicon-exclamation-sign{font-size: 1.5em;}
+.popover i:not(.fa-exclamation){font-size: 2.25em;}
+.popover i.fa-exclamation{font-size: 1.5em;}
 .popover-title{font-weight: bolder; text-align: center;}
 .popover-content span:not(.btn-zona-n) b{color: #505050; text-shadow: none;}
 .popover-content button{font-size: 1.5em!important;}
@@ -120,11 +120,11 @@
 .popover .btn-title:hover + .popover-certificacion, .popover .btn-title:hover + .popover-veda{
   visibility: visible;
 }
-.popover .glyphicon-exclamation-sign{
+.popover .fa-exclamation{
   font-size: x-large;
   text-shadow: 1px 1px 1px #9e9e9e;
 }
-.popover .glyphicon-exclamation-sign:hover{
+.popover .fa-exclamation:hover{
   text-shadow: none;
   color: #666666;
 }

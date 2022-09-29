@@ -44,6 +44,7 @@
 .conabio-ev-icon:before { content: '\e82a'; } /* '' */
 .echinodermata-ev-icon:before { content: '\e82b'; } /* '' */
 .semarnat-ev-icon:before { content: '\e82c'; } /* '' */
+.ipescado-ev-icon:before { content: '\e82d'; } /* '' */
 .en-peligro-critico-cr-ev-icon:before { content: '\e831'; } /* '' */
 .en-peligro-critico-cr-evaluacion-conabio-ev-icon:before { content: '\e832'; } /* '' */
 .en-peligro-de-extincion-p-evaluacion-conabio-ev-icon:before { content: '\e835'; } /* '' */
@@ -86,6 +87,7 @@
 .semaforo-no-datos-ev-icon:before { content: '\e86b'; } /* '' */
 .semaforo-recomendable-ev-icon:before { content: '\e86c'; } /* '' */
 .sujetas-a-proteccion-especial-pr-evaluacion-conabio-ev-icon:before { content: '\e870'; } /* '' */
+.peces-mariscos-comerciales-certificacion-ev-icon:before { content: '\e872'; } /* '' */
 .vista-especialista-ev-icon:before { content: '\e873'; } /* '' */
 .vista-general-ev-icon:before { content: '\e874'; } /* '' */
 .vulnerable-vu-ev-icon:before { content: '\e875'; } /* '' */
