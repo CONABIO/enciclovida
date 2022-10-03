@@ -160,7 +160,7 @@ class Lista < ActiveRecord::Base
 
   def to_pdf(opts={})
     # Para que parse los paramatros como el controlador de rails
-    params = Rack::Utils.parse_nested_query(cadena_especies).symbolize_keys
+    params = Rack::Utils.parse_nested_query(cadena_especies, "?&").symbolize_keys
 
     br = BusquedaRegion.new
     br.params = params

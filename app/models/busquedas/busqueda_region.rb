@@ -123,10 +123,10 @@ class BusquedaRegion < Busqueda
         t = Especie.find(params[:especie_id])
         cat = t.categoria_taxonomica
         
-        if [3,4,5].include?(cat.nivel1)
+        if [3,4,5,6].include?(cat.nivel1)
           self.resp = { estatus: true }
         else
-          return self.resp = { estatus: false, msg: 'El taxón no es una clase, orden o familia' }
+          return self.resp = { estatus: false, msg: 'El taxón no es una clase, orden, familia o género' }
         end
 
       rescue => e
@@ -262,6 +262,11 @@ class BusquedaRegion < Busqueda
       titulo[0] = "Guía de #{a.nombre_comun_principal}"
     else
       titulo[0] = "Guía de #{t.nombre_cientifico}"
+    end
+
+    unless params[:nombre_region].present?
+      region = "geoportal/#{params[:tipo_region]}".camelize.constantize.campos_min.find(params[:region_id])
+      params[:nombre_region] = region.nombre_publico
     end
 
     titulo[1] = tipo_region + params[:nombre_region]
