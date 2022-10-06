@@ -1,7 +1,7 @@
 <%if !@cantos[0].has_key?(:msg)%>
     <div class="d-flex flex-column flex-md-row mb-3 h1">
         <% icono = {'photo' => 'camera', 'video' => 'film', 'audio' => 'volume-up'} %>
-        <i class='fa fa-<%=icono[type]%>'></i> <span class="ml-4">xeno-canto<span>
+        <i class='fa fa-<%=icono[type]%> btn-title' title="<%= type.titleize %>"></i> <span class="ml-4">xeno-canto<span>
     </div>
 
     <div class="paginado-media d-flex align-items-center">

@@ -18,6 +18,8 @@ class BDIService
 
   ALBUM_ILUSTRACIONES = ['5035-Ilustraciones']
 
+  ALBUM_USOS = ['5010-Usos']
+
   # En teoria son las mejores fotos, por lo cual tienen preferencia a los otros album
   ALBUM_MN = ['5091-Concurso%20Mosaico%20Natura']
 
@@ -120,6 +122,18 @@ class BDIService
   # Las fotos de acuerdo al album al que pertenece en BDI
   def fotos_album(opts)
     taxon = opts[:taxon]
+
+    # Caso especial para las fotos de usos que estaran abajo de las fotos de los demas albumes
+    if opts[:type] == "usos"
+      opts.merge!({album: ALBUM_USOS.first, nombre: taxon.nombre_cientifico})
+      jres = tiene_fotos?(opts)
+      
+      if jres['data'].any?      
+        return jres 
+      else
+        return {'data' => []}
+      end
+    end
 
     # Solo para el caso de las ilustraciones
     if opts[:ilustraciones]

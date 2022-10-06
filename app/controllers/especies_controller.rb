@@ -293,9 +293,9 @@ class EspeciesController < ApplicationController
     page = params['page']
 
     if @pagina.present?
-      bdi = @especie.fotos_bdi({pagina: @pagina.to_i})
+      bdi = @especie.fotos_bdi({pagina: @pagina.to_i, type: type})
     else
-      bdi = @especie.fotos_bdi
+      bdi = @especie.fotos_bdi({type: type})
     end
 
     if bdi[:estatus]

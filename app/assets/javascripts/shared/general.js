@@ -63,8 +63,8 @@ var cambiaLocale = function(locale){
 /**
  * Pequeño hack para mejorar el title de los iconos, agregar solo clase .btn-title
  */
-var tooltip = function(){
-        $('.btn-title').tooltip({
+var tooltip = function(clase){
+        $(clase).tooltip({
         html:true,
         sanitize:false,
         container: 'body',
@@ -113,6 +113,6 @@ var dameValidacionCorreo = function(recurso, notice)
 };
 
 $(document).ready(function(){
-    tooltip();
+    tooltip(".btn-title");
 });
 
