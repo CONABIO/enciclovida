@@ -141,60 +141,60 @@ class BDIService
       jres = tiene_fotos?(opts)
       return jres if jres['data'].any?
     end
-
-    # Para el concurso de MN (son las mejores fotos)
-    opts.merge!({album: ALBUM_MN.first, nombre: taxon.nombre_cientifico})
-    jres = tiene_fotos?(opts)
-    return jres if jres['data'].any?
-
+    
     reino = taxon.root.nombre_cientifico.strip
     ancestros = taxon.path_ids
     case reino
     when 'Animalia', 'Protoctista'
-        (ALBUM_ANIMALES.keys & ancestros).reverse.each do |taxon_id|
-          opts.merge!({album: ALBUM_ANIMALES[taxon_id], nombre: taxon.nombre_cientifico})
-          jres = tiene_fotos?(opts)
-          return jres if jres['data'].any?
-        end
-
-        # Si llego a este punto quiere decir que tengo que probar con los globales
-        ALBUM_ANIMALES_GLOBAL.each do |album|
-          opts.merge!({album: album, nombre: taxon.nombre_cientifico})
-          jres = tiene_fotos?(opts)
-          return jres if jres['data'].any?
-        end
-
-        # Si llego a este punto quiere decir que tengo que probar con los globales
-        ALBUM_ILUSTRACIONES.each do |album|
-          opts.merge!({album: album, nombre: taxon.nombre_cientifico, campo: 'q'})
-          jres = tiene_fotos?(opts)
-          return jres if jres['data'].any?
-        end
-
-        return {'data' => []}
+      (ALBUM_ANIMALES.keys & ancestros).reverse.each do |taxon_id|
+        opts.merge!({album: ALBUM_ANIMALES[taxon_id], nombre: taxon.nombre_cientifico})
+        jres = tiene_fotos?(opts)
+        return jres if jres['data'].any?
+      end
+      
+      # Si llego a este punto quiere decir que tengo que probar con los globales
+      ALBUM_ANIMALES_GLOBAL.each do |album|
+        opts.merge!({album: album, nombre: taxon.nombre_cientifico})
+        jres = tiene_fotos?(opts)
+        return jres if jres['data'].any?
+      end
+      
+      # Si llego a este punto quiere decir que tengo que probar con los globales
+      ALBUM_ILUSTRACIONES.each do |album|
+        opts.merge!({album: album, nombre: taxon.nombre_cientifico, campo: 'q'})
+        jres = tiene_fotos?(opts)
+        return jres if jres['data'].any?
+      end
+      
+      return {'data' => []}
     else
-        (ALBUM_PLANTAS.keys & ancestros).reverse.each do |taxon_id|
-          opts.merge!({album: ALBUM_PLANTAS[taxon_id], nombre: taxon.nombre_cientifico})
-          jres = tiene_fotos?(opts)
-          return jres if jres['data'].present? && jres['data'].any?
-        end
-
-        # Si llego a este punto quiere decir que tengo que probar con los globales
-        ALBUM_PLANTAS_GLOBAL.each do |album|
-          opts.merge!({album: album, nombre: taxon.nombre_cientifico})
-          jres = tiene_fotos?(opts)
-          return jres if jres['data'].any?
-        end
-
-        # Si llego a este punto quiere decir que tengo que probar con los globales
-        ALBUM_ILUSTRACIONES.each do |album|
-          opts.merge!({album: album, nombre: taxon.nombre_cientifico, campo: 'q'})
-          jres = tiene_fotos?(opts)
-          return jres if jres['data'].any?
-        end
-
-        return {'data' => []}
+      (ALBUM_PLANTAS.keys & ancestros).reverse.each do |taxon_id|
+        opts.merge!({album: ALBUM_PLANTAS[taxon_id], nombre: taxon.nombre_cientifico})
+        jres = tiene_fotos?(opts)
+        return jres if jres['data'].present? && jres['data'].any?
+      end
+      
+      # Si llego a este punto quiere decir que tengo que probar con los globales
+      ALBUM_PLANTAS_GLOBAL.each do |album|
+        opts.merge!({album: album, nombre: taxon.nombre_cientifico})
+        jres = tiene_fotos?(opts)
+        return jres if jres['data'].any?
+      end
+      
+      # Si llego a este punto quiere decir que tengo que probar con los globales
+      ALBUM_ILUSTRACIONES.each do |album|
+        opts.merge!({album: album, nombre: taxon.nombre_cientifico, campo: 'q'})
+        jres = tiene_fotos?(opts)
+        return jres if jres['data'].any?
+      end
+      
+      return {'data' => []}
     end
+    
+    # Para el concurso de MN (son las mejores fotos al final)
+    opts.merge!({album: ALBUM_MN.first, nombre: taxon.nombre_cientifico})
+    jres = tiene_fotos?(opts)
+    return jres if jres['data'].any?
 
   end
 end
