@@ -10,7 +10,7 @@ especies/mapa/mapa.js especies/mapa/mapa_delayed.js especies/mapa/mapa.css
 comentarios/comentarios.js
 metamares/metamares.js metamares/graficas.js
 fichas/fichas.js especies/fichas.scss estadisticas/estadisticas.js estadisticas/estadisticas.css
-application_b3.js application.scss
+application_b3.js boots3-downgrade/application_b3.scss
 busquedas/avanzada/avanzada.scss
 inicio.scss especies/especies.scss
 admin/admin.js admin/catalogos/catalogos_extra.js
