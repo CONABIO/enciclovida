@@ -319,7 +319,7 @@ class EspeciesController < ApplicationController
               @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
             end
           end  # End pagina blank
-          render 'especies/media/bdi_photos', :locals => {type: type, page: page} and return
+          render 'especies/media/bdi_photos', :locals => {type: type.present? ? type : '', page: page} and return
         end  # End format html
       end  # End respond
 
