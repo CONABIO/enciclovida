@@ -321,7 +321,7 @@ class BusquedasController < ApplicationController
       case k
       when 'id', 'nombre', 'por_pagina'
         @setParams[k] = v
-      when 'edo_cons', 'dist', 'prior', 'estatus', 'uso', 'ambiente', 'reg'
+      when 'edo_cons', 'dist', 'prior', 'estatus', 'uso', 'agro', 'ambiente', 'reg'
         if @setParams[k].present?
           @setParams[k] << v.map{ |x| x.parameterize if x.present?}
         else
