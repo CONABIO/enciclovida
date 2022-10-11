@@ -242,7 +242,7 @@ GEM
       racc (~> 1.4)
     nori (2.6.0)
     orm_adapter (0.5.0)
-    pg (1.2.2)
+    pg (1.4.3)
     popper_js (1.16.0)
     public_suffix (4.0.3)
     puma (4.3.3)
@@ -487,4 +487,4 @@ DEPENDENCIES
   zip-zip
 
 BUNDLED WITH
-   2.0.1
+   2.2.9

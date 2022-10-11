@@ -66,6 +66,13 @@ module BusquedasHelper
     select_tag('uso', options_for_select(options, selected), opc)
   end
 
+  def selectAgrobiodiversidad(opciones={})
+    selected = (params[:agro].present? && params[:agro].any?) ? params[:agro] : []
+    opc = @@opciones.merge(opciones)
+    options = @filtros[:agro].map{ |u| [u.descripcion, "#{u.nivel1}-#{u.nivel2}-#{u.nivel3}-#{u.nivel4}-#{u.nivel5}-#{u.nivel6}-#{u.nivel7}", { class: "f-fuentes" }] }
+    select_tag('agro', options_for_select(options, selected), opc)
+  end  
+
   def selectAmbiente(opciones={})
     selected = (params[:ambiente].present? && params[:ambiente].any?) ? params[:ambiente] : []
     opc = @@opciones.merge(opciones)
