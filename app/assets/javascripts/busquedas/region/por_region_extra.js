@@ -109,7 +109,7 @@ $(document).ready(function () {
 		 */
 		$("#busqueda_region").on(
 				"change",
-				"#edo_cons, #dist, #grupo, #uso, #ambiente, #forma",
+				"#edo_cons, #dist, #grupo, #uso, #agro, #ambiente, #forma",
 				function () {
 						opciones.filtros.pagina = 1;
 						cargaEspecies();

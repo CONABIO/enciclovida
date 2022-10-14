@@ -158,6 +158,7 @@ class BusquedaRegion < Busqueda
     estado_conservacion
     tipo_distribucion
     uso
+    agrobiodiversidad
     formas_crecimiento
     ambiente
 
@@ -217,7 +218,7 @@ class BusquedaRegion < Busqueda
 
   # Regresa true or false
   def tiene_filtros?
-    params[:especie_id].present? || params[:nombre].present? || (params[:grupo].present? && params[:grupo].any?) || (params[:dist].present? && params[:dist].any?) || (params[:edo_cons].present? && params[:edo_cons].any?) || (params[:uso].present? && params[:uso].any?) || (params[:ambiente].present? && params[:ambiente].present?) || (params[:forma].present? && params[:forma].present?)
+    params[:especie_id].present? || params[:nombre].present? || (params[:grupo].present? && params[:grupo].any?) || (params[:dist].present? && params[:dist].any?) || (params[:edo_cons].present? && params[:edo_cons].any?) || (params[:uso].present? && params[:uso].any?) || (params[:agro].present? && params[:agro].any?) || (params[:ambiente].present? && params[:ambiente].present?) || (params[:forma].present? && params[:forma].present?)
   end
 
   # Devuelve las especies de acuerdo al numero de pagina y por pagina definido
