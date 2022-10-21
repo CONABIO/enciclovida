@@ -388,22 +388,9 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
 
     # Fotos de bdi
-    fb = fotos_bdi
-    if fb[:estatus]
-      self.x_square_url = fb[:fotos].first.square_url if x_foto_principal.blank? && fb[:fotos].count > 0
-      self.x_foto_principal = fb[:fotos].first.best_photo if x_foto_principal.blank? && fb[:fotos].count > 0
-
-      if ultima = fb[:ultima]  # Si tiene ultima obtenemos el numero final, para consultarla
-        self.x_fotos_totales+= 25*(ultima-1)
-        fbu = fotos_bdi({pagina: ultima})
-
-        if fbu[:estatus]
-          self.x_fotos_totales+= fbu[:fotos].count
-        end
-      else  # Solo era un paginado, las sumo inmediatamente
-        self.x_fotos_totales+= fb[:fotos].count
-      end
-    end
+    bdi = fotos_bdi
+    self.x_fotos_totales+= bdi.num_assets
+    Rails.logger.info x_fotos_totales.to_s + "---" + bdi.num_assets + "@@@"
   end
 
   # REVISADO: regresa todos los nombres comunes de catalogos

@@ -182,7 +182,6 @@ class Pmc::Pez < ActiveRecord::Base
   def asigna_imagen
     # Trata de asignar la ilustracion
     e = especie
-
     bdi = especie.fotos_bdi({ nombre_cientifico: e.nombre_cientifico, autor: 'Sergio de la Rosa Martínez', autor_campo: 80, ilustraciones: true })
     
     if bdi.num_assets > 0

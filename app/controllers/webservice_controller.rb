@@ -3,27 +3,6 @@ class WebserviceController < ApplicationController
   protect_from_forgery with: :null_session
   layout Proc.new{['geojson_a_topojson'].include?(action_name) ? false : 'application_b3'}
 
-  def bdi_nombre_cientifico
-    @nombre = params['nombre']
-    bdi = BDIService.new.dameFotos({nombre: @nombre, campo: 528})
-
-    if bdi[:estatus] == 'OK'
-
-      #Esto para que funcione el servicio para la app buena pesca, posteriormente se debe especificar si se desean más de 5 imágenes
-      bdi[:fotos] = bdi[:fotos][0..5]
-
-      respond_to do |format|
-        format.json {render json: bdi}
-        format.html do
-
-        end  # End format html
-      end  # End respond
-
-    else  # End estatus OK
-      render :_error and return
-    end
-  end
-
   def geojson_a_topojson
     topo = GeoATopo.new
     topojson = {}
@@ -43,10 +22,6 @@ class WebserviceController < ApplicationController
                       nombre = "#{tipo_region}_#{params[:region_id].to_i}.json"
                       ruta.join(nombre)
                     end
-
-          # res = File.read(archivo) if File.exists?(archivo)
-          #send_file archivo and return
-          #exit(0)
 
           if File.exists?(archivo)
             res = "/topojson/#{nombre}"

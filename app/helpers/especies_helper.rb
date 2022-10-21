@@ -218,15 +218,10 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
          response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='<a href=\"/peces\" class=\"btn btn-link\" target=\"_blank\">Especie con certificación perteneciente al semáforo de consumo marino responsable</a>' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-certificacion-ev-icon'></i></span>"
       else
 	      response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='<a href=\"/peces\" class=\"btn btn-link\" target=\"_blank\">Especie perteneciente al semáforo de consumo marino responsable</a>' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-ev-icon'></i></span>"
-       end
-     end
-
-
-    if response.any? 
-      response.join.html_safe 
-    else
-      response
+      end
     end
+
+    response.any? ? response.join.html_safe : ""
   end
 
   # REVISADO: Pone la simbologia en la ficha de la especie

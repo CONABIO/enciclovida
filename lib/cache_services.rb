@@ -350,7 +350,8 @@ module CacheServices
     res[:total_nombres_comunes] = nombres_comunes.count
 
     # ID: 7 Fotos en el Banco de Imágenes de CONABIO
-    res[:total_fotos] = fotos_bdi[:fotos].count
+    bdi = fotos_bdi
+    res[:total_fotos] = bdi.num_assets
 
     # ID: 11 Fichas revisadas de CONABIO -> Sólo aparecerá si tiene ficha asociada (0 o 1)
     if cat = scat

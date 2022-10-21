@@ -125,8 +125,8 @@ class EspeciesController < ApplicationController
 
         # Fotos de BDI
         unless @fotos.present?
-          fotos = @especie.fotos_bdi
-          @fotos = fotos[:fotos] if fotos[:estatus] && fotos[:fotos].any?
+          bdi = @especie.fotos_bdi
+          @fotos = bdi.assets if bdi.num_assets > 0
         end
 
         # Ya tiene la descripcion asignada
