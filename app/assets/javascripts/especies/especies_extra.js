@@ -12,7 +12,7 @@ $(document).ready(function () {
 						tooltip("#" + this.id + " .btn-title");
 					});
 
-					$('#mediaBDI_u').load('/especies/' + opciones.taxon + '/bdi-photos?type=usos', function () {
+					$('#mediaBDI_u').load('/especies/' + opciones.taxon + '/bdi-photos?album=usos', function () {
 						if ($("#" + this.id + " img").length != 0) $(this).removeClass("d-none");
 						tooltip("#" + this.id + " .btn-title");
 					});					

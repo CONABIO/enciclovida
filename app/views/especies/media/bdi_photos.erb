@@ -1,9 +1,13 @@
-<% if @fotos.any? %>
+<% if @num_fotos > 0 %>
   <div class="d-flex flex-column flex-md-row mb-3 h1">
     <% icono = {'photo' => 'fa fa-camera', 'video' => 'fa fa-film', 'usos' => 'usos-ev-icon'} %>
     <i class='<%=icono[type]%> btn-title' title="<%= type.titleize %>"></i>
     <i class ='bdi-ev-icon'></i>
     <i class ='conabio_completo-ev-icon'></i>
+
+    <% if type == "photo" %>
+      <%= albumes_bdi %>
+    <% end %>
   </div>
 
   <div class="paginado-media d-flex align-items-center">

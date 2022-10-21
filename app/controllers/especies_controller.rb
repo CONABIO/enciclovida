@@ -288,44 +288,23 @@ class EspeciesController < ApplicationController
 
   # Servicio de lib/bdi_service.rb
   def bdi_photos
-    @pagina = params['pagina']
-    type = params['type']
-    page = params['page']
+    bdi = @especie.fotos_bdi({album: params[:album]})
 
-    if @pagina.present?
-      bdi = @especie.fotos_bdi({pagina: @pagina.to_i, type: type})
-    else
-      bdi = @especie.fotos_bdi({type: type})
-    end
+    respond_to do |format|
+      format.json do
+        render json: { fotos: bdi.assets, albumes: bdi.albumes, num_fotos: bdi.num_assets } 
+      end
+      format.html do
+        @fotos = bdi.assets
+        @albumes = bdi.albumes
+        @num_fotos = bdi.num_assets
 
-    if bdi[:estatus]
-      @fotos = bdi[:fotos]
+        # Caso especicial para el icono de usos
+        type = params[:album].present? && params[:album] == "usos" ? "usos" : "photo"
 
-      respond_to do |format|
-        format.json {render json: bdi}
-        format.html do
-
-          # El conteo de las paginas
-          totales = 0
-          por_pagina = 25
-
-          # Por ser la primera saco el conteo de paginas
-          if @pagina.blank?
-            # Saca el conteo de las fotos de bdi
-            if bdi[:ultima].present?
-              totales+= por_pagina*(bdi[:ultima]-1)
-              fbu = @especie.fotos_bdi({pagina: bdi[:ultima]})
-              totales+= fbu[:fotos].count if fbu[:estatus]
-              @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
-            end
-          end  # End pagina blank
-          render 'especies/media/bdi_photos', :locals => {type: type.present? ? type : '', page: page} and return
-        end  # End format html
-      end  # End respond
-
-    else  # End estatus
-      render :_error and return
-    end
+        render 'especies/media/bdi_photos', locals: { type: type }
+      end  # End format html
+    end  # End respond
   end
 
   #Videos de BDI

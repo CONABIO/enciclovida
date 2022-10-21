@@ -406,4 +406,14 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     "<p>Cargando... por favor, espera</p><div class='spinner-border text-secondary' role='status'><span class='sr-only'>Cargando...</span></div>".html_safe
   end
 
+  # Es un select con los demas albumes de bdi para ver fotos directamente
+  def albumes_bdi
+    options = []
+    @albumes.each do |a| 
+      options << ["#{a[:nombre_album]} (#{a[:num_assets]} fotos)", a[:url]] 
+    end
+
+    select_tag('album_bdi', options_for_select(options))
+  end
+
 end

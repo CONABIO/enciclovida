@@ -359,15 +359,9 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
   # REVISADO: Servicio que trae la respuesta de bdi
   def fotos_bdi(opts={})
-    bdi = BDIService.new
-
-    if especie_o_inferior?({con_genero: true})
-      bdi.dameFotos(opts.merge({taxon: self, campo: 528}))
-    elsif is_root?
-      bdi.dameFotos(opts.merge({taxon: self, campo: 15}))
-    else
-      bdi.dameFotos(opts.merge({taxon: self, campo: 20}))
-    end
+    bdi = BDIService.new({nombre_cientifico: nombre_cientifico}.merge(opts))
+    bdi.dame_fotos
+    bdi
   end
 
   # Servicio que trae la respuesta de bdi para videos
