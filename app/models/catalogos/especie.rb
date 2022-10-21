@@ -390,7 +390,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     # Fotos de bdi
     bdi = fotos_bdi
     self.x_fotos_totales+= bdi.num_assets
-    Rails.logger.info x_fotos_totales.to_s + "---" + bdi.num_assets + "@@@"
   end
 
   # REVISADO: regresa todos los nombres comunes de catalogos

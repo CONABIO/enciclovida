@@ -1,12 +1,12 @@
 class EspeciesController < ApplicationController
 
   skip_before_action :set_locale, only: [:create, :update, :edit_photos, :comentarios, :fotos_referencia,
-                                         :fotos_naturalista, :bdi_photos, :bdi_videos, :nombres_comunes_naturalista,
+                                         :fotos_naturalista, :bdi_photos, :nombres_comunes_naturalista,
                                          :nombres_comunes_todos, :consulta_registros, :cambia_id_naturalista, :resumen_wikipedia, :descripcion_iucn]
 
   before_action :set_especie, only: [:show, :edit, :update, :destroy, :edit_photos, :media, :descripcion, :descripcion_app,
                                      :consulta_registros, :cat_tax_asociadas,
-                                     :descripcion_catalogos, :comentarios, :bdi_photos, :bdi_videos,
+                                     :descripcion_catalogos, :comentarios, :bdi_photos,
                                      :fotos_referencia, :fotos_naturalista, :nombres_comunes_naturalista,
                                      :nombres_comunes_todos, :cambia_id_naturalista,
                                      :dame_nombre_con_formato, :noticias, :media_tropicos, :resumen_wikipedia, :descripcion_iucn]
@@ -19,7 +19,7 @@ class EspeciesController < ApplicationController
 
   layout false, :only => [:media, :descripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :comentarios,
-                          :fotos_referencia, :bdi_photos, :bdi_videos, :media_cornell, :xeno_canto, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
+                          :fotos_referencia, :bdi_photos, :media_cornell, :xeno_canto, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
                           :nombres_comunes_todos, :ejemplares_snib, :ejemplar_snib, :observacion_naturalista,
                           :cambia_id_naturalista, :dame_nombre_con_formato, :noticias, :resumen_wikipedia, :descripcion_iucn]
 
@@ -305,48 +305,6 @@ class EspeciesController < ApplicationController
         render 'especies/media/bdi_photos', locals: { type: type }
       end  # End format html
     end  # End respond
-  end
-
-  #Videos de BDI
-  def bdi_videos
-    @pagina = params['pagina']
-    type = params['type']
-    page = params['page']
-
-    if @pagina.present?
-      bdi = @especie.videos_bdi({pagina: @pagina.to_i})
-    else
-      bdi = @especie.videos_bdi
-    end
-
-    if bdi[:estatus]
-      @videos = bdi[:videos]
-
-      respond_to do |format|
-        format.json {render json: bdi}
-        format.html do
-
-          # El conteo de las paginas
-          totales = 0
-          por_pagina = 25
-
-          # Por ser la primera saco el conteo de paginas
-          if @pagina.blank?
-            # Saca el conteo de las fotos de bdi
-            if bdi[:ultima].present?
-              totales+= por_pagina*(bdi[:ultima]-1)
-              fbu = @especie.fotos_bdi({pagina: bdi[:ultima]})
-              totales+= fbu[:fotos].count if fbu[:estatus]
-              @paginas = totales%por_pagina == 0 ? totales/por_pagina : (totales/por_pagina) + 1
-            end
-          end  # End pagina blank
-          render 'especies/media/bdi_videos', :locals => {type: type, page: page} and return
-        end  # End format html
-      end  # End respond
-
-    else  # End estatus
-      render :_error and return
-    end
   end
 
   #servicio Macaulay Library (eBird)

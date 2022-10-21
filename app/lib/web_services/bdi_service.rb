@@ -44,44 +44,8 @@ class BDIService
     fotos_totales
   end
 
-  # Método para recuperar los videos
-  def dame_videos(opts)
-    bdi_rp = CONFIG.enciclovida_url
-    bdi_url = CONFIG.bdi_imagenes
-    videos = []
-    jres = videos_album(opts)
-
-    return {:estatus => 'OK', :ultima => nil, :videos => []} unless jres['data'].any?
-
-    jres['data'].each do |x|
-      video = Video.new
-      video.href_info = bdi_url + x['href']
-      video.url_acces = bdi_rp + x['attributes']['videoattributes']['proxy']['videoHREF']
-      video.preview_img = x['previews'].present? ? bdi + x['previews'][0]['href'] : nil
-      video.autor = x['metadata']['80'].present? ? x['metadata']['80']['value'].first : "Anónimo"
-      video.localidad = x['metadata']['90'].present? ? x['metadata']['90']['value'] : nil
-      video.municipio = x['metadata']['300'].present? ? x['metadata']['300']['value'] : nil
-      video.licencia = x['metadata']['340'].present? ? x['metadata']['340']['value'] : nil
-      videos << video
-    end
-
-    if jres['paging'].present? && jres['paging']['next'].present?
-      ultima = jres['paging']['last'].split('&p=').last.to_i + 1
-      {:estatus => true, :ultima => ultima, :videos => videos}
-    else
-      {:estatus => true, :ultima => nil, :videos => videos}
-    end
-  end
-
 
   private
-
-  def videos_album(opts)
-    taxon = opts[:taxon]
-    # Solo para el caso de los videos
-    opts.merge!({album: ALBUM_VIDEOS, nombre: taxon.nombre_cientifico, campo: 'q'})
-    tiene_fotos?(opts)
-  end
 
   # Regresa la lista de albumes con al menos una foto en orden por numero de fotos
   def lista_albumes
