@@ -144,7 +144,7 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
   # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies; pestaña de catalogos
   def dameCaracteristica(taxon)
     html = ''
-    caracteristicas = taxon.nom_cites_iucn_ambiente_prioritaria_bibliografia
+    caracteristicas = taxon.caracteristicas
 
     def creaCaracteristica(valores)
       html = ''
@@ -153,7 +153,7 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
         biblio = dato[:bibliografias].any? ? "<ul>#{dato[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>" : ''
         biblio_html = " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.present?
-        obs_html = dato[:observaciones].any? ? "<p>Observaciones: #{dato[:observaciones].join('<hr />')}</p>" : ''
+        obs_html = dato[:observaciones].present? ? "<p>Observaciones: #{dato[:observaciones]}</p>" : ''
 
         dato[:descripciones].each do |l|
           html << "<li>#{l}</li> #{biblio_html} #{obs_html}"

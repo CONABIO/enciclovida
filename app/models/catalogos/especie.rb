@@ -302,18 +302,22 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   end
 
   # REVISADO: Regresa en un hash todos los valores con las bibliorafias, para pestaña de catalogos especialmente
-  def nom_cites_iucn_ambiente_prioritaria_bibliografia
+  def caracteristicas
     resp = {}
 
-    especies_catalogos.each do |esp_cat|
+    caract = Especie.where(id: id).includes(especies_catalogos: [:catalogo, biblios: :bibliografia])
+
+    caract.first.especies_catalogos.each do |esp_cat|
       cat = esp_cat.catalogo
       next unless cat.es_catalogo_permitido?
       nombre_catalogo = cat.dame_nombre_catalogo
-      biblio_cita_completa = esp_cat.biblios.where(catalogo_id: cat.id).map { |b| b.bibliografia.cita_completa }
+      biblio_cita_completa = esp_cat.biblios.map { |b| b.bibliografia.cita_completa }
       seccion = nombre_catalogo.estandariza.to_sym
 
+      Rails.logger.info esp_cat.observaciones.inspect+ "@@@" if esp_cat.observaciones.present? 
+
       resp[seccion] = { nombre_catalogo: nombre_catalogo, datos: [] } unless resp[seccion].present?
-      resp[seccion][:datos] << { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion], bibliografias: biblio_cita_completa, observaciones: [esp_cat.observaciones] }
+      resp[seccion][:datos] << { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion], bibliografias: biblio_cita_completa, observaciones: esp_cat.observaciones }
     end
 
     resp
