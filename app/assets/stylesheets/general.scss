@@ -100,13 +100,14 @@ footer .list-group-item {
   width: 14em !important;
   text-decoration: underline;
 }
-.biomex-ev-icon:before/*, .conabio-ev-icon:before*/{
+.biomex-ev-icon:before{
   width: 2.5em !important;
   color: #f7f7f7;
 }
 .enciclo-ev-icon:before, .enciclo-ev-icon:after, .vida-ev-icon:before, .conabio_completo-ev-icon:before, .conabio_vertical_1-ev-icon:before, .conabio_vertical_1-ev-icon:after{
   margin: 0;
-  width: 3em !important;
+  width: 4em;
+  text-align: initial!important;
 }
 .ipescado-ev-icon:before {
   width: 5em !important;
@@ -117,14 +118,11 @@ footer .list-group-item {
 
 div[id^='mediaCornell'] .media-supplier .glyphicon:before, .cornell_lab-ev-icon:before, .cornell_lab_colors-ev-icon:before, .cornell_lab_colors-ev-icon:after, .macaulay_library-ev-icon:before{min-width: 9em!important;}
 
-/*.cornell_lab_colors-ev-icon:before{margin-left: -9.5em; color: #E60000; content: '\e823';}*/
-/*.cornell_lab_colors-ev-icon:after{margin-left: -8.7em; color: #F5E614; content: '\e825';}*/
-
 .media-supplier div{margin-bottom: 10px;}
 
-/*.ev1-ev-icon:after { margin-left: -1.2em; content: '\e837'; }*/
+
 .enciclo-ev-icon:before, header .conabio_completo-ev-icon:before, footer .conabio_completo-ev-icon:before{color: #fdfdfd;}
-.enciclo-ev-icon:after{color: #889b45; margin-left: -3em;}
+.enciclo-ev-icon:after, .vida-ev-icon:before{color: #889b45; margin-left: -4em;}
 .naturalista-3-ev-icon:before, .naturalista-4-ev-icon:before{color: #889b45; width: 2em;}
 .ev2-ev-icon:before{margin-left: -1.25em;}
 .conabio_vertical_1-ev-icon:before{color: #800000;}
