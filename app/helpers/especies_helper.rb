@@ -403,12 +403,14 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
 
   # Es un select con los demas albumes de bdi para ver fotos directamente
   def albumes_bdi
-    options = []
+    html = "<div class='dropdown'><button class='btn btn-light btn-sm dropdown-toggle text-primary' type='button' data-toggle='dropdown' aria-expanded='false'>Explora más fotos en los álbumes del BDI</button><div class='dropdown-menu'>"
+    
     @albumes.each do |a| 
-      options << ["#{a[:nombre_album]} (#{a[:num_assets]} fotos)", a[:url]] 
+      html << "<a class='dropdown-item' target='_blank' href=\"#{a[:url]}\">#{a[:nombre_album]} (#{a[:num_assets]} fotos) &middot; <i class='fa fa-external-link'></i></a>"
     end
-
-    select_tag('album_bdi', options_for_select(options))
+    
+    html << "</div></div>"
+    html.html_safe
   end
 
 end
