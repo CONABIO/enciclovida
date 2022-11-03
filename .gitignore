@@ -48,6 +48,7 @@ dump.rdb*
 tools/campos_snib.csv
 tools/correspondencia_snib/
 tools/correspondencia_geoserver/
+tools/COBI/*.xlsx
 app/assets/taxones/*
 public/kmz/*
 tools/correspondencia_proyectos_naturalista/

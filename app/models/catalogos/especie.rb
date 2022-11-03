@@ -28,7 +28,7 @@ class Especie < ActiveRecord::Base
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica, :x_url_ev, 
                 :x_naturalista_obs, :x_snib_registros, :x_geoportal_mapa, :x_num_reg,
-                :x_nom, :x_iucn, :x_cites, :x_tipo_distribucion, :x_distribucion, :x_ambiente,
+                :x_nom, :x_nom_obs, :x_iucn, :x_iucn_obs, :x_cites, :x_cites_obs, :x_tipo_distribucion, :x_distribucion, :x_ambiente,
                 :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista, :x_nombres_comunes_catalogos, :x_nombres_comunes_todos,
                 :x_fotos, :x_foto_principal, :x_square_url, :x_fotos_principales, :x_fotos_totales, :x_naturalista_fotos, :x_bdi_fotos,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
@@ -97,7 +97,7 @@ class Especie < ActiveRecord::Base
   OR LOWER(#{:nombres_comunes}) LIKE LOWER('%#{nombre}%')") }
 
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
-  scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).categoria_taxonomica_join.adicional_join }
+  scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).joins(:categoria_taxonomica, :adicional) }
   #Select para el Checklist
   scope :select_checklist, -> { select(:id, :nombre_cientifico).select("#{attribute_alias(:ancestry_ascendente_directo)} AS ancestry") }
   scope :select_ancestry, -> { select(:id).select("#{attribute_alias(:ancestry_ascendente_directo)} AS ancestry") }
@@ -130,6 +130,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   scope :nivel_categoria, ->(nivel, categoria) { where("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) #{nivel} '#{categoria}'") }
   # Para que regrese las especies
   scope :solo_especies, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=?", 7,0,0).left_joins(:categoria_taxonomica) }
+  # Se ocupa en el home
+  scope :conteo_especies_publicas_validas, -> { solo_especies.solo_publicos.where(estatus: 2).count }
   # Regresa solo las categorias obligatorias en categoria taxonomica
   scope :solo_cat_obligatorias, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}>0 AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=0 AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} IN (?)", CategoriaTaxonomica::CATEGORIAS_OBLIGATORIAS) }
   # Para mostrar solo los taxones publicos
@@ -300,18 +302,22 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   end
 
   # REVISADO: Regresa en un hash todos los valores con las bibliorafias, para pestaña de catalogos especialmente
-  def nom_cites_iucn_ambiente_prioritaria_bibliografia
+  def caracteristicas
     resp = {}
 
-    especies_catalogos.each do |esp_cat|
+    caract = Especie.where(id: id).includes(especies_catalogos: [:catalogo, biblios: :bibliografia])
+
+    caract.first.especies_catalogos.each do |esp_cat|
       cat = esp_cat.catalogo
       next unless cat.es_catalogo_permitido?
       nombre_catalogo = cat.dame_nombre_catalogo
-      biblio_cita_completa = esp_cat.biblios.where(catalogo_id: cat.id).map { |b| b.bibliografia.cita_completa }
+      biblio_cita_completa = esp_cat.biblios.map { |b| b.bibliografia.cita_completa }
       seccion = nombre_catalogo.estandariza.to_sym
 
+      Rails.logger.info esp_cat.observaciones.inspect+ "@@@" if esp_cat.observaciones.present? 
+
       resp[seccion] = { nombre_catalogo: nombre_catalogo, datos: [] } unless resp[seccion].present?
-      resp[seccion][:datos] << { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion], bibliografias: biblio_cita_completa, observaciones: [esp_cat.observaciones] }
+      resp[seccion][:datos] << { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion], bibliografias: biblio_cita_completa, observaciones: esp_cat.observaciones }
     end
 
     resp
@@ -357,15 +363,9 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
   # REVISADO: Servicio que trae la respuesta de bdi
   def fotos_bdi(opts={})
-    bdi = BDIService.new
-
-    if especie_o_inferior?({con_genero: true})
-      bdi.dameFotos(opts.merge({taxon: self, campo: 528}))
-    elsif is_root?
-      bdi.dameFotos(opts.merge({taxon: self, campo: 15}))
-    else
-      bdi.dameFotos(opts.merge({taxon: self, campo: 20}))
-    end
+    bdi = BDIService.new({nombre_cientifico: nombre_cientifico}.merge(opts))
+    bdi.dame_fotos
+    bdi
   end
 
   # Servicio que trae la respuesta de bdi para videos
@@ -392,22 +392,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
 
     # Fotos de bdi
-    fb = fotos_bdi
-    if fb[:estatus]
-      self.x_square_url = fb[:fotos].first.square_url if x_foto_principal.blank? && fb[:fotos].count > 0
-      self.x_foto_principal = fb[:fotos].first.best_photo if x_foto_principal.blank? && fb[:fotos].count > 0
-
-      if ultima = fb[:ultima]  # Si tiene ultima obtenemos el numero final, para consultarla
-        self.x_fotos_totales+= 25*(ultima-1)
-        fbu = fotos_bdi({pagina: ultima})
-
-        if fbu[:estatus]
-          self.x_fotos_totales+= fbu[:fotos].count
-        end
-      else  # Solo era un paginado, las sumo inmediatamente
-        self.x_fotos_totales+= fb[:fotos].count
-      end
-    end
+    bdi = fotos_bdi
+    self.x_fotos_totales+= bdi.num_assets
   end
 
   # REVISADO: regresa todos los nombres comunes de catalogos
@@ -485,7 +471,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
     if jres[:estatus]
       ncn = jres[:nombres_comunes].map do |nc|
-        next if nc['name'].blank? || nc['locale'].blank? || nc['locale'] == 'sci'
+        next if nc['name'].blank? || nc['locale'].blank? || nc['locale'] == 'sci' || NombreComun::LENGUAS_PROHIBIDAS.include?(I18n.t("lenguas.#{nc['locale'].estandariza}", default: "ND"))
 
         # Un nombre de catalogos es igual que uno de Naturalista, conservo el de Naturalista
         if ncc_estandar.present? && ncc_estandar.include?(nc['name'].estandariza)

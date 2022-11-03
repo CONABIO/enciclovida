@@ -33,7 +33,7 @@ module EspeciesHelper
         if bibliografias.any?
           biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
           html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
-title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
+title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
         end
       end
 
@@ -144,7 +144,7 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
   # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies; pestaña de catalogos
   def dameCaracteristica(taxon)
     html = ''
-    caracteristicas = taxon.nom_cites_iucn_ambiente_prioritaria_bibliografia
+    caracteristicas = taxon.caracteristicas
 
     def creaCaracteristica(valores)
       html = ''
@@ -153,7 +153,7 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
         biblio = dato[:bibliografias].any? ? "<ul>#{dato[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>" : ''
         biblio_html = " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.present?
-        obs_html = dato[:observaciones].any? ? "<p>Observaciones: #{dato[:observaciones].join('<hr />')}</p>" : ''
+        obs_html = dato[:observaciones].present? ? "<p>Observaciones: #{dato[:observaciones]}</p>" : ''
 
         dato[:descripciones].each do |l|
           html << "<li>#{l}</li> #{biblio_html} #{obs_html}"
@@ -211,9 +211,17 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
       response << "&nbsp;"*2 if tiene_valor  # Espacios para seprar las categorias
     end
 
-    response << "<small class='glyphicon glyphicon-question-sign text-primary ' onclick=\"$('#panelCaracteristicaDistribucionAmbiente').toggle(600,
-'easeOutBounce')\" style='cursor: pointer; margin-left: 10px;'></small>" if response.any?
-    response.join.html_safe
+    # Pesquerias sustentables del semaforo
+    if pez = taxon.pez
+	     
+      if pez.con_estrella
+         response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='<a href=\"/peces\" class=\"btn btn-link\" target=\"_blank\">Especie con certificación perteneciente al semáforo de consumo marino responsable</a>' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-certificacion-ev-icon'></i></span>"
+      else
+	      response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='<a href=\"/peces\" class=\"btn btn-link\" target=\"_blank\">Especie perteneciente al semáforo de consumo marino responsable</a>' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-ev-icon'></i></span>"
+      end
+    end
+
+    response.any? ? response.join.html_safe : ""
   end
 
   # REVISADO: Pone la simbologia en la ficha de la especie
@@ -307,24 +315,51 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     copyright = "Macaulay Library at The Cornell Lab of Ornithology"
     case type
     when 'photo'
-      link_to("<img src='#{item['mlBaseDownloadUrl']}/#{item['assetId']}/320' />".html_safe, '',
+      link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/320' />".html_safe, '',
               "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
-              "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/900",
+              "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}#{item['assetId']}/900",
               "data-type" => 'photo', "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='',
               "data-country" => item['countryName']||='', "data-state" => item['subnational1Name']||='', "data-locality" => item['locName']||='', "data-copyright" => copyright)
     when 'video'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/thumb' />".html_safe, '',
               "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
-              "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/video", "data-type" => 'video',
+              "data-observation"=> item['citationUrl'], "data-url" => "#{item['mlBaseDownloadUrl']}#{item['assetId']}/video", "data-type" => 'video',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
               "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
     when 'audio'
       link_to("<img src='#{item['mlBaseDownloadUrl']}#{item['assetId']}/poster' />".html_safe, '', "data-toggle" => "modal",
               "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons", "data-observation"=> item['citationUrl'],
-              "data-url" => "#{item['mlBaseDownloadUrl']}/#{item['assetId']}/audio", "data-type" => 'audio',
+              "data-url" => "#{item['mlBaseDownloadUrl']}#{item['assetId']}/audio", "data-type" => 'audio',
               "data-author" => item['userDisplayName'], "data-date" => item['obsDtDisplay']||='', "data-country" => item['countryName']||='',
               "data-state" => item['subnational1Name']||='', "data-locality" => item['locality']||='', "data-copyright" => copyright)
     end
+  end
+
+  def imprime_canto(item)
+    copyright = "Xeno Canto: Sharing bird sounds from around the world"
+    link_to image_tag("https:#{item['sono']['med']}"), "",  class: "m-1 modal-buttons", data: { 
+        toggle: "modal",
+        target: "#modal_reproduce",
+        type: "video",
+        url: "#{item['file']}",
+        observation: "https://#{item['url']}",
+        file: "#{item['file']}",
+        generic_name: item['gen'],
+        specific_name: item['sp'],
+        subspecies_name: item['ssp'],
+        english_name: item['en'],
+        country_recording: item['cnt'],
+        locality: item['loc'],
+        # url: item['url'], # 
+        file_name: item['file-name'],
+        license: item['lic'],
+        length: item['length'],
+        time: item['time'],
+        date: item['date'],
+        remarks: item['rmk'],
+        copyright: copyright,
+        author: item["rec"]
+      }
   end
 
   def imprime_img_tropicos(item)
@@ -364,6 +399,18 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
 
   def cargandoEspera
     "<p>Cargando... por favor, espera</p><div class='spinner-border text-secondary' role='status'><span class='sr-only'>Cargando...</span></div>".html_safe
+  end
+
+  # Es un select con los demas albumes de bdi para ver fotos directamente
+  def albumes_bdi
+    html = "<div class='dropdown'><button class='btn btn-light btn-sm dropdown-toggle text-primary' type='button' data-toggle='dropdown' aria-expanded='false'>Explora más fotos en los álbumes del BDI</button><div class='dropdown-menu'>"
+    
+    @albumes.each do |a| 
+      html << "<a class='dropdown-item' target='_blank' href=\"#{a[:url]}\">#{a[:nombre_album]} (#{a[:num_assets]} fotos) &middot; <i class='fa fa-external-link'></i></a>"
+    end
+    
+    html << "</div></div>"
+    html.html_safe
   end
 
 end

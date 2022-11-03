@@ -26,12 +26,9 @@
 			I18n.locale = "<%= I18n.locale %>";
 			I18n.fallbacks = true;
 	</script>
-	<% puts @b4.inspect %>
-	<% if @b4.present? %>
-		<%= stylesheet_link_tag 'boots3-downgrade/metamares/metamares_b4', 'data-turbolinks-track' => true %>
-	<% else %>
-		<%= stylesheet_link_tag 'boots3-downgrade/metamares/metamares', 'data-turbolinks-track' => true %>
-	<% end %>
+
+	<%= stylesheet_link_tag 'metamares/metamares_b4', 'data-turbolinks-track' => true %>
+
 	
 	
 	<%= csrf_meta_tags %>
@@ -54,7 +51,7 @@
 			<div class="container-fluid">
 				<div class="collapse navbar-collapse show" id="bs-example-navbar-collapse-1">
 					<% usuario = metausuario_signed_in?  ? current_metausuario : nil %>
-					<ul class="main-nav text-right my-0">
+					<ol class="main-nav text-right my-0">
 						<li><%= link_to 'Búsqueda de colecciones', metamares_proyectos_path, data: { turbolinks: false } %></li>&middot;
 						<li><%= link_to 'Nuevo registro de colección', new_metamares_proyecto_path, data: { turbolinks: false } %></li>&middot;
 						<!--li><%#= link_to 'Gráficas', metamares_graficas_path, data: { turbolinks: false } %></li-->
@@ -68,7 +65,7 @@
 						<% else %>
 							<li><%= link_to('<b>Iniciar sesión...</b>'.html_safe, new_metausuario_session_path, data: { turbolinks: false }) %></li>
 						<% end %>
-					</ul>
+					</ol>
 				</div>
 			</div>
 		</nav>
@@ -77,7 +74,7 @@
 			
 			<section class="container">
 				<div class="row">
-					<article class="col-md-12 col-sm-12 project-det texto_snmb">
+					<article class="col-lg-12 col-md-12 project-det texto_snmb">
 						<%= yield %>
 					</article>
 				</div>

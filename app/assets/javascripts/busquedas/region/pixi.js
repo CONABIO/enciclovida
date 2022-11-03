@@ -347,7 +347,7 @@ var porColeccion = function (markers, coleccion) {
               id: marker[2],
             });
           });
-
+          
           tree_complete = tree_complete.concat(innerContainer.children);
           tree = d3
             .quadtree()

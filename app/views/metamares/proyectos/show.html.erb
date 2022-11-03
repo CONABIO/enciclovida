@@ -1,46 +1,46 @@
 <h3><%= t('titulos.informacion_coleccion') %></h3>
 
-<div id="pestañas" class="panel row">
-  <ul class="nav nav-tabs links" role="tablist">
-    <li role="presentation" class="active">
-      <a href="#proyecto" class="btn btn-sm" aria-controls="proyecto" role="tab" data-toggle="tab">Colección</a>
+<div id="pestañas" class="card row">
+  <ul class="nav nav-tabs  nav-fill links" role="tablist">
+    <li role="presentation" class="nav-item">
+      <a href="#proyecto" class="nav-link active btn btn-sm" aria-controls="proyecto" role="tab" data-toggle="tab">Colección</a>
     </li>
-    <li role="presentation" >
-      <%= link_to 'Datos', '#dato', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato %>
+    <li role="presentation" class="nav-item" >
+      <%= link_to 'Datos', '#dato', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato %>
     </li>
-    <li role="presentation" >
-      <%= link_to 'Periodo', '#periodo', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo %>
+    <li role="presentation" class="nav-item" >
+      <%= link_to 'Periodo', '#periodo', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo %>
     </li>
-    <li role="presentation" >
-      <%= link_to 'Información adicional', '#infoAdicional', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional %>
+    <li role="presentation" class="nav-item">
+      <%= link_to 'Información adicional', '#infoAdicional', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional %>
     </li>
-    <li role="presentation" >
-      <%= link_to 'Región', '#region', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region %>
+    <li role="presentation" class="nav-item">
+      <%= link_to 'Región', '#region', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region %>
     </li>
-    <li role="presentation" >
-      <%= link_to 'Institución', '#institucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion %>
+    <li role="presentation" class="nav-item">
+      <%= link_to 'Institución', '#institucion', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion %>
     </li>
-    <li role="presentation" >
-      <%= link_to 'Especies', '#especiesEstudiadas', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas' %>
+    <li role="presentation" class="nav-item">
+      <%= link_to 'Especies', '#especiesEstudiadas', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas' %>
     </li>
-    <li role="presentation" >
-      <%= link_to 'Palabras claves', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
+    <li role="presentation" class="nav-item">
+      <%= link_to 'Palabras claves', '#keywords', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
     </li>
 
     <% if tiene_permiso_metamares?('AdminInfoceanosManager') || es_propietario_metamares?(@proyecto) %>
-      <li role="presentation" >
-        <%= link_to '<span class="glyphicon glyphicon-pencil"></span>'.html_safe, edit_metamares_proyecto_path(@proyecto), :class => 'pull-right btn btn-sm btn-warning' %>
+      <li role="presentation" class="nav-item">
+        <%= link_to '<span class="glyphicon glyphicon-pencil">Editar</span>'.html_safe, edit_metamares_proyecto_path(@proyecto), :class => 'nav-link float-right btn btn-sm btn-warning' %>
       </li>
-      <li role="presentation" >
-        <%= link_to '<span class="glyphicon glyphicon-trash"></span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
-                    class: 'pull-right btn btn-sm btn-warning', data: { confirm: 'Are you sure?' } %>
+      <li role="presentation" class="nav-item">
+        <%= link_to '<span class="glyphicon glyphicon-trash">Eliminar</span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
+                    class: 'nav-link float-right btn btn-sm btn-warning', data: { confirm: 'Are you sure?' } %>
       </li>
     <% end %>
   </ul>
 
   <div class="tab-content">
 
-    <div id="proyecto" role="tabpanel" class="tab-pane fade in panel-body active">
+    <div id="proyecto" role="tabpanel" class="tab-pane card-body active">
       <ul class="list-group">
         <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.nombre_proyecto') %></b>: <%= @proyecto.nombre_proyecto %></li>
         <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.autor') %></b>: <%= @proyecto.autor %></li>
@@ -54,7 +54,7 @@
       </ul>
     </div>
 
-    <div id='dato' role="tabpanel" class="tab-pane fade panel-body">
+    <div id='dato' role="tabpanel" class="tab-pane card-body">
       <ul class="list-group">
         <% if dato = @proyecto.dato %>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.dato.titulo_conjunto_datos') %></b>: <%= dato.titulo_conjunto_datos %></li>
@@ -84,7 +84,7 @@
       </ul>
     </div>
 
-    <div id='periodo' role="tabpanel" class="tab-pane fade panel-body">
+    <div id='periodo' role="tabpanel" class="tab-pane card-body">
       <ul class="list-group">
         <% if periodo = @proyecto.periodo %>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.periodo.periodicidad') %></b>: <%= periodo.periodicidad %></li>
@@ -99,7 +99,7 @@
       </ul>
     </div>
 
-    <div id='infoAdicional' role="tabpanel" class="tab-pane fade panel-body">
+    <div id='infoAdicional' role="tabpanel" class="tab-pane card-body">
       <ul class="list-group">
         <% if info_adicional = @proyecto.info_adicional %>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.info_adicional.informacion_objeto') %></b>: <%= info_adicional.informacion_objeto %></li>
@@ -113,7 +113,7 @@
       </ul>
     </div>
 
-    <div id='region' role="tabpanel" class="tab-pane fade panel-body">
+    <div id='region' role="tabpanel" class="tab-pane card-body">
       <ul class="list-group">
         <% if region = @proyecto.region %>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.region.nombre_ubicacion') %></b>: <%= region.nombre_ubicacion %></li>
@@ -130,7 +130,7 @@
       </ul>
     </div>
 
-    <div id='institucion' role="tabpanel" class="tab-pane fade panel-body">
+    <div id='institucion' role="tabpanel" class="tab-pane card-body">
       <ul class="list-group">
         <% if institucion = @proyecto.institucion %>
           <li class="list-group-item"><b><%= t('simple_form.labels.metamares_proyecto.institucion.nombre_institucion') %></b>: <%= institucion.nombre_institucion %></li>
@@ -141,7 +141,7 @@
       </ul>
     </div>
 
-    <div id='especiesEstudiadas' role="tabpanel" class="tab-pane fade panel-body">
+    <div id='especiesEstudiadas' role="tabpanel" class="tab-pane card-body">
       <ul class="list-group">
         <% @proyecto.especies.each do |e| %>
           <li class="list-group-item"><%= e.especie ? tituloNombreCientifico(e.especie, render: 'link').html_safe : e.nombre_cientifico %></li>
@@ -149,7 +149,7 @@
       </ul>
     </div>
 
-    <div id='keywords' role="tabpanel" class="tab-pane fade panel-body">
+    <div id='keywords' role="tabpanel" class="tab-pane card-body">
       <% @proyecto.keywords.map(&:nombre_keyword).each do |k| %>
         <h4><span class="label label-primary"><%= k %></span></h4>
       <% end %>
@@ -159,3 +159,4 @@
   <%= t('simple_form.labels.metamares_proyecto.updated_at') %>: <%= @proyecto.updated_at.strftime("%Y/%m/%d") %>
 
 </div>
+

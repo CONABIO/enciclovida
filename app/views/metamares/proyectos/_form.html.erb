@@ -11,45 +11,45 @@
     #select:        :floating_labels_select
 } do |f| %>
 
-  <div id="pestañas" class="panel row">
-    <ul class="nav nav-tabs links" role="tablist">
-      <li role="presentation" class="active">
-        <a href="#proyecto" class="btn btn-sm" aria-controls="proyecto" role="tab" data-toggle="tab">Colección</a>
+  <div id="pestañas" class="card row">
+    <ul class="nav nav-tabs  nav-fill links" role="tablist">
+      <li role="presentation" class="nav-item">
+        <a href="#proyecto" class="nav-link active btn btn-sm" aria-controls="proyecto" role="tab" data-toggle="tab">Colección</a>
       </li>
-      <li role="presentation" >
-        <%= link_to 'Datos', '#dato', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato %>
+      <li role="presentation" class="nav-item">
+        <%= link_to 'Datos', '#dato', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato %>
       </li>
-      <li role="presentation" >
-        <%= link_to 'Periodo', '#periodo', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo %>
+      <li role="presentation" class="nav-item">
+        <%= link_to 'Periodo', '#periodo', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo %>
       </li>
-      <li role="presentation" >
-        <%= link_to 'Información adicional', '#infoAdicional', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional %>
+      <li role="presentation" class="nav-item">
+        <%= link_to 'Información adicional', '#infoAdicional', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :info_adicional %>
       </li>
-      <li role="presentation" >
-        <%= link_to 'Región', '#region', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region %>
+      <li role="presentation" class="nav-item">
+        <%= link_to 'Región', '#region', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region %>
       </li>
-      <li role="presentation">
-        <%= link_to 'Institución', '#institucion', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion %>
+      <li role="presentation" class="nav-item">
+        <%= link_to 'Institución', '#institucion', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion %>
       </li>
-      <li role="presentation" >
-        <%= link_to 'Especies', '#especiesEstudiadas', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas' %>
+      <li role="presentation" class="nav-item">
+        <%= link_to 'Especies', '#especiesEstudiadas', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas' %>
       </li>
-      <li role="presentation" >
-        <%= link_to 'Palabras clave', '#keywords', :class => 'btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
+      <li role="presentation" class="nav-item">
+        <%= link_to 'Palabras clave', '#keywords', :class => 'nav-link btn btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords %>
       </li>
-      <li role="presentation" >
-        <%= link_to('<span class="glyphicon glyphicon-trash"></span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
-                    class: 'pull-right btn btn-sm btn-warning', data: { confirm: '¿Estás seguro de eliminar esta colección?' }) if !@proyecto.new_record? %>
+      <li role="presentation" class="nav-item">
+        <%= link_to('<span class="glyphicon glyphicon-trash">Eliminar colección</span>'.html_safe, metamares_proyecto_path(@proyecto), method: :delete,
+                    class: 'float-right nav-link btn btn-sm btn-warning', data: { confirm: '¿Estás seguro de eliminar esta colección?' }) if !@proyecto.new_record? %>
       </li>
     </ul>
 
     <div class="tab-content">
 
-      <div id="proyecto" role="tabpanel" class="tab-pane fade in panel-body active">
+      <div id="proyecto" role="tabpanel" class="tab-pane card-body active">
         <%= render partial: 'form_proyecto', locals: { f: f } %>
       </div>
 
-      <div id='infoAdicional' role="tabpanel" class="tab-pane fade panel-body">
+      <div id='infoAdicional' role="tabpanel" class="tab-pane card-body">
         <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Info adicional'.html_safe, f, :info_adicional, partial: 'form_info_adicional', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab',
                                     "aria-controls" => :info_adicional, 'data-association-insertion-node' => '#infoAdicional', 'data-association-insertion-method' => 'append', href: '#infoAdicional', style: 'display: none;') if @proyecto.new_record? %>
         <hr />
@@ -58,7 +58,7 @@
         <% end %>
       </div>
 
-      <div id='periodo' role="tabpanel" class="tab-pane fade panel-body">
+      <div id='periodo' role="tabpanel" class="tab-pane card-body">
         <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Periodo'.html_safe, f, :periodo, partial: 'form_periodo', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :periodo, 'data-association-insertion-node' => '#periodo', 'data-association-insertion-method' => 'append', href: '#periodo', style: 'display: none;') if @proyecto.new_record? %>
         <hr />
         <%= f.simple_fields_for :periodo do |periodo| %>
@@ -66,7 +66,7 @@
         <% end %>
       </div>
 
-      <div id='region' role="tabpanel" class="tab-pane fade panel-body">
+      <div id='region' role="tabpanel" class="tab-pane card-body">
         <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Region'.html_safe, f, :region, partial: 'form_region', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :region, 'data-association-insertion-node' => '#region', 'data-association-insertion-method' => 'append', href: '#region', style: 'display: none;') if @proyecto.new_record? %>
         <hr />
         <%= f.simple_fields_for :region do |region| %>
@@ -74,7 +74,7 @@
         <% end %>
       </div>
 
-      <div id='dato' role="tabpanel" class="tab-pane fade panel-body">
+      <div id='dato' role="tabpanel" class="tab-pane card-body">
         <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Dato'.html_safe, f, :dato, partial: 'form_dato', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :dato, 'data-association-insertion-node' => '#dato', 'data-association-insertion-method' => 'append', href: '#dato', style: 'display: none;') if @proyecto.new_record? %>
         <hr />
         <%= f.simple_fields_for :dato do |dato| %>
@@ -82,7 +82,7 @@
         <% end %>
       </div>
 
-      <div id='institucion' role="tabpanel" class="tab-pane fade panel-body">
+      <div id='institucion' role="tabpanel" class="tab-pane card-body">
         <%= link_to_add_association('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Institucion'.html_safe, f, :institucion, partial: 'form_institucion', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :institucion, 'data-association-insertion-node' => '#institucion', 'data-association-insertion-method' => 'append', href: '#institucion', style: 'display: none;') if @proyecto.new_record? || (!@proyecto.new_record? && !f.object.institucion) %>
         <hr />
         <%= f.simple_fields_for :institucion do |institucion| %>
@@ -101,7 +101,7 @@
 
       </div>
 
-      <div id='especiesEstudiadas' role="tabpanel" class="tab-pane fade panel-body">
+      <div id='especiesEstudiadas' role="tabpanel" class="tab-pane card-body">
         <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una especie'.html_safe, f, :especies, partial: 'form_especies_estudiadas', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => 'especiesEstudiadas', 'data-association-insertion-node' => '#especiesEstudiadas', 'data-association-insertion-method' => 'append', href: '#especiesEstudiadas' %>
         <hr />
         <%= f.simple_fields_for :especies do |especie| %>
@@ -109,7 +109,7 @@
         <% end %>
       </div>
 
-      <div id='keywords' role="tabpanel" class="tab-pane fade panel-body">
+      <div id='keywords' role="tabpanel" class="tab-pane card-body">
         <%= link_to_add_association '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Asociar una palabra clave'.html_safe, f, :keywords, partial: 'form_keywords', :class => 'btn btn-info btn-sm', role: 'tab', "data-toggle" => 'tab', "aria-controls" => :keywords, 'data-association-insertion-node' => '#keywords', 'data-association-insertion-method' => 'append', href: '#keywords' %>
         <hr />
         <%= f.simple_fields_for :keywords do |kw| %>

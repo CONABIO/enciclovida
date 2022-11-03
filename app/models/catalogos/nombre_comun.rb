@@ -39,7 +39,8 @@ adicionales.foto_principal, adicionales.fotos_principales, adicionales.nombre_co
 
   # El orden de las lenguas, ya para que no se enojen!!!
   LENGUAS_PRIMERO = ['Español', 'Español México', 'Náhuatl', 'Maya', 'Otomí', 'Huasteco', 'Purépecha', 'Huichol', 'Zapoteco', 'Totonaco', 'Mixteco', 'Mazahua', 'Tepehuano', 'Inglés']
-  LENGUAS_ULTIMO = ['Bavarian', 'Aymara', 'Afrikáans', 'Romansh', 'Sardinian', 'Rumano', 'Friulian', 'Ladino', 'Estonio', 'Albanés', 'Zaza', 'Hindi', 'Búlgaro', 'Chino tradicional', 'Ruso', 'Japonés', 'Hebreo', 'Coreano', 'AOU 4-Letter Codes', 'Vermont Flora Codes', 'ND']
+  LENGUAS_ULTIMO = ['Bavarian', 'Aymara', 'Afrikáans', 'Romansh', 'Sardinian', 'Rumano', 'Friulian', 'Ladino', 'Estonio', 'Albanés', 'Zaza', 'Hindi', 'Búlgaro', 'Ruso', 'Japonés', 'Hebreo', 'Coreano', 'Vermont Flora Codes', 'ND']
+  LENGUAS_PROHIBIDAS = ['Chino']  # Truena la condificaion, incluso cambiandola a utf8mb4
 
   def species_or_lower?(cat, con_genero = false)
     if con_genero
@@ -50,7 +51,6 @@ adicionales.foto_principal, adicionales.fotos_principales, adicionales.nombre_co
   end
 
   def completa_blurrily
-    return if Rails.env.development_mac?
     FUZZY_NOM_COM.put(nombre_comun, id)
   end
 

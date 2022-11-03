@@ -196,8 +196,10 @@ $(document).ready(function () {
 				"focus",
 				"#nombre_especie, #nombre_region",
 				function () {
-						if ($(this).attr("soulmate") == true) return;
-						$(this).attr("soulmate", true);
+					if ($(this).attr("soulmate") == true) return; else $(this).attr("soulmate", true);
+					
+					// Para que las coincidencias esten vinculadas a la caja de texto correspondiente
+					$('#soulmate').remove();
 						
 						if (this.id == "nombre_especie")
 								soulmateAsigna("busqueda_region", this.id);

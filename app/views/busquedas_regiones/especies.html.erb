@@ -46,19 +46,15 @@
 				<%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
 				<%= render partial: 'busquedas_regiones/guias/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ',') } %>
 				
-				<div class="d-flex flex-row">
-					<%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-region', class: 'btn btn-info btn-sm mr-3') %>
-					<% if @valida_guia %>
-						<%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-guia', class: 'btn btn-info btn-sm') %>
-					<% else %>	
-						<%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-title disabled', title: "Hay que seleccionar una región (municipio o ANP) y un grupo taxonómico (clase, orden o familia)") %>
+					<%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-region', class: 'btn btn-info btn-sm btn-block') %>
+					<% if @valida_guia %>m
+						<%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-guia', class: 'btn btn-info btn-sm btn-block') %>
+					<% else %>
+						<%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-block btn-title disabled', title: "Hay que seleccionar una región (municipio o ANP) y un grupo taxonómico (clase, orden o familia)") %>
 					<% end %>
-				</div>
 			<% else %>
-				<div class="d-flex flex-row">
-					<%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm mr-3 btn-title disabled', title: "Hay que seleccionar al menos un filtro") %>
-					<%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-title disabled', title: "Hay que seleccionar una región (municipio o ANP) y un grupo taxonómico (clase, orden o familia)") %>
-				</div>						
+					<%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-block btn-title disabled', title: "Hay que seleccionar al menos un filtro") %>
+					<%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-block btn-title disabled', title: "Hay que seleccionar una región (municipio o ANP) y un grupo taxonómico (clase, orden o familia)") %>
 			<% end %>
 		</div>
 		
@@ -70,13 +66,14 @@
 		<% tax_et_region = (taxon_seleccionado.present? && params[:nombre_region].present?) %>
 		
 		<div class="w-25 text-right">
-				<div class="btn-group dropup">
-					<button class="btn btn-info btn-sm dropdown-toggle" type="button" id="dropdownMasInfoButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" <%= "disabled" unless tax_et_region %> >Más info</button>
-					<div class="dropdown-menu" aria-labelledby="dropdownMasInfoButton">
-						<h6 class="dropdown-header">Más info acerca de: <%= [taxon_seleccionado.nombre_cientifico.sanitize,params[:nombre_region]].join(', ') if tax_et_region %> <i class="fa fa-external-link-square"></i>:</h6>
-						<%= ligas_mas_info((tax_et_region ? '"'+taxon_seleccionado.nombre_cientifico.sanitize+'"'+'+'+'"'+params[:nombre_region]+'"' : '' ))[3,4].join.html_safe %>
-					</div>
+			<button id="tutorialGuias" type="button" class="btn btn-sm btn-block btn-warning" data-toggle="modal" data-target="#multiModal" title="Tutorial guías de especies" data-body="<%= insertaVideo("YClySqweW7U") %>" onclick="$('#multiModalBody').html($(this).data('body'), $('#multiModalLabel').html('Tutorial guías de especies') );" >Tutorial guías <i class='fa fa-video-camera'></i></button>
+			<div class="btn-group dropup btn-block">
+				<button class="btn btn-info btn-sm dropdown-toggle" type="button" id="dropdownMasInfoButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" <%= "disabled" unless tax_et_region %> >Más info</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMasInfoButton">
+					<h6 class="dropdown-header">Más info acerca de: <%= [taxon_seleccionado.nombre_cientifico.sanitize,params[:nombre_region]].join(', ') if tax_et_region %> <i class="fa fa-external-link-square"></i>:</h6>
+					<%= ligas_mas_info((tax_et_region ? '"'+taxon_seleccionado.nombre_cientifico.sanitize+'"'+'+'+'"'+params[:nombre_region]+'"' : '' ))[3,4].join.html_safe %>
 				</div>
+			</div>
 		</div>
 	</div>
 	
@@ -137,8 +134,7 @@
 							$("html,body").animate({ scrollTop: 100 }, 400);
 					});
 					
-					$('#contenedor_especies .btn-title').tooltip();
-					
+					tooltip("#contenedor_especies .btn-title");
 			});
 	</script>
 

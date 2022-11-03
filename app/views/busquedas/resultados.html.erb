@@ -27,8 +27,8 @@
   <% content_for(:delayedjs) do %>
     <script type="text/javascript">
         $(document).ready(function(){
-            <% if params[:id].present? && params[:nivel].present? && params[:cat].present? %>
-            cat_tax_asociadas('<%= params[:id] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
+            <% if (params[:id].present? || params[:id_gi].present?) && params[:nivel].present? && params[:cat].present? %>
+            cat_tax_asociadas('<%= params[:id].present? ? params[:id] : params[:id_gi] %>','<%= params[:nivel] %>','<%= params[:cat] %>');
             <% end %>
         });
     </script>

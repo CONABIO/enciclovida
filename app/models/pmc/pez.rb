@@ -59,6 +59,10 @@ class Pmc::Pez < ActiveRecord::Base
     especie.guarda_redis(loader: 'peces', foto_principal: imagen)
   end
 
+  def pesquerias_sustentables
+    criterio_propiedades.where(tipo_propiedad: "Pesquerías en vías de sustentabilidad")
+  end
+
   # REVISADO: Actualiza todos los servicios
   def self.actualiza_todo
     all.each do |p|
@@ -177,19 +181,17 @@ class Pmc::Pez < ActiveRecord::Base
   # REVISADO: Asigna la ilustracion, foto o ilustracion, asi como el tipo de foto
   def asigna_imagen
     # Trata de asignar la ilustracion
-    bdi = BDIService.new
-    res = bdi.dameFotos(taxon: especie, campo: 528, autor: 'Sergio de la Rosa Martínez', autor_campo: 80, ilustraciones: true)
-
-    if res[:estatus]
-      if res[:fotos].any?
-        self.imagen = res[:fotos].first.medium_url
-        self.tipo_imagen = 1
-        return
-      end
+    e = especie
+    bdi = especie.fotos_bdi({ nombre_cientifico: e.nombre_cientifico, autor: 'Sergio de la Rosa Martínez', autor_campo: 80, ilustraciones: true })
+    
+    if bdi.num_assets > 0
+      self.imagen = bdi.assets.first.medium_url
+      self.tipo_imagen = 1
+      return
     end
 
-    # Trata de asignar la foto principal
-    if a = adicional
+    # Trata de ver si ya tenia foto principal
+    if a = e.adicional
       foto = a.foto_principal
 
       if foto.present?

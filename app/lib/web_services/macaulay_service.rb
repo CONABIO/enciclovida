@@ -3,21 +3,25 @@ class MacaulayService
   def dameMedia_nc(taxonNC, type, page=1, min_page_size = 20)
     cornell = Rails.env.production? ? CONFIG.cornell.api : CONFIG.cornell.api_rp
 
-    url = "#{cornell}sciName=#{taxonNC.limpiar.gsub(' ','+')}&assetFormatCode=#{type}&taxaLocale=es&page=#{page}&pageSize=#{min_page_size}"
-    url_escape = URI.escape(url)
-    uri = URI.parse(url_escape)
+    taxon_escape = ERB::Util.url_encode(taxonNC)
+    url = "#{cornell}sciName=#{taxon_escape}&mediaType=#{type}&taxaLocale=es&count=#{min_page_size}"
+    uri = URI.parse(url)
     req = Net::HTTP::Get.new(uri.to_s)
     req['key'] = CONFIG.cornell.key
-
+    
     begin
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       res = http.request(req)
-      jres = JSON.parse(res.body) if res.body.present?
-      #Si la especie es correcta pero ya no hay más media q mostrar, no hay error, solo un body vacío
-      jres = [{msg: "No hay más resultados para #{taxonNC}", length: res.header['content-length']}] if res.header['content-length'] == "0"
-      #Si la  especie no es encontrada, Macaulay arroja un 404 :D
-      jres = [{msg: "No se encontró coincidencia para #{taxonNC}", code: res.code}] if res.code == "404"
+
+      if res.body.present?
+        jres = JSON.parse(res.body) 
+        #Si la  especie no es encontrada, Macaulay arroja un 404 :D
+        jres = [{msg: "No se encontró coincidencia para #{taxonNC}"}] if jres.class == Hash && jres["message"].present?
+      else
+        jres = [{msg: "No se encontró coincidencia para #{taxonNC}"}]
+      end
+
       jres
     rescue => e
       [{msg: "Hubo algun error en la solicitud: #{e} \n intente de nuevo más tarde"}]
@@ -25,4 +29,3 @@ class MacaulayService
   end
 
 end
-

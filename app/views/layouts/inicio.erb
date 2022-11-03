@@ -35,7 +35,7 @@
 </head>
 
 <body class="index" style="background-image: url('/assets/portada/fondo.jpg');">
-<%# render :partial => 'shared_b4/ribbon', locals: {mensaje: "¡Estamos estrenando <br />  app para dispositivos iOS!" } %>
+<%#= render :partial => 'shared_b4/ribbon', locals: {mensaje: "En mantenimiento<br> Algunas funciones no  están disponibles " } %>
 <header class="container-fluid">
 	<%= render :partial => 'shared_b4/brandBar' %>
 </header>
@@ -50,7 +50,10 @@
   <%= render :partial => 'shared_b4/footer_social' %>
   <%= render :partial => 'shared_b4/footer_legal' %>
 </footer>
+
 <%#= render :partial => 'shared_b4/toast', locals: {header: "Noticias", body: "¡Nueva versión de Búsquedas por región!", body_link: "/explora-por-region"} %>
+<%= render partial: 'shared_b4/multimodal' %>
+
 <%= yield :delayedcss %>
 <%= yield :delayedjs %>
 </body>

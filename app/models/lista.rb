@@ -24,7 +24,7 @@ class Lista < ActiveRecord::Base
   # Columnas permitidas a exportar por el usuario
   COLUMNAS_PROVEEDORES = %w(catalogo_id x_naturalista_id x_snib_id x_snib_reino)
   COLUMNAS_GEODATOS = %w(x_naturalista_obs x_snib_registros x_geoportal_mapa)
-  COLUMNAS_RIESGO_COMERCIO = %w(x_nom x_iucn x_cites)
+  COLUMNAS_RIESGO_COMERCIO = %w(x_nom x_nom_obs x_iucn x_iucn_obs x_cites x_cites_obs)
   COLUMNAS_CATEGORIAS = CategoriaTaxonomica::CATEGORIAS.map{|cat| "x_#{cat}"}
   COLUMNAS_CATEGORIAS_PRINCIPALES = %w(x_reino x_division x_phylum x_clase x_orden x_familia x_genero x_especie)
   COLUMNAS_FOTOS = %w(x_foto_principal x_naturalista_fotos x_bdi_fotos)
@@ -33,6 +33,9 @@ class Lista < ActiveRecord::Base
                         cita_nomenclatural nombre_autoridad)
   COLUMNAS_BASICAS = %w(id nombre_cientifico x_categoria_taxonomica x_estatus)                        
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
+
+  # El orden absoluto de las columnas en el excel
+  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes) + COLUMNAS_CATEGORIAS_PRINCIPALES + COLUMNAS_RIESGO_COMERCIO + %w(x_tipo_distribucion x_ambiente x_num_reg id x_categoria_taxonomica x_estatus x_url_ev x_bibliografia)
 
   def after_initialize
     self.taxones = []
@@ -64,12 +67,9 @@ class Lista < ActiveRecord::Base
     sheet.sheet_name = 'Resultados'
     fila = 1  # Para no sobreescribir la cabecera
     columna = 0
-    
-    cols = if columnas_array.present?
-              columnas_array
-           else
-              columnas.split(',') if columnas.present?
-           end
+
+    ordena_columnas(opts)
+    cols = columnas_array
 
     # Para la cabecera
     cols.each do |a|
@@ -78,7 +78,7 @@ class Lista < ActiveRecord::Base
     end
 
     # Elimina las 3 primeras, para que no trate de evaluarlas mas abajo
-    cols.slice!(0..2) if opts[:asignar]
+    cols.slice!(0..2) if opts[:validacion]
 
     if opts[:es_busqueda]  # Busqueda basica o avanzada
       r = Especie.find_by_sql(opts[:busqueda])
@@ -90,7 +90,7 @@ class Lista < ActiveRecord::Base
     end
 
     taxones.each do |taxon|
-      if opts[:asignar]
+      if opts[:validacion]
         # Viene del controlador validaciones, taxon contiene, estatus, el taxon y mensaje
         if taxon[:estatus]  # Si es un sinónimo
           if taxon[:taxon_valido].present?
@@ -159,34 +159,71 @@ class Lista < ActiveRecord::Base
   end
 
   def to_pdf(opts={})
-    fecha = Time.now.strftime("%Y-%m-%d")
-    self.cadena_especies = cadena_especies.gsub("&job=1", "")
-    self.cadena_especies = cadena_especies + "&fecha=" + fecha + "&nombre_guia=" + nombre_lista
-    
-    ruta_dir = Rails.root.join('public','descargas_guias', fecha)
-    FileUtils.mkpath(ruta_dir, :mode => 0755) unless File.exists?(ruta_dir)    
-    
-    uri = URI(cadena_especies)
-    res = Net::HTTP.get_response(uri)
-    
-    if res.is_a?(Net::HTTPSuccess)
-      ruta_pdf = Rails.root.join('public','descargas_guias', fecha, "#{nombre_lista}.pdf")
+    # Para que parse los paramatros como el controlador de rails
+    params = Rack::Utils.parse_nested_query(cadena_especies, "?&").symbolize_keys
 
-      if File.exists? ruta_pdf
-        pdf_url = "#{CONFIG.site_url}descargas_guias/#{fecha}/#{nombre_lista}.pdf"
-  
-        if opts[:correo].present?
-          EnviaCorreo.descargar_guia(pdf_url, opts[:correo], opts[:original_url].gsub("/especies.pdf?", "?").gsub("&job=1", "")).deliver
-        end
-  
-        {estatus: true, pdf_url: pdf_url}
-      else
-        {estatus: true, msg: 'No pudo guardar el archivo'}
-      end    
+    br = BusquedaRegion.new
+    br.params = params
+    br.informacion_descarga_guia
 
-    else
-      {estatus: true, msg: 'No pudo guardar el archivo'}
+    resp = br.resp
+    url_enciclovida = opts[:original_url]
+    url_enciclovida.gsub!("/especies.json", "").gsub!("guia=1", "")
+
+    pdf_html = ActionController::Base.new.render_to_string(   
+        template: 'busquedas_regiones/guias/especies', 
+        layout: 'guias.pdf.erb',
+        locals: { resp: resp }, 
+    )
+
+    pdf = WickedPdf.new.pdf_from_string(
+        pdf_html,
+        encoding: 'UTF-8',
+        wkhtmltopdf: CONFIG.wkhtmltopdf_path,
+        page_size: 'Letter',
+        page_height: 279,
+        page_width:  215,
+        orientation: 'Portrait',
+        disposition: 'attachment',
+        disable_internal_links: false,
+        disable_external_links: false,     
+        header: {
+            content: ActionController::Base.new.render_to_string(
+                'busquedas_regiones/guias/header',
+                layout: 'guias.pdf.erb',
+                locals: { titulo_guia: resp[:titulo_guia] },
+            ),
+        },    
+        footer: {
+            content: ActionController::Base.new.render_to_string(
+                'busquedas_regiones/guias/footer',
+                layout: 'guias.pdf.erb',
+                locals: { url_enciclovida: url_enciclovida },
+            ),
+        },    
+    )
+
+    ruta_dir = Rails.root.join('public','descargas_guias', opts[:fecha])
+    FileUtils.mkpath(ruta_dir, :mode => 0755) unless File.exists?(ruta_dir)
+    ruta_pdf = ruta_dir.join("#{nombre_lista}.pdf")
+
+    File.open(ruta_pdf, 'wb') do |file|
+      file << pdf
     end
+  
+    # Verifica que el PDF exista
+    if File.exists? ruta_pdf
+      pdf_url = "#{CONFIG.site_url}descargas_guias/#{opts[:fecha]}/#{nombre_lista}.pdf"
+
+      if params[:correo].present?
+        EnviaCorreo.descargar_guia(pdf_url, params[:correo], url_enciclovida).deliver
+      end
+
+      { estatus: true, pdf_url: pdf_url }
+    else
+      { estatus: false, msg: 'No pudo guardar el archivo' }
+    end    
+
   end
 
   # Para asignar los datos de una lista de ids de especies, hacia un excel o csv, el recurso puede ser un string o un objeto
@@ -259,47 +296,41 @@ class Lista < ActiveRecord::Base
         next unless tipos_distribuciones.any?
         self.taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
       when 'x_nom'  # TODO: homologar las demas descargas
-        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
-          nom = []
-          taxon.catalogos.each do |catalogo|
-            if catalogo.nivel1 == 4 && catalogo.nivel2 == 1
-              nom << catalogo
-            end
-          end
-        else
-          nom = taxon.catalogos.nom.distinct
-        end
-
+        nom = taxon.catalogos.nom.distinct
         next unless nom.any?
         self.taxon.x_nom = nom.map(&:descripcion).join(', ')
-      when 'x_iucn'  # TODO: homologar las demas descargas
-        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
-          iucn = []
-          taxon.catalogos.each do |catalogo|
-            if catalogo.nivel1 == 4 && catalogo.nivel2 == 2
-              iucn << catalogo
-            end
-          end
-        else
-          iucn = taxon.catalogos.iucn.distinct
+        
+        # Para las observaciones
+        obs = []
+        taxon.especies_catalogos.each do |cat|
+          obs << cat.observaciones if [14,15,16,17].include?(cat.catalogo_id)
         end
-
+        
+        self.taxon.x_nom_obs = obs.join(', ')
+      when 'x_iucn'  # TODO: homologar las demas descargas
+        iucn = taxon.catalogos.iucn.distinct
         next unless iucn.any?
         self.taxon.x_iucn = iucn.map(&:descripcion).join(', ')
-      when 'x_cites'  # TODO: homologar las demas descargas
-        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
-          cites = []
-          taxon.catalogos.each do |catalogo|
-            if catalogo.nivel1 == 4 && catalogo.nivel2 == 3
-              cites << catalogo
-            end
-          end
-        else
-          cites = taxon.catalogos.cites.distinct
+        
+        # Para las observaciones
+        obs = []
+        taxon.especies_catalogos.each do |cat|
+          obs << cat.observaciones if [25,26,27,28,29,30,31,32,1022,1023].include?(cat.catalogo_id)
         end
-
+        
+        self.taxon.x_iucn_obs = obs.join(', ')
+      when 'x_cites'  # TODO: homologar las demas descargas
+        cites = taxon.catalogos.cites.distinct
         next unless cites.any?
-        self.taxon.x_cites = cites.map(&:descripcion).join(', ')        
+        self.taxon.x_cites = cites.map(&:descripcion).join(', ')   
+
+        # Para las observaciones
+        obs = []
+        taxon.especies_catalogos.each do |cat|
+          obs << cat.observaciones if [22,23,24].include?(cat.catalogo_id)
+        end
+        
+        self.taxon.x_cites_obs = obs.join(', ')  
       when 'x_ambiente'  # TODO: homologar las demas descargas
         if hash_especies.present?  # Quiere decir que viene de las descargas pr region
           ambiente = []
@@ -368,7 +399,7 @@ class Lista < ActiveRecord::Base
     if columnas_array.blank? && columnas.present?
       self.columnas_array = columnas.split(',')
     end
-    
+
     if columnas_array.include?('x_cat_riesgo')
       self.columnas_array = columnas_array << COLUMNAS_RIESGO_COMERCIO
       self.columnas_array.delete('x_cat_riesgo')
@@ -386,6 +417,18 @@ class Lista < ActiveRecord::Base
 
     self.columnas_array = columnas_array.flatten
     self.columnas = columnas_array.join(',')
+  end
+
+  def ordena_columnas(opts={})
+    cols = if columnas_array.present?
+              columnas_array
+            else
+              columnas.split(',') if columnas.present?
+            end 
+
+    if !opts[:validacion]
+      self.columnas_array = COLUMNAS_ORDEN & cols
+    end
   end
 
 end

@@ -1,25 +1,25 @@
-<% if page.nil? %>
-  <div class="d-flex flex-column flex-md-row mb-3 h1">
-    <% icono = {'photo' => 'camera', 'video' => 'film'} %>
-    <i class='fa fa-<%=icono[type]%>'></i>
+<% if @num_fotos > 0 %>
+  <div class="d-flex flex-column justify-content-between flex-md-row mb-3 h1">
+    <% icono = {'photo' => 'fa fa-camera', 'video' => 'fa fa-film', 'usos' => 'usos-ev-icon'} %>
+    <i class='<%=icono[type]%> btn-title' title="<%= type.titleize %>"></i>
     <i class ='bdi-ev-icon'></i>
     <i class ='conabio_completo-ev-icon'></i>
-  </div>
-  <div class="paginado-media d-flex align-items-center">
-<% end %>
 
-<% if @fotos.any? %>
-  <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-left"></i></button>
-  <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-right"></i></button>
-  <% @fotos.each do |foto| %>
-    <%= imprime_media_bdi(foto, 'photo') %>
-  <% end %>
+    <% if type == "photo" %>
+      <%= albumes_bdi %>
+    <% end %>
+  </div>
+
+  <div class="paginado-media d-flex align-items-center">
+
+    <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-left"></i></button>
+    <button type="button" class="btn rounded-circle btn-light position-absolute"><i class="fa fa-chevron-right"></i></button>
+
+    <% @fotos.each do |foto| %>
+      <%= imprime_media_bdi(foto, 'photo') %>
+    <% end %>
+
+  </div>
 <% else %>
   <p>Lo sentimos, no contamos con una imágen para esta especie, <a href="https://www.biodiversidad.gob.mx/recursos/bancoimg.html">¿quieres contribuir proporcionando una imágen?</a></p>
 <% end %>
-
-<% if page.nil? %>
-  <!--div class="text-center paginado_2"></div-->
-  </div>
-<% end %>
-

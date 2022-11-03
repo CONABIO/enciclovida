@@ -31,6 +31,8 @@ class BusquedaAvanzada < Busqueda
 
       # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al nivel
       self.taxones = taxones.nivel_categoria(params[:nivel], params[:cat])
+    elsif params[:cat].present? && params[:nivel].present?
+      self.taxones = taxones.nivel_categoria(params[:nivel], params[:cat])
     end
   end
 

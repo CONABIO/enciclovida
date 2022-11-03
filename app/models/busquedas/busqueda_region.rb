@@ -3,6 +3,7 @@ class BusquedaRegion < Busqueda
   attr_accessor :resp, :num_ejemplares
 
   ESPECIES_POR_PAGINA = 8.freeze
+  ESPECIES_POR_PAGINA_API = [50, 100, 200]
 
   def initialize
     self.taxones = []
@@ -80,42 +81,39 @@ class BusquedaRegion < Busqueda
 
   # Para descargar la informacion de la guia
   def descarga_taxa_pdf
-    if params[:job].present? && params[:job] == "1"  # Guarda el trabajo o manda a llamar la accion
-      unless Usuario::CORREO_REGEX.match(params[:correo])
-        self.resp = resp.merge({ estatus: false, msg: 'Favor de verificar el correo' })
-        return
-      end
+    unless Usuario::CORREO_REGEX.match(params[:correo])
+      return self.resp = { estatus: false, msg: 'Favor de verificar el correo' }
+    end    
+        
+    lista = Lista.new
+    lista.formato = 'pdf'
+    lista.cadena_especies = original_url
+    lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
+    lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_guia_EncicloVida"
 
-      lista = Lista.new
-      lista.formato = 'pdf'
-      lista.cadena_especies = original_url
-      lista.usuario_id = 0  # Quiere decir que es una descarga, la guardo en lista para tener un control y poder correr delayed_job
-      lista.nombre_lista = Time.now.strftime("%Y-%m-%d_%H-%M-%S-%L") + "_guia_EncicloVida"
-
-      if Rails.env.production?
-        lista.delay(queue: 'descargar_taxa').to_pdf({ correo: params[:correo], original_url: original_url }) if lista.save
-      else  # Para develpment o test
-        lista.to_pdf({ correo: params[:correo], original_url: original_url }) if lista.save
-      end
-
-      self.resp.merge({ estatus: true, msg: nil })      
-    
-    else  # Genera la guia directamente
-      especies_por_region
-      return unless resp[:estatus]
-      especies_filtros
-      especies_por_pagina(especies_guia: true)
-      asocia_informacion_taxon(especies_guia: true)
-
-      self.resp[:taxones] = taxones
-      self.resp[:totales] = totales
-      self.resp[:num_ejemplares] = num_ejemplares
-      self.resp[:resultados] = nil
-      
-      # Para armar el titulo de la guia
-      self.resp[:titulo_guia] = titulo_guia      
+    if Rails.env.production?
+      lista.delay(queue: 'descargar_taxa').to_pdf({ fecha: Time.now.strftime("%Y-%m-%d"), original_url: original_url }) if lista.save
+    else  # Para que en development no la guarde en un trabajo
+      lista.to_pdf({ fecha: Time.now.strftime("%Y-%m-%d"), original_url: original_url }) if lista.save
     end
 
+    self.resp.merge({ estatus: true, msg: nil })      
+  end
+
+  def informacion_descarga_guia
+    especies_por_region
+    return unless resp[:estatus]
+    especies_filtros
+    especies_por_pagina(especies_guia: true)
+    asocia_informacion_taxon(especies_guia: true)
+
+    self.resp[:taxones] = taxones
+    self.resp[:totales] = totales
+    self.resp[:num_ejemplares] = num_ejemplares
+    self.resp[:resultados] = nil
+    
+    # Para armar el titulo de la guia
+    self.resp[:titulo_guia] = titulo_guia   
   end
 
   # Valida que los campos seleccionados sean validos para una posible descarga de guia
@@ -125,10 +123,10 @@ class BusquedaRegion < Busqueda
         t = Especie.find(params[:especie_id])
         cat = t.categoria_taxonomica
         
-        if [3,4,5].include?(cat.nivel1)
+        if [3,4,5,6].include?(cat.nivel1)
           self.resp = { estatus: true }
         else
-          return self.resp = { estatus: false, msg: 'El taxón no es una clase, orden o familia' }
+          return self.resp = { estatus: false, msg: 'El taxón no es una clase, orden, familia o género' }
         end
 
       rescue => e
@@ -199,7 +197,7 @@ class BusquedaRegion < Busqueda
     especies = Especie.select_basico(["#{Scat.attribute_alias(:catalogo_id)} AS catalogo_id"]).joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", resp[:resultados].keys)
 
     if opc[:especies_guia]
-      especies = especies.includes(:catalogos, :tipos_distribuciones)
+      especies = especies.includes(:catalogos, :tipos_distribuciones).order(ancestry_ascendente_directo: :desc)
     end
 
     especies.each do |especie|
@@ -212,7 +210,9 @@ class BusquedaRegion < Busqueda
       end
     end
 
-    self.taxones = taxones.sort_by{ |t| t[:nregistros] }.reverse
+    if opc[:especies_guia].nil?
+      self.taxones = taxones.sort_by{ |t| t[:nregistros] }.reverse
+    end
   end
 
   # Regresa true or false
@@ -223,7 +223,7 @@ class BusquedaRegion < Busqueda
   # Devuelve las especies de acuerdo al numero de pagina y por pagina definido
   def especies_por_pagina(opc={})
     return unless resp[:estatus]
-    self.por_pagina = params[:por_pagina] || ESPECIES_POR_PAGINA
+    self.por_pagina = (params[:por_pagina] || ESPECIES_POR_PAGINA).to_i
     self.pagina = params[:pagina].present? ? params[:pagina].to_i : 1
     offset = (pagina-1)*por_pagina
     limit = (pagina*por_pagina)-1
@@ -262,6 +262,11 @@ class BusquedaRegion < Busqueda
       titulo[0] = "Guía de #{a.nombre_comun_principal}"
     else
       titulo[0] = "Guía de #{t.nombre_cientifico}"
+    end
+
+    unless params[:nombre_region].present?
+      region = "geoportal/#{params[:tipo_region]}".camelize.constantize.campos_min.find(params[:region_id])
+      params[:nombre_region] = region.nombre_publico
     end
 
     titulo[1] = tipo_region + params[:nombre_region]

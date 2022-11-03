@@ -136,7 +136,7 @@ server.register(
               .default(1)
               .description("El número de pagina"),
             por_pagina: Joi.string()
-              .default(50)
+              .default("50")
               .valid(["50", "100", "200", "500", "1000"])
               .description("Los resultados por pagina"),
           },
@@ -151,6 +151,8 @@ server.register(
             url += "&id=" + req.id;
             if (req.cat !== undefined && req.nivel !== undefined)
               url += "&cat=" + req.cat + "&nivel=" + req.nivel;
+          } else if (req.cat !== undefined && req.nivel !== undefined) {
+            url += "&cat=" + req.cat + "&nivel=" + req.nivel;
           } else {
             if (req.nombre !== undefined) url += "&nombre=" + req.nombre;
           }

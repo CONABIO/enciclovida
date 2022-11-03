@@ -2,12 +2,13 @@
 
 <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
   <%= devise_error_messages! %>
-  <div class="form-group form-inline text-center">
-    <%= f.label :email %>
-    <%= f.email_field :email, autofocus: true, class: 'form-control' %>
+  <div class="form-group form-inline justify-content-center">
+    <%= f.label :email , class: "font-weight-bold"%>
+    <%= f.email_field :email, autofocus: true, class: 'form-control ml-2 mr-2' %>
     <%= f.submit 'Recuperar contraseña', class: 'btn btn-warning'%>
   </div>
 <% end %>
 
 <hr />
 <%= render "metamares/metausuarios/shared/links" %>
+

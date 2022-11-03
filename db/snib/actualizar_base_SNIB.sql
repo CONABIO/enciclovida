@@ -7,7 +7,7 @@ ALTER USER erobles WITH PASSWORD 'erobles123456';
 SELECT entid, nom_ent, geom FROM estados LIMIT 1;
 SELECT munid, nom_mun, nom_ent, geom FROM municipios LIMIT 1;
 SELECT anpid, nombre, cat_manejo, geom FROM anp LIMIT 1;
-SELECT gid, desecon3, geom FROM ecorregiones LIMIT 1;  -- aun no se ocupa
+SELECT ecorid, desecon3, geom FROM ecorregiones LIMIT 1;  -- aun no se ocupa
 SELECT idejemplar, idnombrecatvalido, especievalidabusqueda, comentarioscatvalido, entid, munid, anpid, ecorid, latitud, 
 longitud, localidad, municipiomapa, estadomapa, paismapa, categoriataxonomica, fechacolecta, colector, coleccion, probablelocnodecampo, 
 ejemplarfosil, institucion, paiscoleccion, proyecto, urlproyecto, urlejemplar, urlorigen FROM snib LIMIT 1;
@@ -16,6 +16,7 @@ ejemplarfosil, institucion, paiscoleccion, proyecto, urlproyecto, urlejemplar, u
 ALTER TABLE estados RENAME COLUMN gid TO entid;
 ALTER TABLE municipios RENAME COLUMN gid TO munid;
 ALTER TABLE anp RENAME COLUMN gid TO anpid;
+ALTER TABLE ecorregiones RENAME COLUMN gid TO ecorid;
 
 -- 3.
 SELECT idejemplar, idnombrecatvalido, especievalidabusqueda, comentarioscatvalido, entid, munid, anpid, ecorid, latitud, 
@@ -29,6 +30,7 @@ WHERE idnombrecatvalido <> '' AND especievalidabusqueda <> '' AND comentarioscat
 ALTER TABLE snib_ev ADD COLUMN id SERIAL PRIMARY KEY;
 
 -- 5.
+CREATE INDEX idx_snib_ev_idejemplar ON snib_ev USING btree (idejemplar);
 CREATE INDEX idx_snib_ev_idnombrecatvalido ON snib_ev USING btree (idnombrecatvalido);
 CREATE INDEX idx_snib_ev_entid ON snib_ev USING btree (entid);
 CREATE INDEX idx_snib_ev_munid ON snib_ev USING btree (munid);

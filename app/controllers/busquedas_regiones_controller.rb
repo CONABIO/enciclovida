@@ -35,8 +35,19 @@ class BusquedasRegionesController < ApplicationController
 				render json: br.resp
 			end
 			format.json do
-				br.especies
-				render json: br.resp
+				if params[:guia] == "1"
+					br.original_url = request.original_url
+					br.valida_descarga_guia
+					
+					if br.resp[:estatus]
+						br.descarga_taxa_pdf
+					end
+					
+					render json: br.resp and return
+				else
+					br.especies
+					render json: br.resp and return
+				end
 			end
 			
 			format.pdf do
@@ -88,6 +99,10 @@ class BusquedasRegionesController < ApplicationController
 			end
 		
 		end
+	end
+
+	def guia
+		render 'busquedas_regiones/guias/especies'
 	end
 	
 	# Regresa todos los registros de la especie seleccionada

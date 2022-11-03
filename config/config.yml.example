@@ -59,6 +59,7 @@ base: &base
     fichas: 1.week
     iucn: 1.second
     busquedas_region: 1.year
+    conteo_especies_home: 1.day
     estadisticas:
       cuantas_especies_inferiores: 1.week
       estadisticas_naturalista: 1.second
@@ -138,9 +139,6 @@ base: &base
   correo_admin: enciclovida@conabio.gob.mx
 
 development:
-    <<: *base
-
-development_mac:
     <<: *base
 
 test:
