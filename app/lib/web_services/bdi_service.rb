@@ -1,201 +1,129 @@
 class BDIService
 
-  ALBUM_ANIMALES = {22655 => '5006-Aves', 213407 => '5009-Peces', 22653 => '5008-Mamíferos',
-                    22647 => '5001-Reptiles', 22654 => '5007-Anfibios', 213422 => '5107-Tiburones%20y%20Rayas',
-                    5 => '5004-Microorganismos', 3 => '5004-Microorganismos',
-                    40665 => '5005-Invertebrados', 132387 => '5005-Invertebrados', 40660 => '5005-Invertebrados',
-                    40658 => '5005-Invertebrados', 40668 => '5005-Invertebrados', 40662 => '5005-Invertebrados',
-                    129550 => '5005-Invertebrados', 132386 => '5005-Invertebrados', 40661 => '5005-Invertebrados',
-                    40669 => '5005-Invertebrados', 40666 => '5005-Invertebrados', 40663 => '5005-Invertebrados',
-                    40671 => '5005-Invertebrados', 40664 => '5005-Invertebrados', 40670 => '5005-Invertebrados',
-                    40659 => '5005-Invertebrados', 40672 => '5005-Invertebrados', 40667 => '5005-Invertebrados',
-                    40657 => '5005-Invertebrados', 16910 => '5005-Invertebrados'}
-  ALBUM_ANIMALES_GLOBAL = ['5037-Colección%20Zoológica']
+  ALBUM_ILUSTRACIONES = '5035-Ilustraciones'.freeze
+  ALBUM_USOS = '5010-Usos'.freeze
+  ALBUM_VIDEOS = '5121-Video'.freeze
 
-  ALBUM_PLANTAS = {4 => '5002-Hongos', 135391 => '5018-Cícadas', 135296 => '5017-Musgos-Helechos',
-                   135730 => '5021-Pinos%20y%20Cedros', 135637 => '5021-Pinos%20y%20Cedros'}
-  ALBUM_PLANTAS_GLOBAL = %w(5023-Plantas 5038-Colección%20Botánica)
+  attr_accessor :assets, :num_assets, :jres, :campo, :type, :nombre_cientifico, :album, :albumes, :autor_campo, :autor, :solo_num_assets
 
-  ALBUM_ILUSTRACIONES = ['5035-Ilustraciones']
+  def initialize(opts)
+    self.campo = opts[:campo] || 528
+    self.nombre_cientifico = opts[:nombre_cientifico]
+    self.album = opts[:album]
+    self.albumes = []
+    self.autor_campo = opts[:autor_campo]
+    self.autor = opts[:autor]
+    self.type = opts[:type]
+    self.jres = nil
+    self.assets = []  # Puede ser foto, video o albumes
+    self.num_assets = 0
+  end
 
-  ALBUM_USOS = ['5010-Usos']
-
-  # En teoria son las mejores fotos, por lo cual tienen preferencia a los otros album
-  ALBUM_MN = ['5091-Concurso%20Mosaico%20Natura']
-
-  ALBUM_VIDEOS = ['5121-Video']
-
-  def dameFotos(opts)
+  def dame_fotos
     bdi_rp = CONFIG.enciclovida_url
     bdi_url = CONFIG.bdi_imagenes
-    fotos = []
-    jres = fotos_album(opts)
-    return {:estatus => 'OK', :ultima => nil, :fotos => []} unless jres['data'].any?
+    limpia_nombre_cientifico
+    fotos_album
+    return if num_assets == 0
 
-    jres['data'].each do |x|
+    jres.each do |f|
       foto = Photo.new
-      foto.large_url = bdi_rp+x['previews'][3]['href']
-      foto.medium_url = bdi_rp+x['previews'][7]['href']
-      foto.native_page_url = bdi_url+x['href']
-      foto.license = x['metadata']['340'].present? ? x['metadata']['340']['value'] : 'Sin licencia'
-      foto.square_url = bdi_rp+x['previews'][10]['href']
-      foto.native_realname = x['metadata']['80'].present? ? x['metadata']['80']['value'].first : "Anónimo"
-      fotos << foto
+      foto.large_url = bdi_rp + f['previews'][3]['href']
+      foto.medium_url = bdi_rp + f['previews'][7]['href']
+      foto.native_page_url = bdi_url + f['href']
+      foto.license = f['metadata']['340'].present? ? f['metadata']['340']['value'] : 'Sin licencia'
+      foto.square_url = bdi_rp + f['previews'][10]['href']
+      foto.native_realname = f['metadata']['80'].present? ? f['metadata']['80']['value'].first : "Anónimo"
+      self.assets << foto
+    end
+  end
+
+  def dame_num_fotos
+    limpia_nombre_cientifico
+    lista_albumes
+    fotos_totales
+  end
+
+
+  private
+
+  # Regresa la lista de albumes con al menos una foto en orden por numero de fotos
+  def lista_albumes
+    consulta_api({archives: true})
+
+    jres.each do |a|
+      # Evitamos los albumes sin fotos y los de usos que tienen su propio apartado
+      next if a["assetCount"] == 0 || a["name"] == "Usos"  
+      self.albumes << { nombre_album: a["name"], url: "#{CONFIG.bdi_imagenes}#{a["href"]}", num_assets: a["assetCount"] }
     end
 
-    if jres['paging'].present? && jres['paging']['next'].present?
-      ultima = jres['paging']['last'].split('&p=').last.to_i + 1
-      {:estatus => true, :ultima => ultima, :fotos => fotos}
+    albumes.sort_by! { |k| -k[:num_assets] }
+  end
+
+  def consulta_api(opts={})
+    if opts[:archives]
+      url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/?#{campo}='#{nombre_cientifico}'"
+      accept = 'application/json'
     else
-      {:estatus => true, :ultima => nil, :fotos => fotos}
-    end
-  end
-
-  # Método para recuperar los videos
-  def dame_videos(opts)
-    bdi_rp = CONFIG.enciclovida_url
-    bdi_url = CONFIG.bdi_imagenes
-    videos = []
-    jres = videos_album(opts)
-
-    return {:estatus => 'OK', :ultima => nil, :videos => []} unless jres['data'].any?
-
-    jres['data'].each do |x|
-      video = Video.new
-      video.href_info = bdi_url + x['href']
-      video.url_acces = bdi_rp + x['attributes']['videoattributes']['proxy']['videoHREF']
-      video.preview_img = x['previews'].present? ? bdi + x['previews'][0]['href'] : nil
-      video.autor = x['metadata']['80'].present? ? x['metadata']['80']['value'].first : "Anónimo"
-      video.localidad = x['metadata']['90'].present? ? x['metadata']['90']['value'] : nil
-      video.municipio = x['metadata']['300'].present? ? x['metadata']['300']['value'] : nil
-      video.licencia = x['metadata']['340'].present? ? x['metadata']['340']['value'] : nil
-      videos << video
+      url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{album}/?#{campo}='#{nombre_cientifico}'"
+      accept = 'application/vnd.fotoware.assetlist+json'
     end
 
-    if jres['paging'].present? && jres['paging']['next'].present?
-      ultima = jres['paging']['last'].split('&p=').last.to_i + 1
-      {:estatus => true, :ultima => ultima, :videos => videos}
-    else
-      {:estatus => true, :ultima => nil, :videos => videos}
-    end
+    url << "&#{autor_campo}=#{autor}" if autor_campo.present? && autor.present?
 
-  end
-
-  # Compruebo en los albunes para mandar una respuesta no vacia
-  def tiene_fotos?(opts)
-    jres = arma_y_consulta_url(opts)
-    if !jres['data'].present?
-      opts[:campo] = 'q'
-      jres = arma_y_consulta_url(opts)
-      jres = {'data' => []} unless jres['data'].present?
-    end
-    jres
-  end
-
-  def arma_y_consulta_url(opts)
-    nombre = opts[:nombre].limpiar(tipo: 'ssp')
-    url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{opts[:album]}/?#{opts[:campo]}='#{nombre}'"
-    url << "&#{opts[:autor_campo]}=#{opts[:autor]}" if opts[:autor_campo].present? && opts[:autor].present?
-    url << "&p=#{opts[:pagina]-1}" if opts[:pagina]
     url_escape = URI.escape(url)
     uri = URI.parse(url_escape)
     req = Net::HTTP::Get.new(uri.to_s)
-    req['Accept'] = 'application/vnd.fotoware.assetlist+json'
+    req['Accept'] = accept
 
     begin
       res = Net::HTTP.start(uri.host, uri.port) {|http| http.request(req) }
-      JSON.parse(res.body)
+      jres = JSON.parse(res.body)
+      self.jres = jres["data"]
+      self.num_assets = jres.count if !opts[:archives] && !opts[:no_contar]
     rescue
-      {'data' => []}
+      Rails.logger.error "Falló en la consulta: #{uri} "
     end
-
   end
 
-  # Las fotos de acuerdo al album al que pertenece en BDI
-  def videos_album(opts)
-    taxon = opts[:taxon]
-    # Solo para el caso de los videos
-    opts.merge!({album: ALBUM_VIDEOS.first, nombre: taxon.nombre_cientifico, campo: 'q'})
-    return tiene_fotos?(opts)
-  end
-
-  # Las fotos de acuerdo al album al que pertenece en BDI
-  def fotos_album(opts)
-    taxon = opts[:taxon]
-
-    # Caso especial para las fotos de usos que estaran abajo de las fotos de los demas albumes
-    if opts[:type] == "usos"
-      opts.merge!({album: ALBUM_USOS.first, nombre: taxon.nombre_cientifico})
-      jres = tiene_fotos?(opts)
-      
-      if jres['data'].any?      
-        return jres 
-      else
-        return {'data' => []}
-      end
-    end
-
-    # Solo para el caso de las ilustraciones
-    if opts[:ilustraciones]
-      opts.merge!({album: ALBUM_ILUSTRACIONES.first, nombre: taxon.nombre_cientifico})
-      jres = tiene_fotos?(opts)
-      return jres if jres['data'].any?
+  # Regresa las 25 primeras fotos de los albumes que mas tiene fotos y una la lista de los demas albumes no vacios
+  def fotos_album
+    # Solo de usos o vacio
+    if album == "usos"
+      self.album = ALBUM_USOS
+      consulta_api
+      return
     end
     
-    reino = taxon.root.nombre_cientifico.strip
-    ancestros = taxon.path_ids
-    case reino
-    when 'Animalia', 'Protoctista'
-      (ALBUM_ANIMALES.keys & ancestros).reverse.each do |taxon_id|
-        opts.merge!({album: ALBUM_ANIMALES[taxon_id], nombre: taxon.nombre_cientifico})
-        jres = tiene_fotos?(opts)
-        return jres if jres['data'].any?
-      end
-      
-      # Si llego a este punto quiere decir que tengo que probar con los globales
-      ALBUM_ANIMALES_GLOBAL.each do |album|
-        opts.merge!({album: album, nombre: taxon.nombre_cientifico})
-        jres = tiene_fotos?(opts)
-        return jres if jres['data'].any?
-      end
-      
-      # Si llego a este punto quiere decir que tengo que probar con los globales
-      ALBUM_ILUSTRACIONES.each do |album|
-        opts.merge!({album: album, nombre: taxon.nombre_cientifico, campo: 'q'})
-        jres = tiene_fotos?(opts)
-        return jres if jres['data'].any?
-      end
-      
-      return {'data' => []}
-    else
-      (ALBUM_PLANTAS.keys & ancestros).reverse.each do |taxon_id|
-        opts.merge!({album: ALBUM_PLANTAS[taxon_id], nombre: taxon.nombre_cientifico})
-        jres = tiene_fotos?(opts)
-        return jres if jres['data'].present? && jres['data'].any?
-      end
-      
-      # Si llego a este punto quiere decir que tengo que probar con los globales
-      ALBUM_PLANTAS_GLOBAL.each do |album|
-        opts.merge!({album: album, nombre: taxon.nombre_cientifico})
-        jres = tiene_fotos?(opts)
-        return jres if jres['data'].any?
-      end
-      
-      # Si llego a este punto quiere decir que tengo que probar con los globales
-      ALBUM_ILUSTRACIONES.each do |album|
-        opts.merge!({album: album, nombre: taxon.nombre_cientifico, campo: 'q'})
-        jres = tiene_fotos?(opts)
-        return jres if jres['data'].any?
-      end
-      
-      return {'data' => []}
+    # Solo ilustraciones o lo demas que tenga
+    if album == "ilustraciones"
+      self.album = ALBUM_ILUSTRACIONES
+      consulta_api
+      return if num_assets > 0  # Regresa solo en el caso de encontrar fotos
     end
     
-    # Para el concurso de MN (son las mejores fotos al final)
-    opts.merge!({album: ALBUM_MN.first, nombre: taxon.nombre_cientifico})
-    jres = tiene_fotos?(opts)
-    return jres if jres['data'].any?
+    # Busca en los demas albumes
+    lista_albumes
+    fotos_totales
+    return if num_assets == 0  # No hay fotos, ni pex!
 
+    dame_album_id(albumes.first[:url])  # El primer album siempre tiene mas fotos
+    consulta_api({no_contar: true})
+    albumes.shift  # Quita el primer album del que trae las fotos de los demas albumes
   end
+
+  def dame_album_id(url)
+    self.album = url.split("/")[5]
+  end
+
+  def limpia_nombre_cientifico
+    self.nombre_cientifico.limpiar(tipo: 'ssp')
+  end
+
+  # Regresa el numero total de fotos en todos los albumes
+  def fotos_totales
+    self.num_assets = albumes.map{|k| k[:num_assets] }.sum
+  end  
+
 end
 

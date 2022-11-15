@@ -302,18 +302,22 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   end
 
   # REVISADO: Regresa en un hash todos los valores con las bibliorafias, para pestaña de catalogos especialmente
-  def nom_cites_iucn_ambiente_prioritaria_bibliografia
+  def caracteristicas
     resp = {}
 
-    especies_catalogos.each do |esp_cat|
+    caract = Especie.where(id: id).includes(especies_catalogos: [:catalogo, biblios: :bibliografia])
+
+    caract.first.especies_catalogos.each do |esp_cat|
       cat = esp_cat.catalogo
       next unless cat.es_catalogo_permitido?
       nombre_catalogo = cat.dame_nombre_catalogo
-      biblio_cita_completa = esp_cat.biblios.where(catalogo_id: cat.id).map { |b| b.bibliografia.cita_completa }
+      biblio_cita_completa = esp_cat.biblios.map { |b| b.bibliografia.cita_completa }
       seccion = nombre_catalogo.estandariza.to_sym
 
+      Rails.logger.info esp_cat.observaciones.inspect+ "@@@" if esp_cat.observaciones.present? 
+
       resp[seccion] = { nombre_catalogo: nombre_catalogo, datos: [] } unless resp[seccion].present?
-      resp[seccion][:datos] << { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion], bibliografias: biblio_cita_completa, observaciones: [esp_cat.observaciones] }
+      resp[seccion][:datos] << { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion], bibliografias: biblio_cita_completa, observaciones: esp_cat.observaciones }
     end
 
     resp
@@ -359,15 +363,9 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
   # REVISADO: Servicio que trae la respuesta de bdi
   def fotos_bdi(opts={})
-    bdi = BDIService.new
-
-    if especie_o_inferior?({con_genero: true})
-      bdi.dameFotos(opts.merge({taxon: self, campo: 528}))
-    elsif is_root?
-      bdi.dameFotos(opts.merge({taxon: self, campo: 15}))
-    else
-      bdi.dameFotos(opts.merge({taxon: self, campo: 20}))
-    end
+    bdi = BDIService.new({nombre_cientifico: nombre_cientifico}.merge(opts))
+    bdi.dame_fotos
+    bdi
   end
 
   # Servicio que trae la respuesta de bdi para videos
@@ -394,22 +392,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
 
     # Fotos de bdi
-    fb = fotos_bdi
-    if fb[:estatus]
-      self.x_square_url = fb[:fotos].first.square_url if x_foto_principal.blank? && fb[:fotos].count > 0
-      self.x_foto_principal = fb[:fotos].first.best_photo if x_foto_principal.blank? && fb[:fotos].count > 0
-
-      if ultima = fb[:ultima]  # Si tiene ultima obtenemos el numero final, para consultarla
-        self.x_fotos_totales+= 25*(ultima-1)
-        fbu = fotos_bdi({pagina: ultima})
-
-        if fbu[:estatus]
-          self.x_fotos_totales+= fbu[:fotos].count
-        end
-      else  # Solo era un paginado, las sumo inmediatamente
-        self.x_fotos_totales+= fb[:fotos].count
-      end
-    end
+    bdi = fotos_bdi
+    self.x_fotos_totales+= bdi.num_assets
   end
 
   # REVISADO: regresa todos los nombres comunes de catalogos

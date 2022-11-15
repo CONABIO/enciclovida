@@ -33,7 +33,7 @@ module EspeciesHelper
         if bibliografias.any?
           biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
           html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
-title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
+title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
         end
       end
 
@@ -144,7 +144,7 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
   # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies; pestaña de catalogos
   def dameCaracteristica(taxon)
     html = ''
-    caracteristicas = taxon.nom_cites_iucn_ambiente_prioritaria_bibliografia
+    caracteristicas = taxon.caracteristicas
 
     def creaCaracteristica(valores)
       html = ''
@@ -153,7 +153,7 @@ title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</a>"
         biblio = dato[:bibliografias].any? ? "<ul>#{dato[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>" : ''
         biblio_html = " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
 title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.present?
-        obs_html = dato[:observaciones].any? ? "<p>Observaciones: #{dato[:observaciones].join('<hr />')}</p>" : ''
+        obs_html = dato[:observaciones].present? ? "<p>Observaciones: #{dato[:observaciones]}</p>" : ''
 
         dato[:descripciones].each do |l|
           html << "<li>#{l}</li> #{biblio_html} #{obs_html}"
@@ -218,15 +218,10 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
          response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='<a href=\"/peces\" class=\"btn btn-link\" target=\"_blank\">Especie con certificación perteneciente al semáforo de consumo marino responsable</a>' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-certificacion-ev-icon'></i></span>"
       else
 	      response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='<a href=\"/peces\" class=\"btn btn-link\" target=\"_blank\">Especie perteneciente al semáforo de consumo marino responsable</a>' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-ev-icon'></i></span>"
-       end
-     end
-
-
-    if response.any? 
-      response.join.html_safe 
-    else
-      response
+      end
     end
+
+    response.any? ? response.join.html_safe : ""
   end
 
   # REVISADO: Pone la simbologia en la ficha de la especie
@@ -404,6 +399,18 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
 
   def cargandoEspera
     "<p>Cargando... por favor, espera</p><div class='spinner-border text-secondary' role='status'><span class='sr-only'>Cargando...</span></div>".html_safe
+  end
+
+  # Es un select con los demas albumes de bdi para ver fotos directamente
+  def albumes_bdi
+    html = "<div class='dropdown'><button class='btn btn-light btn-sm dropdown-toggle text-primary' type='button' data-toggle='dropdown' aria-expanded='false'>Explora más fotos en los álbumes del BDI</button><div class='dropdown-menu'>"
+    
+    @albumes.each do |a| 
+      html << "<a class='dropdown-item' target='_blank' href=\"#{a[:url]}\">#{a[:nombre_album]} (#{a[:num_assets]} fotos) &middot; <i class='fa fa-external-link'></i></a>"
+    end
+    
+    html << "</div></div>"
+    html.html_safe
   end
 
 end

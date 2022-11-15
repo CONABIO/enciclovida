@@ -45,6 +45,7 @@
 .echinodermata-ev-icon:before { content: '\e82b'; } /* '' */
 .semarnat-ev-icon:before { content: '\e82c'; } /* '' */
 .ipescado-ev-icon:before { content: '\e82d'; } /* '' */
+.pescadata-ev-icon:before { content: '\e82e'; } /* '' */
 .en-peligro-critico-cr-ev-icon:before { content: '\e831'; } /* '' */
 .en-peligro-critico-cr-evaluacion-conabio-ev-icon:before { content: '\e832'; } /* '' */
 .en-peligro-de-extincion-p-evaluacion-conabio-ev-icon:before { content: '\e835'; } /* '' */
@@ -71,7 +72,7 @@
 .naturalista-4-ev-icon:before { content: '\e857'; } /* '' */
 .no-evaluado-ne-ev-icon:before { content: '\e858'; } /* '' */
 .peces-mariscos-comerciales-ev-icon:before { content: '\e859'; } /* '' */
-.petomyzontidae-ev-icon:before { content: '\e85a'; } /* '' */
+.petromyzontidae-ev-icon:before { content: '\e85a'; } /* '' */
 .pinidae-ev-icon:before { content: '\e85b'; } /* '' */
 .plantae-ev-icon:before { content: '\e85c'; } /* '' */
 .porifera-ev-icon:before { content: '\e85d'; } /* '' */

@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?22062774');
-  src: font-url('enciclovida_font_icons.eot?22062774#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?22062774') format('woff2'),
-       font-url('enciclovida_font_icons.woff?22062774') format('woff'),
-       font-url('enciclovida_font_icons.ttf?22062774') format('truetype'),
-       font-url('enciclovida_font_icons.svg?22062774#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?44844189');
+  src: font-url('enciclovida_font_icons.eot?44844189#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?44844189') format('woff2'),
+       font-url('enciclovida_font_icons.woff?44844189') format('woff'),
+       font-url('enciclovida_font_icons.ttf?44844189') format('truetype'),
+       font-url('enciclovida_font_icons.svg?44844189#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?22062774#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?44844189#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -100,6 +100,7 @@
 .echinodermata-ev-icon:before { content: '\e82b'; } /* '' */
 .semarnat-ev-icon:before { content: '\e82c'; } /* '' */
 .ipescado-ev-icon:before { content: '\e82d'; } /* '' */
+.pescadata-ev-icon:before { content: '\e82e'; } /* '' */
 .en-peligro-critico-cr-ev-icon:before { content: '\e831'; } /* '' */
 .en-peligro-critico-cr-evaluacion-conabio-ev-icon:before { content: '\e832'; } /* '' */
 .en-peligro-de-extincion-p-evaluacion-conabio-ev-icon:before { content: '\e835'; } /* '' */
@@ -126,7 +127,7 @@
 .naturalista-4-ev-icon:before { content: '\e857'; } /* '' */
 .no-evaluado-ne-ev-icon:before { content: '\e858'; } /* '' */
 .peces-mariscos-comerciales-ev-icon:before { content: '\e859'; } /* '' */
-.petomyzontidae-ev-icon:before { content: '\e85a'; } /* '' */
+.petromyzontidae-ev-icon:before { content: '\e85a'; } /* '' */
 .pinidae-ev-icon:before { content: '\e85b'; } /* '' */
 .plantae-ev-icon:before { content: '\e85c'; } /* '' */
 .porifera-ev-icon:before { content: '\e85d'; } /* '' */
