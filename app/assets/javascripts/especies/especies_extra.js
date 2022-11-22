@@ -48,6 +48,9 @@ $(document).ready(function () {
 					}
 					
 					break;
+				case 'descripcion':
+					$('.biblio-cat').popover({html: true});
+					break;
 				default:
 					break;
 			}
