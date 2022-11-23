@@ -34,6 +34,22 @@ class Catalogo < ActiveRecord::Base
     [4,11,18,25].include?(nivel1) || (nivel1 == 2 && nivel2 == 6 && nivel3>0)
   end
 
+  def es_nom?
+    nivel1 == 4 && nivel2 == 1 && nivel3 > 0
+  end
+
+  def es_iucn?
+    nivel1 == 4 && nivel2 == 2 && nivel3 > 0
+  end
+  
+  def es_cites?
+    nivel1 == 4 && nivel2 == 3 && nivel3 > 0
+  end  
+
+  def es_ambiente?
+    nivel1 == 2 && nivel2 == 6 && nivel3 > 0
+  end
+
   # REVISADO: Regresa la categoria superior del nombre del catalogo
   def dame_nombre_catalogo
     if nivel1 == 18
