@@ -32,8 +32,7 @@ module EspeciesHelper
         
         if bibliografias.any?
           biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
-          html << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
-title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
+          html << " <a href='' tabindex='0' class='biblio-cat' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'>Bibliografía</a>"
         end
       end
 
@@ -80,8 +79,7 @@ title='Bibliografía' data-content='#{biblio_html}'>Bibliografía</a>"
         lista << "<li>#{datos[:nombre]}</li>"
         
         if !opc[:app]
-          lista << " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
-title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>" if datos[:observaciones].present?
+          lista << " <a href='' tabindex='0' class='biblio-cat' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{datos[:observaciones]}\" onClick='return false;'>Bibliografía</a>" if datos[:observaciones].present?
         end
 
         if datos[:reg_desc].any?
@@ -115,8 +113,7 @@ title='Bibliografía' data-content='#{datos[:observaciones]}'>Bibliografía</a>"
           
           if bibliografias.any?
             biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b.gsub("\"","'")}</li>" }.join('')}</ul>"
-            html << " <button tabindex='0' class='btn btn-link biblio-cat' type='button' data-toggle='popover' data-trigger='focus'
-title='Bibliografía' data-content=\"#{biblio_html}\">Bibliografía</button>"
+            html << " <a href='' tabindex='0' class='biblio-cat' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'>Bibliografía</a>"
           end
         end
       end
