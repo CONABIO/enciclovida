@@ -7,6 +7,9 @@ $(document).ready(function() {
             method: 'get',
             success: function (data, status) {
                 $('.taxon_description').replaceWith(data);
+                if(opciones.cual_ficha == 'conabio_tecnico'){
+                    $('.biblio-cat').popover({html: true});
+                }
             },
             fail: function (request, status, error) {
                 $('.taxon_description').loadingShades('close');

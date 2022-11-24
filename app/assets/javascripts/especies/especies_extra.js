@@ -48,7 +48,7 @@ $(document).ready(function () {
 					}
 					
 					break;
-				case 'descripcion_catalogos':
+				case 'descripcion':
 					$('.biblio-cat').popover({html: true});
 					break;
 				default:
