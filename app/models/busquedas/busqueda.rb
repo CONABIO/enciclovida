@@ -21,7 +21,7 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
   BUSCADORES = {
 		  clasificacion: {url: "/explora-por-clasificacion", nombre: "Clasificación", descripcion: "¡Explora toda la clasificación taxonómica desde reinos hasta especies!"},
 		  region: {url: "/explora-por-region", nombre: "Región", descripcion: "Realiza búsquedas de especies por estados, municipios o áreas naturales protegidas, genera y descarga <br> ¡tu propia guía de especies!"},
-		  usos: {url: "/busquedas/resultados?utf8=%E2%9C%93&nombre=&busqueda=avanzada&id=&uso%5B%5D=11-4-0-0-0-0-0&uso%5B%5D=11-16-0-0-0-0-0&uso%5B%5D=11-5-0-0-0-0-0&uso%5B%5D=11-40-1-0-0-0-0&uso%5B%5D=11-40-2-0-0-0-0&uso%5B%5D=11-8-0-0-0-0-0&uso%5B%5D=11-9-0-0-0-0-0&uso%5B%5D=11-10-0-0-0-0-0&uso%5B%5D=11-11-0-0-0-0-0&uso%5B%5D=11-13-0-0-0-0-0&uso%5B%5D=11-15-0-0-0-0-0&uso%5B%5D=11-14-0-0-0-0-0&por_pagina=50&commit=", nombre: "Usos", descripcion: "¡Descubre las especies agrupadas por el uso que tienen!"},
+		  usos: {url: "/busquedas/resultados?utf8=%E2%9C%93&nombre=&busqueda=avanzada&id=&uso%5B%5D=11-4-0-0-0-0-0&uso%5B%5D=11-16-0-0-0-0-0&uso%5B%5D=11-5-0-0-0-0-0&uso%5B%5D=11-40-1-0-0-0-0&uso%5B%5D=11-40-2-0-0-0-0&uso%5B%5D=11-8-0-0-0-0-0&uso%5B%5D=11-47-0-0-0-0-0&uso%5B%5D=11-9-0-0-0-0-0&uso%5B%5D=11-10-0-0-0-0-0&uso%5B%5D=11-11-0-0-0-0-0&uso%5B%5D=11-13-0-0-0-0-0&uso%5B%5D=11-15-0-0-0-0-0&uso%5B%5D=11-14-0-0-0-0-0&uso%5B%5D=25-1-0-0-0-0-0&por_pagina=50&commit=", nombre: "Usos y Agrobiodiversidad", descripcion: "¡Descubre las especies agrupadas por el uso que tienen!"},
 		  "en-riesgo" => {url: "/busquedas/resultados?utf8=%E2%9C%93&nombre=&busqueda=avanzada&id=&edo_cons%5B%5D=16&edo_cons%5B%5D=14&edo_cons%5B%5D=15&edo_cons%5B%5D=17&edo_cons%5B%5D=25&edo_cons%5B%5D=26&edo_cons%5B%5D=27&edo_cons%5B%5D=28&edo_cons%5B%5D=29&edo_cons%5B%5D=1102&edo_cons%5B%5D=1103&edo_cons%5B%5D=1104&edo_cons%5B%5D=22&edo_cons%5B%5D=23&edo_cons%5B%5D=24&por_pagina=50&commit=", nombre: "En riesgo", descripcion: "Navega por las especies que tienen asociada alguna categoría de riesgo tanto nacional como internacional"},
 		  distribucion: {url: "/busquedas/resultados?utf8=%E2%9C%93&nombre=&busqueda=avanzada&id=&dist%5B%5D=3&dist%5B%5D=7&dist%5B%5D=10&dist%5B%5D=6&por_pagina=50&commit=", nombre: "Distribución", descripcion: "Ubica las especies de acuerdo a su tipo de distribución: endémica, nativa, exótica o exótica invasora"},
 		  "exotica-invasora" => {url: "/exoticas-invasoras", nombre: "Exóticas invasoras", descripcion: "¡Conoce las especies exóticas invasoras en el país!"},
@@ -63,29 +63,6 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
       self.taxones = taxones.where(niveles.join(' OR '))
     end
   end
-
-  # Para el select de agrobiodiversidad
-  def agrobiodiversidad
-    if params[:agro].present? && params[:agro].any?
-      self.taxones = taxones.left_joins(:catalogos)
-      niveles = []
-
-      params[:agro].each_with_index do |uso, i|
-        uso.split('-').each_with_index do |val,index|
-
-          if val.to_i == 0  # cuando el nivel es 0 quiere decir que ya termino de iterar
-            niveles[i] = niveles[i].join(' AND ')
-            break
-          end
-
-          niveles[i] = [] unless niveles[i].present?
-          niveles[i] << "#{Catalogo.table_name}.#{Catalogo.attribute_alias("nivel#{index+1}")}=#{val}"
-        end
-      end
-
-      self.taxones = taxones.where(niveles.join(' OR '))
-    end
-  end  
 
   # Para el select de formas de crecimiento
   def formas_crecimiento

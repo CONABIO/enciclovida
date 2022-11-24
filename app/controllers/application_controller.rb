@@ -78,12 +78,11 @@ class ApplicationController < ActionController::Base
       tipos_distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
       prioritarias = Catalogo.prioritarias
       usos = Catalogo.usos
-      agrobiodiversidad = Catalogo.agrobiodiversidad
       ambientes = Catalogo.ambientes
       distribuciones = Region.dame_regiones_filtro
       formas_crecimiento = Catalogo.formas_crecimiento
 
-      { animales: animales, plantas: plantas, nom_cites_iucn_todos: nom_cites_iucn_todos, tipos_distribuciones: tipos_distribuciones, prioritarias: prioritarias, usos: usos, agro: agrobiodiversidad, ambientes: ambientes, distribuciones: distribuciones, formas_crecimiento: formas_crecimiento }
+      { animales: animales, plantas: plantas, nom_cites_iucn_todos: nom_cites_iucn_todos, tipos_distribuciones: tipos_distribuciones, prioritarias: prioritarias, usos: usos, ambientes: ambientes, distribuciones: distribuciones, formas_crecimiento: formas_crecimiento }
     end
   end
 

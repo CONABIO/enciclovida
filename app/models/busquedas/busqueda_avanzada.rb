@@ -10,7 +10,6 @@ class BusquedaAvanzada < Busqueda
     estado_conservacion
     tipo_distribucion
     uso
-    agrobiodiversidad
     formas_crecimiento
     ambiente
     region
