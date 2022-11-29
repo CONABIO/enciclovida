@@ -31,5 +31,5 @@ Buscador::Application.configure do
 
   # Para habilitar web console en otros enviroments
   config.web_console.development_only = true
-  config.web_console.whitelisted_ips = '172.16.3.0/16'
+  config.web_console.whitelisted_ips = %w( 172.16.3.0/16 192.168.100.0/16 127.0.0.1 )
 end
