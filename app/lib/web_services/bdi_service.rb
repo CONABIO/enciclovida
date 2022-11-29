@@ -62,27 +62,23 @@ class BDIService
 
   def consulta_api(opts={})
     if opts[:archives]
-      url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/?#{campo}='#{nombre_cientifico}'"
+      url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/?#{campo}=#{nombre_cientifico}"
       accept = 'application/json'
     else
-      url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{album}/?#{campo}='#{nombre_cientifico}'"
+      url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{album}/?#{campo}=#{nombre_cientifico}"
       accept = 'application/vnd.fotoware.assetlist+json'
     end
 
     url << "&#{autor_campo}=#{autor}" if autor_campo.present? && autor.present?
 
-    url_escape = URI.escape(url)
-    uri = URI.parse(url_escape)
-    req = Net::HTTP::Get.new(uri.to_s)
-    req['Accept'] = accept
-
     begin
-      res = Net::HTTP.start(uri.host, uri.port) {|http| http.request(req) }
+      url_escape = URI::DEFAULT_PARSER.escape(url)
+      res = RestClient.get url_escape, accept: accept
       jres = JSON.parse(res.body)
       self.jres = jres["data"]
-      self.num_assets = jres.count if !opts[:archives] && !opts[:no_contar]
-    rescue
-      Rails.logger.error "Falló en la consulta: #{uri} "
+      self.num_assets = jres.count if !opts[:archives] && !opts[:no_contar]    
+    rescue => e
+      Rails.logger.error "Falló en la consulta con #{url_escape}: #{e.inspect} "
     end
   end
 
