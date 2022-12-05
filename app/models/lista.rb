@@ -313,12 +313,12 @@ class Lista < ActiveRecord::Base
         next if ancestros_hash.present?  # Para ya no volver a entrar
 
         # Linea de la muerte!, saca todos los ancestros obligatorios de todos los taxones coincidentes, sin repetir y sin ser el mismo id que su ancestry (asi esta en la base). Y sin consultar a la base aun
-        ancestros_ids = taxones_query_orig.map{|r| r.ancestry_ascendente_obligatorio.split(",").reject{|c| c.empty? || c.to_i == r.id } }.flatten.uniq
+        ancestros_ids = taxones_query_orig.map{|r| r.ancestry_ascendente_obligatorio.split(",").reject{|c| c.empty? } }.flatten.uniq
         self.ancestros_hash = {}  # Para acceder como hash de una forma sencilla
-        ancestros = Especie.select(:id, :nombre_cientifico, :nombre_categoria_taxonomica).joins(:categoria_taxonomica).where(id: ancestros_ids)
-        
+        ancestros = Especie.includes(:categoria_taxonomica).where(id: ancestros_ids)
+
         ancestros.each do |ancestro|
-          self.ancestros_hash[ancestro.id] = { nombre_cientifico: ancestro.nombre_cientifico, categoria: ancestro.nombre_categoria_taxonomica }
+          self.ancestros_hash[ancestro.id] = { nombre_cientifico: ancestro.nombre_cientifico, categoria: ancestro.categoria_taxonomica.nombre_categoria_taxonomica }
         end
       else
         next
@@ -331,6 +331,7 @@ class Lista < ActiveRecord::Base
   def asigna_datos
     return unless taxon.present?
     self.tabla_catalogos = false
+    self.taxa_superior = false
 
     cols = if columnas_array.present?
       columnas_array
@@ -451,15 +452,17 @@ class Lista < ActiveRecord::Base
       when 'x_reino', 'x_division', 'x_phylum', 'x_clase', 'x_orden', 'x_familia', 'x_genero', 'x_especie'
         next if taxa_superior
         next if taxon.is_root?
-        ancestros = taxon.ancestor_ids
+        ancestros = taxon.path_ids
         next if ancestros.empty?  # Es un root
 
-        puts ancestros.inspect + "@@@"
-
         ancestros.each do |ancestro|
-          x_categoria = 'x_' << ancestros_hash[ancestro.id][:nombre_categoria_taxonomica].estandariza
-          # Asigna la categoria taxonomica de acuerdo al ancestro
-          eval("self.taxon.#{x_categoria} = #{ancestros_hash[ancestro.id][:nombre_cientifico]}")  
+          begin
+            x_categoria = 'x_' << ancestros_hash[ancestro][:categoria].estandariza
+            # Asigna la categoria taxonomica de acuerdo al ancestro
+            eval("self.taxon.#{x_categoria} = \"#{ancestros_hash[ancestro][:nombre_cientifico]}\"")  
+          rescue
+            next
+          end
         end
         
         self.taxa_superior = true
@@ -467,20 +470,6 @@ class Lista < ActiveRecord::Base
         next
       end  # End switch
     end  # End each cols
-
-    # Para agregar todas las categorias taxonomicas que pidio, primero se intersectan
-    # cats = COLUMNAS_CATEGORIAS & cols
-
-    # if cats.any?
-    #   return if taxon.is_root?  # No hay categorias que completar
-    #   ids = taxon.path_ids
-
-    #   Especie.select(:nombre, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica").left_joins(:categoria_taxonomica).where(id: ids).each do |ancestro|
-    #     categoria = 'x_' << ancestro.nombre_categoria_taxonomica.estandariza
-    #     next unless COLUMNAS_CATEGORIAS.include?(categoria)
-    #     eval("self.taxon.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
-    #   end
-    # end
   end
 
   def nombres_columnas(web = false)
