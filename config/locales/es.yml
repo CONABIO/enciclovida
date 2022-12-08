@@ -254,7 +254,6 @@ es:
       not_an_integer: debe ser un entero
       not_found: no ha sido encontrado
       not_locked: no fue bloqueda
-      not_saved: "Lo sentimos, existen errores en los siguientes campos:"
       not_saved:
         one: "1 error no permitio que el %{resource} fuese creado:"
         other: "%{count} errores no permitieron que el %{resource} fuese creado:"

@@ -34,11 +34,11 @@ class Lista < ActiveRecord::Base
   COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombre_comun_principal x_nombres_comunes x_categoria_taxonomica
                         x_estatus x_tipo_distribucion
                         cita_nomenclatural nombre_autoridad)
-  COLUMNAS_BASICAS = %w(x_idcat id nombre_cientifico x_categoria_taxonomica x_estatus, x_url_ev)                        
+  COLUMNAS_BASICAS = %w(x_idcat id nombre_cientifico x_categoria_taxonomica x_estatus x_nombre_comun_principal x_foto_principal x_url_ev)                        
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
 
   # El orden absoluto de las columnas en el excel
-  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes x_categoria_taxonomica x_estatus x_tipo_distribucion x_usos x_ambiente x_num_reg) + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES + %w(x_bibliografia x_url_ev id x_idcat)
+  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes x_categoria_taxonomica x_estatus x_tipo_distribucion x_usos x_ambiente x_num_reg x_nombre_comun_principal x_foto_principal) + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES + %w(x_bibliografia x_url_ev id x_idcat)
 
   def after_initialize(opts)
     self.taxones = []
@@ -127,7 +127,6 @@ class Lista < ActiveRecord::Base
         sheet.add_cell(fila,2,taxon[:msg])
 
       else  # Cuando viene de una descarga normal de resultados, es decir todos los taxones existen
-        self.taxon = taxon
         columna = 0
       end
 
@@ -269,7 +268,6 @@ class Lista < ActiveRecord::Base
       columnas.split(',') if columnas.present?
     end
 
-    puts cols.inspect + "calonso"
     cols.each do |col|
 
       case col
@@ -287,14 +285,8 @@ class Lista < ActiveRecord::Base
         if proveedor = taxon.proveedor
           self.taxon.x_naturalista_id = proveedor.naturalista_id
         end
-      when 'x_foto_principal'
-        if adicional = taxon.adicional
-          self.taxon.x_foto_principal = adicional.foto_principal
-        end
-      when 'x_nombre_comun_principal'
-        if adicional = taxon.adicional
-          self.taxon.x_nombre_comun_principal = adicional.nombre_comun_principal
-        end
+      when 'x_nombre_comun_principal', 'x_foto_principal'
+        self.taxones_query = taxones_query.includes(:adicional)
       when 'x_categoria_taxonomica'
         self.taxones_query = taxones_query.includes(:categoria_taxonomica)
       when 'x_nombres_comunes'
@@ -363,13 +355,9 @@ class Lista < ActiveRecord::Base
           self.taxon.x_naturalista_id = proveedor.naturalista_id
         end
       when 'x_foto_principal'
-        if adicional = taxon.adicional
-          self.taxon.x_foto_principal = adicional.foto_principal
-        end
+        self.taxon.x_foto_principal = taxon.adicional.foto_principal
       when 'x_nombre_comun_principal'
-        if adicional = taxon.adicional
-          self.taxon.x_nombre_comun_principal = adicional.nombre_comun_principal
-        end
+        self.taxon.x_nombre_comun_principal = taxon.adicional.nombre_comun_principal
       when 'x_categoria_taxonomica'
         self.taxon.x_categoria_taxonomica = taxon.categoria_taxonomica.nombre_categoria_taxonomica
       when 'x_estatus'
