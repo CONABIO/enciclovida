@@ -50,6 +50,10 @@ class Catalogo < ActiveRecord::Base
     nivel1 == 2 && nivel2 == 6 && nivel3 > 0
   end
 
+  def es_usos?
+    USOS.include?(id)
+  end
+
   # REVISADO: Regresa la categoria superior del nombre del catalogo
   def dame_nombre_catalogo
     if nivel1 == 18

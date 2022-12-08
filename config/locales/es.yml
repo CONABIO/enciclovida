@@ -254,7 +254,6 @@ es:
       not_an_integer: debe ser un entero
       not_found: no ha sido encontrado
       not_locked: no fue bloqueda
-      not_saved: "Lo sentimos, existen errores en los siguientes campos:"
       not_saved:
         one: "1 error no permitio que el %{resource} fuese creado:"
         other: "%{count} errores no permitieron que el %{resource} fuese creado:"
@@ -473,7 +472,7 @@ es:
       cita_nomenclatural: Cita nomenclatural
       created_at: Fecha de creación
       fuente: Fuente
-      id: Identificador único
+      id: Identificador EncicloVida
       mensaje: Observaciones
       nombre_autoridad: Nombre autoridad
       nombre_cientifico: Nombre científico
@@ -489,6 +488,7 @@ es:
       x_cites_obs: Observaciones CITES
       x_estatus: Estatus
       x_foto_principal: Foto principal
+      x_idcat: Identificador CAT
       x_iucn: Unión Internacional para la Conservación de la Naturaleza (IUCN)
       x_iucn_obs: Observaciones IUCN
       x_naturalista_id: Identificador NaturaLista
@@ -503,6 +503,7 @@ es:
       x_taxa_sup: Taxonomía superior
       x_tipo_distribucion: Tipo distribución
       x_url_ev: 'URL Enciclovida'
+      x_usos: "Usos y Agrobiodiversidad"
     categorias:
       x_reino: Reino
       x_division: división
