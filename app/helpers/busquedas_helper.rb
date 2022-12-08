@@ -135,9 +135,9 @@ module BusquedasHelper
     case tipo_descarga
     when 'basica'
     when 'avanzada'
-      campos.merge!({ x_col_basicas: 'Columnas basicas', x_taxa_sup: 'Taxonomía superior' })
+      campos.merge!({ x_col_basicas: 'Columnas basicas', x_usos: 'Usos y Agrobiodiversidad', x_taxa_sup: 'Taxonomía superior' })
     when 'region'
-      campos = campos.merge!({ x_col_basicas: 'Columnas basicas', x_taxa_sup: 'Taxonomía superior' })
+      campos = campos.merge!({ x_col_basicas: 'Columnas basicas', x_usos: 'Usos y Agrobiodiversidad', x_taxa_sup: 'Taxonomía superior' })
     when 'checklist'
       campos.merge!({ x_estatus: 'Solo válidos/aceptados', x_distribucion: 'Distribución (reportada en literatura)', x_residencia: 'Categoría de residencia (aves)', x_formas: 'Formas de crecimiento (plantas)', x_interaccion: 'Interacciones biológicas' })  
     end
@@ -151,8 +151,6 @@ module BusquedasHelper
         checkbox << "<label class='custom-control-label' for='f_#{tipo_descarga}_#{valor}'>#{label}</label>"
         checkbox << "</div>"
       end
-
-      
     end
 
     checkbox.html_safe

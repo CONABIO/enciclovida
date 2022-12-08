@@ -38,7 +38,7 @@ class Lista < ActiveRecord::Base
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
 
   # El orden absoluto de las columnas en el excel
-  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes x_categoria_taxonomica x_estatus x_tipo_distribucion x_num_reg x_num_reg) + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES + %w(x_bibliografia x_url_ev id x_idcat)
+  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes x_categoria_taxonomica x_estatus x_tipo_distribucion x_usos x_ambiente x_num_reg) + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES + %w(x_bibliografia x_url_ev id x_idcat)
 
   def after_initialize(opts)
     self.taxones = []
@@ -301,7 +301,7 @@ class Lista < ActiveRecord::Base
         self.taxones_query = taxones_query.includes(:nombres_comunes)
       when 'x_tipo_distribucion'
         self.taxones_query = taxones_query.includes(:tipos_distribuciones)
-      when 'x_nom', 'x_iucn', 'x_cites', 'x_ambiente'  # Esto es una lindura!
+      when 'x_nom', 'x_iucn', 'x_cites', 'x_ambiente', 'x_usos'  # Esto es una lindura!
         self.taxones_query = taxones_query.includes(:catalogos)      
       when 'x_naturalista_fotos'
         next unless adicional = taxon.adicional
@@ -382,11 +382,11 @@ class Lista < ActiveRecord::Base
         tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
         next unless tipos_distribuciones.any?
         self.taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
-      when 'x_nom', 'x_iucn', 'x_cites', 'x_ambiente'
+      when 'x_nom', 'x_iucn', 'x_cites', 'x_ambiente', 'x_usos'
         next if tabla_catalogos  # Ya no entra una segunda vez
 
         # Se hace en una sola iteracion para evitar duplicar
-        nom, iucn, cites, ambiente = [], [], [], []
+        nom, iucn, cites, ambiente, usos = [], [], [], [], []
         catalogos_existe = false
 
         # Para los valores
@@ -416,6 +416,12 @@ class Lista < ActiveRecord::Base
             ambiente << cat.descripcion
             catalogos_existe = true 
             next
+          end    
+          
+          if cat.es_usos?
+            usos << cat.descripcion
+            catalogos_existe = true 
+            next
           end          
         end
         
@@ -424,6 +430,7 @@ class Lista < ActiveRecord::Base
         self.taxon.x_iucn = iucn.join(', ') if iucn.any?
         self.taxon.x_cites = cites.join(', ') if cites.any?
         self.taxon.x_ambiente = ambiente.join(', ') if ambiente.any?
+        self.taxon.x_usos = usos.join(', ') if usos.any?
         
         #  Para las observaciones
         obs_nom, obs_iucn, obs_cites = [], [], []
