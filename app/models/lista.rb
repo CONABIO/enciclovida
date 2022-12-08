@@ -4,6 +4,7 @@ class Lista < ActiveRecord::Base
 
   attr_accessor :taxones, :taxones_query, :taxones_query_orig, :taxon, :columnas_array, :hash_especies, :ancestros_hash
   attr_accessor :tabla_catalogos, :taxa_superior  # Es un booleano para saber si ya hizo el query al menos una vez
+  attr_accessor :es_busqueda, :region, :validacion
   validates :nombre_lista, :presence => true, :uniqueness => true
   before_update :quita_repetidos
 
@@ -33,11 +34,11 @@ class Lista < ActiveRecord::Base
   COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombre_comun_principal x_nombres_comunes x_categoria_taxonomica
                         x_estatus x_tipo_distribucion
                         cita_nomenclatural nombre_autoridad)
-  COLUMNAS_BASICAS = %w(id nombre_cientifico x_categoria_taxonomica x_estatus, x_url_ev)                        
+  COLUMNAS_BASICAS = %w(x_idcat id nombre_cientifico x_categoria_taxonomica x_estatus, x_url_ev)                        
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
 
   # El orden absoluto de las columnas en el excel
-  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes) + COLUMNAS_CATEGORIAS_PRINCIPALES + COLUMNAS_RIESGO_COMERCIO + %w(x_tipo_distribucion x_ambiente x_num_reg id x_categoria_taxonomica x_estatus x_url_ev x_bibliografia)
+  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes x_categoria_taxonomica x_estatus x_tipo_distribucion x_num_reg x_num_reg) + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES + %w(x_bibliografia x_url_ev id x_idcat)
 
   def after_initialize(opts)
     self.taxones = []
@@ -63,6 +64,10 @@ class Lista < ActiveRecord::Base
 
   # Para crear el excel con los datos
   def to_excel(opts={})
+    self.es_busqueda = opts[:es_busqueda]
+    self.region = opts[:region]
+    self.validacion = opts[:validacion]
+
     asigna_columnas_extra  # Para columnas que tienen un grupo de columnas
     xlsx = RubyXL::Workbook.new
     sheet = xlsx[0]
@@ -80,19 +85,19 @@ class Lista < ActiveRecord::Base
     end
 
     # Elimina las 3 primeras, para que no trate de evaluarlas mas abajo
-    cols.slice!(0..2) if opts[:validacion]
+    cols.slice!(0..2) if validacion
 
-    if opts[:es_busqueda]  # Busqueda basica o avanzada
+    if es_busqueda  # Busqueda basica o avanzada
       self.taxones_query_orig = Especie.find_by_sql(opts[:busqueda])
       datos_descarga
-    elsif opts[:region]  # Descarga taxa de la busqueda por region
+    elsif region  # Descarga taxa de la busqueda por region
       self.hash_especies = opts[:hash_especies]
-      self.taxones_query_orig = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", hash_especies.keys).includes(:tipos_distribuciones, :catalogos, :adicional, :nombres_comunes, :bibliografias, :scat)
+      self.taxones_query_orig = Especie.select(:id, :ancestry_ascendente_obligatorio).joins(:scat, :categoria_taxonomica).where("IDCAT IN (?)", hash_especies.keys)
       datos_descarga
     end
 
     taxones.each do |taxon|
-      if opts[:validacion]
+      if validacion
         # Viene del controlador validaciones, taxon contiene, estatus, el taxon y mensaje
         if taxon[:estatus]  # Si es un sinónimo
           if taxon[:taxon_valido].present?
@@ -243,11 +248,12 @@ class Lista < ActiveRecord::Base
   # Para asignar los datos de una consulta de resultados, hacia un excel o csv, el recurso puede ser un string o un objeto
   def datos_descarga
     return unless taxones_query_orig.any?
-    self.taxones = []
     ids = taxones_query_orig.map(&:id)
     self.taxones_query = Especie.where(id: ids)
 
+    self.taxones = []
     arma_taxones_query
+
     taxones_query.each do |taxon|
       self.taxon = taxon
       asigna_datos
@@ -267,6 +273,8 @@ class Lista < ActiveRecord::Base
     cols.each do |col|
 
       case col
+      when 'x_idcat'
+        self.taxones_query = taxones_query.includes(:scat)    
       when 'x_snib_id'
         if proveedor = taxon.proveedor
           self.taxon.x_snib_id = proveedor.snib_id
@@ -306,7 +314,7 @@ class Lista < ActiveRecord::Base
       when 'x_bibliografia'
         self.taxones_query = taxones_query.includes(:bibliografias) 
       when 'x_num_reg'
-        self.taxon.x_num_reg = hash_especies[taxon.scat.catalogo_id]
+        self.taxones_query = taxones_query.includes(:scat) 
       when 'x_reino', 'x_division', 'x_phylum', 'x_clase', 'x_orden', 'x_familia', 'x_genero', 'x_especie'
         next if ancestros_hash.present?  # Para ya no volver a entrar
 
@@ -340,6 +348,8 @@ class Lista < ActiveRecord::Base
     cols.each do |col|
 
       case col
+      when 'x_idcat'
+        self.taxon.x_idcat = taxon.scat.catalogo_id
       when 'x_snib_id'
         if proveedor = taxon.proveedor
           self.taxon.x_snib_id = proveedor.snib_id
@@ -504,6 +514,10 @@ class Lista < ActiveRecord::Base
     if columnas_array.include?('x_col_basicas')
       self.columnas_array = columnas_array << COLUMNAS_BASICAS
       self.columnas_array.delete('x_col_basicas')
+
+      if region
+        self.columnas_array << 'x_num_reg'
+      end
     end
 
     self.columnas_array = columnas_array.flatten
@@ -517,7 +531,7 @@ class Lista < ActiveRecord::Base
               columnas.split(',') if columnas.present?
             end 
 
-    if !opts[:validacion]
+    if !validacion
       self.columnas_array = COLUMNAS_ORDEN & cols
     end
   end
