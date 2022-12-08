@@ -33,7 +33,7 @@ class Lista < ActiveRecord::Base
   COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombre_comun_principal x_nombres_comunes x_categoria_taxonomica
                         x_estatus x_tipo_distribucion
                         cita_nomenclatural nombre_autoridad)
-  COLUMNAS_BASICAS = %w(id nombre_cientifico x_categoria_taxonomica x_estatus)                        
+  COLUMNAS_BASICAS = %w(id nombre_cientifico x_categoria_taxonomica x_estatus, x_url_ev)                        
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
 
   # El orden absoluto de las columnas en el excel
@@ -305,8 +305,6 @@ class Lista < ActiveRecord::Base
         self.taxon.x_bdi_fotos = "#{CONFIG.site_url}especies/#{taxon.id}/bdi-photos" if adicional.foto_principal.present?
       when 'x_bibliografia'
         self.taxones_query = taxones_query.includes(:bibliografias) 
-      when 'x_url_ev'
-        self.taxon.x_url_ev = "#{CONFIG.site_url}especies/#{taxon.id}-#{taxon.nombre_cientifico.estandariza}"
       when 'x_num_reg'
         self.taxon.x_num_reg = hash_especies[taxon.scat.catalogo_id]
       when 'x_reino', 'x_division', 'x_phylum', 'x_clase', 'x_orden', 'x_familia', 'x_genero', 'x_especie'
