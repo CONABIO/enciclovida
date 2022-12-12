@@ -102,7 +102,7 @@ class Lista < ActiveRecord::Base
         if taxon[:estatus]  # Si es un sinónimo
           if taxon[:taxon_valido].present?
             self.taxon = taxon[:taxon_valido]
-          else  # La rewspuesta es el taxon que encontro
+          else  # La respuesta es el taxon que encontro
             self.taxon = taxon[:taxon]
           end
 
@@ -117,7 +117,7 @@ class Lista < ActiveRecord::Base
             nombre_cientifico = ''
           end
         end
-
+        
         asigna_datos
         columna = 3  # Asigna la columna desde el 3, puesto que contiene las sig posiciones antes:
 
@@ -285,7 +285,7 @@ class Lista < ActiveRecord::Base
         if proveedor = taxon.proveedor
           self.taxon.x_naturalista_id = proveedor.naturalista_id
         end
-      when 'x_nombre_comun_principal', 'x_foto_principal'
+      when 'x_nombre_comun_principal', 'x_foto_principal', 'x_naturalista_fotos', 'x_bdi_fotos'
         self.taxones_query = taxones_query.includes(:adicional)
       when 'x_categoria_taxonomica'
         self.taxones_query = taxones_query.includes(:categoria_taxonomica)
@@ -295,14 +295,6 @@ class Lista < ActiveRecord::Base
         self.taxones_query = taxones_query.includes(:tipos_distribuciones)
       when 'x_nom', 'x_iucn', 'x_cites', 'x_ambiente', 'x_usos'  # Esto es una lindura!
         self.taxones_query = taxones_query.includes(:catalogos)      
-      when 'x_naturalista_fotos'
-        next unless adicional = taxon.adicional
-        if proveedor = taxon.proveedor
-          self.taxon.x_naturalista_fotos = "#{CONFIG.site_url}especies/#{taxon.id}/fotos-naturalista" if proveedor.naturalista_id.present? && adicional.foto_principal.present?
-        end
-      when 'x_bdi_fotos'
-        next unless adicional = taxon.adicional
-        self.taxon.x_bdi_fotos = "#{CONFIG.site_url}especies/#{taxon.id}/bdi-photos" if adicional.foto_principal.present?
       when 'x_bibliografia'
         self.taxones_query = taxones_query.includes(:bibliografias) 
       when 'x_num_reg'
@@ -317,7 +309,7 @@ class Lista < ActiveRecord::Base
 
         ancestros.each do |ancestro|
           self.ancestros_hash[ancestro.id] = { nombre_cientifico: ancestro.nombre_cientifico, categoria: ancestro.categoria_taxonomica.nombre_categoria_taxonomica }
-        end
+        end  
       else
         next
       end  # End switch
@@ -325,7 +317,7 @@ class Lista < ActiveRecord::Base
 
   end
 
-  # Metodoq ue comparten las listas y para exportar en excel
+  # Metodo que comparten las listas y para exportar en excel
   def asigna_datos
     return unless taxon.present?
     self.tabla_catalogos = false
@@ -454,17 +446,34 @@ class Lista < ActiveRecord::Base
         self.taxon.x_num_reg = hash_especies[taxon.scat.catalogo_id]
       when 'x_reino', 'x_division', 'x_phylum', 'x_clase', 'x_orden', 'x_familia', 'x_genero', 'x_especie'
         next if taxa_superior
-        next if taxon.is_root?
-        ancestros = taxon.path_ids
-        next if ancestros.empty?  # Es un root
 
-        ancestros.each do |ancestro|
-          begin
-            x_categoria = 'x_' << ancestros_hash[ancestro][:categoria].estandariza
-            # Asigna la categoria taxonomica de acuerdo al ancestro
-            eval("self.taxon.#{x_categoria} = \"#{ancestros_hash[ancestro][:nombre_cientifico]}\"")  
-          rescue
-            next
+        if validacion
+          # Para agregar todas las categorias taxonomicas que pidio, primero se intersectan
+            cats = COLUMNAS_CATEGORIAS & cols
+
+            if cats.any?
+              return if taxon.is_root?  # No hay categorias que completar
+              ids = taxon.path_ids
+
+              Especie.select(:nombre, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica").left_joins(:categoria_taxonomica).where(id: ids).each do |ancestro|
+                categoria = 'x_' << ancestro.nombre_categoria_taxonomica.estandariza
+                next unless COLUMNAS_CATEGORIAS.include?(categoria)
+                eval("self.taxon.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
+              end
+            end          
+        else
+          next if taxon.is_root?
+          ancestros = taxon.path_ids
+          next if ancestros.empty?  # Es un root
+  
+          ancestros.each do |ancestro|
+            begin
+              x_categoria = 'x_' << ancestros_hash[ancestro][:categoria].estandariza
+              # Asigna la categoria taxonomica de acuerdo al ancestro
+              eval("self.taxon.#{x_categoria} = \"#{ancestros_hash[ancestro][:nombre_cientifico]}\"")  
+            rescue
+              next
+            end
           end
         end
         
