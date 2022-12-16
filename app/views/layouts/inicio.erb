@@ -56,5 +56,6 @@
 
 <%= yield :delayedcss %>
 <%= yield :delayedjs %>
+<%= insertaGoogleAnalytics if Rails.env.production? %>
 </body>
 </html>

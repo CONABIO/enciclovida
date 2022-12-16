@@ -55,5 +55,6 @@
 <%= render partial: 'shared_b4/multimodal' %>
 
 <%= yield :delayedjs %>
+<%= insertaGoogleAnalytics if Rails.env.production? %>
 </body>
 </html>

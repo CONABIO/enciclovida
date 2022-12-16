@@ -54,6 +54,7 @@
 <%= yield :extrajs_carrusel %>
 
 <%= yield :delayedjs %>
+<%= insertaGoogleAnalytics if Rails.env.production? %>
 </body>
 
 </html>
