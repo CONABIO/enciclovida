@@ -33,6 +33,7 @@
   <%= yield :extracss %>
   <%= yield :extrajs %>
 </head>
+<%= insertaGoogleAnalytics if Rails.env.production? %>
 <body>
 
 <%= yield :ribbon %>
@@ -64,6 +65,5 @@
 <%= yield :extrajs_carrusel %>
 
 <%= yield :delayedjs %>
-<%= insertaGoogleAnalytics if Rails.env.production? %>
 </body>
 </html>

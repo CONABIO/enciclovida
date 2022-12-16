@@ -32,6 +32,7 @@
   <%= yield :extracss %>
   <%= yield :extrajs %>
 </head>
+<%= insertaGoogleAnalytics if Rails.env.production? %>
 <body>
 
 <%= yield :ribbon %>
@@ -55,6 +56,5 @@
 <%= render partial: 'shared_b4/multimodal' %>
 
 <%= yield :delayedjs %>
-<%= insertaGoogleAnalytics if Rails.env.production? %>
 </body>
 </html>
