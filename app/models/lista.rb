@@ -347,9 +347,13 @@ class Lista < ActiveRecord::Base
           self.taxon.x_naturalista_id = proveedor.naturalista_id
         end
       when 'x_foto_principal'
-        self.taxon.x_foto_principal = taxon.adicional.foto_principal
+        if adicional = taxon.adicional
+          self.taxon.x_foto_principal = adicional.foto_principal
+        end
       when 'x_nombre_comun_principal'
-        self.taxon.x_nombre_comun_principal = taxon.adicional.nombre_comun_principal
+        if adicional = taxon.adicional
+          self.taxon.x_nombre_comun_principal = adicional.nombre_comun_principal
+        end
       when 'x_categoria_taxonomica'
         self.taxon.x_categoria_taxonomica = taxon.categoria_taxonomica.nombre_categoria_taxonomica
       when 'x_estatus'
