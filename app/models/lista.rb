@@ -96,14 +96,14 @@ class Lista < ActiveRecord::Base
       datos_descarga
     end
 
-    taxones.each do |taxon|
+    taxones.each do |t|
       if validacion
         # Viene del controlador validaciones, taxon contiene, estatus, el taxon y mensaje
-        if taxon[:estatus]  # Si es un sinónimo
-          if taxon[:taxon_valido].present?
-            self.taxon = taxon[:taxon_valido]
+        if t[:estatus]  # Si es un sinónimo
+          if t[:taxon_valido].present?
+            self.taxon = t[:taxon_valido]
           else  # La respuesta es el taxon que encontro
-            self.taxon = taxon[:taxon]
+            self.taxon = t[:taxon]
           end
 
           nombre_cientifico = self.taxon.nombre_cientifico
@@ -111,8 +111,8 @@ class Lista < ActiveRecord::Base
         else  # Si tiene muchos taxones como coincidencia
           self.taxon = Especie.none
 
-          if taxon[:taxones].present?  # Cuando coincidio varios taxones no pongo nada
-            nombre_cientifico = taxon[:taxones].map{|t| t.nombre_cientifico}.join(', ')
+          if t[:taxones].present?  # Cuando coincidio varios taxones no pongo nada
+            nombre_cientifico = t[:taxones].map{|tax| tax.nombre_cientifico}.join(', ')
           else
             nombre_cientifico = ''
           end
@@ -122,21 +122,30 @@ class Lista < ActiveRecord::Base
         columna = 3  # Asigna la columna desde el 3, puesto que contiene las sig posiciones antes:
 
         # El nombre original, el (los) que coincidio, y el mensaje
-        sheet.add_cell(fila,0,taxon[:nombre_orig])
+        sheet.add_cell(fila,0,t[:nombre_orig])
         sheet.add_cell(fila,1,nombre_cientifico)
-        sheet.add_cell(fila,2,taxon[:msg])
+        sheet.add_cell(fila,2,t[:msg])
+
+        cols.each do |a|
+          begin
+            sheet.add_cell(fila,columna,taxon.try(a))
+          rescue  # Por si existe algun error en la evaluacion de algun campo
+            sheet.add_cell(fila,columna,'¡Hubo un error!')
+          end
+          columna+= 1
+        end
 
       else  # Cuando viene de una descarga normal de resultados, es decir todos los taxones existen
         columna = 0
-      end
 
-      cols.each do |a|
-        begin
-          sheet.add_cell(fila,columna,self.taxon.try(a))
-        rescue  # Por si existe algun error en la evaluacion de algun campo
-          sheet.add_cell(fila,columna,'¡Hubo un error!')
-        end
-        columna+= 1
+        cols.each do |a|
+          begin
+            sheet.add_cell(fila,columna,t.try(a))
+          rescue  # Por si existe algun error en la evaluacion de algun campo
+            sheet.add_cell(fila,columna,'¡Hubo un error!')
+          end
+          columna+= 1
+        end        
       end
 
       fila+= 1
@@ -253,8 +262,8 @@ class Lista < ActiveRecord::Base
     self.taxones = []
     arma_taxones_query
 
-    taxones_query.each do |taxon|
-      self.taxon = taxon
+    taxones_query.each do |t|
+      self.taxon = t
       asigna_datos
       self.taxones << taxon
     end
