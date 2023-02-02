@@ -22,7 +22,7 @@
         <% end %>
 
         <% when 9  # el PDF %>
-        <%= link_to('Ficha'.html_safe, col) if col.present? %>
+        <%= link_to('Ficha'.html_safe, col, target: :_blank) if col.present? %>
         <% else %>
         <%= col %>
         <% end %>
