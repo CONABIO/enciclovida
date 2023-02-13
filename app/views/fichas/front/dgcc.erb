@@ -13,6 +13,5 @@
   <li><p><strong>Puesto y afiliación: </strong><%=@asociado.present? ? convierte_a_HTML(@asociado.tipoAsociacion) : (@sin_info_msj)%></p></li>
 </ul>
 
-
-<br/>
-<br/>
+<hr>
+<%= render file: "especies/descripciones/descripcion_catalogos" %>

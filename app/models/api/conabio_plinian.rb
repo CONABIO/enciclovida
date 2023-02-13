@@ -6,7 +6,7 @@ class Api::ConabioPlinian < Api::Conabio
   end
 
   def nombre
-    'CONABIO (plinian core)'
+    'CONABIO (Descripción larga)'
   end
 
   def dame_descripcion

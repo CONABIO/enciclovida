@@ -132,6 +132,7 @@ class Fichas::FrontController < Fichas::FichasController
   end
 
   def show
+
     especie = @taxon.especie
     especie.asigna_categorias
 
@@ -231,24 +232,28 @@ class Fichas::FrontController < Fichas::FichasController
 
   # La ficha de la DGCC
   def dgcc
-    @ficha = @taxon.dgcc
-    # XI. Metadatos:
-    @metadato = @taxon.metadatos.first
+    @especie = @taxon.especie
+    if @ficha = @taxon.dgcc
+      # XI. Metadatos:
+      @metadato = @taxon.metadatos.first
 
-    if @metadato && @asociado = @metadato.asociado.first
-      @organizacion = @asociado.organizacion
-      @responsable = @asociado.responsable
-      @puesto = @asociado.puesto
-      @contacto = @asociado.contacto.first
+      if @metadato && @asociado = @metadato.asociado.first
+        @organizacion = @asociado.organizacion
+        @responsable = @asociado.responsable
+        @puesto = @asociado.puesto
+        @contacto = @asociado.contacto.first
 
-      if @ciudad = @contacto.ciudad
-        @pais = @ciudad.pais
+        if @ciudad = @contacto.ciudad
+          @pais = @ciudad.pais
+        end
       end
-    end
 
-    respond_to do |format|
-      format.html
-      format.json { render json: @ficha }
+      respond_to do |format|
+        format.html
+        format.json { render json: @ficha }
+      end
+    else
+      render 'especies/descripciones/descripcion_catalogos'
     end
   end
 

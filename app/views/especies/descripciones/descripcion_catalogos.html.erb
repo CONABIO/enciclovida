@@ -1,8 +1,10 @@
+<p class="mb-4 py-3 border-bottom h3 text-primary text-center">La siguiente información proviene del catálogo de autoridades taxonómicas de CONABIO:</p>
+
 <table>
   <tr>
     <td width="40%" valign="top">
       <fieldset>
-        <legend class="leyenda">Información del taxón</legend>
+        <p class="h4 leyenda">Información del taxón</p>
 
         <%= dameEstatus(@especie) %>
         <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos', tab_catalogos: true}) %>
@@ -17,7 +19,7 @@
 
     <td width="60%" valign="top">
       <fieldset>
-        <legend class="leyenda">Nombres comunes y distribución</legend>
+        <p class="h4 leyenda">Nombres comunes y distribución</p>
 
         <%= dameNomComunesBiblio(@especie) %>
         <%= dameDistribucionLiteratura(@especie) %>
