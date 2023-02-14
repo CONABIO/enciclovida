@@ -12,6 +12,3 @@
   <li><p><strong>Nombre completo del responsable de la captura de los datos: </strong><%=@asociado.present? ? convierte_a_HTML(@asociado.rol ) : (@sin_info_msj)%></p></li>
   <li><p><strong>Puesto y afiliación: </strong><%=@asociado.present? ? convierte_a_HTML(@asociado.tipoAsociacion) : (@sin_info_msj)%></p></li>
 </ul>
-
-<hr>
-<%= render file: "especies/descripciones/descripcion_catalogos" %>

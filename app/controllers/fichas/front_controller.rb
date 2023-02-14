@@ -223,7 +223,7 @@ class Fichas::FrontController < Fichas::FichasController
         # XII. Referencias: (Agregado)
         referencias: @referencias
     }
-
+    @especie = especie
     respond_to do |format|
       format.html
       format.json { render json: @ficha }
@@ -232,8 +232,7 @@ class Fichas::FrontController < Fichas::FichasController
 
   # La ficha de la DGCC
   def dgcc
-    @especie = @taxon.especie
-    if @ficha = @taxon.dgcc
+    @ficha = @taxon.dgcc
       # XI. Metadatos:
       @metadato = @taxon.metadatos.first
 
@@ -252,9 +251,6 @@ class Fichas::FrontController < Fichas::FichasController
         format.html
         format.json { render json: @ficha }
       end
-    else
-      render 'especies/descripciones/descripcion_catalogos'
-    end
   end
 
 

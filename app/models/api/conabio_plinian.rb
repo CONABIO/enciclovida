@@ -6,20 +6,20 @@ class Api::ConabioPlinian < Api::Conabio
   end
 
   def nombre
-    'CONABIO (Descripción larga)'
+    'CONABIO (Descripción)'
   end
 
   def dame_descripcion
     return unless cat = taxon.scat
     resp = buscar(cat.catalogo_id)
     return resp if resp  # caso simple, fue el valido
-    
+
     # Iteramos en los sinonimos
     resp = nil
     sinonimos = taxon.especies_estatus.sinonimos
 
     sinonimos.each do |sinonimo|
-      next unless especie = sinonimo.especie 
+      next unless especie = sinonimo.especie
       next unless cat = especie.scat
       resp = buscar(cat.catalogo_id)
       return resp if resp
@@ -28,23 +28,17 @@ class Api::ConabioPlinian < Api::Conabio
     resp  # Si llego aqui la respuesta es nula
   end
 
-
   private
 
   def buscar(q)
     ficha = jerarquia_fichas(q)
     return nil unless ficha
-
-    if ficha.tipoficha == 'DGCC'
-      solicita("fichas/front/#{ficha.especieId}/dgcc")
-    else
-      solicita("fichas/front/#{ficha.especieId}")  
-    end
+    solicita("fichas/front/#{ficha.especieId}")
   end
 
   # cuando hay mas de una ficha en conabio
   def jerarquia_fichas(q)
-    fichas = Fichas::Taxon.where(IdCAT: q)
+    fichas = Fichas::Taxon.where(IdCAT: q).where.not(tipoficha: 'DGCC')
     return nil unless fichas.any?
 
     resp = []
@@ -58,10 +52,8 @@ class Api::ConabioPlinian < Api::Conabio
           resp[2] = ficha
         when 'silvestre'
           resp[3] = ficha
-        when 'dgcc'
-          resp[4] = ficha
         else  # Ficha desconocida
-          resp[5] = ficha
+          resp[4] = ficha
       end
     end  # end each do
 

@@ -1,13 +1,13 @@
 class Api::Conabio < Api::Descripcion
 
-  DESCRIPCIONES = %w(conabio_plinian conabio_xml)
+  DESCRIPCIONES = %w(conabio_plinian conabio_xml conabio_tecnico)
 
   def initialize(opc={})
     super(opc)
   end
 
   def nombre
-    'CONABIO'
+    'CONABIO (Descripción)'
   end
 
   def dame_descripcion
@@ -16,8 +16,8 @@ class Api::Conabio < Api::Descripcion
       resp = desc.new(taxon: taxon).dame_descripcion
       return resp if resp
     end
-
-    nil
+    #Sí no hay ficha en fespecies o la de xml  entonces regreso el nokogiri (iuu) de catálogos
+    #solicita("especies/#{taxon.id}/descripcion_catalogos")
   end
 
 end
