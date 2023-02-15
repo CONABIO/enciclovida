@@ -1,29 +1,23 @@
-<p class="mb-4 py-3 border-bottom h3 text-primary text-center">La siguiente información proviene del catálogo de autoridades taxonómicas de CONABIO:</p>
+<div class="row">
+  <div class="col-12">
+    <p class="mb-4 py-3 border-bottom h4 font-weight-bolder text-primary text-center">La siguiente información proviene del catálogo de autoridades taxonómicas de CONABIO:</p>
+  </div>
+  <div class="col-12 col-lg-7">
+    <p class="h3 leyenda">Información del taxón</p>
 
-<table>
-  <tr>
-    <td width="40%" valign="top">
-      <fieldset>
-        <p class="h4 leyenda">Información del taxón</p>
+    <%= dameEstatus(@especie) %>
+    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos', tab_catalogos: true}) %>
+    <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos', tab_catalogos: true}) %>
+    <%= dameDistribucion(@especie) %>
+    <%= dameCaracteristica(@especie) %>
+    <%= dameEspecieBibliografias(@especie) %>
+    <%= dameOtrosAtributos(@especie) %>
+    <%= "<p><strong>Identificador único (IdCAT)</strong><ul><li>#{@especie.scat.catalogo_id}</li></ul></p>".html_safe %>
+  </div>
+  <div class="col-12 col-lg">
+    <p class="h3 leyenda">Nombres comunes y distribución</p>
 
-        <%= dameEstatus(@especie) %>
-        <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos', tab_catalogos: true}) %>
-        <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos', tab_catalogos: true}) %>
-        <%= dameDistribucion(@especie) %>
-        <%= dameCaracteristica(@especie) %>
-        <%= dameEspecieBibliografias(@especie) %>
-        <%= dameOtrosAtributos(@especie) %>
-        <%= "<p><strong>Identificador único</strong><ul><li>#{@especie.scat.catalogo_id}</li></ul></p>".html_safe %>
-      </fieldset>
-    </td>
-
-    <td width="60%" valign="top">
-      <fieldset>
-        <p class="h4 leyenda">Nombres comunes y distribución</p>
-
-        <%= dameNomComunesBiblio(@especie) %>
-        <%= dameDistribucionLiteratura(@especie) %>
-      </fieldset>
-    </td>
-  </tr>
-</table>
+    <%= dameNomComunesBiblio(@especie) %>
+    <%= dameDistribucionLiteratura(@especie) %>
+  </div>
+</div>
