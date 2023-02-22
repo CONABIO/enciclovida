@@ -14,7 +14,7 @@ class Api::ConabioDgcc < Api::ConabioPlinian
   def buscar(q)
 
     #Para q pido la ficha en html y shalala si de todos modods la parseare con nokogiri?!!? WTF!
-    ficha = Fichas::Taxon.where(IdCAT: q, tipoficha: 'DGCC').first
+    ficha = Fichas::Taxon.where(IdCAT: q, tipoficha: 'DGCC').where(estatusficha: '').first
 
     return nil unless ficha
     solicita("fichas/front/#{ficha.especieId}/dgcc")

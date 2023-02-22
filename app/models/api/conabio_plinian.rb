@@ -38,7 +38,7 @@ class Api::ConabioPlinian < Api::Conabio
 
   # cuando hay mas de una ficha en conabio
   def jerarquia_fichas(q)
-    fichas = Fichas::Taxon.where(IdCAT: q).where.not(tipoficha: 'DGCC')
+    fichas = Fichas::Taxon.where(IdCAT: q).where(estatusficha: '').where.not(tipoficha: 'DGCC')
     return nil unless fichas.any?
 
     resp = []
