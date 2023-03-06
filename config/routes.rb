@@ -267,6 +267,7 @@ Buscador::Application.routes.draw do
   get 'validaciones' => 'validaciones#index'
   post 'validaciones/simple' => 'validaciones#simple', as: 'validacion_simple'
   post 'validaciones/avanzada' => 'validaciones#avanzada', as: 'validacion_avanzada'
+  get 'validaciones/encuentra-por-nombre' => 'validaciones#encuentra_por_nombre'
 
   get 'bdi_nombre_cientifico' => 'webservice#bdi_nombre_cientifico'
 

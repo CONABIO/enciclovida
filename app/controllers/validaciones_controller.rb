@@ -61,6 +61,19 @@ class ValidacionesController < ApplicationController
     end  # End @modelo
   end
 
+  # Regresa una especie si es que coincidio 100% con el nombre científico
+  def encuentra_por_nombre
+    validacion = Validacion.new
+    validacion.nombre_cientifico = params[:nombre]
+    validacion.encuentra_por_nombre
+
+    respond_to do |format|
+      format.json do
+        render json: validacion.validacion
+      end
+    end
+  end
+
 
   private
 
