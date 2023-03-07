@@ -329,6 +329,12 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       response << distribucion.descripcion
     end
 
+    # Si tiene endemica y nativa, solo dejamos endemica
+    endemica_nativa = ["Endémica", "Nativa"] & response
+    if endemica_nativa.length == 2
+      response.delete_at(response.index("Nativa"))
+    end
+
     {'Tipo de distribución' => response}
   end
 
