@@ -20,7 +20,7 @@ module BusquedasHelper
     radios << '<div class="w-100"></div>' if resultados
 
     radios << '<div class="col-12">'
-    radios << '<h6><strong>Plantas</strong></h6>'
+    radios << '<h6><strong>Plantas y hongos</strong></h6>'
     @filtros[:plantas].each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end

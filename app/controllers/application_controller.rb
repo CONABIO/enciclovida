@@ -66,10 +66,10 @@ class ApplicationController < ActionController::Base
         end
       end
   
-      plant = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
+      plant = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS_Y_HONGOS)
       plantas = []
       plant.each do |planta|
-        if index = Busqueda::GRUPOS_PLANTAS.index(planta.nombre_cientifico)
+        if index = Busqueda::GRUPOS_PLANTAS_Y_HONGOS.index(planta.nombre_cientifico)
           plantas[index] = planta
         end
       end

@@ -16,7 +16,7 @@ class Busqueda
   GRUPOS_REINOS = %w(Animalia Plantae Fungi Prokaryotae Protoctista)
   GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes
 Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria Porifera)
-  GRUPOS_PLANTAS = %w(Bryophyta Anthocerotophyta Polypodiidae Pinidae Cycadidae Lilianae Magnoliidae)
+  GRUPOS_PLANTAS_Y_HONGOS = %w(Fungi Bryophyta Anthocerotophyta Polypodiidae Pinidae Cycadidae Lilianae Magnoliidae)
   
   BUSCADORES = {
 		  clasificacion: {url: "/explora-por-clasificacion", nombre: "Clasificación", descripcion: "¡Explora toda la clasificación taxonómica desde reinos hasta especies!"},
