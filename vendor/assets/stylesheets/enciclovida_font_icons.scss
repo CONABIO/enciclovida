@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?44844189');
-  src: font-url('enciclovida_font_icons.eot?44844189#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?44844189') format('woff2'),
-       font-url('enciclovida_font_icons.woff?44844189') format('woff'),
-       font-url('enciclovida_font_icons.ttf?44844189') format('truetype'),
-       font-url('enciclovida_font_icons.svg?44844189#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?91152130');
+  src: font-url('enciclovida_font_icons.eot?91152130#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?91152130') format('woff2'),
+       font-url('enciclovida_font_icons.woff?91152130') format('woff'),
+       font-url('enciclovida_font_icons.ttf?91152130') format('truetype'),
+       font-url('enciclovida_font_icons.svg?91152130#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?44844189#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?91152130#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -101,6 +101,7 @@
 .semarnat-ev-icon:before { content: '\e82c'; } /* '' */
 .ipescado-ev-icon:before { content: '\e82d'; } /* '' */
 .pescadata-ev-icon:before { content: '\e82e'; } /* '' */
+.fungi-ev-icon:before { content: '\e82f'; } /* '' */
 .en-peligro-critico-cr-ev-icon:before { content: '\e831'; } /* '' */
 .en-peligro-critico-cr-evaluacion-conabio-ev-icon:before { content: '\e832'; } /* '' */
 .en-peligro-de-extincion-p-evaluacion-conabio-ev-icon:before { content: '\e835'; } /* '' */
@@ -113,7 +114,6 @@
 .feather-ev-icon:before { content: '\e842'; } /* '' */
 .importado-ev-icon:before { content: '\e844'; } /* '' */
 .insecta-ev-icon:before { content: '\e845'; } /* '' */
-.fungi-ev-icon:before { content: '\e846'; } /* '' */
 .invertebrados-ev-icon:before { content: '\e847'; } /* '' */
 .lilianae-ev-icon:before { content: '\e848'; } /* '' */
 .magnoliidae-ev-icon:before { content: '\e84a'; } /* '' */
