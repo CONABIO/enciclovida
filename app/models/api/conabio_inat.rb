@@ -1,6 +1,6 @@
 class Api::ConabioInat < Api::Conabio
 
-  DESCRIPCIONES = %w(conabio_plinian conabio_dgcc conabio_tecnico)
+  DESCRIPCIONES = %w(conabio_plinian conabio_dgcc)
 
   def initialize(opc={})
     super(opc)
