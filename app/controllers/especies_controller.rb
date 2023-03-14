@@ -477,7 +477,11 @@ class EspeciesController < ApplicationController
   # Viene de la pestaña "Acerca de " de la ficha
   def descripcion
     asigna_variables_descripcion
-    render 'especies/descripciones/descripcion'
+    if @descripcion.blank? && @api == 'conabio_inat'
+      render json: { estatus: 0 }, :status => :not_found
+    else
+      render 'especies/descripciones/descripcion'
+    end
   end
 
   # La respuesta a la ficha en la app

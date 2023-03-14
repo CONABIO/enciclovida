@@ -16,7 +16,7 @@ class Api::ConabioInat < Api::Conabio
       resp = desc.new(taxon: taxon).dame_descripcion
       return resp if resp
     end
-    return "No existe descripción en CONABIO para el presente taxón."
+    return nil
   end
 
 end
