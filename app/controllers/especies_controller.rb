@@ -478,7 +478,7 @@ class EspeciesController < ApplicationController
   def descripcion
     asigna_variables_descripcion
     if @descripcion.blank? && @api == 'conabio_inat'
-      render json: { estatus: false }
+      render plain: "<div></div>"
     else
       render 'especies/descripciones/descripcion'
     end
