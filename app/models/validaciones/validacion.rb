@@ -48,7 +48,12 @@ class Validacion
                 end
 
       if taxones.present? && taxones.length == 1  # Caso mas sencillo
-        self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda similar'}
+        if taxones.first.nombre_cientifico.limpiar == nombre_cientifico.limpiar  # Probablemente el taxon en el CAT tenia parentesis u abreviaturas
+          self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda exacta'}
+        else
+          self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda similar'}
+        end
+        
         return
 
       elsif taxones.present? && taxones.length > 1  # Mas de una coincidencia
