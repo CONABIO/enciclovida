@@ -17,7 +17,7 @@
   <% end %>
 
   <% if @api == 'conabio_inat' %>
-    <%= link_to "Ver más en EncicloVida", request.original_url.split("/")[0..-2].join("/"), target: :_blank %>
+    <%= link_to "Ver más en EncicloVida", request.original_url.split("/")[0..-2].join("/") + "-" + @especie.nombre_cientifico.limpiar.estandariza, target: :_blank %>
   <% end %>
 
   <% if @descripcion.blank? %>
