@@ -1,23 +1,54 @@
-<div class="row">
-  <div class="col-12">
-    <p class="mb-4 py-3 border-bottom h4 font-weight-bolder text-primary text-center">La siguiente información proviene del catálogo de autoridades taxonómicas de CONABIO:</p>
-  </div>
-  <div class="col-12 col-lg-7">
-    <p class="h3 leyenda">Información del taxón</p>
+<div class="row m-4">
+  <h4 class="mt-4 w-100 text-center font-weight-bolder">La siguiente información proviene del catálogo de autoridades taxonómicas de CONABIO:</h4>
+  <h5 class="mb-4 w-100 text-center font-weight-bolder">Identificador único: <span class="badge badge-secondary"><%= @especie.scat.catalogo_id %></span> (IdCAT)</h5>
+  <div class="col-12 d-flex justify-content-around my-4">
 
-    <%= dameEstatus(@especie) %>
-    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos', tab_catalogos: true}) %>
-    <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos', tab_catalogos: true}) %>
-    <%= dameDistribucion(@especie) %>
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title font-weight-bolder">Estatus taxonómico</h4>
+        <span class="badge badge-secondary"><%= Especie::ESTATUS_SIGNIFICADO[@especie.estatus] %></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title font-weight-bolder">Tipo de distribución</h4>
+        <span class="badge badge-secondary"><%= dameDistribucion(@especie).join(', ') %></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 d-flex justify-content-around my-4">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title font-weight-bolder">Sinónimos</h4>
+        <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos', tab_catalogos: true}).join('').html_safe %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 d-flex justify-content-around my-4">
     <%= dameCaracteristica(@especie) %>
-    <%= dameEspecieBibliografias(@especie) %>
-    <%= dameOtrosAtributos(@especie) %>
-    <%= "<p><strong>Identificador único (IdCAT)</strong><ul><li>#{@especie.scat.catalogo_id}</li></ul></p>".html_safe %>
   </div>
-  <div class="col-12 col-lg">
-    <p class="h3 leyenda">Nombres comunes y distribución</p>
 
-    <%= dameNomComunesBiblio(@especie) %>
+  <div class="col-12 d-flex justify-content-around my-4">
+    <%= dameEspecieBibliografias(@especie) %>
+  </div>
+
+  <div class="col-12 d-flex justify-content-around my-4">
+    <%= dameOtrosAtributos(@especie) %>
+  </div>
+
+  <div class="col-12 d-flex justify-content-around my-4">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title font-weight-bolder">Nombres comunes y distribución</h4>
+        <%= dameNomComunesBiblio(@especie) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 d-flex justify-content-around my-4">
     <%= dameDistribucionLiteratura(@especie) %>
   </div>
+
 </div>

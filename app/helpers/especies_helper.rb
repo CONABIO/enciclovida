@@ -29,7 +29,7 @@ module EspeciesHelper
 
       if !opc[:app]
         bibliografias = nombre.bibliografias.con_especie(opc[:taxon]).map(&:cita_completa)
-        
+
         if bibliografias.any?
           biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
           html << " <a href='' tabindex='0' class='biblio-cat' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'>Bibliografía</a>"
@@ -77,7 +77,7 @@ module EspeciesHelper
 
       regiones.each do |id, datos|
         lista << "<li>#{datos[:nombre]}</li>"
-        
+
         if !opc[:app]
           lista << " <a href='' tabindex='0' class='biblio-cat' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{datos[:observaciones]}\" onClick='return false;'>Bibliografía</a>" if datos[:observaciones].present?
         end
@@ -102,23 +102,24 @@ module EspeciesHelper
       "<strong>#{opciones[:tipo_recurso]}: </strong>#{recurso.join(' <b>;</b> ')}"
     end
 
-    def creaLista(taxones, opciones={})
-      html = ''
+    def dameLista(taxones, opciones={})
+      lista = []
 
       taxones.each do |taxon|
-        html << "<li>#{tituloNombreCientifico(taxon, render: 'inline')}</li>"
+        nombre = tituloNombreCientifico(taxon, render: 'inline')
 
         if !opciones[:app]
           bibliografias = taxon.bibliografias.map(&:cita_completa)
-          
+
           if bibliografias.any?
             biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b.gsub("\"","'")}</li>" }.join('')}</ul>"
-            html << " <a href='' tabindex='0' class='biblio-cat' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'>Bibliografía</a>"
+            nombre = " <a href='' tabindex='0' class='biblio-cat btn btn-outline-secondary mr-3 mt-3' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'>#{nombre} <i class='fa fa-book'></i></a>"
           end
         end
+        lista << nombre.html_safe
       end
 
-      "<p><strong>#{opciones[:tipo_recurso]} </strong></p><ul>#{html}</ul>"
+      lista
     end
 
     ids = taxon.especies_estatus.send(opciones[:tipo_recurso].estandariza).map(&:especie_id2)
@@ -126,7 +127,7 @@ module EspeciesHelper
     taxones = Especie.find(ids)
 
     if opciones[:tab_catalogos]
-      creaLista(taxones, opciones).html_safe
+      dameLista(taxones, opciones)
     else
       recurso = taxones.map{ |t| tituloNombreCientifico(t, render: 'inline') }
       creaContenedor(recurso, opciones).html_safe
@@ -134,9 +135,10 @@ module EspeciesHelper
   end
 
   # REVISADO: Pone el estatus taxonómico de la especie, si no existe en la variable ESTATUS_SIGNIFICADO ponerla
-  def dameEstatus(taxon)
-    "<p><strong>Estatus taxonómico</strong><ul><li>#{Especie::ESTATUS_SIGNIFICADO[taxon.estatus]}</li></ul></p>".html_safe
-  end
+  # Al parecer esto no es necesario, es mejor imprimir directo enla vista solo se ocupa una vez
+  #def dameEstatus(taxon)
+  #  "<p><strong>Estatus taxonómico</strong>: #{Especie::ESTATUS_SIGNIFICADO[taxon.estatus]}</p>".html_safe
+  #end
 
   # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies; pestaña de catalogos
   def dameCaracteristica(taxon)
@@ -149,11 +151,11 @@ module EspeciesHelper
       valores[:datos].each do |dato|
         biblio = dato[:bibliografias].any? ? "<ul>#{dato[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>" : ''
         biblio_html = " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
-title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.present?
+title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" if biblio.present?
         obs_html = dato[:observaciones].present? ? "<p>Observaciones: #{dato[:observaciones]}</p>" : ''
 
         dato[:descripciones].each do |l|
-          html << "<li>#{l}</li> #{biblio_html} #{obs_html}"
+          html << "#{l} #{biblio_html} #{obs_html}"
         end
       end
 
@@ -167,29 +169,14 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
     html.html_safe
   end
 
-  # REVISADO: Regresa la distribucion de catalogos
+  # REVISADO: Regresa la distribucion de catalogos en forma de array para acomodarlo mejor en la vista
   def dameDistribucion(taxon)
-    html =''
-
-    def creaLista(distribucion)
-      "<li>#{distribucion}</li>"
-    end
-
     # Hago el cambio de locale a es-cientifico y regreso al original, ya que la pestaña de ficha técnica siempre la toma de catálogos
-    unless I18n.locale.to_s == 'es-cientifico'
-      locale_original = I18n.locale.to_s
-      I18n.locale = 'es-cientifico'
-      distribuciones = taxon.tipo_distribucion.values.flatten.compact
-      I18n.locale = locale_original
-    else
-      distribuciones = taxon.tipo_distribucion.values.flatten.compact
-    end
-
-    distribuciones.each do |distribucion|
-      html << creaLista(distribucion)
-    end
-
-    html.present? ? "<p><strong>Tipo de distribución</strong><ul>#{html}</ul></p>".html_safe : html
+    locale_original = I18n.locale.to_s
+    I18n.locale = 'es-cientifico' if I18n.locale.to_s == 'es'
+    distribuciones = taxon.tipo_distribucion.values.flatten.compact
+    I18n.locale = locale_original if I18n.locale.to_s != locale_original
+    distribuciones
   end
 
   # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies
@@ -210,11 +197,11 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
 
     # Pesquerias sustentables del semaforo
     if pez = taxon.pez
-	     
+
       if pez.con_estrella
-         response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='<a href=\"/peces\" class=\"btn btn-link\" target=\"_blank\">Especie con certificación perteneciente al semáforo de consumo marino responsable</a>' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-certificacion-ev-icon'></i></span>"
+        response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='<a href=\"/peces\" class=\"btn btn-link\" target=\"_blank\">Especie con certificación perteneciente al semáforo de consumo marino responsable</a>' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-certificacion-ev-icon'></i></span>"
       else
-	      response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='<a href=\"/peces\" class=\"btn btn-link\" target=\"_blank\">Especie perteneciente al semáforo de consumo marino responsable</a>' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-ev-icon'></i></span>"
+        response << "<span class='btn-title caracteristica-distribucion-ambiente-taxon pmc' title='<a href=\"/peces\" class=\"btn btn-link\" target=\"_blank\">Especie perteneciente al semáforo de consumo marino responsable</a>' data-especie-id='#{taxon.id}'><i class ='peces-mariscos-comerciales-ev-icon'></i></span>"
       end
     end
 
@@ -334,7 +321,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
 
   def imprime_canto(item)
     copyright = "Xeno Canto: Sharing bird sounds from around the world"
-    link_to image_tag("https:#{item['sono']['med']}"), "",  class: "m-1 modal-buttons", data: { 
+    link_to image_tag("https:#{item['sono']['med']}"), "",  class: "m-1 modal-buttons", data: {
         toggle: "modal",
         target: "#modal_reproduce",
         type: "video",
@@ -356,7 +343,7 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
         remarks: item['rmk'],
         copyright: copyright,
         author: item["rec"]
-      }
+    }
   end
 
   def imprime_img_tropicos(item)
@@ -401,11 +388,11 @@ title='Bibliografía' data-content='#{biblio}'>Bibliografía</a>" if biblio.pres
   # Es un select con los demas albumes de bdi para ver fotos directamente
   def albumes_bdi
     html = "<div class='dropdown'><button class='btn btn-light btn-sm dropdown-toggle text-primary' type='button' data-toggle='dropdown' aria-expanded='false'>Explora más fotos en los álbumes del BDI</button><div class='dropdown-menu'>"
-    
-    @albumes.each do |a| 
+
+    @albumes.each do |a|
       html << "<a class='dropdown-item' target='_blank' href=\"#{a[:url]}\">#{a[:nombre_album]} (#{a[:num_assets]} fotos) &middot; <i class='fa fa-external-link'></i></a>"
     end
-    
+
     html << "</div></div>"
     html.html_safe
   end
