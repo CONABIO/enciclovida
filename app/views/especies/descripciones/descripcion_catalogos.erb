@@ -1,34 +1,26 @@
 <div class="row m-4">
   <h4 class="mt-4 w-100 text-center font-weight-bolder">La siguiente información proviene del catálogo de autoridades taxonómicas de CONABIO:</h4>
   <h5 class="mb-4 w-100 text-center font-weight-bolder">Identificador único: <span class="badge badge-secondary"><%= @especie.scat.catalogo_id %></span> (IdCAT)</h5>
-  <div class="col-12 d-flex justify-content-around my-4">
+  <div class="col-12 d-flex flex-wrap justify-content-around my-4">
+    <% generaDescripcionTecnica(@especie).each do |d| %>
+      <div class="card my-2">
+        <div class="card-body">
+          <h4 class="card-title font-weight-bolder"><%= d[:nombre_catalogo] %></h4>
+          <% d[:descripciones].each do |l| %>
+            <%= l.html_safe %>
+          <% end %>
+          <% if d[:observaciones].present? %>
+            <h5>Observaciones:</h5>
+            <%= d[:observaciones].capitalize %>
+          <% end %>
+        </div>
+      </div>
 
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title font-weight-bolder">Estatus taxonómico</h4>
-        <span class="badge badge-secondary"><%= Especie::ESTATUS_SIGNIFICADO[@especie.estatus] %></span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title font-weight-bolder">Tipo de distribución</h4>
-        <span class="badge badge-secondary"><%= dameDistribucion(@especie).join(', ') %></span>
-      </div>
-    </div>
+    <% end %>
+
   </div>
 
-  <div class="col-12 d-flex justify-content-around my-4">
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title font-weight-bolder">Sinónimos</h4>
-        <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos', tab_catalogos: true}).join('').html_safe %>
-      </div>
-    </div>
-  </div>
 
-  <div class="col-12 d-flex justify-content-around my-4">
-    <%= dameCaracteristica(@especie) %>
-  </div>
 
   <div class="col-12 d-flex justify-content-around my-4">
     <%= dameEspecieBibliografias(@especie) %>

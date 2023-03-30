@@ -1,25 +1,121 @@
 module EspeciesHelper
 
-  def enlacesDeTaxonomia(taxa, nuevo=false)        #ancestros del titulo
-    enlaces = "<table width=\"1000\" id=\"enlaces_taxonomicos\"><tr><td>"
+  def generaDescripcionTecnica(taxon)
+    fichaTecnica = []
+    fichaTecnica << dameEstatus(taxon)
+    fichaTecnica << dameDistribucion(taxon)
+    fichaTecnica << dameSinonimosUhomonimosDescripcionTecnica(taxon, {tipo_recurso: 'Sinónimos', tab_catalogos: true})
+    fichaTecnica << dameCaracteristica(taxon)
+    #{especies_bibliografias: dameEspecieBibliografias(taxon)},
+    #{otros_atributos: dameOtrosAtributos(taxon)},
+    #{nombres_comunes_bibliografia: dameNomComunesBiblio(taxon, opc = {})},
+    #{distribucion_literatura: dameDistribucionLiteratura(taxon, opc = {})}
+    fichaTecnica.flatten
 
-    taxa.ancestor_ids.push(taxa.id).each do |ancestro|
-      if taxa.id == ancestro
-        if nuevo
-          e=Especie.find(ancestro)
-          enlaces+= "#{link_to(image_tag(e.foto_principal, :alt => e.nombre_cientifico, :title => e.nombre_cientifico, :width => '40px'), e)} #{link_to(e.nombre, e)} (#{e.categoria_taxonomica.nombre_categoria_taxonomica}) > ?   "
-        else
-          enlaces+= "#{link_to(image_tag(taxa.foto_principal, :alt => taxa.nombre_cientifico, :title => taxa.nombre_cientifico, :width => '40px'), e)} #{taxa.nombre} (#{taxa.categoria_taxonomica.nombre_categoria_taxonomica}) > "
-        end
-      else
-        e = Especie.find(ancestro)
-        enlaces+= "#{link_to(image_tag(e.foto_principal, :alt => e.nombre_cientifico, :title => e.nombre_cientifico, :width => '40px'), e)} #{link_to(e.nombre, e)} (#{e.categoria_taxonomica.nombre_categoria_taxonomica}) > "
-      end
-    end
-    "#{enlaces[0..-3]}</td></tr></table>".html_safe
   end
 
-  # REVISADO: Nombres comunes con su bibliografia como referencia
+#########################################################################################################################################
+# REVISADO: Pone el estatus taxonómico de la especie, si no existe en la variable ESTATUS_SIGNIFICADO ponerla
+  def dameEstatus(taxon)
+    {nombre_catalogo: "Estatus taxonómico", descripciones: [Especie::ESTATUS_SIGNIFICADO[taxon.estatus]]}
+  end
+
+#########################################################################################################################################
+# REVISADO: Regresa la distribucion de catalogos en forma de array para acomodarlo mejor en la vista
+  def dameDistribucion(taxon)
+    # Hago el cambio de locale a es-cientifico y regreso al original, ya que la pestaña de ficha técnica siempre la toma de catálogos
+    locale_original = I18n.locale.to_s
+    I18n.locale = 'es-cientifico' if I18n.locale.to_s == 'es'
+    distribuciones = taxon.tipo_distribucion.values.flatten.compact
+    I18n.locale = locale_original if I18n.locale.to_s != locale_original
+    {nombre_catalogo: "Tipo de distribución", descripciones: distribuciones}
+  end
+
+#########################################################################################################################################
+# REVISADO: Una misma funcion para sinonimos u homonimos
+  def dameSinonimosUhomonimosDescripcionTecnica(taxon, opciones={})
+    ids = taxon.especies_estatus.send(opciones[:tipo_recurso].estandariza).map(&:especie_id2)
+    return [] if opciones[:tab_catalogos] && !ids.any?
+    taxones = Especie.find(ids)
+    lista = []
+
+    taxones.each do |taxon|
+      nombre = tituloNombreCientifico(taxon, render: 'inline')
+      bibliografias = taxon.bibliografias.map(&:cita_completa)
+
+      if bibliografias.any?
+        biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b.gsub("\"","'")}</li>" }.join('')}</ul>"
+        nombre << " <a href='' tabindex='0' class='biblio-cat btn btn-link' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'><i class='fa fa-book'></i></a>".html_safe
+      end
+      lista << nombre.html_safe
+    end
+    {nombre_catalogo: opciones[:tipo_recurso], descripciones: lista}
+  end
+
+#########################################################################################################################################
+# REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies; pestaña de catalogos
+  def dameCaracteristica(taxon)
+    lista =[]
+    caracteristicas = taxon.caracteristicas
+
+    caracteristicas.each do |catalogo, valores|
+
+      html = ''
+
+      valores[:datos].each do |dato|
+        biblio = dato[:bibliografias].any? ? "<ul>#{dato[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>" : ''
+        biblio_html = " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
+title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" if biblio.present?
+        observaciones = dato[:observaciones] if dato[:observaciones].present?
+        dato[:descripciones].each do |l|
+          html << "#{l} #{biblio_html}"
+        end
+        lista << {nombre_catalogo: valores[:nombre_catalogo], descripciones: [html], observaciones: observaciones}
+      end
+
+
+    end
+    lista
+
+  end
+
+#########################################################################################################################################
+# REVISADO: Regresa las bibliografias de la especie del nombre cientifico en el show de especies
+  def dameEspecieBibliografias(taxon)
+    html = []
+
+    taxon.bibliografias.each do |bib|
+      html << "<li>#{bib.cita_completa}</li>" if bib.cita_completa.present?
+    end
+
+    html.any? ? "<p><strong>Bibliografía del nombre científico</strong><ul>#{html.join('')}</ul></p>".html_safe : ''
+  end
+#########################################################################################################################################
+# REVISADO: Otros atributos simples del modelo especie
+  def dameOtrosAtributos(taxon)
+    otros_attr = {'Cita nomenclatural' => 'cita_nomenclatural', 'Fuente de la información' => 'sist_clas_cat_dicc',
+                  'Anotación' => 'anotacion', 'Fecha de ultima modificación' => 'updated_at'}
+    html = ''
+
+    def creaContenedor(taxon, opc={})
+      valor = taxon.send(opc[:attr])
+
+      if valor.present?
+        valor = valor.strftime('%Y-%m-%d') if opc[:attr] == 'updated_at'
+        "<p><strong>#{opc[:nom]}</strong><ul><li>#{valor}</li></ul></p>"
+      else
+        ''
+      end
+    end
+
+    otros_attr.each do |nom, attr|
+      html << creaContenedor(taxon, {nom: nom, attr: attr})
+    end
+
+    html.html_safe
+  end
+#########################################################################################################################################
+# REVISADO: Nombres comunes con su bibliografia como referencia
   def dameNomComunesBiblio(taxon, opc={})
     html = ''
 
@@ -46,31 +142,8 @@ module EspeciesHelper
     html.present? ? "<p><strong>Nombres comunes</strong></p><ul>#{html}</ul>".html_safe : html
   end
 
-  # REVISADO: Otros atributos simples del modelo especie
-  def dameOtrosAtributos(taxon)
-    otros_attr = {'Cita nomenclatural' => 'cita_nomenclatural', 'Fuente de la información' => 'sist_clas_cat_dicc',
-                  'Anotación' => 'anotacion', 'Fecha de ultima modificación' => 'updated_at'}
-    html = ''
-
-    def creaContenedor(taxon, opc={})
-      valor = taxon.send(opc[:attr])
-
-      if valor.present?
-        valor = valor.strftime('%Y-%m-%d') if opc[:attr] == 'updated_at'
-        "<p><strong>#{opc[:nom]}</strong><ul><li>#{valor}</li></ul></p>"
-      else
-        ''
-      end
-    end
-
-    otros_attr.each do |nom, attr|
-      html << creaContenedor(taxon, {nom: nom, attr: attr})
-    end
-
-    html.html_safe
-  end
-
-  # REVISADO: La distribucion reportada en literatura, para el show de especies en la pestaña de catalogos
+#########################################################################################################################################
+# REVISADO: La distribucion reportada en literatura, para el show de especies en la pestaña de catalogos
   def dameDistribucionLiteratura(taxon, opc={})
     def creaLista(regiones, opc={})
       lista = []
@@ -96,90 +169,36 @@ module EspeciesHelper
     "<p><strong>Distribución reportada en literatura</strong>#{creaLista(reg_asignadas, opc)}</p>".html_safe
   end
 
-  # REVISADO: Una misma funcion para sinonimos u homonimos
+#########################################################################################################################################
+  def creaPopOverBibliografia(biblio)
+    biblio.each do |b|
+
+    end
+  end
+
+
+
+
+
+
+
+# REVISADO: Una misma funcion para sinonimos u homonimos
   def dameSinonimosUhomonimos(taxon, opciones={})
     def creaContenedor(recurso, opciones={})
       "<strong>#{opciones[:tipo_recurso]}: </strong>#{recurso.join(' <b>;</b> ')}"
     end
 
-    def dameLista(taxones, opciones={})
-      lista = []
-
-      taxones.each do |taxon|
-        nombre = tituloNombreCientifico(taxon, render: 'inline')
-
-        if !opciones[:app]
-          bibliografias = taxon.bibliografias.map(&:cita_completa)
-
-          if bibliografias.any?
-            biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b.gsub("\"","'")}</li>" }.join('')}</ul>"
-            nombre = " <a href='' tabindex='0' class='biblio-cat btn btn-outline-secondary mr-3 mt-3' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'>#{nombre} <i class='fa fa-book'></i></a>"
-          end
-        end
-        lista << nombre.html_safe
-      end
-
-      lista
-    end
-
     ids = taxon.especies_estatus.send(opciones[:tipo_recurso].estandariza).map(&:especie_id2)
+
     return '' unless ids.any?
+
     taxones = Especie.find(ids)
+    recurso = taxones.map{ |t| tituloNombreCientifico(t, render: 'inline') }
+    creaContenedor(recurso, opciones).html_safe
 
-    if opciones[:tab_catalogos]
-      dameLista(taxones, opciones)
-    else
-      recurso = taxones.map{ |t| tituloNombreCientifico(t, render: 'inline') }
-      creaContenedor(recurso, opciones).html_safe
-    end
   end
 
-  # REVISADO: Pone el estatus taxonómico de la especie, si no existe en la variable ESTATUS_SIGNIFICADO ponerla
-  # Al parecer esto no es necesario, es mejor imprimir directo enla vista solo se ocupa una vez
-  #def dameEstatus(taxon)
-  #  "<p><strong>Estatus taxonómico</strong>: #{Especie::ESTATUS_SIGNIFICADO[taxon.estatus]}</p>".html_safe
-  #end
-
-  # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies; pestaña de catalogos
-  def dameCaracteristica(taxon)
-    html = ''
-    caracteristicas = taxon.caracteristicas
-
-    def creaCaracteristica(valores)
-      html = ''
-
-      valores[:datos].each do |dato|
-        biblio = dato[:bibliografias].any? ? "<ul>#{dato[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>" : ''
-        biblio_html = " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
-title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" if biblio.present?
-        obs_html = dato[:observaciones].present? ? "<p>Observaciones: #{dato[:observaciones]}</p>" : ''
-
-        dato[:descripciones].each do |l|
-          html << "#{l} #{biblio_html} #{obs_html}"
-        end
-      end
-
-      "<p><strong>#{valores[:nombre_catalogo]}</strong><ul>#{html}</ul></p>"
-    end
-
-    caracteristicas.each do |catalogo, valores|
-      html << creaCaracteristica(valores)
-    end
-
-    html.html_safe
-  end
-
-  # REVISADO: Regresa la distribucion de catalogos en forma de array para acomodarlo mejor en la vista
-  def dameDistribucion(taxon)
-    # Hago el cambio de locale a es-cientifico y regreso al original, ya que la pestaña de ficha técnica siempre la toma de catálogos
-    locale_original = I18n.locale.to_s
-    I18n.locale = 'es-cientifico' if I18n.locale.to_s == 'es'
-    distribuciones = taxon.tipo_distribucion.values.flatten.compact
-    I18n.locale = locale_original if I18n.locale.to_s != locale_original
-    distribuciones
-  end
-
-  # REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies
+# REVISADO: Pone las respectivas categorias de riesgo, distribucion y ambiente en el show de especies
   def ponCaracteristicaDistribucionAmbienteTaxon(taxon)
     response = []
     caracteristicas = taxon.nom_cites_iucn_ambiente_prioritaria({iucn_ws: true})
@@ -208,7 +227,7 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
     response.any? ? response.join.html_safe : ""
   end
 
-  # REVISADO: Pone la simbologia en la ficha de la especie
+# REVISADO: Pone la simbologia en la ficha de la especie
   def ponCaracteristicaDistribucionAmbienteTodos
     response = {}
 
@@ -249,16 +268,6 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
                id: 'cambiar_id_naturalista' ,  "data-toggle" => "modal", "data-target" => "#modal_cambia_id_naturalista" , :class => "btn btn-link btn-title", :title=>'Cambiar URL de Naturalista')
   end
 
-  # REVISADO: Regresa las bibliografias de la especie del nombre cientifico en el show de especies
-  def dameEspecieBibliografias(taxon)
-    html = []
-
-    taxon.bibliografias.each do |bib|
-      html << "<li>#{bib.cita_completa}</li>" if bib.cita_completa.present?
-    end
-
-    html.any? ? "<p><strong>Bibliografía del nombre científico</strong><ul>#{html.join('')}</ul></p>".html_safe : ''
-  end
 
   def esSinonimo (taxon)
     e = (taxon.instance_of? NombreComun) ? Especie.find(taxon.id).estatus : taxon.estatus #Debido a que se reemplaza
@@ -334,7 +343,7 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
         english_name: item['en'],
         country_recording: item['cnt'],
         locality: item['loc'],
-        # url: item['url'], # 
+        # url: item['url'], #
         file_name: item['file-name'],
         license: item['lic'],
         length: item['length'],
@@ -366,7 +375,7 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
     )
   end
 
-  # Validar si texto es una URL, si lo es, regresa la liga en HTML, si no, regresa el mismo texto
+# Validar si texto es una URL, si lo es, regresa la liga en HTML, si no, regresa el mismo texto
   def es_url_valido(text)
     begin
       url = URI.parse(text.to_s)
@@ -385,7 +394,7 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
     "<p>Cargando... por favor, espera</p><div class='spinner-border text-secondary' role='status'><span class='sr-only'>Cargando...</span></div>".html_safe
   end
 
-  # Es un select con los demas albumes de bdi para ver fotos directamente
+# Es un select con los demas albumes de bdi para ver fotos directamente
   def albumes_bdi
     html = "<div class='dropdown'><button class='btn btn-light btn-sm dropdown-toggle text-primary' type='button' data-toggle='dropdown' aria-expanded='false'>Explora más fotos en los álbumes del BDI</button><div class='dropdown-menu'>"
 
