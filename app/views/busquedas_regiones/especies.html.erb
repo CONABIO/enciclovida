@@ -34,15 +34,15 @@
         <%= @resp['carga-siguientes-especies'] ? button_tag('<i class="fa fa-arrow-right"></i>'.html_safe, class: 'btn btn-light btn-outline-info btn-title rounded-pill', id: 'carga-siguientes-especies', title: 'Siguiente', type: 'button', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover') : button_tag('<i class="fa fa-arrow-right"></i>'.html_safe, class: 'btn btn-dark btn-outline-info btn-title rounded-pill disabled', type: 'button') %>
       </div>
 
-      <% tax_et_region = (taxon_seleccionado.present? && params[:nombre_region].present?) %>
+      <% region_seleccionada = params[:nombre_region].present? %>
 
       <div class="w-25 text-right">
         <button id="tutorialGuias" type="button" class="btn btn-sm btn-block btn-warning" data-toggle="modal" data-target="#multiModal" title="Tutorial guías de especies" data-body="<%= insertaVideo("YClySqweW7U") %>" onclick="$('#multiModalBody').html($(this).data('body'), $('#multiModalLabel').html('Tutorial guías de especies') );" >Tutorial guías <i class='fa fa-video-camera'></i></button>
         <div class="btn-group dropup btn-block">
-          <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="dropdownMasInfoButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" <%= "disabled" unless tax_et_region %> >Más info</button>
+          <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="dropdownMasInfoButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" <%= "disabled" unless region_seleccionada %> >Más info</button>
           <div class="dropdown-menu" aria-labelledby="dropdownMasInfoButton">
-            <h6 class="dropdown-header">Más info acerca de: <%= [taxon_seleccionado.nombre_cientifico.sanitize,params[:nombre_region]].join(', ') if tax_et_region %> <i class="fa fa-external-link-square"></i>:</h6>
-            <%= ligas_mas_info((tax_et_region ? '"'+taxon_seleccionado.nombre_cientifico.sanitize+'"'+'+'+'"'+params[:nombre_region]+'"' : '' ))[3,4].join.html_safe %>
+            <h6 class="dropdown-header">Más info acerca de: <%= params[:nombre_region] if region_seleccionada %> <i class="fa fa-external-link-square"></i>:</h6>
+            <%= ligas_mas_info((region_seleccionada ? params[:nombre_region] : '' ))[3,4].join.html_safe %>
           </div>
         </div>
       </div>
