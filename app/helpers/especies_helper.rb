@@ -98,7 +98,7 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
 
     otros_attr.each do |nom, attr|
       # Este cambio es para quitar anotaciones que diga eliminar, peticion del CAT
-      next if attr == "anotacion" && taxon.anotacion.estandariza == "eliminar"
+      next if attr == "anotacion" && taxon.anotacion.estandariza.include?("eliminar")
 
       valor = taxon.send(attr)
       if valor.present?
