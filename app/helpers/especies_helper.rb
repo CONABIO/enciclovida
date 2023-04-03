@@ -40,7 +40,7 @@ module EspeciesHelper
     lista = []
 
     taxones.each do |taxon|
-      nombre = "&middot;" + tituloNombreCientifico(taxon, render: 'inline')
+      nombre = '&nbsp;' + tituloNombreCientifico(taxon, render: 'inline')
       bibliografias = taxon.bibliografias.map(&:cita_completa)
 
       if bibliografias.any?
@@ -84,7 +84,7 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
   def dameEspecieBibliografias(taxon)
     lista = []
     taxon.bibliografias.each do |bib|
-      lista << bib.cita_completa if bib.cita_completa.present?
+      lista << (bib.cita_completa + '<br>') if bib.cita_completa.present?
     end
     {nombre_catalogo: "Bibliografía del nombre científico", descripciones: lista}
   end
@@ -115,7 +115,7 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
     lista = []
 
     taxon.nombres_comunes.distinct.order(:nombre_comun).each do |nombre|
-      n = "&middot; #{nombre.nombre_comun} <sub><i>#{nombre.lengua}</i></sub>"
+      n = "#{nombre.nombre_comun} <sub><i>#{nombre.lengua}</i></sub>"
       bibliografias = nombre.bibliografias.con_especie(taxon).map(&:cita_completa)
       if bibliografias.any?
         biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"

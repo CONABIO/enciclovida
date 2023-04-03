@@ -11,7 +11,7 @@
             <dt class="col-4 font-weight-bolder h5 text-right"><%= d[:nombre_catalogo] %></dt>
             <dd class="col-8 text-left">
               <% d[:descripciones].each do |l| %>
-                <%= l.html_safe %>
+                &middot;&nbsp;<%= l.html_safe %>
               <% end %>
             </dd>
 
