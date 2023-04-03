@@ -1,11 +1,11 @@
 <div class="dropdown">
   <button id="menuEsqSupDer" type="button" class="btn btn-light shadow dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <%= usuario_signed_in? ? current_usuario.nombre : " Más" %>...
-    <i class='vista-<%= I18n.locale.to_s == 'es-cientifico' ? 'especialista' : 'general' %>-ev-icon'></i>
+    <i class='fa fa-<%= I18n.locale.to_s == 'es-cientifico' ? 'graduation-cap' : 'users' %>'></i>
   </button>
   <div class="dropdown-menu" aria-labelledby="menuEsqSupDer">
     <%= link_to "<b>Cambiar a la vista #{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'de especialistas'}</b>
-      <i class='vista-#{I18n.locale.to_s == 'es-cientifico' ? 'general' : 'especialista'}-ev-icon'></i>".html_safe, nil,
+      <i class='fa fa-#{I18n.locale.to_s == 'es-cientifico' ? 'users' : 'graduation-cap'}'></i>".html_safe, nil,
                     :name => I18n.locale.to_s, :onClick => 'return cambiaLocale(this.name);', data: { turbolinks: false }, class: 'dropdown-item' %>
     <div class="dropdown-divider"></div>
     <%= link_to '<b>Validación en línea...</b>'.html_safe, validaciones_path, :role => 'button', data: { turbolinks: false }, class: 'dropdown-item' %>
