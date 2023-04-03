@@ -1,17 +1,12 @@
 <div class="w-100 bg-light mt-2 px-2 rounded-top" id="filtros-especies">
 	<p class='h5 my-0'><b class="text-info">Filtros utilizados: </b><%= filtrosEspecies(params) %></p>
 </div>
-<% taxon_seleccionado = nil %>
 
 <% if @resp[:estatus] %>
 	
 	<% if @resp[:totales].present? %>
 
-    <% @resp[:taxones].each do |t| %>
-      <% taxon = t[:especie] %>
-      <% taxon_seleccionado = taxon if params[:catalogo_id] == taxon.catalogo_id %>
-    <% end %>
-      <div id="opciones_resultados" class="w-100 bg-light mb-4 py-1 px-2 rounded-top mt-auto d-inline-flex">
+      <div id="opciones_resultados" class="w-100 bg-light py-2 px-2 mt-auto d-inline-flex">
       <div class="w-25">
         <% if @resp[:totales].present? && @resp[:totales] > 0 && @resp[:totales] < 60000 %>
           <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
@@ -38,8 +33,8 @@
 
       <div class="w-25 text-right">
         <button id="tutorialGuias" type="button" class="btn btn-sm btn-block btn-outline-warning" data-toggle="modal" data-target="#multiModal" title="Tutorial guías de especies" data-body="<%= insertaVideo("YClySqweW7U") %>" onclick="$('#multiModalBody').html($(this).data('body'), $('#multiModalLabel').html('Tutorial guías de especies') );" >Tutorial guías <i class='fa fa-video-camera'></i></button>
-        <div class="btn-group dropup btn-block">
-          <button class="btn btn-dark btn-sm dropdown-toggle" type="button" id="dropdownMasInfoButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" <%= "disabled" unless region_seleccionada %> >Más info</button>
+        <div class="btn-group btn-block">
+          <button class="btn btn-dark btn-sm dropdown-toggle" type="button" id="dropdownMasInfoButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" <%= "disabled" unless region_seleccionada %> title="Hay que seleccionar una región (municipio o ANP)">Más info</button>
           <div class="dropdown-menu" aria-labelledby="dropdownMasInfoButton">
             <h6 class="dropdown-header">Más info acerca de: <%= params[:nombre_region] if region_seleccionada %> <i class="fa fa-external-link-square"></i>:</h6>
             <%= ligas_mas_info((region_seleccionada ? params[:nombre_region] : '' ))[3,4].join.html_safe %>
@@ -49,7 +44,7 @@
     </div>
 
 
-		<div class="w-100 bg-light py-1 px-2 rounded-bottom mb-2">
+		<div class="w-100 bg-light py-1 px-2 rounded-bottom mb-4">
 			<p class="h5 my-0">
 				<strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
 				| <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros del <a id="snib" href="https://www.snib.mx/" target="_blank" class="btn-title font-weight-bolder" data-toggle="popover" title="Sistema Nacional de Información sobre Biodiversidad">SNIB</a>
