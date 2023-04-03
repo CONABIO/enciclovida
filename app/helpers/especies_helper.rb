@@ -64,6 +64,8 @@ module EspeciesHelper
     end
 
     otros_attr.each do |nom, attr|
+      # ESte cambio es para quitar anotaciones que diga eliminar, peticion del CAT
+      next if attr == "anotacion" && taxon.anotacion.estandariza == "eliminar"
       html << creaContenedor(taxon, {nom: nom, attr: attr})
     end
 
