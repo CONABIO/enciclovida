@@ -1,23 +1,35 @@
-<div class="row">
-  <div class="col-12">
-    <p class="mb-4 py-3 border-bottom h4 font-weight-bolder text-primary text-center">La siguiente información proviene del catálogo de autoridades taxonómicas de CONABIO:</p>
-  </div>
-  <div class="col-12 col-lg-7">
-    <p class="h3 leyenda">Información del taxón</p>
+<div class="row m-4">
 
-    <%= dameEstatus(@especie) %>
-    <%= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Sinónimos', tab_catalogos: true}) %>
-    <%#= dameSinonimosUhomonimos(@especie, {tipo_recurso: 'Homónimos', tab_catalogos: true}) %>
-    <%= dameDistribucion(@especie) %>
-    <%= dameCaracteristica(@especie) %>
-    <%= dameEspecieBibliografias(@especie) %>
-    <%= dameOtrosAtributos(@especie) %>
-    <%= "<p><strong>Identificador único (IdCAT)</strong><ul><li>#{@especie.scat.catalogo_id}</li></ul></p>".html_safe %>
-  </div>
-  <div class="col-12 col-lg">
-    <p class="h3 leyenda">Nombres comunes y distribución</p>
+  <div class="col-12 d-flex flex-wrap justify-content-around my-4">
+    <h4 class="mt-4 w-100 text-center font-weight-bolder">La siguiente información proviene del catálogo de autoridades taxonómicas de CONABIO:</h4>
+    <p class="mb-4 text-center font-weight-bold">Identificador único: <span class="badge badge-secondary"><%= @especie.scat.catalogo_id %></span> (IdCAT)</p>
 
-    <%= dameNomComunesBiblio(@especie) %>
+    <div class="card my-2">
+      <div class="card-body">
+        <dl class="row">
+        <% generaDescripcionTecnica(@especie).each do |d| %>
+            <dt class="col-4 font-weight-bolder h5 text-right"><%= d[:nombre_catalogo] %></dt>
+            <dd class="col-8 text-left">
+              <% d[:descripciones].each do |l| %>
+                <%= l.html_safe %>
+              <% end %>
+            </dd>
+
+
+          <% if d[:observaciones].present? %>
+              <dt class="col-4 h5 text-right">Observaciones:</dt>
+              <dd class="col-8 text-left"><%= d[:observaciones].capitalize %></dd>
+          <% end %>
+
+        <% end %>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-12 my-4">
     <%= dameDistribucionLiteratura(@especie) %>
   </div>
+
 </div>

@@ -47,8 +47,10 @@
 .ipescado-ev-icon:before { content: '\e82d'; } /* '' */
 .pescadata-ev-icon:before { content: '\e82e'; } /* '' */
 .fungi-ev-icon:before { content: '\e82f'; } /* '' */
+.vista-especialista-rick-ev-icon:before { content: '\e830'; } /* '' */
 .en-peligro-critico-cr-ev-icon:before { content: '\e831'; } /* '' */
 .en-peligro-critico-cr-evaluacion-conabio-ev-icon:before { content: '\e832'; } /* '' */
+.vista-general-morty-ev-icon:before { content: '\e833'; } /* '' */
 .en-peligro-de-extincion-p-evaluacion-conabio-ev-icon:before { content: '\e835'; } /* '' */
 .en-peligro-en-ev-icon:before { content: '\e836'; } /* '' */
 .en-peligro-en-evaluacion-conabio-ev-icon:before { content: '\e838'; } /* '' */
@@ -89,8 +91,6 @@
 .semaforo-recomendable-ev-icon:before { content: '\e86c'; } /* '' */
 .sujetas-a-proteccion-especial-pr-evaluacion-conabio-ev-icon:before { content: '\e870'; } /* '' */
 .peces-mariscos-comerciales-certificacion-ev-icon:before { content: '\e872'; } /* '' */
-.vista-especialista-ev-icon:before { content: '\e873'; } /* '' */
-.vista-general-ev-icon:before { content: '\e874'; } /* '' */
 .vulnerable-vu-ev-icon:before { content: '\e875'; } /* '' */
 .vulnerable-vu-evaluacion-conabio-ev-icon:before { content: '\e876'; } /* '' */
 .youtube-ev-icon:before { content: '\e877'; } /* '' */
