@@ -107,12 +107,6 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
       end
     end
 
-<<<<<<< HEAD
-    otros_attr.each do |nom, attr|
-      # ESte cambio es para quitar anotaciones que diga eliminar, peticion del CAT
-      next if attr == "anotacion" && taxon.anotacion.estandariza == "eliminar"
-      html << creaContenedor(taxon, {nom: nom, attr: attr})
-=======
     lista
   end
 #########################################################################################################################################
@@ -128,7 +122,6 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
         n << "<a href='' tabindex='0' class='biblio-cat btn btn-link' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'><i class='fa fa-book'></i></a>"
       end
       lista << n
->>>>>>> origin/ggonzalez
     end
 
     {nombre_catalogo: 'Nombres comunes', descripciones: lista}

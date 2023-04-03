@@ -6,16 +6,12 @@
 <% if @resp[:estatus] %>
 	
 	<% if @resp[:totales].present? %>
-<<<<<<< HEAD
 
     <% @resp[:taxones].each do |t| %>
       <% taxon = t[:especie] %>
       <% taxon_seleccionado = taxon if params[:catalogo_id] == taxon.catalogo_id %>
     <% end %>
       <div id="opciones_resultados" class="w-100 bg-light mb-4 py-1 px-2 rounded-top mt-auto d-inline-flex">
-=======
-     <div id="opciones_resultados" class="w-100 bg-light py-1 px-2 rounded-top mt-auto d-inline-flex">
->>>>>>> origin/ggonzalez
       <div class="w-25">
         <% if @resp[:totales].present? && @resp[:totales] > 0 && @resp[:totales] < 60000 %>
           <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
