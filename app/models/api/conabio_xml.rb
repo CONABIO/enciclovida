@@ -28,7 +28,7 @@ class Api::ConabioXml < Api::Conabio
         Timeout::timeout(timeout) do
           response = client.call(:data_taxon, message: { scientific_name: URI.encode(q.gsub(' ', '_')), key: key })
 
-          response.body[:data_taxon_response][:return].encode('iso-8859-1').force_encoding('UTF-8').gsub(/\n/,'<br>') if
+          response.body[:data_taxon_response][:return].encode('iso-8859-1').force_encoding('UTF-8').gsub(/\n/,'<br>').gsub('id="taxon_description"','id="taxon_description_xml"') if
               response.body[:data_taxon_response][:return].present?
         end
       rescue Timeout::Error, Errno::ECONNRESET

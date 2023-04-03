@@ -292,7 +292,15 @@ class EspeciesController < ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: { fotos: bdi.assets, albumes: bdi.albumes, num_fotos: bdi.num_assets } 
+        if params[:api] == "1" && bdi.num_assets == 0 # Si viene de la API y NO hay resultados
+          jres = {estatus: false, msg: "No se encontraron fotos en el Banco de imágenes de CONABIO."}
+          render json: jres
+        elsif params[:api] == "1" # Si hay resultados pero viene de la API 
+          jres = bdi.assets.map{|f| { thumb_url: f.medium_url, large_url: f.large_url, atribucion: "#{f.native_realname}, BDI - CONABIO" } }
+          render json: jres
+        else # Si NO viene de la API
+          render json: { fotos: bdi.assets, albumes: bdi.albumes, num_fotos: bdi.num_assets } 
+        end
       end
       format.html do
         @fotos = bdi.assets
@@ -315,7 +323,27 @@ class EspeciesController < ApplicationController
     mc = MacaulayService.new
     @array = mc.dameMedia_nc(taxonNC, type, page)
 
-    render 'especies/media/media_cornell', :locals => {type: type, page: page}
+    respond_to do |format|
+      format.html do
+        render 'especies/media/media_cornell', :locals => {type: type, page: page}
+      end
+
+      format.json do
+        if @array.length == 1 && @array[0][:msg].present? # Esta vacio
+          jres = {estatus: false, msg: "No hay imagenes en Macaulay Library."}
+        else
+          if params[:type] == "photo"
+            jres = @array.map{|f| { thumb_url: "#{f["mlBaseDownloadUrl"]}#{f["assetId"]}/320", large_url: "#{f["mlBaseDownloadUrl"]}#{f["assetId"]}/900", atribucion: "#{f["userDisplayName"]}, Macaulay Library" }}
+          elsif params[:type] == "video"
+            jres = @array.map{|f| { thumb_url: "#{f["mlBaseDownloadUrl"]}#{f["assetId"]}/thumb", video_url: "#{f["mlBaseDownloadUrl"]}#{f["assetId"]}/video", atribucion: "#{f["userDisplayName"]}, Macaulay Library" }}
+          elsif params[:type] == "audio"
+            jres = @array.map{|f| { thumb_url: "#{f["mlBaseDownloadUrl"]}#{f["assetId"]}/poster", audio_url: "#{f["mlBaseDownloadUrl"]}#{f["assetId"]}/audio", atribucion: "#{f["userDisplayName"]}, Macaulay Library" }}            
+          end
+        end
+
+        render json: jres
+      end
+    end
   end
 
   #Servicio Xeno-Canto
@@ -324,7 +352,22 @@ class EspeciesController < ApplicationController
     taxon = Especie.find(params['id']).nombre_cientifico
     xeno_c = XenoCantoService.new
     @cantos = xeno_c.obtener_cantos(taxon)
-    render 'especies/media/xeno_canto', :locals => {type: type}
+
+    respond_to do |format|
+      format.html do
+        render 'especies/media/xeno_canto', :locals => {type: type}
+      end
+
+      format.json do
+        if @cantos.length == 1 && @cantos[0][:msg].present? # Esta vacio
+          jres = {estatus: false, msg: "No hay imagenes en Xeno-Canto."} 
+        else
+          jres = @cantos.map{|c| { thumb_url: "https:#{c["sono"]["med"]}", audio: c["file"], atribucion: "#{c["rec"]}, Xeno-Canto" } }
+        end
+
+        render json: jres
+      end
+    end    
   end
 
   # Servicio Tropicos
@@ -352,7 +395,7 @@ class EspeciesController < ApplicationController
 
         if @name_id[0][:msg].present?
           # Si no existió la especie: mostrar mensaje generado
-          @array = [{msg: "Hubo un error: #{@name_id[0][:msg]}"}]
+          @array = [{estatus: false, msg: "Hubo un error: #{@name_id[0][:msg]}"}]
 
         else
           # Si existió la especie:
@@ -368,7 +411,7 @@ class EspeciesController < ApplicationController
 
       if @name_id[0][:msg].present?
         # Si no existió la especie: mostrar mensaje generado
-        @array = [{msg: "Hubo un error: #{@name_id[0][:msg]}"}]
+        @array = [{estatus: false, msg: "Hubo un error: #{@name_id[0][:msg]}"}]
 
       else
         # Si existió la especie:
@@ -378,8 +421,25 @@ class EspeciesController < ApplicationController
       end
     end
 
-    @array = [{msg: "Aún no hay imágenes para esta especie :/ "}] if @array[0]["Error"].present?
-    render 'especies/media/media_tropicos', :locals => {type: type, page: page}
+    respond_to do |format|
+      format.html do
+        @array = [{msg: "Aún no hay imágenes para esta especie :/ "}] if @array[0]["Error"].present?
+        render 'especies/media/media_tropicos', :locals => {type: type, page: page}
+      end
+
+      format.json do
+        if @array[0]["Error"].present? || (@array.length == 1 && @array[0][:msg].present?) # No hay imagenes
+          @array = {estatus: false, msg: "No hay imagenes en Tropicos."} 
+          render json: @array
+        else
+          jres = @array.map{|f| { thumb_url: f["DetailJpgUrl"], large_url: f["DetailJpgUrl"], atribucion: "#{f["Copyright"]}, Tropicos" } }
+          render json: jres
+        end
+        
+      end
+    end      
+
+
   end
 
   def fotos_naturalista
@@ -389,7 +449,15 @@ class EspeciesController < ApplicationController
               {estatus: false, msg: 'No hay resultados por nombre científico en naturalista'}
             end
 
-    render json: fotos
+    if fotos.nil? && params[:api] == "1" # Si viene de la API y no tiene fotos
+      jres = { estatus: false, msg: "No hay fotos en Naturalista." }
+      render json: jres
+    elsif params[:api] == "1" && fotos[:estatus]
+      jres = fotos[:ficha]["taxon_photos"][0..9].map{ |f| { thumb_url: f["photo"]["medium_url"], large_url: f["photo"]["large_url"], atribucion: "#{f["photo"]["attribution"]}, Naturalista" } }
+      render json: jres
+    else
+      render json: fotos
+    end        
   end
 
   def nombres_comunes_naturalista
@@ -409,7 +477,11 @@ class EspeciesController < ApplicationController
   # Viene de la pestaña "Acerca de " de la ficha
   def descripcion
     asigna_variables_descripcion
-    render 'especies/descripciones/descripcion'
+    if @descripcion.blank? && @api == 'conabio_inat'
+      render plain: "<div></div>"
+    else
+      render 'especies/descripciones/descripcion'
+    end
   end
 
   # La respuesta a la ficha en la app

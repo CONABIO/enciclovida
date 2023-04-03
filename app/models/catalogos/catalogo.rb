@@ -26,12 +26,32 @@ class Catalogo < ActiveRecord::Base
   scope :formas_crecimiento, -> { where(nivel1: 18, nivel3: 0).where("#{attribute_alias(:nivel2)} > 0").order(:descripcion) }
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
-  USOS = [1216, 1217, 464, 1058, 465, 468, 469, 470, 471, 1055, 1057, 1056, 2381]
-  EVALUACION = ['Extinto (EX)','Extinto en estado silvestre (EW)','Datos insuficientes (DD)']  # Evaluaciones que no tienen datos, se quitan de la bsuqueda
+  USOS = [1216, 1217, 464, 1058, 465, 468, 469, 470, 471, 1055, 1057, 1056, 2381, 2386]
+  EVALUACION = ['Extinto (EX)','Extinto en estado silvestre (EW)','Datos insuficientes (DD)']  # Evaluaciones que no tienen datos, se quitan de la busqueda
 
   # REVISADO: Regresa true or false si el catalogo es de los permitidos a mostrar
   def es_catalogo_permitido?
     [4,11,18,25].include?(nivel1) || (nivel1 == 2 && nivel2 == 6 && nivel3>0)
+  end
+
+  def es_nom?
+    nivel1 == 4 && nivel2 == 1 && nivel3 > 0
+  end
+
+  def es_iucn?
+    nivel1 == 4 && nivel2 == 2 && nivel3 > 0
+  end
+  
+  def es_cites?
+    nivel1 == 4 && nivel2 == 3 && nivel3 > 0
+  end  
+
+  def es_ambiente?
+    nivel1 == 2 && nivel2 == 6 && nivel3 > 0
+  end
+
+  def es_usos?
+    USOS.include?(id)
   end
 
   # REVISADO: Regresa la categoria superior del nombre del catalogo

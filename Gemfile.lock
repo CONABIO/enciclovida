@@ -251,9 +251,6 @@ GEM
     rack (2.2.3)
     rack-contrib (2.1.0)
       rack (~> 2.0)
-    rack-google-analytics (1.2.0)
-      actionpack
-      activesupport
     rack-protection (2.0.8.1)
       rack
     rack-test (1.1.0)
@@ -456,7 +453,6 @@ DEPENDENCIES
   pg
   puma (>= 3.12.4)
   rack-contrib
-  rack-google-analytics
   rails (= 5.1.6.2)
   railties
   rake (>= 12.3.3)

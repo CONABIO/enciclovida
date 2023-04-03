@@ -30,8 +30,24 @@ class Validacion
       return
 
     elsif taxones.length > 1  # Encontro el mismo nombre cientifico mas de una vez
-      Rails.logger.debug "Coincidio mas de uno directo en la base"
-      self.validacion = {estatus: false, taxones: taxones, msg: 'Existe más de una búsqueda exacta'}
+      # Si hay un solo valido, entonces la busqueda es exacta
+      validos = []
+
+      taxones.each do |taxon|
+        if taxon.estatus == 2
+          validos << taxon
+        end
+      end
+
+      # Un solo valido, busqueda exacta
+      if validos.length == 1
+        Rails.logger.debug "Coincidio busqueda exacta"
+        self.validacion = {estatus: true, taxon: validos.first, msg: 'Búsqueda exacta'}
+      else # Mas de una coincidencia
+        Rails.logger.debug "Coincidio mas de uno directo en la base"
+        self.validacion = {estatus: false, taxones: taxones, msg: 'Existe más de una búsqueda exacta'}
+      end
+
       return
 
     else
@@ -48,11 +64,34 @@ class Validacion
                 end
 
       if taxones.present? && taxones.length == 1  # Caso mas sencillo
-        self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda similar'}
+        if taxones.first.nombre_cientifico.limpiar == nombre_cientifico.limpiar  # Probablemente el taxon en el CAT tenia parentesis u abreviaturas
+          self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda exacta'}
+        else
+          self.validacion = {estatus: true, taxon: taxones.first, msg: 'Búsqueda similar'}
+        end
+        
         return
 
       elsif taxones.present? && taxones.length > 1  # Mas de una coincidencia
-        self.validacion = {estatus: false, taxones: taxones, msg: 'Existe más de una búsqueda similar'}
+
+        # Si hay un solo valido, entonces la busqueda es exacta
+        validos = []
+
+        taxones.each do |taxon|
+          if taxon.estatus == 2
+            validos << taxon
+          end
+        end
+
+        # Un solo valido, busqueda exacta
+        if validos.length == 1
+          Rails.logger.debug "Coincidio busqueda exacta, despues de separar el nombre"
+          self.validacion = {estatus: true, taxon: validos.first, msg: 'Búsqueda exacta'}
+        else # Mas de una coincidencia
+          Rails.logger.debug "Coincidio mas de uno directo en la base"
+          self.validacion = {estatus: false, taxones: taxones, msg: 'Existe más de una búsqueda similar'}
+        end        
+
         return
 
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo levenshtein

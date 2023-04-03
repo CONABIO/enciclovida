@@ -36,7 +36,6 @@ gem 'nokogiri', '>= 1.10.8'  # Hacer un parse con xml
 gem 'pg'
 gem 'puma', '>= 3.12.4' # Use Puma as the app server
 gem 'rack-contrib'
-gem 'rack-google-analytics'
 gem 'rails', '5.1.6.2'
 gem 'railties'
 gem 'rake', '>= 12.3.3'

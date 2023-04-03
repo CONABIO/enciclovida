@@ -27,8 +27,8 @@ class Especie < ActiveRecord::Base
 
   # Atributos adicionales para poder exportar los datos a excel directo como columnas del modelo
   attr_accessor :x_estatus, :x_naturalista_id, :x_snib_id, :x_snib_reino, :x_categoria_taxonomica, :x_url_ev, 
-                :x_naturalista_obs, :x_snib_registros, :x_geoportal_mapa, :x_num_reg,
-                :x_nom, :x_nom_obs, :x_iucn, :x_iucn_obs, :x_cites, :x_cites_obs, :x_tipo_distribucion, :x_distribucion, :x_ambiente,
+                :x_naturalista_obs, :x_snib_registros, :x_geoportal_mapa, :x_num_reg, :x_idcat,
+                :x_nom, :x_nom_obs, :x_iucn, :x_iucn_obs, :x_cites, :x_cites_obs, :x_tipo_distribucion, :x_distribucion, :x_ambiente, :x_usos,
                 :x_nombres_comunes, :x_nombre_comun_principal, :x_lengua, :x_nombres_comunes_naturalista, :x_nombres_comunes_catalogos, :x_nombres_comunes_todos,
                 :x_fotos, :x_foto_principal, :x_square_url, :x_fotos_principales, :x_fotos_totales, :x_naturalista_fotos, :x_bdi_fotos,
                 :x_reino, :x_division, :x_subdivision, :x_clase, :x_subclase, :x_superorden, :x_orden, :x_suborden,
@@ -119,7 +119,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
-  scope :select_basico, ->(attr_adicionales=[]) { select(:id, :nombre_cientifico, :estatus, :nombre_autoridad, :categoria_taxonomica_id, :cita_nomenclatural, :ancestry_ascendente_directo, "nombre_comun_principal, foto_principal, nombres_comunes as nombres_comunes_adicionales, TaxonCompleto AS NombreCompleto" << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')).select_categoria_taxonomica }
+  scope :select_basico, ->(attr_adicionales=[]) { select(:id, :nombre_cientifico, :estatus, :nombre_autoridad, :categoria_taxonomica_id, :cita_nomenclatural, :ancestry_ascendente_directo, :ancestry_ascendente_obligatorio, "nombre_comun_principal, foto_principal, nombres_comunes as nombres_comunes_adicionales, TaxonCompleto AS NombreCompleto" << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')).select_categoria_taxonomica }
   # Select para nombre de la categoria y niveles
   scope :select_categoria_taxonomica, -> { select("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)} AS nivel1, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)} AS nivel2, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)} AS nivel3, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)} AS nivel4") }
   #select para los grupos iconicos en la busqueda avanzada para no realizar varios queries al mismo tiempo
@@ -314,8 +314,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       biblio_cita_completa = esp_cat.biblios.map { |b| b.bibliografia.cita_completa }
       seccion = nombre_catalogo.estandariza.to_sym
 
-      Rails.logger.info esp_cat.observaciones.inspect+ "@@@" if esp_cat.observaciones.present? 
-
       resp[seccion] = { nombre_catalogo: nombre_catalogo, datos: [] } unless resp[seccion].present?
       resp[seccion][:datos] << { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion], bibliografias: biblio_cita_completa, observaciones: esp_cat.observaciones }
     end
@@ -329,6 +327,12 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
     tipos_distribuciones.uniq.each do |distribucion|
       response << distribucion.descripcion
+    end
+
+    # Si tiene endemica y nativa, solo dejamos endemica
+    endemica_nativa = ["Endémica", "Nativa"] & response
+    if endemica_nativa.length == 2
+      response.delete_at(response.index("Nativa"))
     end
 
     {'Tipo de distribución' => response}

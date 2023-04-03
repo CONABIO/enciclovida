@@ -301,4 +301,8 @@ module ApplicationHelper
     current_metausuario.id == usuario_id
   end
 
+  def insertaGoogleAnalytics
+    javascript_include_tag'https://www.googletagmanager.com/gtag/js?id=G-9TW7DFHB78', '/googleAnalytics/ga.js', {'data-turbolinks-track' => false, 'async' => true}
+  end
+
 end

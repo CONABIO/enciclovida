@@ -33,7 +33,7 @@
   <%= yield :extracss %>
 
 </head>
-
+<%= insertaGoogleAnalytics if Rails.env.production? %>
 <body class="index" style="background-image: url('/assets/portada/fondo.jpg');">
 <%#= render :partial => 'shared_b4/ribbon', locals: {mensaje: "En mantenimiento<br> Algunas funciones no  están disponibles " } %>
 <header class="container-fluid">

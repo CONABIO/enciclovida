@@ -7,7 +7,7 @@ class Api::Conabio < Api::Descripcion
   end
 
   def nombre
-    'CONABIO'
+    'CONABIO (Descripción)'
   end
 
   def dame_descripcion
@@ -16,8 +16,7 @@ class Api::Conabio < Api::Descripcion
       resp = desc.new(taxon: taxon).dame_descripcion
       return resp if resp
     end
-
-    nil
+    return "No existe descripción en CONABIO para el presente taxón."
   end
 
 end

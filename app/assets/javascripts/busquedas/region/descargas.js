@@ -15,7 +15,7 @@ $(document).ready(function(){
                 $('#modal-descarga-region').modal('toggle');
 
                 if (resp.estatus)
-                    $('#notice').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
+                    $('#notice').empty().html('¡La petición se envió correctamente!. ¡Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
                 else
                     $('#notice').empty().html('Lo sentimos no se pudo procesar tu petición, verifica tus filtros y correo.').removeClass('d-none').slideDown(600);
 
@@ -48,7 +48,7 @@ $(document).ready(function(){
                 $('#modal-descarga-guia').modal('toggle');
 
                 if (resp.estatus)
-                    $('#notice').empty().html('!La petición se envió correctamente!. Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
+                    $('#notice').empty().html('¡La petición se envió correctamente!. ¡Se te enviará un correo con los resultados de tu búsqueda!').removeClass('d-none').slideDown(600);
                 else
                     $('#notice').empty().html('Lo sentimos no se pudo procesar tu petición, verifica tus filtros y correo.').removeClass('d-none').slideDown(600);
 

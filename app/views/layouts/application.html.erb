@@ -30,7 +30,7 @@
   <%= yield :extracss %>
   <%= yield :extrajs %>
 </head>
-
+<%= insertaGoogleAnalytics if Rails.env.production? %>
 <body>
 
 <%#= render :partial => 'shared_b4/ribbon', locals: {mensaje: "En mantenimiento<br> Algunas funciones no  están disponibles " } %>

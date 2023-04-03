@@ -216,6 +216,7 @@ Buscador::Application.routes.draw do
       get ':id/dame-nombre-con-formato' => 'especies#dame_nombre_con_formato'
       get ':id/resumen-wikipedia' => 'especies#resumen_wikipedia'
       get ':id/descripcion' => 'especies#descripcion'
+      get ':id/descripcion_catalogos' => 'especies#descripcion_catalogos'
       get ':id/descripcion-app' => 'especies#descripcion_app'
       get ':id/descripcion-iucn' => 'especies#descripcion_iucn'
     end
@@ -249,7 +250,6 @@ Buscador::Application.routes.draw do
 
   match 'adicionales/:especie_id/edita_nom_comun' => 'adicionales#edita_nom_comun', :as => :edita_nombre_comun_principal, :via => :get
 
-  get '/especies/:id/descripcion_catalogos' => 'especies#descripcion_catalogos'
   get '/especies/:id/comentario' => 'especies#comentarios'
   get '/especies/:id/noticias' => 'especies#noticias'
 
@@ -267,6 +267,7 @@ Buscador::Application.routes.draw do
   get 'validaciones' => 'validaciones#index'
   post 'validaciones/simple' => 'validaciones#simple', as: 'validacion_simple'
   post 'validaciones/avanzada' => 'validaciones#avanzada', as: 'validacion_avanzada'
+  get 'validaciones/encuentra-por-nombre' => 'validaciones#encuentra_por_nombre'
 
   get 'bdi_nombre_cientifico' => 'webservice#bdi_nombre_cientifico'
 

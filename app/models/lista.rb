@@ -2,7 +2,9 @@ class Lista < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.ev}.listas"
 
-  attr_accessor :taxones, :taxon, :columnas_array, :hash_especies
+  attr_accessor :taxones, :taxones_query, :taxones_query_orig, :taxon, :columnas_array, :hash_especies, :ancestros_hash
+  attr_accessor :tabla_catalogos, :taxa_superior  # Es un booleano para saber si ya hizo el query al menos una vez
+  attr_accessor :es_busqueda, :region, :validacion
   validates :nombre_lista, :presence => true, :uniqueness => true
   before_update :quita_repetidos
 
@@ -25,19 +27,20 @@ class Lista < ActiveRecord::Base
   COLUMNAS_PROVEEDORES = %w(catalogo_id x_naturalista_id x_snib_id x_snib_reino)
   COLUMNAS_GEODATOS = %w(x_naturalista_obs x_snib_registros x_geoportal_mapa)
   COLUMNAS_RIESGO_COMERCIO = %w(x_nom x_nom_obs x_iucn x_iucn_obs x_cites x_cites_obs)
+  #COLUMNAS_RIESGO_COMERCIO = %w(x_nom x_nom_obs)
   COLUMNAS_CATEGORIAS = CategoriaTaxonomica::CATEGORIAS.map{|cat| "x_#{cat}"}
   COLUMNAS_CATEGORIAS_PRINCIPALES = %w(x_reino x_division x_phylum x_clase x_orden x_familia x_genero x_especie)
   COLUMNAS_FOTOS = %w(x_foto_principal x_naturalista_fotos x_bdi_fotos)
   COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombre_comun_principal x_nombres_comunes x_categoria_taxonomica
                         x_estatus x_tipo_distribucion
                         cita_nomenclatural nombre_autoridad)
-  COLUMNAS_BASICAS = %w(id nombre_cientifico x_categoria_taxonomica x_estatus)                        
+  COLUMNAS_BASICAS = %w(x_idcat id nombre_cientifico x_categoria_taxonomica x_estatus x_nombre_comun_principal x_foto_principal x_url_ev)                        
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
 
   # El orden absoluto de las columnas en el excel
-  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes) + COLUMNAS_CATEGORIAS_PRINCIPALES + COLUMNAS_RIESGO_COMERCIO + %w(x_tipo_distribucion x_ambiente x_num_reg id x_categoria_taxonomica x_estatus x_url_ev x_bibliografia)
+  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes x_categoria_taxonomica x_estatus x_tipo_distribucion x_usos x_ambiente x_num_reg x_nombre_comun_principal x_foto_principal) + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES + %w(x_bibliografia x_url_ev id x_idcat)
 
-  def after_initialize
+  def after_initialize(opts)
     self.taxones = []
     self.columnas_array = []
   end
@@ -61,6 +64,10 @@ class Lista < ActiveRecord::Base
 
   # Para crear el excel con los datos
   def to_excel(opts={})
+    self.es_busqueda = opts[:es_busqueda]
+    self.region = opts[:region]
+    self.validacion = opts[:validacion]
+
     asigna_columnas_extra  # Para columnas que tienen un grupo de columnas
     xlsx = RubyXL::Workbook.new
     sheet = xlsx[0]
@@ -78,25 +85,25 @@ class Lista < ActiveRecord::Base
     end
 
     # Elimina las 3 primeras, para que no trate de evaluarlas mas abajo
-    cols.slice!(0..2) if opts[:validacion]
+    cols.slice!(0..2) if validacion
 
-    if opts[:es_busqueda]  # Busqueda basica o avanzada
-      r = Especie.find_by_sql(opts[:busqueda])
-      datos_descarga(r)
-    elsif opts[:region]  # Descarga taxa de la busqueda por region
+    if es_busqueda  # Busqueda basica o avanzada
+      self.taxones_query_orig = Especie.find_by_sql(opts[:busqueda])
+      datos_descarga
+    elsif region  # Descarga taxa de la busqueda por region
       self.hash_especies = opts[:hash_especies]
-      r = Especie.select_basico.left_joins(:categoria_taxonomica, :adicional, :scat).where("#{Scat.attribute_alias(:catalogo_id)} IN (?)", hash_especies.keys).includes(:tipos_distribuciones, :catalogos, :adicional, :nombres_comunes, :bibliografias, :scat)
-      datos_descarga(r)
+      self.taxones_query_orig = Especie.select(:id, :ancestry_ascendente_obligatorio).joins(:scat, :categoria_taxonomica).where("IDCAT IN (?)", hash_especies.keys)
+      datos_descarga
     end
 
-    taxones.each do |taxon|
-      if opts[:validacion]
+    taxones.each do |t|
+      if validacion
         # Viene del controlador validaciones, taxon contiene, estatus, el taxon y mensaje
-        if taxon[:estatus]  # Si es un sinónimo
-          if taxon[:taxon_valido].present?
-            self.taxon = taxon[:taxon_valido]
-          else  # La rewspuesta es el taxon que encontro
-            self.taxon = taxon[:taxon]
+        if t[:estatus]  # Si es un sinónimo
+          if t[:taxon_valido].present?
+            self.taxon = t[:taxon_valido]
+          else  # La respuesta es el taxon que encontro
+            self.taxon = t[:taxon]
           end
 
           nombre_cientifico = self.taxon.nombre_cientifico
@@ -104,33 +111,41 @@ class Lista < ActiveRecord::Base
         else  # Si tiene muchos taxones como coincidencia
           self.taxon = Especie.none
 
-          if taxon[:taxones].present?  # Cuando coincidio varios taxones no pongo nada
-            nombre_cientifico = taxon[:taxones].map{|t| t.nombre_cientifico}.join(', ')
+          if t[:taxones].present?  # Cuando coincidio varios taxones no pongo nada
+            nombre_cientifico = t[:taxones].map{|tax| tax.nombre_cientifico}.join(', ')
           else
             nombre_cientifico = ''
           end
         end
-
+        
         asigna_datos
         columna = 3  # Asigna la columna desde el 3, puesto que contiene las sig posiciones antes:
 
         # El nombre original, el (los) que coincidio, y el mensaje
-        sheet.add_cell(fila,0,taxon[:nombre_orig])
+        sheet.add_cell(fila,0,t[:nombre_orig])
         sheet.add_cell(fila,1,nombre_cientifico)
-        sheet.add_cell(fila,2,taxon[:msg])
+        sheet.add_cell(fila,2,t[:msg])
+
+        cols.each do |a|
+          begin
+            sheet.add_cell(fila,columna,taxon.try(a))
+          rescue  # Por si existe algun error en la evaluacion de algun campo
+            sheet.add_cell(fila,columna,'¡Hubo un error!')
+          end
+          columna+= 1
+        end
 
       else  # Cuando viene de una descarga normal de resultados, es decir todos los taxones existen
-        self.taxon = taxon
         columna = 0
-      end
 
-      cols.each do |a|
-        begin
-          sheet.add_cell(fila,columna,self.taxon.try(a))
-        rescue  # Por si existe algun error en la evaluacion de algun campo
-          sheet.add_cell(fila,columna,'¡Hubo un error!')
-        end
-        columna+= 1
+        cols.each do |a|
+          begin
+            sheet.add_cell(fila,columna,t.try(a))
+          rescue  # Por si existe algun error en la evaluacion de algun campo
+            sheet.add_cell(fila,columna,'¡Hubo un error!')
+          end
+          columna+= 1
+        end        
       end
 
       fila+= 1
@@ -239,20 +254,83 @@ class Lista < ActiveRecord::Base
   end
 
   # Para asignar los datos de una consulta de resultados, hacia un excel o csv, el recurso puede ser un string o un objeto
-  def datos_descarga(taxa)
-    return unless taxa.any?
-    self.taxones = []
+  def datos_descarga
+    return unless taxones_query_orig.any?
+    ids = taxones_query_orig.map(&:id)
+    self.taxones_query = Especie.where(id: ids)
 
-    taxa.each do |taxon|
-      self.taxon = taxon
+    self.taxones = []
+    arma_taxones_query
+
+    taxones_query.each do |t|
+      self.taxon = t
       asigna_datos
       self.taxones << taxon
     end
   end
 
-  # Metodoq ue comparten las listas y para exportar en excel
+  # Metodo que arma el query con puros includes para una mayor rapidez en la descarga
+  def arma_taxones_query
+    cols = if columnas_array.present?
+      columnas_array
+    else
+      columnas.split(',') if columnas.present?
+    end
+
+    cols.each do |col|
+
+      case col
+      when 'x_idcat'
+        self.taxones_query = taxones_query.includes(:scat)    
+      when 'x_snib_id'
+        if proveedor = taxon.proveedor
+          self.taxon.x_snib_id = proveedor.snib_id
+        end
+      when 'x_snib_reino'
+        if proveedor = taxon.proveedor
+          self.taxon.x_snib_reino = proveedor.snib_reino
+        end
+      when 'x_naturalista_id'
+        if proveedor = taxon.proveedor
+          self.taxon.x_naturalista_id = proveedor.naturalista_id
+        end
+      when 'x_nombre_comun_principal', 'x_foto_principal', 'x_naturalista_fotos', 'x_bdi_fotos'
+        self.taxones_query = taxones_query.includes(:adicional)
+      when 'x_categoria_taxonomica'
+        self.taxones_query = taxones_query.includes(:categoria_taxonomica)
+      when 'x_nombres_comunes'
+        self.taxones_query = taxones_query.includes(:nombres_comunes)
+      when 'x_tipo_distribucion'
+        self.taxones_query = taxones_query.includes(:tipos_distribuciones)
+      when 'x_nom', 'x_iucn', 'x_cites', 'x_ambiente', 'x_usos'  # Esto es una lindura!
+        self.taxones_query = taxones_query.includes(:catalogos)      
+      when 'x_bibliografia'
+        self.taxones_query = taxones_query.includes(:bibliografias) 
+      when 'x_num_reg'
+        self.taxones_query = taxones_query.includes(:scat) 
+      when 'x_reino', 'x_division', 'x_phylum', 'x_clase', 'x_orden', 'x_familia', 'x_genero', 'x_especie'
+        next if ancestros_hash.present?  # Para ya no volver a entrar
+
+        # Linea de la muerte!, saca todos los ancestros obligatorios de todos los taxones coincidentes, sin repetir y sin ser el mismo id que su ancestry (asi esta en la base). Y sin consultar a la base aun
+        ancestros_ids = taxones_query_orig.map{|r| r.ancestry_ascendente_obligatorio.split(",").reject{|c| c.empty? } }.flatten.uniq
+        self.ancestros_hash = {}  # Para acceder como hash de una forma sencilla
+        ancestros = Especie.includes(:categoria_taxonomica).where(id: ancestros_ids)
+
+        ancestros.each do |ancestro|
+          self.ancestros_hash[ancestro.id] = { nombre_cientifico: ancestro.nombre_cientifico, categoria: ancestro.categoria_taxonomica.nombre_categoria_taxonomica }
+        end  
+      else
+        next
+      end  # End switch
+    end  # End each cols
+
+  end
+
+  # Metodo que comparten las listas y para exportar en excel
   def asigna_datos
     return unless taxon.present?
+    self.tabla_catalogos = false
+    self.taxa_superior = false
 
     cols = if columnas_array.present?
       columnas_array
@@ -263,6 +341,8 @@ class Lista < ActiveRecord::Base
     cols.each do |col|
 
       case col
+      when 'x_idcat'
+        self.taxon.x_idcat = taxon.scat.catalogo_id
       when 'x_snib_id'
         if proveedor = taxon.proveedor
           self.taxon.x_snib_id = proveedor.snib_id
@@ -284,67 +364,84 @@ class Lista < ActiveRecord::Base
           self.taxon.x_nombre_comun_principal = adicional.nombre_comun_principal
         end
       when 'x_categoria_taxonomica'
-        self.taxon.x_categoria_taxonomica = taxon.try(:nombre_categoria_taxonomica) || taxon.categoria_taxonomica.nombre_categoria_taxonomica
+        self.taxon.x_categoria_taxonomica = taxon.categoria_taxonomica.nombre_categoria_taxonomica
       when 'x_estatus'
         self.taxon.x_estatus = Especie::ESTATUS_SIGNIFICADO[taxon.estatus]
       when 'x_nombres_comunes'
-        nombres_comunes = taxon.nombres_comunes.map{ |nom| nom.nombre_comun.capitalize }.uniq.sort
+        nombres_comunes = taxon.nombres_comunes.map{ |nom| "#{nom.nombre_comun.capitalize} (#{nom.lengua})" }.uniq.sort
         next unless nombres_comunes.any?
         self.taxon.x_nombres_comunes = nombres_comunes.join(', ')
       when 'x_tipo_distribucion'
         tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
         next unless tipos_distribuciones.any?
         self.taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
-      when 'x_nom'  # TODO: homologar las demas descargas
-        nom = taxon.catalogos.nom.distinct
-        next unless nom.any?
-        self.taxon.x_nom = nom.map(&:descripcion).join(', ')
-        
-        # Para las observaciones
-        obs = []
-        taxon.especies_catalogos.each do |cat|
-          obs << cat.observaciones if [14,15,16,17].include?(cat.catalogo_id)
-        end
-        
-        self.taxon.x_nom_obs = obs.join(', ')
-      when 'x_iucn'  # TODO: homologar las demas descargas
-        iucn = taxon.catalogos.iucn.distinct
-        next unless iucn.any?
-        self.taxon.x_iucn = iucn.map(&:descripcion).join(', ')
-        
-        # Para las observaciones
-        obs = []
-        taxon.especies_catalogos.each do |cat|
-          obs << cat.observaciones if [25,26,27,28,29,30,31,32,1022,1023].include?(cat.catalogo_id)
-        end
-        
-        self.taxon.x_iucn_obs = obs.join(', ')
-      when 'x_cites'  # TODO: homologar las demas descargas
-        cites = taxon.catalogos.cites.distinct
-        next unless cites.any?
-        self.taxon.x_cites = cites.map(&:descripcion).join(', ')   
+      when 'x_nom', 'x_iucn', 'x_cites', 'x_ambiente', 'x_usos'
+        next if tabla_catalogos  # Ya no entra una segunda vez
 
-        # Para las observaciones
-        obs = []
-        taxon.especies_catalogos.each do |cat|
-          obs << cat.observaciones if [22,23,24].include?(cat.catalogo_id)
-        end
-        
-        self.taxon.x_cites_obs = obs.join(', ')  
-      when 'x_ambiente'  # TODO: homologar las demas descargas
-        if hash_especies.present?  # Quiere decir que viene de las descargas pr region
-          ambiente = []
-          taxon.catalogos.each do |catalogo|
-            if catalogo.nivel1 == 2
-              ambiente << catalogo
-            end
+        # Se hace en una sola iteracion para evitar duplicar
+        nom, iucn, cites, ambiente, usos = [], [], [], [], []
+        catalogos_existe = false
+
+        # Para los valores
+        taxon.catalogos.each do |cat|
+          # Para no iterar lo que no se va a desplegar
+          next unless cat.es_catalogo_permitido?
+
+          if cat.es_nom?
+            nom << cat.descripcion
+            catalogos_existe = true 
+            next
           end
-        else
-          ambiente = taxon.catalogos.ambientes
-        end
 
-        next unless ambiente.any?
-        self.taxon.x_ambiente = ambiente.map(&:descripcion).join(', ')        
+          if cat.es_iucn?
+            iucn << cat.descripcion
+            catalogos_existe = true 
+            next
+          end
+          
+          if cat.es_cites?
+            cites << cat.descripcion
+            catalogos_existe = true 
+            next
+          end
+
+          if cat.es_ambiente?
+            ambiente << cat.descripcion
+            catalogos_existe = true 
+            next
+          end    
+          
+          if cat.es_usos?
+            usos << cat.descripcion
+            catalogos_existe = true 
+            next
+          end          
+        end
+        
+        next unless catalogos_existe  # Si no tiene nada en catalogos no conviene continuar
+        self.taxon.x_nom = nom.join(', ') if nom.any?
+        self.taxon.x_iucn = iucn.join(', ') if iucn.any?
+        self.taxon.x_cites = cites.join(', ') if cites.any?
+        self.taxon.x_ambiente = ambiente.join(', ') if ambiente.any?
+        self.taxon.x_usos = usos.join(', ') if usos.any?
+        
+        #  Para las observaciones
+        obs_nom, obs_iucn, obs_cites = [], [], []
+
+        taxon.especies_catalogos.each do |cat|
+          next if cat.observaciones.blank?
+
+          obs_nom << cat.observaciones if [14,15,16,17].include?(cat.catalogo_id)
+          obs_iucn << cat.observaciones if [25,26,27,28,29,30,31,32,1022,1023].include?(cat.catalogo_id)
+          obs_cites << cat.observaciones if [22,23,24].include?(cat.catalogo_id)
+        end
+        
+        self.taxon.x_nom_obs = obs_nom.join(', ') if obs_nom.any?
+        self.taxon.x_iucn_obs = obs_iucn.join(', ') if obs_iucn.any?
+        self.taxon.x_cites_obs = obs_cites.join(', ') if obs_cites.any?
+
+        # Para que proximas interacciones del switch ya no entren
+        self.tabla_catalogos = true  
       when 'x_naturalista_fotos'
         next unless adicional = taxon.adicional
         if proveedor = taxon.proveedor
@@ -354,30 +451,50 @@ class Lista < ActiveRecord::Base
         next unless adicional = taxon.adicional
         self.taxon.x_bdi_fotos = "#{CONFIG.site_url}especies/#{taxon.id}/bdi-photos" if adicional.foto_principal.present?
       when 'x_bibliografia'
-        biblio = taxon.bibliografias
-        self.taxon.x_bibliografia = biblio.map(&:cita_completa).join("\n")
+        bibliografias = taxon.bibliografias
+        self.taxon.x_bibliografia = bibliografias.map(&:cita_completa).join("\n")
       when 'x_url_ev'
         self.taxon.x_url_ev = "#{CONFIG.site_url}especies/#{taxon.id}-#{taxon.nombre_cientifico.estandariza}"
       when 'x_num_reg'
         self.taxon.x_num_reg = hash_especies[taxon.scat.catalogo_id]
+      when 'x_reino', 'x_division', 'x_phylum', 'x_clase', 'x_orden', 'x_familia', 'x_genero', 'x_especie'
+        next if taxa_superior
+
+        if validacion
+          # Para agregar todas las categorias taxonomicas que pidio, primero se intersectan
+            cats = COLUMNAS_CATEGORIAS & cols
+
+            if cats.any?
+              return if taxon.is_root?  # No hay categorias que completar
+              ids = taxon.path_ids
+
+              Especie.select(:nombre, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica").left_joins(:categoria_taxonomica).where(id: ids).each do |ancestro|
+                categoria = 'x_' << ancestro.nombre_categoria_taxonomica.estandariza
+                next unless COLUMNAS_CATEGORIAS.include?(categoria)
+                eval("self.taxon.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
+              end
+            end          
+        else
+          next if taxon.is_root?
+          ancestros = taxon.path_ids
+          next if ancestros.empty?  # Es un root
+  
+          ancestros.each do |ancestro|
+            begin
+              x_categoria = 'x_' << ancestros_hash[ancestro][:categoria].estandariza
+              # Asigna la categoria taxonomica de acuerdo al ancestro
+              eval("self.taxon.#{x_categoria} = \"#{ancestros_hash[ancestro][:nombre_cientifico]}\"")  
+            rescue
+              next
+            end
+          end
+        end
+        
+        self.taxa_superior = true
       else
         next
       end  # End switch
     end  # End each cols
-
-    # Para agregar todas las categorias taxonomicas que pidio, primero se intersectan
-    cats = COLUMNAS_CATEGORIAS & cols
-
-    if cats.any?
-      return if taxon.is_root?  # No hay categorias que completar
-      ids = taxon.path_ids
-
-      Especie.select(:nombre, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica").left_joins(:categoria_taxonomica).where(id: ids).each do |ancestro|
-        categoria = 'x_' << ancestro.nombre_categoria_taxonomica.estandariza
-        next unless COLUMNAS_CATEGORIAS.include?(categoria)
-        eval("self.taxon.#{categoria} = ancestro.nombre")  # Asigna el nombre del ancestro si es que coincidio con la categoria
-      end
-    end
   end
 
   def nombres_columnas(web = false)
@@ -396,6 +513,7 @@ class Lista < ActiveRecord::Base
 
   def asigna_columnas_extra
     return unless columnas.present? || columnas_array.present?
+
     if columnas_array.blank? && columnas.present?
       self.columnas_array = columnas.split(',')
     end
@@ -413,6 +531,10 @@ class Lista < ActiveRecord::Base
     if columnas_array.include?('x_col_basicas')
       self.columnas_array = columnas_array << COLUMNAS_BASICAS
       self.columnas_array.delete('x_col_basicas')
+
+      if region
+        self.columnas_array << 'x_num_reg'
+      end
     end
 
     self.columnas_array = columnas_array.flatten
@@ -426,7 +548,7 @@ class Lista < ActiveRecord::Base
               columnas.split(',') if columnas.present?
             end 
 
-    if !opts[:validacion]
+    if !validacion
       self.columnas_array = COLUMNAS_ORDEN & cols
     end
   end

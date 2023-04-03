@@ -38,7 +38,7 @@ class EstadisticasController < ApplicationController
   def filtros_iniciales
     @reinos = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_REINOS)
     @animales = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_ANIMALES)
-    @plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS)
+    @plantas = Especie.select_grupos_iconicos.where(nombre_cientifico: Busqueda::GRUPOS_PLANTAS_Y_HONGOS)
     @nom_cites_iucn_todos = Catalogo.nom_cites_iucn_todos
     @distribuciones = TipoDistribucion.distribuciones(I18n.locale.to_s == 'es-cientifico')
   end
