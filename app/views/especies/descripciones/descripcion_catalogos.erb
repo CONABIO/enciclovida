@@ -1,45 +1,34 @@
 <div class="row m-4">
-  <h4 class="mt-4 w-100 text-center font-weight-bolder">La siguiente información proviene del catálogo de autoridades taxonómicas de CONABIO:</h4>
-  <h5 class="mb-4 w-100 text-center font-weight-bolder">Identificador único: <span class="badge badge-secondary"><%= @especie.scat.catalogo_id %></span> (IdCAT)</h5>
+
   <div class="col-12 d-flex flex-wrap justify-content-around my-4">
-    <% generaDescripcionTecnica(@especie).each do |d| %>
-      <div class="card my-2">
-        <div class="card-body">
-          <h4 class="card-title font-weight-bolder"><%= d[:nombre_catalogo] %></h4>
-          <% d[:descripciones].each do |l| %>
-            <%= l.html_safe %>
-          <% end %>
-          <% if d[:observaciones].present? %>
-            <h5>Observaciones:</h5>
-            <%= d[:observaciones].capitalize %>
-          <% end %>
-        </div>
-      </div>
+    <h4 class="mt-4 w-100 text-center font-weight-bolder">La siguiente información proviene del catálogo de autoridades taxonómicas de CONABIO:</h4>
+    <p class="mb-4 text-center font-weight-bold">Identificador único: <span class="badge badge-secondary"><%= @especie.scat.catalogo_id %></span> (IdCAT)</p>
 
-    <% end %>
-
-  </div>
-
-
-
-  <div class="col-12 d-flex justify-content-around my-4">
-    <%= dameEspecieBibliografias(@especie) %>
-  </div>
-
-  <div class="col-12 d-flex justify-content-around my-4">
-    <%= dameOtrosAtributos(@especie) %>
-  </div>
-
-  <div class="col-12 d-flex justify-content-around my-4">
-    <div class="card">
+    <div class="card my-2">
       <div class="card-body">
-        <h4 class="card-title font-weight-bolder">Nombres comunes y distribución</h4>
-        <%= dameNomComunesBiblio(@especie) %>
+        <dl class="row">
+        <% generaDescripcionTecnica(@especie).each do |d| %>
+            <dt class="col-4 font-weight-bolder h5 text-right"><%= d[:nombre_catalogo] %></dt>
+            <dd class="col-8 text-left">
+              <% d[:descripciones].each do |l| %>
+                <%= l.html_safe %>
+              <% end %>
+            </dd>
+
+
+          <% if d[:observaciones].present? %>
+              <dt class="col-4 h5 text-right">Observaciones:</dt>
+              <dd class="col-8 text-left"><%= d[:observaciones].capitalize %></dd>
+          <% end %>
+
+        <% end %>
+        </dl>
       </div>
     </div>
   </div>
 
-  <div class="col-12 d-flex justify-content-around my-4">
+
+  <div class="col-12 my-4">
     <%= dameDistribucionLiteratura(@especie) %>
   </div>
 

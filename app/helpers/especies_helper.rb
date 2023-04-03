@@ -4,11 +4,11 @@ module EspeciesHelper
     fichaTecnica = []
     fichaTecnica << dameEstatus(taxon)
     fichaTecnica << dameDistribucion(taxon)
-    fichaTecnica << dameSinonimosUhomonimosDescripcionTecnica(taxon, {tipo_recurso: 'Sinónimos', tab_catalogos: true})
+    fichaTecnica << dameSinonimosUhomonimosDescripcionTecnica(taxon, {tipo_recurso: 'Sinónimos'})
     fichaTecnica << dameCaracteristica(taxon)
-    #{especies_bibliografias: dameEspecieBibliografias(taxon)},
-    #{otros_atributos: dameOtrosAtributos(taxon)},
-    #{nombres_comunes_bibliografia: dameNomComunesBiblio(taxon, opc = {})},
+    fichaTecnica << dameEspecieBibliografias(taxon)
+    fichaTecnica << dameOtrosAtributos(taxon)
+    fichaTecnica << dameNomComunesBiblio(taxon)
     #{distribucion_literatura: dameDistribucionLiteratura(taxon, opc = {})}
     fichaTecnica.flatten
 
@@ -35,19 +35,19 @@ module EspeciesHelper
 # REVISADO: Una misma funcion para sinonimos u homonimos
   def dameSinonimosUhomonimosDescripcionTecnica(taxon, opciones={})
     ids = taxon.especies_estatus.send(opciones[:tipo_recurso].estandariza).map(&:especie_id2)
-    return [] if opciones[:tab_catalogos] && !ids.any?
+    return [] if !ids.any?
     taxones = Especie.find(ids)
     lista = []
 
     taxones.each do |taxon|
-      nombre = tituloNombreCientifico(taxon, render: 'inline')
+      nombre = "&middot;" + tituloNombreCientifico(taxon, render: 'inline')
       bibliografias = taxon.bibliografias.map(&:cita_completa)
 
       if bibliografias.any?
         biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b.gsub("\"","'")}</li>" }.join('')}</ul>"
-        nombre << " <a href='' tabindex='0' class='biblio-cat btn btn-link' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'><i class='fa fa-book'></i></a>".html_safe
+        nombre << "<a href='' tabindex='0' class='biblio-cat btn btn-link' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'><i class='fa fa-book'></i></a>"
       end
-      lista << nombre.html_safe
+      lista << nombre
     end
     {nombre_catalogo: opciones[:tipo_recurso], descripciones: lista}
   end
@@ -82,64 +82,46 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
 #########################################################################################################################################
 # REVISADO: Regresa las bibliografias de la especie del nombre cientifico en el show de especies
   def dameEspecieBibliografias(taxon)
-    html = []
-
+    lista = []
     taxon.bibliografias.each do |bib|
-      html << "<li>#{bib.cita_completa}</li>" if bib.cita_completa.present?
+      lista << bib.cita_completa if bib.cita_completa.present?
     end
-
-    html.any? ? "<p><strong>Bibliografía del nombre científico</strong><ul>#{html.join('')}</ul></p>".html_safe : ''
+    {nombre_catalogo: "Bibliografía del nombre científico", descripciones: lista}
   end
+
 #########################################################################################################################################
 # REVISADO: Otros atributos simples del modelo especie
   def dameOtrosAtributos(taxon)
     otros_attr = {'Cita nomenclatural' => 'cita_nomenclatural', 'Fuente de la información' => 'sist_clas_cat_dicc',
                   'Anotación' => 'anotacion', 'Fecha de ultima modificación' => 'updated_at'}
-    html = ''
+    lista = []
 
-    def creaContenedor(taxon, opc={})
-      valor = taxon.send(opc[:attr])
-
+    otros_attr.each do |nom, attr|
+      valor = taxon.send(attr)
       if valor.present?
-        valor = valor.strftime('%Y-%m-%d') if opc[:attr] == 'updated_at'
-        "<p><strong>#{opc[:nom]}</strong><ul><li>#{valor}</li></ul></p>"
-      else
-        ''
+        valor = valor.strftime('%Y-%m-%d') if attr == 'updated_at'
+        lista << {nombre_catalogo: nom, descripciones: [valor] }
       end
     end
 
-    otros_attr.each do |nom, attr|
-      html << creaContenedor(taxon, {nom: nom, attr: attr})
-    end
-
-    html.html_safe
+    lista
   end
 #########################################################################################################################################
 # REVISADO: Nombres comunes con su bibliografia como referencia
-  def dameNomComunesBiblio(taxon, opc={})
-    html = ''
+  def dameNomComunesBiblio(taxon)
+    lista = []
 
-    def creaLista(nombre, opc={})
-      # TODO: Poner las bibliografias en un modal, el actual esta roto
-      html = "<li>#{nombre.nombre_comun} <sub><i>#{nombre.lengua}</i></sub></li>"
-
-      if !opc[:app]
-        bibliografias = nombre.bibliografias.con_especie(opc[:taxon]).map(&:cita_completa)
-
-        if bibliografias.any?
-          biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
-          html << " <a href='' tabindex='0' class='biblio-cat' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'>Bibliografía</a>"
-        end
+    taxon.nombres_comunes.distinct.order(:nombre_comun).each do |nombre|
+      n = "&middot; #{nombre.nombre_comun} <sub><i>#{nombre.lengua}</i></sub>"
+      bibliografias = nombre.bibliografias.con_especie(taxon).map(&:cita_completa)
+      if bibliografias.any?
+        biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
+        n << "<a href='' tabindex='0' class='biblio-cat btn btn-link' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'><i class='fa fa-book'></i></a>"
       end
-
-      html
+      lista << n
     end
 
-    taxon.nombres_comunes.distinct.order(:nombre_comun).each do |nom|
-      html << creaLista(nom, opc.merge(taxon: taxon))
-    end
-
-    html.present? ? "<p><strong>Nombres comunes</strong></p><ul>#{html}</ul>".html_safe : html
+    {nombre_catalogo: 'Nombres comunes', descripciones: lista}
   end
 
 #########################################################################################################################################
