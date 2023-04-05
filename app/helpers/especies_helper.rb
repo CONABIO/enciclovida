@@ -64,8 +64,7 @@ module EspeciesHelper
 
       valores[:datos].each do |dato|
         biblio = dato[:bibliografias].any? ? "<ul>#{dato[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>" : ''
-        biblio_html = " <a tabindex='0' class='btn btn-link biblio-cat' role='button' data-toggle='popover' data-trigger='focus'
-title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" if biblio.present?
+        biblio_html = creaPopOverBibliografia(biblio) if biblio.present?
         observaciones = dato[:observaciones] if dato[:observaciones].present?
         dato[:descripciones].each do |l|
           html << "#{l} #{biblio_html}"
@@ -119,7 +118,8 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
       bibliografias = nombre.bibliografias.con_especie(taxon).map(&:cita_completa)
       if bibliografias.any?
         biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b}</li>" }.join('')}</ul>"
-        n << "<a href='' tabindex='0' class='biblio-cat btn btn-link' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'><i class='fa fa-book'></i></a>"
+
+        n << creaPopOverBibliografia(biblio_html)
       end
       lista << n
     end
@@ -137,7 +137,7 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
         lista << "<li>#{datos[:nombre]}</li>"
 
         if !opc[:app]
-          lista << " <a href='' tabindex='0' class='biblio-cat' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{datos[:observaciones]}\" onClick='return false;'>Bibliografía</a>" if datos[:observaciones].present?
+          lista << creaPopOverBibliografia(datos[:observaciones]) if datos[:observaciones].present?
         end
 
         if datos[:reg_desc].any?
@@ -156,9 +156,7 @@ title='Bibliografía' data-content='#{biblio}'><i class='fa fa-book'></i></a>" i
 
 #########################################################################################################################################
   def creaPopOverBibliografia(biblio)
-    biblio.each do |b|
-
-    end
+    "<a href='' tabindex='0' class='biblio-cat btn btn-link' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content='#{biblio.gsub("'","\\'")}' onClick='return false;'><i class='fa fa-book'></i></a>"
   end
 
 
