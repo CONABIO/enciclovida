@@ -1,142 +1,144 @@
-<div class="w-100 bg-light mt-2 px-2 rounded-top" id="filtros-especies">
-	<p class='h5 my-0'><b class="text-info">Filtros utilizados: </b><%= filtrosEspecies(params) %></p>
-</div>
-
 <% if @resp[:estatus] %>
-	
-	<% if @resp[:totales].present? %>
 
-      <div id="opciones_resultados" class="w-100 bg-light py-2 px-2 mt-auto d-inline-flex">
-      <div class="w-25">
-        <% if @resp[:totales].present? && @resp[:totales] > 0 && @resp[:totales] < 60000 %>
-          <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
-          <%= render partial: 'busquedas_regiones/guias/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ',') } %>
+  <% if @resp[:totales].present? %>
 
-          <%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-region', class: 'btn btn-info btn-sm btn-block') %>
-          <% if @valida_guia %>
-            <%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-guia', class: 'btn btn-info btn-sm btn-block') %>
-          <% else %>
-            <%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-block btn-title disabled', title: "Hay que seleccionar una región (municipio o ANP) y un grupo taxonómico (clase, orden o familia)") %>
-          <% end %>
-        <% else %>
-          <%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-block btn-title disabled', title: "Hay que seleccionar al menos un filtro") %>
-          <%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-block btn-title disabled', title: "Hay que seleccionar una región (municipio o ANP) y un grupo taxonómico (clase, orden o familia)") %>
-        <% end %>
-      </div>
 
-      <div class="w-50 text-center">
-        <%= @resp['carga-anteriores-especies'] ? button_tag('<i class="fa fa-arrow-left"></i>'.html_safe, class: 'btn btn-secondary btn-title rounded-pill', id: 'carga-anteriores-especies', title: 'Anterior', type: 'button', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover') : button_tag('<i class="fa fa-arrow-left"></i>'.html_safe, class: 'btn btn-dark btn-title rounded-pill disabled', type: 'button') %>
-        <%= @resp['carga-siguientes-especies'] ? button_tag('<i class="fa fa-arrow-right"></i>'.html_safe, class: 'btn btn-secondary btn-title rounded-pill', id: 'carga-siguientes-especies', title: 'Siguiente', type: 'button', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover') : button_tag('<i class="fa fa-arrow-right"></i>'.html_safe, class: 'btn btn-dark btn-title rounded-pill disabled', type: 'button') %>
+    <div id="opciones_resultados" class="bg-light d-inline-flex justify-content-between mt-2 px-2 py-2 rounded w-100">
+      <div class="" id="filtros-especies">
+        <%= filtrosEspecies(params).html_safe %>
       </div>
 
       <% region_seleccionada = params[:nombre_region].present? %>
 
-      <div class="w-25 text-right">
-        <button id="tutorialGuias" type="button" class="btn btn-sm btn-block btn-outline-warning" data-toggle="modal" data-target="#multiModal" title="Tutorial guías de especies" data-body="<%= insertaVideo("YClySqweW7U") %>" onclick="$('#multiModalBody').html($(this).data('body'), $('#multiModalLabel').html('Tutorial guías de especies') );" >Tutorial guías <i class='fa fa-video-camera'></i></button>
-        <div class="btn-group btn-block">
-          <button class="btn btn-dark btn-sm dropdown-toggle" type="button" id="dropdownMasInfoButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" <%= "disabled" unless region_seleccionada %> title="Hay que seleccionar una región (municipio o ANP)">Más info sobre región</button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMasInfoButton">
-            <h6 class="dropdown-header">Más info acerca de: <%= params[:nombre_region] if region_seleccionada %></h6>
-            <%= ligas_mas_info((region_seleccionada ? params[:nombre_region] : '' ))[3,4].join.html_safe %>
-          </div>
+      <div class="btn-group pull-right">
+
+        <button class="btn btn-light btn-title dropdown-toggle" type="button" id="dropdownMasInfoButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Más info"><i class="fa fa-bars"></i></button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMasInfoButton">
+          <button id="tutorialGuias" type="button" class="border-0 btn btn-block btn-outline-warning rounded-0 text-left" data-toggle="modal" data-target="#multiModal" title="Tutorial guías de especies" data-body="<%= insertaVideo("YClySqweW7U") %>" onclick="$('#multiModalBody').html($(this).data('body'), $('#multiModalLabel').html('Tutorial guías de especies') );" ><i class='fa fa-television'></i> Tutorial de descarga de guías</button>
+          <h6 class="dropdown-header">Descargas</h6>
+          <% if @resp[:totales].present? && @resp[:totales] > 0 && @resp[:totales] < 60000 %>
+            <%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-region', class: 'border-0 btn btn-block btn-outline-dark rounded-0 text-left') %>
+            <% if @valida_guia %>
+              <%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', 'data-toggle': 'modal', 'data-target': '#modal-descarga-guia', class: 'border-0 btn btn-block btn-outline-dark rounded-0 text-left') %>
+            <% else %>
+              <%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', class: 'border-0 btn btn-block btn-outline-dark rounded-0 text-left btn-title disabled', title: "Hay que seleccionar una región (municipio o ANP) y un grupo taxonómico (clase, orden o familia)") %>
+            <% end %>
+          <% else %>
+            <%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', class: 'border-0 btn btn-block btn-outline-dark rounded-0 text-left btn-title disabled', title: "Hay que seleccionar al menos un filtro") %>
+            <%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', class: 'border-0 btn btn-block btn-outline-dark rounded-0 text-left btn-title disabled', title: "Hay que seleccionar una región (municipio o ANP) y un grupo taxonómico (clase, orden o familia)") %>
+          <% end %>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Más info de la región <%= params[:nombre_region] if region_seleccionada %> en:</h6>
+          <%= ligas_mas_info(params[:nombre_region])[3,4].join.html_safe if region_seleccionada %>
         </div>
       </div>
     </div>
 
+  <% end %>
 
-		<div class="w-100 bg-light py-1 px-2 rounded-bottom mb-4">
-			<p class="h5 my-0">
-				<strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
-				| <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros del <a id="snib" href="https://www.snib.mx/" target="_blank" class="btn-title font-weight-bolder" data-toggle="popover" title="Sistema Nacional de Información sobre Biodiversidad">SNIB</a>
-			</p>
-		</div>
-	<% end %>
-	
-	<div id="contenedor_resultados" class="d-flex position-relative">
-		<div id="drag" class="align-self-center bg-dark d-flex flex-column position-absolute rounded-pill">
-			<button id="goLeft" type=button class="btn btn-outline-light btn-title fa fa-chevron-left rounded-pill border-0" onclick="goLeft();"></button>
-			<button id="goRight" type=button class="btn btn-outline-light btn-title fa fa-chevron-right rounded-pill border-0" , onclick=goRight();></button>
-		</div>
-		<div class="row no-gutters">
-			
-			<% @resp[:taxones].each do |t| %>
-				<% taxon = t[:especie] %>
-				<div class="col-3 p-2 <%= 'bg-light border border-success' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
-					<div class="result-img-container w-100 m-0">
-						<%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid') : "<i class='ev1-ev-icon'></i>".html_safe %>
-						<button class="btn btn-light btn-title rounded-pill m-1 position-absolute boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros" data-nombre-cientifico="<%= taxon.nombre_cientifico.sanitize.html_safe %>">
-							<%= number_with_delimiter(t[:nregistros], delimiter: ',') %>
-						</button>
-					</div>
-					<div class="result-nombre-container w-100 p-1 rounded">
-						<%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
-					</div>
-				</div>
-			<% end %>
-		</div>
-	</div>
+  <div id="contenedor_resultados" class="d-flex flex-column position-relative bg-gradient-light rounded my-2">
+    <!--div id="drag" class="align-self-center bg-dark d-flex flex-column position-absolute rounded-pill">
+      <button id="goLeft" type=button class="btn btn-outline-light btn-title fa fa-chevron-left rounded-pill border-0" onclick="goLeft();"></button>
+      <button id="goRight" type=button class="btn btn-outline-light btn-title fa fa-chevron-right rounded-pill border-0" , onclick=goRight();></button>
+    </div-->
+    <div class="row no-gutters">
+      <% @resp[:taxones].each do |t| %>
+        <% taxon = t[:especie] %>
+        <div class="col-3 p-1 <%= 'bg-success' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
+          <div class="result-img-container w-100 m-0 text-break">
+            <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid') : "<i class='ev1-ev-icon'></i>".html_safe %>
+            <button class="btn btn-light btn-title rounded-pill m-1 position-absolute boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros" data-nombre-cientifico="<%= taxon.nombre_cientifico.sanitize.html_safe %>">
+              <%= number_with_delimiter(t[:nregistros], delimiter: ',') %>
+            </button>
+          </div>
+          <div class="result-nombre-container w-100 p-1 rounded">
+            <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
+          </div>
+        </div>
+      <% end %>
+    </div>
 
-	<script>
-			var resp = <%= raw @resp.to_json %>; /*??*/
-			
-			$(document).ready(function() {
-					/*TODO ESTO DEBE IR EN por_region_extra.js, ya q no depende de la respuesta ¬¬*/
-					resizeD = $('#contenedor_resultados');
-					posicionInicialResizeD = resizeD.offset().left;
-					anchoResizeD = resizeD.width();
-					
-					goLeft = function() {
-							/*Nos movemos un cuarto del mapa a la izquierda*/
-							map.panBy(new L.Point((map.getSize().x*0.25), 0), {animate: true});
-							resizeP == 1 ? goState(0) : goState(-1);
-					};
-					
-					goRight = function() {
-							/*Nos movemos un cuarto del mapa a la derecha*/
-							map.panBy(new L.Point(-(map.getSize().x*0.25), 0), {animate: true});
-							resizeP == -1 ? goState(0) : goState(1);
-					};
-					
-					actualizaPosicion = function() {
-							posicionInicialResizeD = resizeD.offset().left;
-							anchoResizeD = resizeD.width();
-					};
-					
-					goState = function(state) {
-							switch (state) {
-									case -1:
-											actualizaPosicion();
-											resizeD.css('left', -(posicionInicialResizeD - 60));
-											resizeD.css('width', (anchoResizeD * 2) - 60);
-											resizeP = -1;
-											$('#goLeft').prop('disabled', true);
-											break;
-									case 1:
-											actualizaPosicion();
-											resizeD.css('left', posicionInicialResizeD - 60);
-											resizeD.css('width', anchoResizeD);
-											resizeP = 1;
-											$('#goRight').prop('disabled', true);
-											break;
-									default:
-											resizeD.removeAttr('style');
-											$('#drag button').prop('disabled', false);
-											resizeP = 0;
-											break;
-							}
-					};
-					
-					$(window).on('resize', function(){
-							resizeD.removeAttr('style');
-							//actualizaPosicion();
-							goState(resizeP);
-							$("html,body").animate({ scrollTop: 100 }, 400);
-					});
-					
-					tooltip("#contenedor_especies .btn-title");
-			});
-	</script>
+    <div id="verMasEspecies" class="d-flex flex-row justify-content-between">
+      <%= @resp['carga-anteriores-especies'] ? button_tag('<i class="fa fa-arrow-left"></i>'.html_safe, class: 'btn btn-secondary btn-title rounded-pill', id: 'carga-anteriores-especies', title: 'Anterior', type: 'button', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover') : button_tag('<i class="fa fa-arrow-left"></i>'.html_safe, class: 'btn btn-dark btn-title rounded-pill disabled', type: 'button') %>
+      <%= @resp['carga-siguientes-especies'] ? button_tag('<i class="fa fa-arrow-right"></i>'.html_safe, class: 'btn btn-secondary btn-title rounded-pill', id: 'carga-siguientes-especies', title: 'Siguiente', type: 'button', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover') : button_tag('<i class="fa fa-arrow-right"></i>'.html_safe, class: 'btn btn-dark btn-title rounded-pill disabled', type: 'button') %>
+    </div>
+
+  </div>
+
+  <div class="w-100 rounded bg-gradient-warning text-white px-2 py-1">
+    <p class="h4 m-0 text-right">
+      <strong><%= number_with_delimiter(@resp[:totales], delimiter: ',') %></strong> especies
+      | <strong><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></strong> registros del <a id="snib" href="https://www.snib.mx/" target="_blank" class="btn btn-link btn-title font-weight-bolder" data-toggle="popover" title="Sistema Nacional de Información sobre Biodiversidad">SNIB</a>
+    </p>
+  </div>
+
+
+  <% if @resp[:totales].present? %>
+    <%= render partial: 'shared/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ','), tipo_descarga: 'region' } %>
+    <%= render partial: 'busquedas_regiones/guias/form_descarga', locals: { totales: number_with_delimiter(@resp[:totales], delimiter: ',') } %>
+  <% end %>
+
+  <script>
+      var resp = <%= raw @resp.to_json %>; /*??*/
+
+      $(document).ready(function() {
+          /*TODO ESTO DEBE IR EN por_region_extra.js, ya q no depende de la respuesta ¬¬*/
+          resizeD = $('#contenedor_resultados');
+          posicionInicialResizeD = resizeD.offset().left;
+          anchoResizeD = resizeD.width();
+
+          goLeft = function() {
+              /*Nos movemos un cuarto del mapa a la izquierda*/
+              map.panBy(new L.Point((map.getSize().x*0.25), 0), {animate: true});
+              resizeP == 1 ? goState(0) : goState(-1);
+          };
+
+          goRight = function() {
+              /*Nos movemos un cuarto del mapa a la derecha*/
+              map.panBy(new L.Point(-(map.getSize().x*0.25), 0), {animate: true});
+              resizeP == -1 ? goState(0) : goState(1);
+          };
+
+          actualizaPosicion = function() {
+              posicionInicialResizeD = resizeD.offset().left;
+              anchoResizeD = resizeD.width();
+          };
+
+          goState = function(state) {
+              switch (state) {
+                  case -1:
+                      actualizaPosicion();
+                      resizeD.css('left', -(posicionInicialResizeD - 60));
+                      resizeD.css('width', (anchoResizeD * 2) - 60);
+                      resizeP = -1;
+                      $('#goLeft').prop('disabled', true);
+                      break;
+                  case 1:
+                      actualizaPosicion();
+                      resizeD.css('left', posicionInicialResizeD - 60);
+                      resizeD.css('width', anchoResizeD);
+                      resizeP = 1;
+                      $('#goRight').prop('disabled', true);
+                      break;
+                  default:
+                      resizeD.removeAttr('style');
+                      $('#drag button').prop('disabled', false);
+                      resizeP = 0;
+                      break;
+              }
+          };
+
+          $(window).on('resize', function(){
+              resizeD.removeAttr('style');
+              //actualizaPosicion();
+              goState(resizeP);
+              $("html,body").animate({ scrollTop: 100 }, 400);
+          });
+
+          tooltip("#contenedor_especies .btn-title");
+      });
+  </script>
 
 <% else %>
-	<p><%= @resp[:msg] %></p>
+  <p><%= @resp[:msg] %></p>
 <% end %>
