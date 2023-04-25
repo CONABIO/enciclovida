@@ -7,6 +7,7 @@
 #grupos-tab [class*="ev-icon"],
 #filtros-especies [class*="ev-icon"] {
   background-image: none !important;
+  font-size: 1.75em!important;
 }
 
 #grupos-tab input {
@@ -55,12 +56,12 @@
 .popover{
   max-width: 405px!important;
 }
-#busqueda_region *, #filtros-especies, #snib, #drag,  #opciones_resultados *, .result-img-container, .result-nombre-container{pointer-events: auto;}
+#busqueda_region *, #filtros-especies, #snib, #drag,  #opciones_resultados *, .result-img-container, .result-nombre-container, #verMasEspecies button{pointer-events: auto;}
 #contenedor_especies{right: 0;}
 
-[id^=especie-container]{background-color: #fafafa30;}
-[id^=especie-container]:hover, .result-nombre-container{background-color: #fafafa;}
-.result-nombre-container{height: 80px; overflow-y: auto;}
+[id^=especie-container]{/*background-color: #fafafa30;*/}
+[id^=especie-container]:hover{background-color: #A0C11F;}
+.result-nombre-container{background-color: #FAFAFA; height: 80px; overflow-y: auto;}
 
 #contenedor_resultados{
   right: 0;
@@ -73,7 +74,7 @@
   z-index: 1;
 }
 /*#drag button{cursor: pointer;}*/
-#filtros-especies {}
+#filtros-especies{}
 
 #contenedor_especies i.ev1-ev-icon {
   transition: all 0.2s ease;

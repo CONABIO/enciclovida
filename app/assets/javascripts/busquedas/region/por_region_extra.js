@@ -90,16 +90,16 @@ $(document).ready(function () {
 				$("#especie-container-" + opciones.filtros.catalogo_id).addClass("bg-light border border-success");
 				cargaEjemplares("/explora-por-region/ejemplares?" + serializeParametros());
 				
-				gahref = $($('#dropdownMasInfoButton+div a')[0]);
-				gnhref = $($('#dropdownMasInfoButton+div a')[1]);
-				nc = $(this).data('nombre-cientifico');
-				reg = $('#nombre_region').val();
+				//ga = $('#masInfoGoogleAcademico');
+				//gn = $('#masInfoGoogleNoticias');
+				//nc = $(this).data('nombre-cientifico');
+				//reg = $('#nombre_region').val();
 				
-				if(reg != ""){$('#dropdownMasInfoButton').removeAttr('disabled')};
+				//if(reg != ""){$('#dropdownMasInfoButton').removeAttr('disabled')};
 				
-				$('#dropdownMasInfoButton+div h6.dropdown-header').text('Más info acerca de: '+nc+', '+reg);
-				gahref.attr('href', 'https://scholar.google.com.mx/scholar?hl=es&q="'+nc+'"+"'+reg+'"');
-				gnhref.attr('href', 'https://news.google.com.mx/search?q="'+nc+'"+"'+reg+'"');
+				//$('#dropdownMasInfoButton+div h6.dropdown-header').text('Más info acerca de: '+nc+', '+reg);
+				//ga.attr('href', 'https://scholar.google.com.mx/scholar?hl=es&q="' + reg + '"');
+				//gn.attr('href', 'https://news.google.com.mx/search?q="' + reg + '"');
 				event.preventDefault(); //esto solo es necesario cuando al boton no le pones type=button (distinto al submit)
 				}
 		);

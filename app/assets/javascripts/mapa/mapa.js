@@ -47,7 +47,7 @@ var cargaMapa = function (id, opc) {
 		map = L.map(id, {
 				zoomControl: false,
 				doubleClickZoom: false,
-				minZoom: 5,
+				minZoom: 4,
 				maxZoom: 12,
 				layers: [
 						// Existe un bug poniendo primero los layers de google
