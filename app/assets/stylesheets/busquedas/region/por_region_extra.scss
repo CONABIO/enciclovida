@@ -14,7 +14,7 @@
   display: none;
 }
 #grupos-tab span {
-  font-size: 2rem;
+  /*font-size: 2rem;*/
   cursor: pointer;
   border-radius: 35%;
   transition: border-radius 0.3s ease-in-out;
@@ -56,23 +56,23 @@
 .popover{
   max-width: 405px!important;
 }
-#busqueda_region *, #filtros-especies, #snib, #drag,  #opciones_resultados *, .result-img-container, .result-nombre-container, #verMasEspecies button{pointer-events: auto;}
+#busqueda_region *, #filtros-especies, #snib, /*#drag,*/  #opciones_resultados *, .result-img-container img, .result-nombre-container, #verMasEspecies *{pointer-events: auto;}
 #contenedor_especies{right: 0;}
 
 [id^=especie-container]{/*background-color: #fafafa30;*/}
 [id^=especie-container]:hover{background-color: #A0C11F;}
-.result-nombre-container{background-color: #FAFAFA; /*height: 80px;*/ overflow-y: auto; /*top: 0; left: 0;*/}
+.result-nombre-container{/*background-color: #FAFAFA;*/ /*height: 3.1rem;*/ overflow-y: auto; /*top: 0; left: 0;*/}
 
-#contenedor_resultados{
+/*#contenedor_resultados{
   right: 0;
   top: 0;
   bottom: 0;
-  transition: all ease-out .5s;
+  transition: all ease-out .25s;
 }
 #drag{
   left: -20px;
   z-index: 1;
-}
+}*/
 /*#drag button{cursor: pointer;}*/
 #filtros-especies{}
 
@@ -86,8 +86,9 @@
 #opciones_resultados{bottom: 0;}
 
 .boton-especie-registros {
-  left: 0;
-  bottom: 0;
+  /*left: 0;*/
+  /*bottom: 0;*/
+  outline: none!important;
 }
 
 #nombre-region-hover {
@@ -102,6 +103,7 @@
 
 #contenedor_especies div.result-img-container img {
   object-fit: cover;
+  object-position: top;
   height: 10rem;
   width: 100%;
 }
@@ -115,4 +117,4 @@
   width: 500px;
   top: 35px;
 }
-.fa-file-excel-o, .fa-file-pdf-o{ font-size: 1.5em!important; }
+/*.fa-file-excel-o, .fa-file-pdf-o{ font-size: 1.5em!important; }*/

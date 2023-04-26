@@ -293,9 +293,9 @@ var cargaEjemplares = function (url) {
                     if (window.location.href.indexOf("explora-por-region") > -1) {
 		                    /* Quitando el loading ua vez q ya fueron pintados los registros*/
 		                    $('#loading').toggleClass('invisible');
-		                    goState(1);
+		                    //goState(1);
 		                    /*Nos movemos un cuarto del mapa a la derecha*/
-		                    map.panBy(new L.Point(-(map.getSize().x*0.25), 0), {animate: false});
+		                    //map.panBy(new L.Point(-(map.getSize().x*0.25), 0), {animate: false});
                     }
                 }
             }
