@@ -58,7 +58,7 @@
 				<% taxon = t[:especie] %>
 				<div class="col-3 p-2 <%= 'bg-success' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
 					
-					<button class="border-0 bg-transparent btn-title m-0 p-0 boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros" data-nombre-cientifico="<%= taxon.nombre_cientifico.sanitize.html_safe %>">
+					<button class="border-0 bg-transparent m-0 p-0 boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros" data-nombre-cientifico="<%= taxon.nombre_cientifico.sanitize.html_safe %>">
 						<div class="result-img-container w-100 mt-0 mb-n4 text-break">
 							<%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid', alt: 'Imagen no encontrada') : "<i class='ev1-ev-icon'></i>".html_safe %>
 						</div>
