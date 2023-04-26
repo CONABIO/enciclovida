@@ -45,15 +45,17 @@
       <% @resp[:taxones].each do |t| %>
         <% taxon = t[:especie] %>
         <div class="col-3 p-1 <%= 'bg-success' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
-          <div class="result-img-container w-100 m-0 text-break">
-            <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid') : "<i class='ev1-ev-icon'></i>".html_safe %>
-            <button class="btn btn-light btn-title rounded-pill m-1 position-absolute boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros" data-nombre-cientifico="<%= taxon.nombre_cientifico.sanitize.html_safe %>">
-              <%= number_with_delimiter(t[:nregistros], delimiter: ',') %>
+          <!--div class="result-img-container position-relative w-100 m-0 text-break"-->
+            <button class="btn btn-light btn-title m-1 boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros" data-nombre-cientifico="<%= taxon.nombre_cientifico.sanitize.html_safe %>">
+              <div class="result-nombre-container position-absolute w-100">
+                <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
+              </div>
+              <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid') : "<i class='ev1-ev-icon'></i>".html_safe %>
+              <span class="badge badge-light"><%= number_with_delimiter(t[:nregistros], delimiter: ',') %> registros</span>
+
             </button>
-          </div>
-          <div class="result-nombre-container w-100 p-1 rounded">
-            <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
-          </div>
+          <!--/div-->
+
         </div>
       <% end %>
     </div>

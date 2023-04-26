@@ -61,7 +61,7 @@
 
 [id^=especie-container]{/*background-color: #fafafa30;*/}
 [id^=especie-container]:hover{background-color: #A0C11F;}
-.result-nombre-container{background-color: #FAFAFA; height: 80px; overflow-y: auto;}
+.result-nombre-container{background-color: #FAFAFA; /*height: 80px;*/ overflow-y: auto; /*top: 0; left: 0;*/}
 
 #contenedor_resultados{
   right: 0;
