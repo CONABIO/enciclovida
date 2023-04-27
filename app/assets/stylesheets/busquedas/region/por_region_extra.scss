@@ -57,11 +57,11 @@
   max-width: 405px!important;
 }
 #busqueda_region *, #filtros-especies, #snib, /*#drag,*/  #opciones_resultados *, .result-img-container img, .result-nombre-container, #verMasEspecies *{pointer-events: auto;}
-#contenedor_especies{right: 0;}
+#contenedor_especies{}
 
 [id^=especie-container]{/*background-color: #fafafa30;*/}
 [id^=especie-container]:hover{background-color: #A0C11F;}
-.result-nombre-container{/*background-color: #FAFAFA;*/ /*height: 3.1rem;*/ overflow-y: auto; /*top: 0; left: 0;*/}
+.result-nombre-container{/*background-color: #FAFAFA;*/ height: 2.6rem; /*overflow-y: auto;*/ /*top: 0; left: 0;*/}
 
 /*#contenedor_resultados{
   right: 0;
@@ -104,7 +104,7 @@
 #contenedor_especies div.result-img-container img {
   object-fit: cover;
   object-position: top;
-  height: 10rem;
+  height: 8rem;
   width: 100%;
 }
 

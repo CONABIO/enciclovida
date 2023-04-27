@@ -53,7 +53,7 @@ module ApplicationHelper
       when 'title'
         "#{nombre_comun} (#{nombre_cientifico})".sanitize.html_safe
       when 'link'
-        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
+        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<small><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></small>".html_safe
       when 'header'
         if nombre_comun.present?
           "<h1 class='font-weight-bold'>#{nombre_comun}</h1><h2>#{cat_taxonomica unless taxon.especie_o_inferior?}<small>#{nombre_cientifico}</small></h2>".html_safe

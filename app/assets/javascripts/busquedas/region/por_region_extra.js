@@ -87,8 +87,8 @@ $(document).ready(function () {
 			$("#especie_id_focus").val(opciones.filtros.especie_id_focus);
 			cambiaURLParametros();
 			
-			$("[id^=especie-container]").removeClass("bg-success");
-			$("#especie-container-" + opciones.filtros.catalogo_id).addClass("bg-success");
+			$("[id^=especie-container]").removeClass("bg-success").addClass("bg-light shadow-sm");
+			$("#especie-container-" + opciones.filtros.catalogo_id).addClass("bg-success").removeClass("bg-light shadow-sm");
 			cargaEjemplares("/explora-por-region/ejemplares?" + serializeParametros());
 			
 			//ga = $('#masInfoGoogleAcademico');
