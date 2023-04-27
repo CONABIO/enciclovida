@@ -20,7 +20,7 @@
           <% end %>
         <% else %>
           <%= button_tag("<i class='fa fa-file-excel-o mr-1'></i> Lista de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-block btn-title disabled', title: "Hay que seleccionar al menos un filtro") %>
-          <%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-block btn-title disabled', title: "Hay que seleccionar una región (municipio o ANP) y un grupo taxonómico (clase, orden o familia)") %>
+          <%= button_tag("<i class='fa fa-file-pdf-o mr-1'></i> Guía de especies".html_safe, type: 'button', class: 'btn btn-info btn-sm btn-block btn-title disabled', title: "Hay que seleccionar al menos una región ó grupo taxonómico (máximo 200 especies)") %>
         <% end %>
       </div>
 

@@ -27,7 +27,12 @@ class BusquedasRegionesController < ApplicationController
 				cache_filtros_ev
 				br.especies
 				@resp = br.resp
-				@valida_guia = br_guia.resp[:estatus]
+				
+				if br_guia.resp[:estatus] && br.totales >= 1 && br.totales <= 200
+					@valida_guia = true
+				else
+					@valida_guia = false
+				end
 			end
 			format.xlsx do
 				br.original_url = request.original_url
@@ -36,6 +41,7 @@ class BusquedasRegionesController < ApplicationController
 			end
 			format.json do
 				if params[:guia] == "1"
+					
 					br.original_url = request.original_url
 					br.valida_descarga_guia
 					

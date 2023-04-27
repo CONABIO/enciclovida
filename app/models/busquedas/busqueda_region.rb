@@ -97,7 +97,11 @@ class BusquedaRegion < Busqueda
       lista.to_pdf({ fecha: Time.now.strftime("%Y-%m-%d"), original_url: original_url }) if lista.save
     end
 
-    self.resp.merge({ estatus: true, msg: nil })      
+    if resp.present?
+      self.resp.merge({ estatus: true, msg: nil })      
+    else
+      self.resp = { estatus: true }      
+    end
   end
 
   def informacion_descarga_guia
@@ -118,29 +122,10 @@ class BusquedaRegion < Busqueda
 
   # Valida que los campos seleccionados sean validos para una posible descarga de guia
   def valida_descarga_guia
-    if params[:especie_id].present?
-      begin
-        t = Especie.find(params[:especie_id])
-        cat = t.categoria_taxonomica
-        
-        if [3,4,5,6].include?(cat.nivel1)
-          self.resp = { estatus: true }
-        else
-          return self.resp = { estatus: false, msg: 'El taxón no es una clase, orden, familia o género' }
-        end
-
-      rescue => e
-        return self.resp = { estatus: false, msg: 'El taxón seleccionado no existe' + e.inspect }
-      end 
-      
-    else
-      return self.resp = { estatus: false, msg: 'Se debe escoger un taxón' }  
-    end
-
-    if params[:region_id].present? && (params[:tipo_region].present? && %(municipio anp).include?(params[:tipo_region]))
+    if params[:especie_id].present? || (params[:region_id].present? && (params[:tipo_region].present?))
       self.resp = { estatus: true }
     else
-      self.resp = { estatus: false, msg: 'La región seleccionada no es un municipio o ANP' }
+      return self.resp = { estatus: false, msg: 'Se debe escoger un taxón o una región' }  
     end
   end
 
@@ -252,24 +237,37 @@ class BusquedaRegion < Busqueda
   # Establece el titulo de acuerdo a la seleccion
   def titulo_guia
     titulo = []
+    tipo_region = ""
 
-    t = Especie.find(params[:especie_id])
-    a = t.adicional
-
-    tipo_region = params[:tipo_region] == "anp" ? "ANP " : "Municipio de "
-    
-    if a.nombre_comun_principal.present?
-      titulo[0] = "Guía de #{a.nombre_comun_principal}"
-    else
-      titulo[0] = "Guía de #{t.nombre_cientifico}"
+    if params[:especie_id].present?
+      t = Especie.find(params[:especie_id])
+      a = t.adicional
+      
+      if a.nombre_comun_principal.present?
+        titulo[0] = "Guía de #{a.nombre_comun_principal}"
+      else
+        titulo[0] = "Guía de #{t.nombre_cientifico}"
+      end
+    else  # Cuando no selecciono una especie
+      titulo[0] = "Guía de especies"
     end
 
-    unless params[:nombre_region].present?
+    if params[:tipo_region].present? && params[:region_id].present?
+      case params[:tipo_region]
+        when "anp"
+          tipo_region = "ANP "
+        when "municipio"
+          tipo_region = "Municipio de "
+        when "estado" 
+          "Estado de "
+      end
+
       region = "geoportal/#{params[:tipo_region]}".camelize.constantize.campos_min.find(params[:region_id])
-      params[:nombre_region] = region.nombre_publico
+      titulo[1] = tipo_region + params[:nombre_region]
+    else
+      titulo[1] = "A nivel nacional"
     end
-
-    titulo[1] = tipo_region + params[:nombre_region]
+    
     titulo
   end
 
