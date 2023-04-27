@@ -2,7 +2,7 @@ class BusquedaRegion < Busqueda
 
   attr_accessor :resp, :num_ejemplares
 
-  ESPECIES_POR_PAGINA = 8.freeze
+  ESPECIES_POR_PAGINA = 12.freeze
   ESPECIES_POR_PAGINA_API = [50, 100, 200]
 
   def initialize

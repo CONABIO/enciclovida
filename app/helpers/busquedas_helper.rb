@@ -481,7 +481,7 @@ module BusquedasHelper
       end
     end
 
-    html.present? ? "<b>Filtros aplicados: </b>" << html : "<i>No se ha aplicado ningún filtro aún</i>"
+    html.present? ? "<b>Filtros aplicados: </b>" << html : "<b>No se ha aplicado ningún filtro aún</b>"
   end
 
 end
