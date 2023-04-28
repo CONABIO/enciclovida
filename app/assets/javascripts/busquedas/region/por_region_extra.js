@@ -90,17 +90,7 @@ $(document).ready(function () {
 			$("[id^=especie-container]").removeClass("bg-success").addClass("bg-light shadow-sm");
 			$("#especie-container-" + opciones.filtros.catalogo_id).addClass("bg-success").removeClass("bg-light shadow-sm");
 			cargaEjemplares("/explora-por-region/ejemplares?" + serializeParametros());
-			
-			//ga = $('#masInfoGoogleAcademico');
-			//gn = $('#masInfoGoogleNoticias');
-			//nc = $(this).data('nombre-cientifico');
-			//reg = $('#nombre_region').val();
-			
-			//if(reg != ""){$('#dropdownMasInfoButton').removeAttr('disabled')};
-			
-			//$('#dropdownMasInfoButton+div h6.dropdown-header').text('Más info acerca de: '+nc+', '+reg);
-			//ga.attr('href', 'https://scholar.google.com.mx/scholar?hl=es&q="' + reg + '"');
-			//gn.attr('href', 'https://news.google.com.mx/search?q="' + reg + '"');
+
 			event.preventDefault(); //esto solo es necesario cuando al boton no le pones type=button (distinto al submit)
 		}
 	);
