@@ -5,8 +5,7 @@
     <% guia_habilitada = @valida_guia %>
 
 		<div class="row no-gutters">
-			
-			<div id="opciones_resultados" class="col-8 px-2 py-2">
+      <div id="opciones_resultados" class="col-8 px-2 py-2">
         <nav class="nav nav-tabs justify-content-end bg-light">
           <a <%= pocas_especies ? 'class="nav-link" data-toggle="modal" data-target="#modal-descarga-region" href="#"'.html_safe : 'class="nav-link btn-title disabled" title="Hay que seleccionar al menos un filtro"'.html_safe %> ><i class='fa fa-file-text-o mr-1'></i> Lista</a>
           <a <%= guia_habilitada ? 'class="nav-link" data-toggle="modal" data-target="#modal-descarga-guia" href="#"'.html_safe : 'class="nav-link btn-title disabled" title="Hay que seleccionar una región (municipio o ANP) ó un grupo taxonómico (máximo 200 especies)"'.html_safe %> ><i class='fa fa-file-picture-o mr-1'></i> Guía</a>
