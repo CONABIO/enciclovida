@@ -6,17 +6,24 @@
 
 		<div class="row no-gutters">
       <div id="opciones_resultados" class="col-8 px-2 py-2">
-        <nav class="nav nav-tabs justify-content-end bg-light">
-          <a <%= pocas_especies ? 'class="nav-link" data-toggle="modal" data-target="#modal-descarga-region" href="#"'.html_safe : 'class="nav-link btn-title disabled" title="Hay que seleccionar al menos un filtro"'.html_safe %> ><i class='fa fa-file-text-o mr-1'></i> Lista</a>
-          <a <%= guia_habilitada ? 'class="nav-link" data-toggle="modal" data-target="#modal-descarga-guia" href="#"'.html_safe : 'class="nav-link btn-title disabled" title="Hay que seleccionar una región (municipio o ANP) ó un grupo taxonómico (máximo 200 especies)"'.html_safe %> ><i class='fa fa-file-picture-o mr-1'></i> Guía</a>
-          <a id="tutorialGuias" class="nav-link btn-title" data-toggle="modal" data-target="#multiModal" title="Tutorial guías de especies" data-body="<%= insertaVideo("YClySqweW7U") %>" onclick="$('#multiModalBody').html($(this).data('body'), $('#multiModalLabel').html('Tutorial guías de especies') );" href="#"><i class='fa fa-question'></i></a>
-          <div class="dropdown">
-            <a <%=  region_seleccionada ? 'class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false"'.html_safe : 'class="nav-link dropdown-toggle disabled btn-title" title="Selecciona una región para obtener más información"'.html_safe %> ><i class="fa fa-info"></i></a>
-            <div class="dropdown-menu dropdown-menu-right">
-              <%= ligas_mas_info(params[:nombre_region])[3,4].join.html_safe if region_seleccionada %>
-            </div>
-          </div>
-        </nav>
+	
+	        <div class="btn-toolbar" role="toolbar" aria-label="Opciones de los resultados">
+		        <a <%= pocas_especies ? 'class="btn btn-outline-info rounded-0 border-0" data-toggle="modal" data-target="#modal-descarga-region" href="#"'.html_safe : 'class="btn btn-outline-info rounded-0 border-0 btn-title disabled" title="Hay que seleccionar al menos un filtro"'.html_safe %> ><i class='fa fa-file-text-o mr-1'></i> Lista</a>
+		        
+		        <div class="btn-group ml-4" role="group" aria-label="Guías de especies">
+			        <a <%= guia_habilitada ? 'class="btn btn-outline-info rounded-0 border-0" data-toggle="modal" data-target="#modal-descarga-guia" href="#"'.html_safe : 'class="btn btn-outline-info rounded-0 border-0 btn-title disabled" title="Hay que seleccionar una región (municipio o ANP) ó un grupo taxonómico (máximo 200 especies)"'.html_safe %> ><i class='fa fa-file-picture-o mr-1'></i> Guía</a>
+			        <a id="tutorialGuias" class="btn btn-outline-info rounded-0 border-0 btn-title" data-toggle="modal" data-target="#multiModal" title="Tutorial para descarga de guías de especies" data-body="<%= insertaVideo("YClySqweW7U") %>" onclick="$('#multiModalBody').html($(this).data('body'), $('#multiModalLabel').html('Tutorial guías de especies') );" href="#"><i class='fa fa-question'></i></a>
+		        </div>
+		
+		        <div class="btn-group dropdown ml-4" role="group">
+			        <a <%=  region_seleccionada ? 'class="btn btn-outline-info rounded-0 border-0 dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false"'.html_safe : 'class="btn btn-outline-info rounded-0 border-0 dropdown-toggle disabled btn-title" title="Selecciona una región para obtener más información"'.html_safe %> ><i class="fa fa-info"></i></a>
+			        <div class="dropdown-menu dropdown-menu-right">
+				        <%= ligas_mas_info(params[:nombre_region])[3,4].join.html_safe if region_seleccionada %>
+			        </div>
+		        </div>
+	        </div>
+	        
+
 				<div class="w-100 mt-1 py-2 text-black-50" id="filtros-especies">
 					<%= filtrosEspecies(params).html_safe %>
 				</div>
