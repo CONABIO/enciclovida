@@ -3,26 +3,20 @@
   max-height: 90vh;
 }
 
-#grupos-pop [class*="ev-icon"],
-#grupos-tab [class*="ev-icon"],
-#filtros-especies [class*="ev-icon"] {
-  background-image: none !important;
-  font-size: 1.75em!important;
-}
-
 #grupos-tab input {
   display: none;
 }
 #grupos-tab span {
-  /*font-size: 2rem;*/
+  background-image: none !important;
+  font-size: 2rem;
   cursor: pointer;
-  border-radius: 35%;
+  border-radius: 40%;
   transition: border-radius 0.3s ease-in-out;
 }
 
 #grupos-tab input + span {
   border: 2px solid transparent;
-  padding: 2px;
+  padding: 4px;
   transition: border-radius 0.3s ease-in-out;
 }
 
@@ -63,18 +57,11 @@
 [id^=especie-container]:hover{background-color: #A0C11F;}
 .result-nombre-container{/*background-color: #FAFAFA;*/ height: 2.6rem; /*overflow-y: auto;*/ /*top: 0; left: 0;*/}
 
-/*#contenedor_resultados{
-  right: 0;
-  top: 0;
-  bottom: 0;
-  transition: all ease-out .25s;
-}
-#drag{
-  left: -20px;
-  z-index: 1;
-}*/
-/*#drag button{cursor: pointer;}*/
 #filtros-especies{}
+#filtros-especies [class*="ev-icon"] {
+  background-image: none !important;
+  font-size: 1.75em!important;
+}
 
 #contenedor_especies i.ev1-ev-icon {
   transition: all 0.2s ease;
@@ -86,8 +73,6 @@
 #opciones_resultados{bottom: 0;}
 
 .boton-especie-registros {
-  /*left: 0;*/
-  /*bottom: 0;*/
   outline: none!important;
 }
 
@@ -117,4 +102,3 @@
   top: 43px;
   margin-left: 0.5rem;
 }
-/*.fa-file-excel-o, .fa-file-pdf-o{ font-size: 1.5em!important; }*/

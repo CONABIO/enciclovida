@@ -234,7 +234,7 @@ $(document).ready(function () {
 		container: "#busqueda_region",
 		html: true,
 		boundary: "viewport",
-		offset: 100,
+		offset: 175,
 	});
 	
 	$("#filtros-pop").popover({
@@ -243,7 +243,7 @@ $(document).ready(function () {
 		container: "#busqueda_region",
 		html: true,
 		boundary: "viewport",
-		offset: 100,
+		offset: 150,
 	});
 	$("#grupos-pop").on("hide.bs.popover", function () {
 		$("#grupos-tab").detach().appendTo("#sidebar");
