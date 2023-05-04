@@ -3,25 +3,20 @@
   max-height: 90vh;
 }
 
-#grupos-pop [class*="ev-icon"],
-#grupos-tab [class*="ev-icon"],
-#filtros-especies [class*="ev-icon"] {
-  background-image: none !important;
-}
-
 #grupos-tab input {
   display: none;
 }
 #grupos-tab span {
+  background-image: none !important;
   font-size: 2rem;
   cursor: pointer;
-  border-radius: 35%;
+  border-radius: 40%;
   transition: border-radius 0.3s ease-in-out;
 }
 
 #grupos-tab input + span {
   border: 2px solid transparent;
-  padding: 2px;
+  padding: 4px;
   transition: border-radius 0.3s ease-in-out;
 }
 
@@ -55,25 +50,18 @@
 .popover{
   max-width: 405px!important;
 }
-#busqueda_region *, #filtros-especies, #snib, #drag,  #opciones_resultados *, .result-img-container, .result-nombre-container{pointer-events: auto;}
-#contenedor_especies{right: 0;}
+#busqueda_region *, #filtros-especies, #snib, /*#drag,*/  #opciones_resultados *, .result-img-container img, .result-nombre-container, #verMasEspecies *{pointer-events: auto;}
+#contenedor_especies{}
 
-[id^=especie-container]{background-color: #fafafa30;}
-[id^=especie-container]:hover, .result-nombre-container{background-color: #fafafa;}
-.result-nombre-container{height: 80px; overflow-y: auto;}
+[id^=especie-container]{/*background-color: #fafafa30;*/}
+[id^=especie-container]:hover{background-color: #A0C11F;}
+.result-nombre-container{/*background-color: #FAFAFA;*/ height: 2.6rem; /*overflow-y: auto;*/ /*top: 0; left: 0;*/}
 
-#contenedor_resultados{
-  right: 0;
-  top: 0;
-  bottom: 0;
-  transition: all ease-out .5s;
+#filtros-especies{}
+#filtros-especies [class*="ev-icon"] {
+  background-image: none !important;
+  font-size: 1.75em!important;
 }
-#drag{
-  left: -20px;
-  z-index: 1;
-}
-/*#drag button{cursor: pointer;}*/
-#filtros-especies {}
 
 #contenedor_especies i.ev1-ev-icon {
   transition: all 0.2s ease;
@@ -85,8 +73,7 @@
 #opciones_resultados{bottom: 0;}
 
 .boton-especie-registros {
-  left: 0;
-  bottom: 0;
+  outline: none!important;
 }
 
 #nombre-region-hover {
@@ -101,7 +88,8 @@
 
 #contenedor_especies div.result-img-container img {
   object-fit: cover;
-  height: 10rem;
+  object-position: top;
+  height: 8rem;
   width: 100%;
 }
 
@@ -111,7 +99,6 @@
   background-color: rgba(0, 0, 0, 0.3);
 }
 #soulmate{
-  width: 500px;
-  top: 35px;
+  top: 43px;
+  margin-left: 0.5rem;
 }
-.fa-file-excel-o, .fa-file-pdf-o{ font-size: 1.5em!important; }

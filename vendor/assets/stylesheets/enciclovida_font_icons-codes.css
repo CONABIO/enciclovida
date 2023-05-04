@@ -91,6 +91,8 @@
 .semaforo-recomendable-ev-icon:before { content: '\e86c'; } /* '' */
 .sujetas-a-proteccion-especial-pr-evaluacion-conabio-ev-icon:before { content: '\e870'; } /* '' */
 .peces-mariscos-comerciales-certificacion-ev-icon:before { content: '\e872'; } /* '' */
+.conabio_horizontal_1-ev-icon:before { content: '\e873'; } /* '' */
+.conabio_horizontal_2-ev-icon:before { content: '\e874'; } /* '' */
 .vulnerable-vu-ev-icon:before { content: '\e875'; } /* '' */
 .vulnerable-vu-evaluacion-conabio-ev-icon:before { content: '\e876'; } /* '' */
 .youtube-ev-icon:before { content: '\e877'; } /* '' */

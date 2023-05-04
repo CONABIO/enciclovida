@@ -65,11 +65,12 @@ var cambiaLocale = function(locale){
  */
 var tooltip = function(clase){
         $(clase).tooltip({
-        html:true,
-        sanitize:false,
-        container: 'body',
-        placement: 'bottom',
-        boundary: 'window'
+            html:true,
+            sanitize:false,
+            container: 'body',
+            placement: 'bottom',
+            boundary: 'window',
+            trigger: 'hover'
     });
 };
 

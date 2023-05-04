@@ -4,7 +4,7 @@ $enable-gradients:                            true !default;
 
 /* Font para biomex más las default de Bootstrap */
 $font-size-base:              .85rem !default;
-$font-family-sans-serif:      opensans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;;
+$font-family-sans-serif:      opensans, Roboto, "Helvetica Neue", Arial !default;;
 
 $h1-font-size:                $font-size-base * 2 !default;
 $h2-font-size:                $font-size-base * 1.75 !default;

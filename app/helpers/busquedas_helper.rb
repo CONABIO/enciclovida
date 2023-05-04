@@ -481,7 +481,7 @@ module BusquedasHelper
       end
     end
 
-    html.present? ? html.html_safe : "<b>N/A</b>".html_safe
+    html.present? ? "<b>Filtros aplicados: </b>" << html : "<b>No se ha aplicado ningún filtro aún</b>"
   end
 
 end
