@@ -4,15 +4,15 @@
     <% pocas_especies = @resp[:totales].present? && @resp[:totales] > 0 && @resp[:totales] < 60000 %>
     <% guia_habilitada = @valida_guia %>
 
-    <div class="row no-gutters">
+    <div class="row no-gutters shadow-sm mb-1">
       <div id="opciones_resultados" class="col-8">
 
         <nav class="nav pl-1 pt-1">
           <a <%= pocas_especies ? 'class="btn btn-info flex-grow-1 nav-link text-white rounded-0" data-toggle="modal" data-target="#modal-descarga-region" href="#"'.html_safe : 'class="btn btn-info flex-grow-1 nav-link text-white rounded-0 btn-title disabled" title="Hay que seleccionar al menos un filtro"'.html_safe %> ><i class='fa fa-file-text-o mr-1'></i> Lista</a>
-          <a <%= guia_habilitada ? 'class="btn btn-info flex-grow-0 nav-link text-white rounded-0" data-toggle="modal" data-target="#modal-descarga-guia" href="#"'.html_safe : 'class="btn btn-info flex-grow-0 nav-link text-white rounded-0 btn-title disabled" title="Hay que seleccionar una región (municipio o ANP) ó un grupo taxonómico (máximo 200 especies)"'.html_safe %> ><i class='fa fa-file-picture-o mr-1'></i> Guía</a>
+          <a <%= guia_habilitada ? 'class="btn btn-info flex-grow-1 nav-link text-white rounded-0 ml-1" data-toggle="modal" data-target="#modal-descarga-guia" href="#"'.html_safe : 'class="btn btn-info flex-grow-1 nav-link text-white rounded-0 ml-1 btn-title disabled" title="Hay que seleccionar una región (municipio o ANP) ó un grupo taxonómico (máximo 200 especies)"'.html_safe %> ><i class='fa fa-file-picture-o mr-1'></i> Guía</a>
           <a id="tutorialGuias" class="btn btn-info flex-grow-0 nav-link text-white border-left-0 rounded-0 btn-title" data-toggle="modal" data-target="#multiModal" title="Tutorial guías de especies" data-body="<%= insertaVideo("YClySqweW7U") %>" onclick="$('#multiModalBody').html($(this).data('body'), $('#multiModalLabel').html('Tutorial guías de especies') );" href="#"><i class='fa fa-question'></i></a>
-          <div class="dropdown flex-grow-1">
-            <a <%=  region_seleccionada ? 'class="btn btn-info flex-grow-1 nav-link text-white rounded-0 dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false"'.html_safe : 'class="btn btn-info flex-grow-1 nav-link text-white rounded-0 dropdown-toggle disabled btn-title" title="Selecciona una región para obtener más información"'.html_safe %> ><i class="fa fa-info"></i></a>
+          <div class="dropdown flex-grow-0 ml-1">
+            <a <%=  region_seleccionada ? 'class="btn btn-info flex-grow-0 nav-link text-white rounded-0 dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false"'.html_safe : 'class="btn btn-info nav-link text-white rounded-0 dropdown-toggle disabled btn-title" title="Selecciona una región para obtener más información"'.html_safe %> ><i class="fa fa-info"></i></a>
             <div class="dropdown-menu dropdown-menu-right">
               <%= ligas_mas_info(params[:nombre_region])[3,4].join.html_safe if region_seleccionada %>
             </div>
@@ -24,12 +24,12 @@
         </div>
       </div>
 
-      <div class="col py-1 shadow-sm text-center">
+      <div class="col bg-white pb-2 text-center">
         <p class="m-0 p-2 h4 text-info">
           <b><%= number_with_delimiter(@resp[:totales], delimiter: ',') %> especies</b><br>
           <small><b><%= number_with_delimiter(@resp[:num_ejemplares], delimiter: ',') %></b> registros <a id="snib" href="https://www.snib.mx/" target="_blank" class="font-weight-bolder" data-toggle="popover" title="Sistema Nacional de Información sobre Biodiversidad">SNIB</a></small>
         </p>
-        <div id="verMasEspecies" class="d-flex justify-content-around text-center px-2 py-0">
+        <div id="verMasEspecies" class="d-flex justify-content-around text-center px-2">
           <%= button_tag('<i class="fa fa-chevron-left"></i>'.html_safe, {type: 'button', class: 'btn btn-secondary btn-title rounded-circle'}.merge(@resp['carga-anteriores-especies'] ? {id: 'carga-anteriores-especies', title: 'Anterior', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover'} : {disabled: 'disabled'})) %>
           <%= button_tag('<i class="fa fa-chevron-right"></i>'.html_safe, {type: 'button', class: 'btn btn-secondary btn-title rounded-circle'}.merge(@resp['carga-siguientes-especies'] ? {id: 'carga-siguientes-especies', title: 'Siguiente', 'data-toggle'=> 'tooltip', 'data-trigger' => 'hover'} : {disabled: 'disabled'})) %>
         </div>
@@ -38,25 +38,23 @@
     </div>
   <% end %>
 
-  <div id="contenedor_resultados" class="d-flex flex-column position-relative rounded my-2">
-    <div class="row no-gutters">
-      <% @resp[:taxones].each do |t| %>
-        <% taxon = t[:especie] %>
-        <div class="col-3 p-2 shadow-sm <%= 'bg-success' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
+  <div id="contenedor_resultados" class="row no-gutters">
+    <% @resp[:taxones].each do |t| %>
+      <% taxon = t[:especie] %>
+      <div class="col-3 p-2 shadow-sm <%= 'bg-success' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
 
-          <button class="border-0 m-0 p-0 text-right boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros" data-nombre-cientifico="<%= taxon.nombre_cientifico.sanitize.html_safe %>">
-            <div class="result-img-container w-100 mt-0 mb-n4 text-break">
-              <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid', alt: 'Imagen no encontrada') : "<i class='ev1-ev-icon'></i>".html_safe %>
-            </div>
-            <span class="badge badge-light position-relative"><%= number_with_delimiter(t[:nregistros], delimiter: ',') %></span>
-          </button>
-          <div class="result-nombre-container text-truncate w-100">
-            <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
+        <button class="border-0 m-0 p-0 text-right boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros" data-nombre-cientifico="<%= taxon.nombre_cientifico.sanitize.html_safe %>">
+          <div class="result-img-container w-100 mt-0 mb-n4 text-break">
+            <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid', alt: 'Imagen no encontrada') : "<i class='ev1-ev-icon'></i>".html_safe %>
           </div>
-
+          <span class="badge badge-light position-relative"><%= number_with_delimiter(t[:nregistros], delimiter: ',') %></span>
+        </button>
+        <div class="result-nombre-container text-truncate w-100">
+          <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
         </div>
-      <% end %>
-    </div>
+
+      </div>
+    <% end %>
   </div>
 
 
