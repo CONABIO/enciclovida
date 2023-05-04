@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'enciclovida_font_icons';
-  src: font-url('enciclovida_font_icons.eot?93633371');
-  src: font-url('enciclovida_font_icons.eot?93633371#iefix') format('embedded-opentype'),
-       font-url('enciclovida_font_icons.woff2?93633371') format('woff2'),
-       font-url('enciclovida_font_icons.woff?93633371') format('woff'),
-       font-url('enciclovida_font_icons.ttf?93633371') format('truetype'),
-       font-url('enciclovida_font_icons.svg?93633371#enciclovida_font_icons') format('svg');
+  src: font-url('enciclovida_font_icons.eot?64786537');
+  src: font-url('enciclovida_font_icons.eot?64786537#iefix') format('embedded-opentype'),
+       font-url('enciclovida_font_icons.woff2?64786537') format('woff2'),
+       font-url('enciclovida_font_icons.woff?64786537') format('woff'),
+       font-url('enciclovida_font_icons.ttf?64786537') format('truetype'),
+       font-url('enciclovida_font_icons.svg?64786537#enciclovida_font_icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'enciclovida_font_icons';
-    src: font-url('enciclovida_font_icons.svg?93633371#enciclovida_font_icons') format('svg');
+    src: font-url('enciclovida_font_icons.svg?64786537#enciclovida_font_icons') format('svg');
   }
 }
 */
@@ -146,6 +146,8 @@
 .semaforo-recomendable-ev-icon:before { content: '\e86c'; } /* '' */
 .sujetas-a-proteccion-especial-pr-evaluacion-conabio-ev-icon:before { content: '\e870'; } /* '' */
 .peces-mariscos-comerciales-certificacion-ev-icon:before { content: '\e872'; } /* '' */
+.conabio_horizontal_1-ev-icon:before { content: '\e873'; } /* '' */
+.conabio_horizontal_2-ev-icon:before { content: '\e874'; } /* '' */
 .vulnerable-vu-ev-icon:before { content: '\e875'; } /* '' */
 .vulnerable-vu-evaluacion-conabio-ev-icon:before { content: '\e876'; } /* '' */
 .youtube-ev-icon:before { content: '\e877'; } /* '' */
