@@ -49,6 +49,7 @@ class EspeciesController < ApplicationController
         if adicional = @especie.adicional
           @datos[:nombre_comun] =  adicional.nombre_comun_principal
           @datos[:nombres_comunes] =  adicional.nombres_comunes
+          @datos[:foto_principal] = adicional.foto_principal
         end
 
         # Para los geodatos
