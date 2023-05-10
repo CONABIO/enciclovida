@@ -232,7 +232,7 @@
             if ($('ul#soulmate').length > 0) {
                 this.container = $('ul#soulmate');
             } else {
-                this.container = $('<ul id="soulmate">').insertAfter(this.input);
+                this.container = $('<ul id="soulmate" class="bg-light shadow-sm">').insertAfter(this.input);
             }
             this.container.delegate('.soulmate-suggestion', {
                 mouseover: function() {

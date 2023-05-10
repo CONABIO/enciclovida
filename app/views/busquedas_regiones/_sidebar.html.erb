@@ -1,8 +1,8 @@
-<%= form_tag explora_por_region_especies_path, :method => :get, :class => 'position-absolute my-2 w-50', :id => :busqueda_region do %>
+<%= form_tag explora_por_region_especies_path, :method => :get, :class => 'position-absolute my-2 w-100', :id => :busqueda_region do %>
   <div class="form-row">
     <div class="form-group col-md-6">
       <div class="input-group">
-        <%= text_field_tag :nombre_region, params.present? ? params[:nombre_region] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control form-control-lg ml-3 py-2 border-right-0 border', title: "Estado, municipio o área protegida" %>
+        <%= text_field_tag :nombre_region, params.present? ? params[:nombre_region] : nil, :maxlength => 255, :placeholder => 'Estado, municipio o ANP ...', :autocomplete => :off, :class => 'form-control form-control-lg ml-2 py-2 border-right-0 border', title: "Estado, municipio o área protegida" %>
         <span class="input-group-append">
           <button class="btn btn-outline-secondary border-left-0 border bg-light" type="button" id="boton-region-limpia">
             <i class="fa fa-close"></i>
@@ -32,9 +32,9 @@
     </div>
   </div>
 
-  <button id="grupos-pop" class="btn btn-light btn-title filtro-popover m-2 px-1 rounded-pill" type="button" data-toggle="popover" title="Filtrar por grupos taxonómicos"><i class="grupo-iconico-ev-icon h1"></i></button><br />
-  <button id="filtros-pop" class="btn btn-light btn-lg btn-title filtro-popover rounded-pill m-2" type="button" data-toggle="popover" title="Filtros adicionales"><i class="fa fa-filter"></i></button><br />
-  <button id="reload" class="btn btn-light btn-title btn-lg rounded-pill m-2" type="button" title="Limpiar filtros" onclick="window.location.href='/explora-por-region'"><i class="fa fa-refresh h2"></i></button>
+  <button id="grupos-pop" class="btn btn-light btn-title filtro-popover m-2 px-1" type="button" data-toggle="popover" title="Filtrar por grupos taxonómicos"><i class="grupo-iconico-ev-icon h1"></i></button><br />
+  <button id="filtros-pop" class="btn btn-light btn-lg btn-title filtro-popover m-2" type="button" data-toggle="popover" title="Filtros adicionales"><i class="fa fa-filter"></i></button><br />
+  <button id="reload" class="btn btn-light btn-title btn-lg m-2" type="button" title="Limpiar filtros" onclick="window.location.href='/explora-por-region'"><i class="fa fa-refresh h2"></i></button>
 
   <div id="sidebar" class="d-none">
     <div id="grupos-tab">

@@ -53,7 +53,7 @@ module ApplicationHelper
       when 'title'
         "#{nombre_comun} (#{nombre_cientifico})".sanitize.html_safe
       when 'link'
-        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<b><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></b>".html_safe
+        "#{nombre_comun}#{'<br />' if nombre_comun.present?}<small><i>#{link_to nombre_cientifico.sanitize.html_safe, especie_path(taxon), link_params}</i></small>".html_safe
       when 'header'
         if nombre_comun.present?
           "<h1 class='font-weight-bold'>#{nombre_comun}</h1><h2>#{cat_taxonomica unless taxon.especie_o_inferior?}<small>#{nombre_cientifico}</small></h2>".html_safe
@@ -248,11 +248,11 @@ module ApplicationHelper
   end
   
   def ligas_mas_info(query)
-	  [link_to('Bioteca', "http://bioteca.biodiversidad.gob.mx/janium-bin/janium_login_opac.pl?scan&keyword=#{query}", target: '_blank', class: 'dropdown-item', title: 'Biblioteca digital de CONABIO', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
-	   link_to('BHL', "https://www.biodiversitylibrary.org/name/#{query}", target: '_blank', class: 'dropdown-item', title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
-	   link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{query}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
-	   link_to(' Google Académico', "https://scholar.google.com.mx/scholar?hl=es&q=#{query}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda en Google Académico (Schoolar)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
-	   link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{query}", class: 'dropdown-item', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." })]
+	  [link_to('Bioteca', "http://bioteca.biodiversidad.gob.mx/janium-bin/janium_login_opac.pl?scan&keyword=#{query}", id: 'masInfoBioteca', target: '_blank', class: 'dropdown-item', title: 'Biblioteca digital de CONABIO', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
+	   link_to('BHL', "https://www.biodiversitylibrary.org/name/#{query}", id: 'masInfoBHL', target: '_blank', class: 'dropdown-item', title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
+	   link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{query}", id: 'masInfoResearchGate', class: 'dropdown-item', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
+	   link_to(' Google Académico', "https://scholar.google.com.mx/scholar?hl=es&q=#{query}", id: 'masInfoGoogleAcademico', class: 'dropdown-item', target: '_blank', title: 'Búsqueda en Google Académico (Schoolar)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
+	   link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{query}", id: 'masInfoGoogleNoticias', class: 'dropdown-item', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." })]
 	  
   end
 
