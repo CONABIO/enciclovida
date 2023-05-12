@@ -3,6 +3,11 @@
 <head>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
   <meta name="keywords" content="<%= yield :meta_keywords %>">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= render partial: 'shared_b4/social_media_metas'  %>
+  <meta name="description" content="<%= t(:short_description) %>">
+  <meta name="author" content="CONABIO">
+
   <title><%= yield :title %></title>
   <%= favicon_link_tag '/favicon.ico' %>
 

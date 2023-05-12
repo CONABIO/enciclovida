@@ -246,14 +246,14 @@ module ApplicationHelper
   def icono_descarga
     "<i class='fa fa-download'></i>".html_safe
   end
-  
+
   def ligas_mas_info(query)
-	  [link_to('Bioteca', "http://bioteca.biodiversidad.gob.mx/janium-bin/janium_login_opac.pl?scan&keyword=#{query}", id: 'masInfoBioteca', target: '_blank', class: 'dropdown-item', title: 'Biblioteca digital de CONABIO', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
-	   link_to('BHL', "https://www.biodiversitylibrary.org/name/#{query}", id: 'masInfoBHL', target: '_blank', class: 'dropdown-item', title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
-	   link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{query}", id: 'masInfoResearchGate', class: 'dropdown-item', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
-	   link_to(' Google Académico', "https://scholar.google.com.mx/scholar?hl=es&q=#{query}", id: 'masInfoGoogleAcademico', class: 'dropdown-item', target: '_blank', title: 'Búsqueda en Google Académico (Schoolar)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
-	   link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{query}", id: 'masInfoGoogleNoticias', class: 'dropdown-item', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." })]
-	  
+    [link_to('Bioteca', "http://bioteca.biodiversidad.gob.mx/janium-bin/janium_login_opac.pl?scan&keyword=#{query}", id: 'masInfoBioteca', target: '_blank', class: 'dropdown-item', title: 'Biblioteca digital de CONABIO', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
+     link_to('BHL', "https://www.biodiversitylibrary.org/name/#{query}", id: 'masInfoBHL', target: '_blank', class: 'dropdown-item', title: 'Biblioteca sobre el Patrimonio de la Biodiversidad (BHL)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
+     link_to(' ResearchGate', "https://www.researchgate.net/search?q=#{query}", id: 'masInfoResearchGate', class: 'dropdown-item', target: '_blank', title: 'Búsqueda en el portal científico ResearchGate', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
+     link_to(' Google Académico', "https://scholar.google.com.mx/scholar?hl=es&q=#{query}", id: 'masInfoGoogleAcademico', class: 'dropdown-item', target: '_blank', title: 'Búsqueda en Google Académico (Schoolar)', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." }),
+     link_to(' Google Noticias', "https://news.google.com.mx/search?q=#{query}", id: 'masInfoGoogleNoticias', class: 'dropdown-item', target: '_blank', title: 'Búsqueda de noticias con Google', data: { confirm: "La consulta externa a EncicloVida se realizará en una nueva ventana." })]
+
   end
 
   def tiene_permiso?(nombre_rol, con_hijos=false)
@@ -305,4 +305,34 @@ module ApplicationHelper
     javascript_include_tag'https://www.googletagmanager.com/gtag/js?id=G-9TW7DFHB78', '/googleAnalytics/ga.js', {'data-turbolinks-track' => false, 'async' => true}
   end
 
+  def insertaMetaImagenCompartir
+    case controller_name
+    when 'especies'
+      @datos[:foto_principal].present? ? @datos[:foto_principal] : CONFIG.site_url + 'imagenes/' + (params['imagotipo'].present? ?  'imagotipo' : 'logotipo') + '_enciclovida.jpg'
+    when 'inicio'
+      CONFIG.site_url + 'imagenes/logotipo_enciclovida.jpg'
+    when 'busquedas_regiones'
+      CONFIG.site_url + '/assets/portada/region.jpg'
+    when 'busquedas'
+      if action_name == 'por_clasificacion'
+        CONFIG.site_url + '/assets/portada/clasificacion.jpg'
+      elsif params[:uso].present?
+        CONFIG.site_url + '/assets/portada/usos.jpg'
+      elsif params[:edo_cons].present?
+        CONFIG.site_url + '/assets/portada/en-riesgo.jpg'
+      elsif params[:dist].present?
+        CONFIG.site_url + '/assets/portada/distribucion.jpg'
+      elsif params[:busqueda] == 'basica'
+        CONFIG.site_url + 'imagenes/imagotipo_enciclovida.jpg'
+      else
+        CONFIG.site_url + '/assets/portada/avanzada.jpg'
+      end
+    when 'paginas'
+      CONFIG.site_url + '/assets/portada/exotica-invasora.jpg'
+    when 'peces'
+      CONFIG.site_url + '/assets/portada/peces-mariscos-comerciales.jpg'
+    else
+      CONFIG.site_url + 'imagenes/imagotipo_enciclovida.jpg'
+    end
+  end
 end
