@@ -1,15 +1,15 @@
 <!-- OpenGraph-->
 <meta property="og:type" content="artículo" />
 <meta property="og:title" content="<%= yield :title %>" />
-<meta property="og:description" content="<%= yield :title %> | EncicloVida es una plataforma web de consulta creada por la CONABIO, para conocer a las especies y grupos que viven en México. Integra información que la Comisión Nacional para el Conocimiento y Uso de la Biodiversidad (CONABIO) ha reunido a través del Sistema Nacional de Información sobre Biodiversidad (SNIB)" />
-<meta property="og:image" content="<%= @datos[:foto_principal].present? ? @datos[:foto_principal] : CONFIG.site_url + 'imagenes/correo/logoEnciclovidaCorreo.png' %>" />
-<meta property="og:url" content="<%= CONFIG.site_url[0..-2] + especie_path(@especie) %>" />
+<meta property="og:description" content="<%= yield :title %> | <%= t(:short_description) %>" />
+<meta property="og:image" content="<%= insertaMetaImagenCompartir %>" />
+<meta property="og:url" content="<%= @especie.present? ? CONFIG.site_url[0..-2] + especie_path(@especie) : request.original_url %>" />
 <meta property="og:site_name" content="<%= CONFIG.site_name %>" />
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary"></meta>
 <meta name="twitter:title" content="<%= yield :title %>">
-<meta name="twitter:description" content="<%= yield :title %> | EncicloVida es una plataforma web de consulta creada por la CONABIO, para conocer a las especies y grupos que viven en México. Integra información que la Comisión Nacional para el Conocimiento y Uso de la Biodiversidad (CONABIO) ha reunido a través del Sistema Nacional de Información sobre Biodiversidad (SNIB)">
+<meta name="twitter:description" content="<%= yield :title %> | <%= t(:short_description) %>">
 <meta name="twitter:site" content="@CONABIO">
-<meta name="twitter:image" content="<%= @datos[:foto_principal].present? ? @datos[:foto_principal] : CONFIG.site_url + 'imagenes/correo/logoEnciclovidaCorreo.png' %>">
+<meta name="twitter:image" content="<%= insertaMetaImagenCompartir %>">
 <meta name="twitter:creator" content="@CONABIO">
