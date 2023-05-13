@@ -257,13 +257,13 @@ class BusquedaRegion < Busqueda
         when "anp"
           tipo_region = "ANP "
         when "municipio"
-          tipo_region = "Municipio de "
+          tipo_region = "Municipio "
         when "estado" 
-          "Estado de "
+          "Estado "
       end
 
       region = "geoportal/#{params[:tipo_region]}".camelize.constantize.campos_min.find(params[:region_id])
-      titulo[1] = tipo_region + params[:nombre_region]
+      titulo[1] = "#{tipo_region} #{region.nombre_publico}"
     else
       titulo[1] = "A nivel nacional"
     end
