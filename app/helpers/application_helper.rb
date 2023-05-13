@@ -306,33 +306,36 @@ module ApplicationHelper
 	end
 	
 	def insertaMetaImagenCompartir
-		case controller_name
-			when 'especies'
-				@datos[:foto_principal].present? ? @datos[:foto_principal] : CONFIG.site_url.gsub(':443','') + 'imagenes/' + (params['imagotipo'].present? ?  'imagotipo' : 'logotipo') + '_enciclovida.jpg'
-			when 'inicio'
-				CONFIG.site_url.gsub(':443','') + 'imagenes/logotipo_enciclovida.jpg'
-			when 'busquedas_regiones'
-				CONFIG.site_url.gsub(':443','') + 'assets/portada/region.jpg'
-			when 'busquedas'
-				if action_name == 'por_clasificacion'
-					CONFIG.site_url.gsub(':443','') + 'assets/portada/clasificacion.jpg'
-				elsif params[:uso].present?
-					CONFIG.site_url.gsub(':443','') + 'assets/portada/usos.jpg'
-				elsif params[:edo_cons].present?
-					CONFIG.site_url.gsub(':443','') + 'assets/portada/en-riesgo.jpg'
-				elsif params[:dist].present?
-					CONFIG.site_url.gsub(':443','') + 'assets/portada/distribucion.jpg'
-				elsif params[:busqueda] == 'basica'
-					CONFIG.site_url.gsub(':443','') + 'imagenes/imagotipo_enciclovida.jpg'
-				else
-					CONFIG.site_url.gsub(':443','') + 'assets/portada/avanzada.jpg'
-				end
-			when 'paginas'
-				CONFIG.site_url.gsub(':443','') + 'assets/portada/exotica-invasora.jpg'
-			when 'peces'
-				CONFIG.site_url.gsub(':443','') + 'assets/portada/peces-mariscos-comerciales.jpg'
-			else
-				CONFIG.site_url.gsub(':443','') + 'imagenes/imagotipo_enciclovida.jpg'
-		end
+		url = CONFIG.site_url.gsub(':443','') + 'imagenes/redes/'
+		url << case controller_name
+			      when 'especies'
+				      'imagotipo_enciclovida.jpg'
+			      when 'inicio'
+				      'logotipo_enciclovida.jpg'
+			      when 'busquedas_regiones'
+				      'region.jpg'
+			      when 'busquedas'
+				      if action_name == 'por_clasificacion'
+					      'clasificacion.jpg'
+				      elsif params[:uso].present?
+					      'usos.jpg'
+				      elsif params[:edo_cons].present?
+					      'en-riesgo.jpg'
+				      elsif params[:dist].present?
+					      'distribucion.jpg'
+				      elsif params[:busqueda] == 'basica'
+					      'logotipo_enciclovida.jpg'
+				      else
+					      'avanzada.jpg'
+				      end
+			      when 'paginas'
+				      'exotica-invasora.jpg'
+			      when 'peces'
+				      'peces-mariscos-comerciales.jpg'
+			      else
+				      'logotipo_enciclovida.jpg'
+		      end
+		url = @datos[:foto_principal] if controller_name == 'especies' && @datos.present? && @datos[:foto_principal].present?
+		url
 	end
 end
