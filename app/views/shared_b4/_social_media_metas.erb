@@ -1,10 +1,14 @@
 <!-- OpenGraph-->
-<meta property="og:type" content="artículo" />
+<meta property="og:type" content="website" />
 <meta property="og:title" content="<%= yield :title %>" />
 <meta property="og:description" content="<%= yield :title %> | <%= t(:short_description) %>" />
-<meta property="og:image" content="<%= insertaMetaImagenCompartir %>" />
+<meta property="og:image" itemprop="image" content="<%= insertaMetaImagenCompartir %>" />
+<meta property="og:image:url" itemprop="image" content="<%= insertaMetaImagenCompartir %>" />
+<meta property="og:image:secure_url" content="<%= insertaMetaImagenCompartir %>" />
+<meta property="og:image:type" content="image/jpeg" />
 <meta property="og:url" content="<%= @especie.present? ? CONFIG.site_url[0..-2] + especie_path(@especie) : request.original_url %>" />
 <meta property="og:site_name" content="<%= CONFIG.site_name %>" />
+<meta property="og:locale" content="es_MX" />
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary"></meta>
