@@ -99,9 +99,9 @@ class Especie < ActiveRecord::Base
   # Select y joins basicos que contiene los campos a mostrar por ponNombreCientifico
   scope :datos_basicos, ->(attr_adicionales=[]) { select_basico(attr_adicionales).joins(:categoria_taxonomica, :adicional) }
   #Select para el Checklist
-  scope :select_checklist, -> { select(:id, :nombre_cientifico).select("#{attribute_alias(:ancestry_ascendente_directo)} AS ancestry") }
+  scope :select_checklist, -> { select(:id, :nombre_cientifico).select("CONCAT(#{attribute_alias(:ancestry_ascendente_obligatorio)}, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) AS ancestry") }
   scope :select_ancestry, -> { select(:id).select("#{attribute_alias(:ancestry_ascendente_directo)} AS ancestry") }
-  scope :datos_checklist, -> { select_checklist.order('ancestry ASC') }
+  scope :datos_checklist, -> { select_checklist.order("ancestry") }
   scope :categorias_checklist, -> { where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} IN (?)", CategoriaTaxonomica::CATEGORIAS_CHECKLIST) }
   scope :datos_arbol_sin_filtros, -> {select("especies.id, nombre_cientifico, ancestry_ascendente_directo,
 ancestry_ascendente_directo+'/'+cast(especies.id as nvarchar) as arbol, categoria_taxonomica_id,
@@ -116,7 +116,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   #Select para la Subcoordinadora de Evaluación de Ecosistemas ()Ana Victoria Contreras Ruiz Esparza)
   scope :select_evaluacion_eco, -> { select('especies.id, nombre_cientifico, categoria_taxonomica_id, nombre_categoria_taxonomica, catalogo_id') }
   scope :order_por_categoria, ->(orden) { order("CONCAT(categorias_taxonomicas.nivel1,categorias_taxonomicas.nivel2,categorias_taxonomicas.nivel3,categorias_taxonomicas.nivel4) #{orden}") }
-
 
   # Select basico que contiene los campos a mostrar por ponNombreCientifico
   scope :select_basico, ->(attr_adicionales=[]) { select(:id, :nombre_cientifico, :estatus, :nombre_autoridad, :categoria_taxonomica_id, :cita_nomenclatural, :ancestry_ascendente_directo, :ancestry_ascendente_obligatorio, "nombre_comun_principal, foto_principal, nombres_comunes as nombres_comunes_adicionales, TaxonCompleto AS NombreCompleto" << (attr_adicionales.any? ? ",#{attr_adicionales.join(',')}" : '')).select_categoria_taxonomica }

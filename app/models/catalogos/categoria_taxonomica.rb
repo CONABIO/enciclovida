@@ -28,7 +28,7 @@ class CategoriaTaxonomica < ActiveRecord::Base
   # Categorias para geodatos
   CATEGORIAS_GEODATOS = CATEGORIAS_INFRAESPECIES + %w(especie)
   # Las categorias utilizadas en el checklist
-  CATEGORIAS_CHECKLIST = CATEGORIAS_OBLIGATORIAS + %w(subclase superorden)
+  CATEGORIAS_CHECKLIST = CATEGORIAS_OBLIGATORIAS + CATEGORIAS_INFRAESPECIES + %w(subclase superorden)
   # categorias utilizadas por redis para la vista de especialistas
   CATEGORIAS_REDIS = %w(especie subespecie variedad subvariedad forma subforma Reino subreino superphylum division subdivision phylum subphylum superclase grado clase subclase infraclase superorden orden suborden infraorden superfamilia familia subfamilia supertribu tribu subtribu genero subgenero seccion subseccion serie subserie)
 
