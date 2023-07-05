@@ -24,7 +24,7 @@ longitud, localidad, municipiomapa, estadomapa, paismapa, categoriataxonomica, f
 ejemplarfosil, institucion, paiscoleccion, proyecto, urlproyecto, urlejemplar, urlorigen
 INTO TABLE snib_ev 
 FROM snib 
-WHERE idnombrecatvalido <> '' AND especievalidabusqueda <> '' AND comentarioscatvalido LIKE 'Validado completamente con CAT.%';
+WHERE idnombrecatvalido <> '' AND especievalidabusqueda <> '' AND comentarioscatvalido LIKE 'Validado completamente con CAT.%' AND paismapa='MEXICO';
 
 -- 4.
 ALTER TABLE snib_ev ADD COLUMN id SERIAL PRIMARY KEY;
@@ -35,7 +35,7 @@ CREATE INDEX idx_snib_ev_idnombrecatvalido ON snib_ev USING btree (idnombrecatva
 CREATE INDEX idx_snib_ev_entid ON snib_ev USING btree (entid);
 CREATE INDEX idx_snib_ev_munid ON snib_ev USING btree (munid);
 CREATE INDEX idx_snib_ev_anpid ON snib_ev USING btree (anpid);
-CREATE INDEX idx_snib_ev_ecorid ON snib_ev USING btree (ecorid);
+-- CREATE INDEX idx_snib_ev_ecorid ON snib_ev USING btree (ecorid);
 CREATE INDEX idx_snib_ev_categoriataxonomica ON snib_ev USING btree (categoriataxonomica);
 CREATE INDEX idx_snib_ev_coleccion ON snib_ev USING btree (coleccion);
 CREATE INDEX idx_snib_ev_probablelocnodecampo ON snib_ev USING btree (probablelocnodecampo);
@@ -57,10 +57,10 @@ ALTER TABLE snib_ev ADD COLUMN idnombrecatvalidoorig character varying(50);
 UPDATE snib_ev SET idnombrecatvalidoorig = idnombrecatvalido;
 
 -- 6.5
-UPDATE snib_ev SET idnombrecatvalido=NULL WHERE idnombrecatvalidoorig IN ('20092MAMIF');
+-- UPDATE snib_ev SET idnombrecatvalido=NULL WHERE idnombrecatvalidoorig IN ('20092MAMIF');
 
 -- 6.6
-CREATE INDEX idx_snib_ev_idnombrecatvalidoorig ON snib_ev USING btree (idnombrecatvalidoorig);
+-- CREATE INDEX idx_snib_ev_idnombrecatvalidoorig ON snib_ev USING btree (idnombrecatvalidoorig);
 CREATE INDEX idx_snib_ev_tipocoleccion ON snib_ev USING btree (tipocoleccion);
 
 -- 7.
