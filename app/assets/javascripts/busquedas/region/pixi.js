@@ -221,6 +221,13 @@ var infoPopup = function (data) {
         "<strong>Más información: </strong><a href='" +
         data.urlejemplar +
         "' target='_blank'>consultar</a><br />";
+    
+    if (data.urlorigen != undefined && data.urlorigen != "") {
+        contenido +=
+            "<strong>URL origen: </strong><a href='" +
+            data.urlorigen.replace("inaturalist.org", "naturalista.mx") +
+            "' target='_blank'>consultar</a><br />";    
+    }
 
     //Para enviar un comentario acerca de un ejemplar en particular
     contenido +=

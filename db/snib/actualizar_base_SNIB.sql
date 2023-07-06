@@ -45,7 +45,7 @@ CREATE INDEX idx_snib_ev_ejemplarfosil ON snib_ev USING btree (ejemplarfosil);
 ALTER TABLE snib_ev ADD COLUMN tipocoleccion smallint NOT NULL DEFAULT 1;
 
 -- 6.2
-UPDATE snib_ev SET tipocoleccion=2 WHERE coleccion IN ('eBird eBird', 'aVerAves aVerAves');
+UPDATE snib_ev SET tipocoleccion=2 WHERE coleccion ilike '%ebird%' or coleccion ilike '%averaves%';
 UPDATE snib_ev SET tipocoleccion=3 WHERE ejemplarfosil='SI';
 UPDATE snib_ev SET tipocoleccion=4 WHERE probablelocnodecampo='SI';
 UPDATE snib_ev SET tipocoleccion=5 WHERE coleccion='Naturalista Naturalista';
