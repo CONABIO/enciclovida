@@ -22,7 +22,7 @@ class CategoriaTaxonomica < ActiveRecord::Base
   # Despliego solo estas categorias para la vista basica
   CATEGORIAS_OBLIGATORIAS = %w(Reino phylum división clase orden familia género especie)
   # Para un mejor uso de las infraespecies
-  CATEGORIAS_INFRAESPECIES = %w(subespecie forma subforma variedad subvariedad)
+  CATEGORIAS_INFRAESPECIES = %w(subespecie forma subforma variedad subvariedad raza)
   # Reinos
   CATEGORIAS_REINOS = %w(animalia plantae protoctista fungi prokaryotae)
   # Categorias para geodatos

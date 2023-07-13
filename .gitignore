@@ -53,6 +53,7 @@ app/assets/taxones/*
 public/kmz/*
 tools/correspondencia_proyectos_naturalista/
 tools/mapas_SIG/*.csv
+!tools/mapas_SIG/mapas_sig.csv
 public/fontello-demo.html
 public/pdfs/
 public/uploads/

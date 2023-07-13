@@ -4,8 +4,8 @@ require 'trollop'
 OPTS = Trollop::options do
   banner <<-EOS
 Marca en la base de proveedores las especies que tienen mapa de distribución, de acuerdo al 
-archivo que envia el SIG, idealmente deberia ser un webservice ...
-Columnas requeridas: idCAT, styler, boubox, mapa, anio, autor, urlgeoportal
+archivo que envia el SIG, idealmente deberia ser un API ...
+Columnas requeridas: idCAT, styler, layers, bbox, mapa, anio, autor
 
 Usage:
 
@@ -24,14 +24,22 @@ def asigna_mapa_sig
   return { idCAT: @row['idCAT'], estatus: false, error: 'No existe el idCAT en Scat' } unless scat
   taxon = scat.especie
   return { idCAT: @row['idCAT'], estatus: false, error: 'No existe el taxon en especie' } unless taxon
-  return { idCAT: @row['idCAT'], estatus: false, error: 'No es una especie' } unless taxon.especie_o_inferior?
+  return { idCAT: @row['idCAT'], estatus: false, error: 'No es una especie o inferior' } unless taxon.especie_o_inferior?
+  nombre_cientifico = taxon.nombre_cientifico
+
+  # Para que las subespecies e inferiores estes vinculadas a su especie
+  if CategoriaTaxonomica::CATEGORIAS_INFRAESPECIES.include?(taxon.categoria_taxonomica.nombre_categoria_taxonomica)
+    nombre_cientifico = taxon.nombre_cientifico  # El nombre de la subespecie antes de poner el de la especie
+    taxon = Especie.where(id: taxon.id_ascend_obligatorio).first
+  end
+
   taxon_valido = taxon.dame_taxon_valido
   return { idCAT: @row['idCAT'], estatus: false, error: 'No existe el taxon válido' } unless taxon_valido
 
-  bbox = @row['boubox'].split(' ')
-  bbox_orden = "#{bbox[1].split('=').last},#{bbox[0].split('=').last},#{bbox[3].split('=').last},#{bbox[2].split('=').last}"
+  bbox = @row['bbox'].split(',')
+  bbox_orden = "#{bbox[1]},#{bbox[0]},#{bbox[3]},#{bbox[2]}"
 
-  { taxon: taxon_valido, idCAT: @row['idCAT'], estatus: true, layers: @row['mapa'], styles: @row['styler'], bbox: bbox_orden, anio: @row['anio'], autor: @row['autor'], geoportal_url: @row['urlgeoportal'] }
+  { estatus: true, taxon: taxon_valido, idCAT: @row['idCAT'], nombre_cientifico: nombre_cientifico, layers: @row['layers'], styles: @row['styler'], bbox: bbox_orden, anio: @row['anio'], autor: @row['autor'] }
 end
 
 # Guarda en la base lo que resulto de la asignacion de geoserver_info
@@ -58,12 +66,12 @@ def asigna_geoserver_info(v, geoserver_info=nil)
   if geoserver_info.present?
     begin
       geo = JSON.parse(geoserver_info)
-      geo["Mapa #{geo.count + 1}"] = { layers: v[:layers], styles: v[:styles], bbox: v[:bbox], anio: v[:anio], autor: v[:autor], geoportal_url: v[:geoportal_url] }
+      geo["Mapa #{geo.count + 1}"] = { nombre_cientifico: v[:nombre_cientifico], layers: v[:layers], styles: v[:styles], bbox: v[:bbox], anio: v[:anio], autor: v[:autor] }
     rescue
       nil
     end
   else
-    geo['Mapa 1'] = { layers: v[:layers], styles: v[:styles], bbox: v[:bbox], anio: v[:anio], autor: v[:autor], geoportal_url: v[:geoportal_url] }
+    geo['Mapa 1'] = { nombre_cientifico: v[:nombre_cientifico], layers: v[:layers], styles: v[:styles], bbox: v[:bbox], anio: v[:anio], autor: v[:autor] }
   end
 
   geo.to_json
