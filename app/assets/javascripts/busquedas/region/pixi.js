@@ -225,7 +225,7 @@ var infoPopup = function (data) {
     if (data.urlorigen != undefined && data.urlorigen != "") {
         contenido +=
             "<strong>URL origen: </strong><a href='" +
-            data.urlorigen.replace("inaturalist.org", "naturalista.mx") +
+            data.urlorigen.replace("conabio.inaturalist.org", "naturalista.mx").replace("inaturalist.org", "naturalista.mx") +
             "' target='_blank'>consultar</a><br />";    
     }
 
