@@ -24,7 +24,7 @@ longitud, localidad, municipiomapa, estadomapa, paismapa, categoriataxonomica, f
 ejemplarfosil, institucion, paiscoleccion, proyecto, urlproyecto, urlejemplar, urlorigen
 INTO TABLE snib_ev 
 FROM snib 
-WHERE idnombrecatvalido <> '' AND especievalidabusqueda <> '' AND comentarioscatvalido LIKE 'Validado completamente con CAT.%' AND paismapa='MEXICO';
+WHERE idnombrecatvalido <> '' AND especievalidabusqueda <> '' AND comentarioscatvalido LIKE '%Validado completamente con CAT.%' AND paismapa='MEXICO';
 
 -- 4.
 ALTER TABLE snib_ev ADD COLUMN id SERIAL PRIMARY KEY;
