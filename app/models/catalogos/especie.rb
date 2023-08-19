@@ -66,7 +66,7 @@ class Especie < ActiveRecord::Base
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :catalogos, :through => :especies_catalogos, :source => :catalogo
 
-  has_many :especies_estatus, :class_name => 'EspecieEstatus', :dependent => :destroy, :foreign_key => attribute_alias(:id)
+  has_many :especies_estatus, :class_name => 'EspecieEstatus', :dependent => :destroy, :foreign_key => :IdNombreRel
   has_many :estatuses, :through => :especies_estatus, :source => :estatus
 
   has_many :especie_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy, :foreign_key => attribute_alias(:id)
@@ -196,7 +196,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     return nil unless est.first
 
     begin
-      t = Especie.find(est.first.especie_id2)
+      t = Especie.find(est.first.especie_id1)
       t.estatus == 2 ? t : nil
     rescue
       nil
