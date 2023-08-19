@@ -66,7 +66,9 @@ class Especie < ActiveRecord::Base
   has_many :especies_catalogos, :class_name => 'EspecieCatalogo', :dependent => :destroy, :foreign_key => attribute_alias(:id)
   has_many :catalogos, :through => :especies_catalogos, :source => :catalogo
 
-  has_many :especies_estatus, :class_name => 'EspecieEstatus', :dependent => :destroy, :foreign_key => :IdNombreRel
+  has_many :especies_estatus, :class_name => 'EspecieEstatus', :dependent => :destroy, :foreign_key => attribute_alias(:id)
+  # Esta relacion se puso extra ya que los sinonimos no redireccionaban al valido
+  has_many :especies_estatus_idnombrerel, :class_name => 'EspecieEstatus', :dependent => :destroy, :foreign_key => :IdNombreRel
   has_many :estatuses, :through => :especies_estatus, :source => :estatus
 
   has_many :especie_bibliografias, :class_name => 'EspecieBibliografia', :dependent => :destroy, :foreign_key => attribute_alias(:id)
@@ -192,7 +194,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Regresa el taxon valido o el mismo en caso de serlo
   def dame_taxon_valido
     return self if estatus == 2  # el valido era el mismo
-    est = especies_estatus.where(estatus_id: [1,2])
+    est = especies_estatus_idnombrerel.where(estatus_id: [1,2])
     return nil unless est.first
 
     begin
