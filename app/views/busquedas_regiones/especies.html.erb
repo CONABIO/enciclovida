@@ -42,7 +42,6 @@
     <% @resp[:taxones].each do |t| %>
       <% taxon = t[:especie] %>
       <div class="col-3 p-2 shadow-sm <%= 'bg-success' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
-
         <button class="border-0 mb-n5 p-0 bg-transparent text-right boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros" data-nombre-cientifico="<%= taxon.nombre_cientifico.sanitize.html_safe %>">
           <div class="result-img-container m-0 w-100 d-inline-block overflow-hidden text-break">
             <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, alt: taxon.nombre_cientifico.sanitize.html_safe ) : "<i class='ev1-ev-icon'></i>".html_safe %>
@@ -52,7 +51,6 @@
         <div class="result-nombre-container text-truncate w-100">
           <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
         </div>
-
       </div>
     <% end %>
   </div>
