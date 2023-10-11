@@ -156,11 +156,11 @@ class Validacion
     return unless validacion[:estatus]
     return if validacion[:taxon].estatus == 2
     taxon = validacion[:taxon]
-    estatus = taxon.especies_estatus     # Checa si existe alguna sinonimia
+    estatus = taxon.especies_estatus_idnombrerel     # Checa si existe alguna sinonimia
 
     if estatus.length == 1  # Encontro el valido y solo es uno, como se esperaba
       begin  # Por si ya no existe ese taxon, suele pasar!
-        taxon_valido = Especie.find(estatus.first.especie_id2)
+        taxon_valido = Especie.find(estatus.first.especie_id1)
         # Asigna el taxon valido al taxon original
         self.validacion[:taxon_valido] = taxon_valido
         self.validacion[:msg] = 'Búsqueda exacta, era un sinónimo'

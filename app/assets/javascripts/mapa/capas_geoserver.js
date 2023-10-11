@@ -46,7 +46,7 @@ var capaDistribucionGeoserver = function () {
 
     geoserver_control.addOverlay(
       window[geo.datos.layers],
-      geo.datos.autor + " " + geo.datos.anio
+      geo.datos.nombre_cientifico + ", " + geo.datos.autor + " " + geo.datos.anio
     );
   });
 

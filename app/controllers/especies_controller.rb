@@ -61,7 +61,7 @@ class EspeciesController < ApplicationController
           naturalista_id = proveedor.naturalista_id
           if naturalista_id.present?
             @datos[:naturalista_api] = "#{CONFIG.inaturalist_api}/taxa/#{naturalista_id}"
-            @datos[:ficha_naturalista] = "#{CONFIG.naturalista_url}/taxa/#{naturalista_id}"
+            @datos[:ficha_naturalista] = "#{CONFIG.naturalista_url}/observations?locale=es-MX&place_id=6793&preferred_place_id=6793&subview=map&taxon_id=#{naturalista_id}"
           end
         end
 

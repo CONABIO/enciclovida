@@ -15,7 +15,7 @@
 
 
   <script type="text/javascript" data-turbolinks-track="true">
-      TYPES = eval("<%=raw CategoriaTaxonomica.categorias_redis(I18n.locale.to_s) %>");
+      TYPES = eval("<%=raw I18n.transliterate(CategoriaTaxonomica.categorias_redis(I18n.locale.to_s)).gsub(' ','_') %>");
       SITE_URL = "<%= CONFIG.site_url %>";
   </script>
 
