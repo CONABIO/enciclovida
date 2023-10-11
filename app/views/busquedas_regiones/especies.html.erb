@@ -43,11 +43,11 @@
       <% taxon = t[:especie] %>
       <div class="col-3 p-2 shadow-sm <%= 'bg-success' if params[:catalogo_id] == taxon.catalogo_id %>" id="especie-container-<%= taxon.catalogo_id %>">
 
-        <button class="border-0 m-0 p-0 text-right boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros" data-nombre-cientifico="<%= taxon.nombre_cientifico.sanitize.html_safe %>">
-          <div class="result-img-container w-100 mt-0 mb-n4 text-break">
-            <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, class: 'img-fluid', alt: 'Imagen no encontrada') : "<i class='ev1-ev-icon'></i>".html_safe %>
+        <button class="border-0 mb-n5 p-0 bg-transparent text-right boton-especie-registros" especie_id_focus="<%= taxon.id %>" catalogo_id="<%= taxon.catalogo_id %>" title="Mostrar registros" data-nombre-cientifico="<%= taxon.nombre_cientifico.sanitize.html_safe %>">
+          <div class="result-img-container m-0 w-100 d-inline-block overflow-hidden text-break">
+            <%= taxon.foto_principal.present? ? image_tag(taxon.foto_principal, alt: taxon.nombre_cientifico.sanitize.html_safe ) : "<i class='ev1-ev-icon'></i>".html_safe %>
           </div>
-          <span class="badge badge-light position-relative"><%= number_with_delimiter(t[:nregistros], delimiter: ',') %></span>
+          <span class="badge badge-light position-relative" style="top:-20px;"><%= number_with_delimiter(t[:nregistros], delimiter: ',') %></span>
         </button>
         <div class="result-nombre-container text-truncate w-100">
           <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_blank"}).html_safe %>
