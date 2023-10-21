@@ -7,8 +7,13 @@
   </div>
 
   <% @taxones.each do |taxon| %>
-    <div class="checklist-nivel-<%= taxon.nivel1 %> %>">
-      <%= "<span id=\"datos_busqueda-#{taxon.id}\">#{generaChecklist(taxon)}</span><br />".html_safe %>
+    <% if taxon.nivel1 == 7 && taxon.nivel3 > 0 %>
+      <div class="checklist-nivel-8">
+    <% else %>
+      <div class="checklist-nivel-<%= taxon.nivel1 %>">
+    <% end %>
+    
+    <%= "<span id=\"datos_busqueda-#{taxon.id}\">#{generaChecklist(taxon)}</span><br />".html_safe %>
     </div>
   <% end %>
 

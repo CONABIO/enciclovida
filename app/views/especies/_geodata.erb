@@ -45,8 +45,8 @@
       <% @datos[:geodatos][:geoserver_urls].each do |geo| %>
         <p class="ml-3">
           <small class="font-weight-bold"><%= geo[:datos][:autor] %></small><br />
-          <%= link_to("(KMZ #{geo[:datos][:anio]}) #{icono_descarga}".html_safe, geo[:geoserver_descarga_url], :target => :_blank, :class => 'dropdown-item', :style => 'width: auto!important;') %>
-          <%= link_to("Ver en el geoportal <i class='fa fa-external-link-square'></i>".html_safe, geo[:geoportal_url], :target => :_blank, :class => 'dropdown-item', :style => 'width: auto!important;') %>
+          <%= link_to("(Descarga #{geo[:datos][:anio]}) #{icono_descarga}".html_safe, geo[:geoserver_descarga_url], :target => :_blank, :class => 'dropdown-item', :style => 'width: auto!important;') %>
+          <%= link_to("Ver en el geoportal <i class='fa fa-external-link-square'></i>".html_safe, geo[:geoserver_origen_url], :target => :_blank, :class => 'dropdown-item', :style => 'width: auto!important;') %>
         </p>
         <div class="dropdown-divider"></div>
       <% end %>
