@@ -3,6 +3,7 @@
 cd /home/enciclovida/buscador/
 #Mata todos los delayed_jobs
 ps aux | grep delayed | awk -F ' ' '{print $2}'  | xargs kill;
+sleep 10
 mongo --verbose enciclovida_production ./tools/levantaServicios/cleanMongoJobs.js;
 export RAILS_ENV=production
 nohup ruby $(pwd)/bin/delayed_job -i validaciones --queue=validaciones run > log/delayed_validaciones.log &
