@@ -2,14 +2,15 @@
 
 cd /home/enciclovida/buscador/
 export RAILS_ENV=production
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
 $(which redis-server) &
 sleep 10
-rails runner "eval(File.read '$(pwd)/tools/levantaServicios/levantaBlurrily.rb')" &
-nohup ruby $(pwd)/bin/delayed_job -i validaciones --queue=validaciones run > log/delayed_validaciones.log &
-nohup ruby $(pwd)/bin/delayed_job -i descargar_taxa --queue=descargar_taxa run > log/delayed_descargas.log &
-nohup ruby $(pwd)/bin/delayed_job -i estadisticas --queue=estadisticas run > log/delayed_estadisticas.log &
-nohup ruby $(pwd)/bin/delayed_job -i redis --queue=redis run > log/delayed_redis.log &
-nohup ruby $(pwd)/bin/delayed_job -i peces --queue=peces run > log/delayed_peces.log &
+$(which rails) runner "eval(File.read '$(pwd)/tools/levantaServicios/levantaBlurrily.rb')" &
+nohup $(which ruby) $(pwd)/bin/delayed_job -i validaciones --queue=validaciones run &
+nohup $(which ruby) $(pwd)/bin/delayed_job -i descargar_taxa --queue=descargar_taxa run &
+nohup $(which ruby) $(pwd)/bin/delayed_job -i estadisticas --queue=estadisticas run &
+nohup $(which ruby) $(pwd)/bin/delayed_job -i redis --queue=redis run &
+nohup $(which ruby) $(pwd)/bin/delayed_job -i peces --queue=peces run &
 # Los siguientes delayed job aún no se ocupan pero no se borran hasta que quede listo el módulo de estadísticas
 # nohup ruby $(pwd)/bin/delayed_job -i estadisticas_naturalista --queue=estadisticas_naturalista run &
 # nohup ruby $(pwd)/bin/delayed_job -i estadisticas_conabio --queue=estadisticas_conabio run &
