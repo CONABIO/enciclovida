@@ -10,8 +10,24 @@
       </ul>
     </div>
   <% end %>
-
+  <table width="1000" id="tabla_form"><tr>
+      <td width="40%" valign="top">
+        <fieldset>
+          <legend class="leyenda">Datos</legend>
+          <div class="field">
+            <%= f.label :nombre_rol %><br>
+            <%= f.text_field :nombre_rol, :maxlength => 255, :size => 45, :placeholder => 'nombre del rol' %>
+          </div>          
+          <div class="field">
+            <%= f.label :observaciones %><br>
+            <%= f.text_field :observaciones, :maxlength => 255, :size => 45, :placeholder => 'observaciones' %>
+          </div>         
+        </fieldset>
+      </td>
+      </tr>
+  </table>
+  </br>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit(:class => 'btn btn-success btn-sm')%>
   </div>
 <% end %>

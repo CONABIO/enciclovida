@@ -1,5 +1,11 @@
 class RolesController < ApplicationController
   before_action :set_rol, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_usuario!
+  before_action {tiene_permiso?('Administrador')}  # Minimo administrador
+  before_action do
+    Rails.application.reload_routes!
+    @no_render_busqueda_basica = true
+  end
 
   # GET /roles
   # GET /roles.json
@@ -69,6 +75,6 @@ class RolesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def rol_params
-      params[:rol]
+      params.require(:rol).permit(:nombre_rol, :observaciones)
     end
 end

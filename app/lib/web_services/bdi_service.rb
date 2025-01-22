@@ -7,7 +7,8 @@ class BDIService
   attr_accessor :assets, :num_assets, :jres, :campo, :type, :nombre_cientifico, :album, :albumes, :autor_campo, :autor, :solo_num_assets
 
   def initialize(opts)
-    self.campo = opts[:campo] || 528
+    # self.campo = opts[:campo] || 528
+    self.campo = opts[:campo] || 'q'
     self.nombre_cientifico = opts[:nombre_cientifico]
     self.album = opts[:album]
     self.albumes = []

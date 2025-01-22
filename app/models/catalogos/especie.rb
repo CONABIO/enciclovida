@@ -37,7 +37,7 @@ class Especie < ActiveRecord::Base
                 :x_subreino, :x_superphylum, :x_phylum, :x_subphylum, :x_superclase, :x_subterclase, :x_grado, :x_infraclase,
                 :x_infraorden, :x_superfamilia, :x_supertribu, :x_parvorden, :x_superseccion, :x_grupo,
                 :x_infraphylum, :x_epiclase, :x_supercohorte, :x_cohorte, :x_subcohorte, :x_hibrido, :x_grupo_especies, :x_raza, :x_estirpe,
-                :x_subgrupo, :x_hiporden, :x_infraserie,
+                :x_subgrupo, :x_hiporden, :x_infraserie, :x_infrareino, :x_superdivision,
                 :x_bibliografia, :x_nombre_autoridad, :x_nombre_autoridad_infraespecie, :x_suprafamilia  # Para que en el excel sea mas facil la consulta
   :x_distancia
   alias_attribute :x_nombre_cientifico, :nombre_cientifico
@@ -128,7 +128,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Select para agurpar el los niveles de categoria taxonomica
   scope :select_nivel_categoria, -> { select("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) AS nivel_categoria") }
   # Scope para saber que taxones inferiores desplegar de acuerdo a la categoria en la busqueda vanzada
-  scope :nivel_categoria, ->(nivel, categoria) { where("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) #{nivel} '#{categoria}'") }
+  #scope :nivel_categoria, ->(nivel, categoria) { where("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) #{nivel} '#{categoria}'") }
+  scope :nivel_categoria, ->(nivel, categoria) { where("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) #{nivel} '7100' OR CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) #{nivel} '7000'") }
   # Para que regrese las especies
   scope :solo_especies, -> { where("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)}=? AND #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}=?", 7,0,0).left_joins(:categoria_taxonomica) }
   # Se ocupa en el home
@@ -149,7 +150,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Scope para cargar el arbol identado inical en la ficha de la especie, solo las categorias obligatorias
   scope :arbol_inicial_obligatorias, ->(taxon, estadistica_id) { arbol_inicial(taxon, estadistica_id).solo_cat_obligatorias.where(estatus: 2) }
   # Scope para los reinos iniciales en la busqueda por clasificacion
-  scope :arbol_reinos, ->(estadistica_id) { arbol_select.solo_publicos.where("estadistica_id=?",estadistica_id).where(id: [1..5]).order('nivel_categoria ASC') }
+  # scope :arbol_reinos, ->(estadistica_id) { arbol_select.solo_publicos.where("estadistica_id=?",estadistica_id).where(id: [1..5]).order('nivel_categoria ASC') }
+  scope :arbol_reinos, ->(estadistica_id) { arbol_select.solo_publicos.where("estadistica_id=?",estadistica_id).where("catalogocentralizado.Nombre.IdCategoriaTaxonomica = 1").order('nivel_categoria ASC') }
   # Scope para cargar las hojas del arbol
   scope :arbol_hojas, ->(taxon, estadistica_id, ascendente) { arbol_select.solo_publicos.where("#{attribute_alias(ascendente)}=#{taxon.id}").where.not(id: taxon.id).where("estadistica_id=?",estadistica_id).order(nombre_cientifico: :asc) }
   scope :arbol_hojas_obligatorias, ->(taxon, estadistica_id, ascendente) { arbol_hojas(taxon, estadistica_id, ascendente).solo_cat_obligatorias.where(estatus: 2) }
@@ -304,22 +306,26 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
   # REVISADO: Regresa en un hash todos los valores con las bibliorafias, para pestaña de catalogos especialmente
   def caracteristicas
-    resp = {}
+    begin
+      resp = {}
 
-    caract = Especie.where(id: id).includes(especies_catalogos: [:catalogo, biblios: :bibliografia])
+      caract = Especie.where(id: id).includes(especies_catalogos: [:catalogo, biblios: :bibliografia])
 
-    caract.first.especies_catalogos.each do |esp_cat|
-      cat = esp_cat.catalogo
-      next unless cat.es_catalogo_permitido?
-      nombre_catalogo = cat.dame_nombre_catalogo
-      biblio_cita_completa = esp_cat.biblios.map { |b| b.bibliografia.cita_completa }
-      seccion = nombre_catalogo.estandariza.to_sym
+      caract.first.especies_catalogos.each do |esp_cat|
+        cat = esp_cat.catalogo
+        next unless cat.es_catalogo_permitido?
+        nombre_catalogo = cat.dame_nombre_catalogo
+        #biblio_cita_completa = esp_cat.biblios.map { |b| b.bibliografia.cita_completa }
+        biblio_cita_completa = esp_cat.biblios_con_dos_foreign_keys.map { |b| b.bibliografia.cita_completa }
+        seccion = nombre_catalogo.estandariza.to_sym
 
-      resp[seccion] = { nombre_catalogo: nombre_catalogo, datos: [] } unless resp[seccion].present?
-      resp[seccion][:datos] << { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion], bibliografias: biblio_cita_completa, observaciones: esp_cat.observaciones }
-    end
-
-    resp
+        resp[seccion] = { nombre_catalogo: nombre_catalogo, datos: [] } unless resp[seccion].present?
+        resp[seccion][:datos] << { nombre_catalogo: nombre_catalogo, descripciones: [cat.descripcion], bibliografias: biblio_cita_completa, observaciones: esp_cat.observaciones }
+      end
+      resp
+    rescue
+      resp
+    end    
   end
 
   # REVISADO: Devuelve el tipo de distribución para colocar en la simbologia del show de especies

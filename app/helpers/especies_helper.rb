@@ -61,20 +61,36 @@ module EspeciesHelper
     caracteristicas.each do |catalogo, valores|
 
       html = ''
-
+      contador = 0
       valores[:datos].each do |dato|
         biblio = dato[:bibliografias].any? ? "<ul>#{dato[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>" : ''
         biblio_html = creaPopOverBibliografia(biblio) if biblio.present?
         observaciones = dato[:observaciones] if dato[:observaciones].present?
         dato[:descripciones].each do |l|
-          html << "#{l} #{biblio_html}"
+          if contador == 0 
+            html << "&nbsp;#{l} #{biblio_html}"
+          else
+            html << "&middot;&nbsp;&nbsp;#{l} #{biblio_html}"
+          end
+          contador += 1
         end
         lista << {nombre_catalogo: valores[:nombre_catalogo], descripciones: [html], observaciones: observaciones}
       end
-
-
     end
-    lista
+    agrupados = lista.group_by { |item| item[:nombre_catalogo] }
+
+    # Consolidar las descripciones y eliminar duplicados
+    resultado = agrupados.map do |catalogo, items|
+      # Unificar las descripciones y eliminar duplicados
+      descripciones_unicas = items.flat_map { |item| item[:descripciones] }.uniq
+      # Usar las observaciones del primer item 
+      observaciones = items.first[:observaciones]
+
+      # Crear un hash unificado por cada catálogo
+      { nombre_catalogo: catalogo, descripciones: descripciones_unicas, observaciones: observaciones }
+    end
+    # puts resultado
+    resultado
 
   end
 
@@ -156,7 +172,7 @@ module EspeciesHelper
 
 #########################################################################################################################################
   def creaPopOverBibliografia(biblio)
-    "<a href='' tabindex='0' class='biblio-cat btn btn-link' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content='#{biblio.gsub("'","\\'")}' onClick='return false;'><i class='fa fa-book'></i></a>"
+    "<a href='' tabindex='0' class='biblio-cat btn btn-link' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content='#{biblio.gsub("'",'"')}' onClick='return false;'><i class='fa fa-book'></i></a>"
   end
 
 
@@ -261,7 +277,9 @@ module EspeciesHelper
 
 
   def imprime_media_bdi(item, type)
-    copyright = "BDI - CONABIO"
+    cc = item.license.match('/licenses\/(.*?)\/')
+    copyright = "BDI - CONABIO, <a href='#{item.license}' target='_blank'>#{cc[1].upcase}</a>"
+    ccphoto = "#{item.native_realname}, #{cc[1].upcase}"
     case type
     when 'photo'
       link_to("<img src='#{item.medium_url}' class='rounded-sm border-light' />".html_safe, '',
@@ -271,7 +289,8 @@ module EspeciesHelper
               "data-url" => item.medium_url,
               "data-author" => item.native_realname,
               "data-locality" =>  "No disponible",
-              "data-observation"=> item.native_page_url
+              "data-observation"=> item.native_page_url,
+              "title" => ccphoto
       )
     when 'video' # Datos fasos por ahora
       link_to("<img src='#{item.preview_img}' class='rounded-sm border-light' />".html_safe, '',

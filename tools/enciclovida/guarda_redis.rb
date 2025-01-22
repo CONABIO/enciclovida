@@ -25,12 +25,14 @@ def guarda_redis
 
   Especie.find_each do |t|
     # Para saltarse a algun taxon en especifico, por si se quedo truco el redis
-    ultima_corrida = true if t.id == 6001318
-    next unless ultima_corrida
-
-    #Especie.limit(100).each do |t|
-    Rails.logger.debug "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
-    t.guarda_redis
+    #ultima_corrida = true if t.id == 135372
+    #next unless ultima_corrida
+    if(t.id == 285116)
+     #Especie.limit(100).each do |t|
+     Rails.logger.debug "#{t.id}-#{t.nombre_cientifico}" if OPTS[:debug]
+     puts "#{t.id}-#{t.nombre_cientifico}"
+     t.guarda_redis
+    end
   end
 end
 

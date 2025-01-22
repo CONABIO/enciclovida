@@ -274,7 +274,8 @@ class EspeciesController < ApplicationController
       f_obj.medium_url = f['medium_url']
       f_obj.large_url = f['large_url']
       f_obj.square_url = f['square_url']
-      f_obj.attribution_txt = f['attribution']
+      attrib = f['attribution'].present? ? f['attribution'] : "#{f['native_realname']}, #{f['license'].match('/licenses\/(.*?)\/')[1].upcase}"
+      f_obj.attribution_txt = attrib
       f_obj.original_url = f['original_url']
       @fotos << f_obj
     end

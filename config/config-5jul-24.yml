@@ -1,0 +1,146 @@
+base: &base
+
+  # URL del sitio
+  site_url: https://enciclovida.mx:443/
+
+  # Nombre del sitio y vista por default
+  site_name: EncicloVida
+  site_name_short: EncicloVida
+  default_locale: es
+
+  # Limite del fuzzy match
+  limit_fuzzy : 10
+
+  # URL informativas del geoportal
+  geoportal_informacion: http://www.conabio.gob.mx/snibgeoportal/Ejemplar.php?id=
+  geoportal_pdf: http://www.snib.mx/ejemplares/docs/CONABIO-SNIB-DiccionarioDatosEjemplaresGeoportal-201906.pdf
+
+  # URL geoserver, se realizo un proxy reverse en el puerto 9001
+  geoserver_url: https://enciclovida.mx:9001/mapcache/wms
+  geoserver_origen_url: http://geoportal.conabio.gob.mx/#!l=
+  geoserver_descarga_url: http://www.conabio.gob.mx/informacion/gis/maps/geo
+
+  # URL del banco de imagenes
+  bdi_imagenes: https://bdi.conabio.gob.mx
+
+  # URL de NaturaLista e iNaturalist
+  naturalista_url: https://www.naturalista.mx
+  # Es necesario la URL de iNaturalist para las observaciones, ya que en NaturaLista no salen todas
+  inaturalist_url: https://www.inaturalist.org
+  # El API nodejs de inaturalist
+  inaturalist_api: https://api.inaturalist.org/v1
+  # El paginado del API, es la maxima cantidad de momento
+  inaturalist_por_pagina: 200
+
+  # Coordenadas del rectangulo de la republica, para las obs. de NaturaLista
+  swlat: 13.9234
+  swlng: -118.4765
+  nelat: 32.2499
+  nelng: -85.6933
+
+  # Proveedores de fotos y descripciones
+  taxon_describers: [conabio, wikipediaes, eol, janium, eoles, wikipedia]
+  photo_providers: [conabio, eol, wikimedia, flickr]
+
+# Usuario predeterminado para correr procesos desde los scripts de tools
+  usuario: 1
+
+  # Credenaciles generales por http
+  username: tu-usuario
+  password: tu-passwd
+
+  # URLs de produccion de Enciclovida
+  enciclovida_url: https://enciclovida.mx
+  enciclovida_api: https://api.enciclovida.mx
+
+  # Cache de los servicios que guarda en disco
+  cache:
+    filtros_ev: 1.day
+    ficha_naturalista: 1.week
+    fichas: 1.week
+    iucn: 1.week
+    busquedas_region: 5.years
+    conteo_especies_home: 1.day
+    estadisticas:
+      cuantas_especies_inferiores: 1.day
+      estadisticas_naturalista: 1.day
+      estadisticas_conabio: 1.day
+      estadisticas_wikipedia: 1.week
+      estadisticas_eol: 1.week
+      estadisticas_maccaulay: 1.week
+      estadisticas_SNIB: 1.year
+      estadisticas_tropicos_service: 1.week
+      estadisticas_mapas_distribucion: 1.month
+    github:
+      issues: 1.year
+    peces:
+      filtros: 5.years
+      catalogos: 1.week
+  
+  # Ruta del programa que genera los PDF's
+  wkhtmltopdf_path: /usr/local/bin/wkhtmltopdf
+
+  # Credenciales smtp
+  smtp:
+    user_name: enciclovida
+    password: enciclovidaDGCC
+    domain: conabio.gob.mx
+    address: xolo.conabio.gob.mx
+    #port: puerto
+
+  # Recaptcha de google
+  recaptcha:
+     site_key: 6LdSGPwpAAAAAP_LSJ6BxHG-_p9uMuOeL8axCDl0
+     secret_key: 6LdSGPwpAAAAAA5NJHqSYr7FvJgdVi4415MxeqC7
+#     site_key: 6Lew_mkUAAAAAOdPXLoGjxHE7Zil0bfIBFM98tIo
+#     secret_key: 6Lew_mkUAAAAAC4ZFOZJ7Zkp-lZ-liPj7qFX8Hee
+#    public_key: 6Lfg8A0TAAAAAAYWdn7oIW-7iWzLlAMuIJrzgpOl
+#    private_key: 6Lfg8A0TAAAAACt_ncSrQjKjRj0yhEw39tKMdrVQ
+
+  iucn:
+    api: https://apiv3.iucnredlist.org/api/v3
+    token: a8a69e17425f32517b09f467ad05a3c992f9511aad49e00bd72b5467d5613c1d
+    timeout: 1
+
+  github:
+    api: https://api.github.com/repos/conabio/enciclovida
+
+  # Url del api de ebird (proxima a desaparecer)
+  ebird:
+    api: https://ebird.org/media/averaves/catalog.json?taxonCode=
+
+  # Url del partner's api de cornell
+  cornell:
+    api: https://api.macaulaylibrary.org/ml-catalog-api/ws3.0/partner/search/assets?
+    key: 7d7ho5i9pv0o95qgl01op01vhc
+
+  tropicos:
+    api: https://services.tropicos.org/Name/
+    key: eb08f4ff-bfb6-451e-ad21-d3ca27fb57cf
+
+  janium:
+    location: "http://200.12.166.51/janium/services/soap.pl"
+    namespace: "http://janium.net/services/soap"
+    request: "JaniumRequest"
+
+  peces:
+    anio: 2012
+
+  # Es necesario especificar los nombres de las bases, para no utilizar establish_connection en los modelos
+  bases:
+          #cat: catalogocentralizado_publico
+    cat: catalogocentralizado
+    ev: enciclovida
+    pez: peces
+    snib: snib
+    fichasespecies: fichasespecies
+    metamares: infoceanos
+
+development:
+    <<: *base
+
+test:
+    <<: *base
+
+production:
+    <<: *base

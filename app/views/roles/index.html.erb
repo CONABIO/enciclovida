@@ -1,20 +1,19 @@
-<h1>Listing roles</h1>
+<%# -*- encoding: UTF-8 -*- %>
+<h1>Roles</h1>
 
-<table>
+<table class="table table-condensed table-hover table-responsive">
   <thead>
     <tr>
-      <th></th>
-      <th></th>
-      <th></th>
+      <th>Nombre Rol</th>
+      <th></th>      
     </tr>
   </thead>
 
   <tbody>
     <% @roles.each do |rol| %>
       <tr>
-        <td><%= link_to 'Show', rol %></td>
-        <td><%= link_to 'Edit', edit_rol_path(rol) %></td>
-        <td><%= link_to 'Destroy', rol, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td>[<%= rol.id %>] - <%= rol.nombre_rol %></td>
+        <td><%= link_to 'Ver', rol %> | <%= link_to 'Editar', edit_rol_path(rol) %> | <%= link_to 'Eliminar', rol, method: :delete, data: { confirm: '¿Estás seguro? (es un cambio irreversible)' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -22,4 +21,6 @@
 
 <br>
 
-<%= link_to 'New Rol', new_rol_path %>
+<p class="text-right">
+  <%= link_to "<b class='glyphicon glyphicon-plus'></b> Crear Nuevo Rol".html_safe, new_rol_path, class: 'btn btn-info btn-sm' %>
+</p>

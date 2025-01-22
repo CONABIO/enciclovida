@@ -1,4 +1,21 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_rol_path(@rol) %> |
-<%= link_to 'Back', roles_path %>
+<h1>Rol con identificador [<%= @rol.id %>]</h1>
+<table class="table table-condensed table-hover table-responsive">
+  <thead>
+    <tr>
+      <th>Nombre Rol</th>
+      <th>Ancestry</th>
+      <th>Observaciones</th>
+      <th></th>      
+    </tr>
+    <tbody>
+      <tr>
+        <td>[<%= @rol.id %>] - <%= @rol.nombre_rol %></td>
+        <td><%= @rol.ancestry %></td>
+        <td><%= @rol.observaciones %></td>
+        <td><%= link_to 'Editar', edit_rol_path(@rol) %> | <%= link_to 'Regresar', roles_path %></td>      
+      </tr>    
+  </tbody>
+  </thead>
+</table>

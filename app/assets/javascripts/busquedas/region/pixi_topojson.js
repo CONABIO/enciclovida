@@ -251,7 +251,7 @@ var cargaRegion = function (tipo_region, inicial = false) {
               //   download(
               //     JSON.stringify(geojson_data),
               //     tipo_region + ".geojson",
-              //     "application/json"
+             //      "application/json"
               //   );
 
               geojson = null;

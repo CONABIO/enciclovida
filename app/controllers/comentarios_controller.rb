@@ -174,7 +174,7 @@ class ComentariosController < ApplicationController
   # POST /comentarios.json
   def create
     @especie_id = params[:especie_id]
-
+    recaptcha_response = params['g-recaptcha-response']
     if @especie_id.present?  && @especie_id != '0'
       begin
         @especie = Especie.find(@especie_id)
@@ -187,10 +187,16 @@ class ComentariosController < ApplicationController
     tipo_proveedor = params[:tipo_proveedor]
     proveedor_id = params[:proveedor_id]
     params = comentario_params
+    
+    if params[:con_verificacion] == '1'
+      if recaptcha_response.length < 20 
+        verify_recaptcha(:model => @comentario, :message => t('recaptcha.errors.missing_confirm'))       
+      end
+    end
 
     respond_to do |format|
       if params[:con_verificacion].present? && params[:con_verificacion] == '1'
-        if (verify_recaptcha(:model => @comentario, :message => t('recaptcha.errors.missing_confirm')) && @comentario.save) || (!Rails.env.production? && @comentario.save)
+        if (recaptcha_response.length > 20 && @comentario.save)
 
           if params[:es_respuesta].present? && params[:es_respuesta] == '1'
             comentario_root = @comentario.root

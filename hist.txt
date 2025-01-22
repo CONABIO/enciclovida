@@ -1,0 +1,500 @@
+    3  ls
+    4  rm index.html 
+    5  curl github.com
+    6  curl google.com
+    7  curl -I google.com
+    8  curl -I cisco.com
+    9  curl -I alfresco.com
+   10  curl -I wikipedia.org
+   11  curl wikipedia.org
+   12  curl github.com
+   13  curl -I github.com
+   14  openssh -v
+   15  openssl -v
+   16  openssl -version
+   17  openssl -help
+   18  openssl
+   19  exit
+   20  cd /var/log/apache2/
+   21  ls- ltr
+   22  ls -ltr
+   23  tail -f enciclovida_access_443.log
+   24  tail -f enciclovida_access_443.log.1
+   25  ls -ltr
+   26  ls -ltrtail -f rp_access_9000.log.1
+   27  ail -f rp_access_9000.log.1
+   28  tail -f rp_access_9000.log.1
+   29  tail -f rp_access_9001.log.1
+   30  ls -ltr
+   31  tail -f api_access_443.log.1
+   32  cd /var/log/apache2/
+   33  ls -ltr
+   34  ls -ltr
+   35  ls -ltr
+   36  tail -f enciclovida_access_443.log
+   37  htop
+   38  ps -fea | grep delay
+   39  ps -fea | grep delay
+   40  htop
+   41  kill 374 376 381 390
+   42  ps -fea | grep delay
+   43  ps -fea | grep delay
+   44  htop
+   45  free && sync && echo 3 > /proc/sys/vm/drop_caches && free
+   46  sync; echo 3 > /proc/sys/vm/drop_caches
+   47  sysctl -w vm.drop_caches=3
+   48  free && sync && echo 3 > /proc/sys/vm/drop_caches && free
+   49  sync; echo 3 > /proc/sys/vm/drop_caches
+   50  sysctl -w vm.drop_caches=3
+   51  free && sync && echo 3 > /proc/sys/vm/drop_caches && free
+   52  sync; echo 3 > /proc/sys/vm/drop_caches
+   53  sysctl -w vm.drop_caches=3
+   54  pwd
+   55  ps -ef
+   56  mysql
+   57  reboot
+   58  cd /var/log/apache2/
+   59  tail error
+   60  tail error.log
+   61  ls -ltr
+   62  tail -100 error.log
+   63  tail -100 /var/log/apache2/rp_api_cornell_error_8443.log
+   64  cd /var/log/apache2/
+   65  tail -100 error.log
+   66  tail -100 /var/log/apache2/enciclovida_error_443.log
+   67  tail -100 /var/log/apache2/enciclovida_error_443.log
+   68  cd /var/log/apache2/
+   69  tail -100 error.log
+   70  tail -100 enciclovida_error_443.log
+   71  ls -l
+   72  cd /var/log/apache2/
+   73  ls -ltr
+   74  tail -100 error.log
+   75  cd /var/log/apache2/
+   76  ls -ltr
+   77  ls -ltr
+   78  tail -f enciclovida_access_443.log
+   79  ls -ltr
+   80  tail -f error.log
+   81  ls -ltr
+   82  cd /tmp
+   83  ls
+   84  wget https://github.com/glpi-project/glpi-agent/releases/download/1.4/glpi-agent-1.4-linux-installer.pl
+   85  chmod 755 glpi-agent-1.4-linux-installer.pl 
+   86  ./gl
+   87  ./glpi-agent-1.4-linux-installer.pl 
+   88  free && sync && echo 3 > /proc/sys/vm/drop_caches && free
+   89  free && sync && echo 3 > /proc/sys/vm/drop_caches && free
+   90  free -h
+   91  cd /var/log/apache2/
+   92  ls -ltr
+   93  ls -ltr
+   94  ls -ltr
+   95  ls -ltr
+   96  ls -ltr
+   97  tail -f enciclovida_access_443.log
+   98  cd /etc/var
+   99  pwd
+  100  cd /etc
+  101  cd /var/log
+  102  ls
+  103  cd apache2/
+  104  ls
+  105  ls -la
+  106  ls -lap
+  107  ls -la | more
+  108  more enciclovida_error_443.log.1
+  109  more /usr/local/enciclovida/buscador/public/xmlrpc.php
+  110  more usr/local/enciclovida/buscador/public/wp-login.php
+  111  more /usr/local/enciclovida/buscador/public/wp-login.php
+  112  more /usr/local/enciclovida/buscador/public/xmlrpc.php
+  113  cd /usr/local/enciclovida/buscador/public/
+  114  ls -la
+  115  cd /var/log
+  116  cd apache2/
+  117  ls
+  118  more enciclovida.log
+  119  ld
+  120  ls 
+  121  ls -la
+  122  more rp_error_9000.log
+  123  more rp_error_9000.log
+  124  more rp_error_9000.log
+  125  more rp_error_9000.log.1
+  126  htop
+  127  cd /usr/local/enciclovida/
+  128  ls
+  129  ls -la
+  130  cd buscador/
+  131  ls -la
+  132  cd log/
+  133  ls
+  134  ls -la
+  135  more delayed_job.log
+  136  who
+  137  exit
+  138  cd /var/log/apache2/
+  139  ls -ltr
+  140  tail -f enciclovida_access_443.log
+  141  ls -ltr
+  142  tail enciclovida_access_443.log.1
+  143  tail -1000 enciclovida_access_443.log.1| head
+  144  tail -1000 enciclovida_access_443.log.1| head
+  145  tail -2000 enciclovida_access_443.log.1| head
+  146  tail -f error.log
+  147  cat /etc/mongodb.conf
+  148  cd /var/log/mongodb/
+  149  ls -la
+  150  cat mongodb.log
+  151  ls
+  152  ls -la
+  153  cp mongodb.log mongodb.mike
+  154  vi mongodb.mike 
+  155  time
+  156  date
+  157  date
+  158  cd ..
+  159  ls
+  160  ls -la
+  161  cd apache2/
+  162  ls
+  163  ls -la
+  164  ps -ef | grep apache
+  165  systemctl status apache
+  166  systemctl status apaches
+  167  systemctl status apache2
+  168  systemctl restart apache2
+  169  systemctl status apache2
+  170  systemctl status apache2
+  171  systemctl status apache2
+  172  systemctl status apache2
+  173  pwd
+  174  ls
+  175  ls ?
+  176  ls
+  177  ls -h
+  178  ls -t
+  179  ls -lt
+  180  ls -lu
+  181  ls -u
+  182  ls -t
+  183  ls -lt
+  184  ls -lt | more
+  185  ls -h
+  186  ls -lt | more
+  187  more enciclovida_error_443.log.1
+  188  pwd
+  189  exit
+  190  cd apach
+  191  cd apache2
+  192  pwd
+  193  cd /var/log/apache2/
+  194  more api_error_80.log
+  195  more nciclovida_access_443.log
+  196  more enciclovida_access_443.log
+  197  tail
+  198  tail enciclovida_access_443.log
+  199  tail -20 enciclovida_access_443.log
+  200  tail -20 rp_access_9001.log.1
+  201  clear
+  202  ls
+  203  clear
+  204  tail -20 rp_access_9001.log.1
+  205  clear
+  206  tail -20 api_access_443.log.1
+  207  tail -20 enciclovida_access_80.log.1
+  208  tail enciclovida_access_80.log.1
+  209  moreenciclovida_access_80.log.1
+  210  more enciclovida_access_80.log.1
+  211  clear
+  212  history
+  213  htop
+  214  history
+  215  htop
+  216  htop
+  217  date
+  218  rm /etc/localtime
+  219  ln -s /usr/share/zoneinfo/Mexico/BajaSur /etc/localtime
+  220  date
+  221  exit
+  222  cd /var/log/apache2/
+  223  ls -lr
+  224  ls -lrt
+  225  ls -lrt
+  226  ls -lrt
+  227  ls -ltr
+  228  ls -ltr
+  229  ls -ltr
+  230  ls -ltr
+  231  ls -ltr
+  232  ls -ltr
+  233  tail error.log
+  234  systemctl restart apache2
+  235  ls -ltr
+  236  cd /var/log/apache2/
+  237  ls -ltr
+  238  ls -ltr
+  239  tail error.log
+  240  ls -ltr
+  241  ls -ltr
+  242  tail -f enciclovida_access_80.log
+  243  tail -f api_access_80.log
+  244  systemctl restart apache2
+  245  cd /var/log/apache2/
+  246  tail -f error.log
+  247  cd /var/log/apache2/
+  248  ls -ltr
+  249  tail error
+  250  tail error.log
+  251  tail -100 error.log
+  252  tail -100 error.log
+  253  cd /var/log/apache2/
+  254  ls -ltr
+  255  cd /var/log/apache2/
+  256  ls -ltr
+  257  tail -f error.log
+  258  tail -100 error.log
+  259  cat /etc/apache2/mods-available/mpm_prefork.conf
+  260  emacs /etc/apache2/mods-available/mpm_prefork.conf
+  261  systemctl restart apache2
+  262  cd /var/log/apache2/
+  263  ls -ltrh
+  264  ls -ltrh | wc -l
+  265  cd /var/log/apache2/
+  266  ls -ltrh
+  267  cat /etc/logrotate.conf
+  268  cat /etc/logrotate.d/apache2 
+  269  cat /etc/logrotate.conf
+  270  cat /etc/logrotate.d/apache2 
+  271  ls -la /var/log/apache2/
+  272  cals -l /etc/logrotate.d/apache2 
+  273  ls -l /etc/logrotate.d/apache2 
+  274  ls -l /etc/logrotate.conf
+  275  ls -ltra /var/log/apache2/
+  276  cat /etc/logrotate.conf
+  277  caat /etc/logrotate.d/
+  278  cat /etc/logrotate.d/apache2 
+  279  ls -l /var/log/apache2/
+  280  ls -ltr /var/log/apache2/
+  281  tail api_error_80.log
+  282  cd /var/log/apache2/
+  283  tail api_error_80.log
+  284  cat rp_api_cornell_access_8443.log.1
+  285  ls -l
+  286  cat rp_api_cornell_error_8443.log.1
+  287  ls -ltrah
+  288  ls -l
+  289  ls -l jota/
+  290  cd buscador/
+  291  ls -ltra
+  292  ls -ltra log/
+  293  ls -ltrah log/
+  294  cat /etc/apache2/sites-enabled/api.enciclovida.mx.conf 
+  295  cat /etc/apache2/sites-enabled/ssl-api.enciclovida.mx.conf 
+  296  cat /etc/apache2/envvars 
+  297  cd /var/log/apache2/
+  298  ls -ltr
+  299  tail -100 error.log
+  300  ls -ltr
+  301  tail -f api_error_443.log
+  302  /etc/init.d/apache2 status
+  303  tail -100 error.log
+  304  ls -ltr
+  305  ls -ltr
+  306  ls -ltr
+  307  ls -ltr
+  308  ls -ltr
+  309  ls -ltr
+  310  /etc/init.d/apache2 status
+  311  ls -ltr
+  312  htop
+  313  ls -ltr
+  314  ls -ltr
+  315  ps -fea | grep delay
+  316  ps -aux | grep delay
+  317  htop
+  318  htop
+  319  htop
+  320  htop
+  321  htop
+  322  ps -fea | grep 60546
+  323  ps -fea | grep delay
+  324  htop
+  325  ls -ltr
+  326  tail -100 error.log
+  327  cd /var/log/apache2/
+  328  ls -ltr
+  329  tail -100 error.log
+  330  tail -1000 error.log
+  331  ls -ltr
+  332  grep 13:03 enciclovida_access_443.log 
+  333  grep 2023:13:03 enciclovida_access_443.log 
+  334  crontab -e
+  335  cd /var/log/apache2/
+  336  ls -ltr
+  337  tail -f enciclovida_access_443.log
+  338  cd /etc/apache2
+  339  ls
+  340  cd sites-available/
+  341  ls -l
+  342  more api.enciclovida.mx.conf 
+  343  more api.enciclovida.mx-le-ssl.conf 
+  344  ifconfig -a
+  345  more api.enciclovida.mx-le-ssl.conf 
+  346  ls -l
+  347  more enciclovida.mx.conf 
+  348  more enciclovida.mx-le-ssl.conf 
+  349  clear
+  350  more enciclovida.mx-le-ssl.conf 
+  351  more /etc/letsencrypt/options-ssl-apache.conf
+  352  ls -l
+  353  more ssl-api.enciclovida.mx.conf 
+  354  cd ..
+  355  cd sites-enabled/
+  356  ls
+  357  ls -l
+  358  more ssl-api.enciclovida.mx.conf 
+  359  ls -l
+  360  more ssl-enciclovida.mx.conf 
+  361  crontab -l
+  362  cd /home/enciclovida
+  363  ls -l
+  364  su - enciclovida
+  365  cd buscador/
+  366  ls
+  367  ls -l
+  368  cd tools
+  369  ls
+  370  ls -l
+  371  cd levantaServicios/
+  372  ls -l
+  373  more reiniciatrabajos.sh 
+  374  ps aux | grep delayed | grep ruby | awk -F ' ' '{print $2}' 
+  375  which mongo
+  376  /usr/sbin/mongo --help
+  377  /usr/bin/mongo --help
+  378  cd log
+  379  cd ..
+  380  cd log
+  381  ls
+  382  cd levantaServicios/
+  383  ls
+  384  more cleanMongoJobs.js 
+  385  ls -l
+  386  more reiniciatrabajos.sh 
+  387  pwd
+  388  ls -l
+  389  pwd
+  390  ls -l
+  391  cd ..
+  392  ls -l
+  393  pwd
+  394  ls -l
+  395  cd ..
+  396  ls
+  397  ls -l
+  398  cd log
+  399  ls -l
+  400  more reinicia_delayed_jobs_mongo.log 
+  401  ls 
+  402  ls -l
+  403  ls -lh
+  404  pwd
+  405  df -h
+  406  pwd
+  407  cd ..
+  408  ls -l
+  409  more README.md 
+  410  ls -l
+  411  cd ..
+  412  pwd
+  413  ls -la
+  414  cd .npm
+  415  ls -la
+  416  exit
+  417  cd /etc/init.d
+  418  ls
+  419  ps -ef | more
+  420  cat /etc/mongodb.conf
+  421  ls -l
+  422  exit
+  423  cd /etc/apache2/
+  424  ls
+  425  cd sites-enabled/
+  426  ls -l
+  427  cd ..
+  428  cd sites-available/
+  429  ls -l
+  430  more enciclovida.mx-le-ssl.conf 
+  431  cd /usr/local/enciclovida/buscador/public
+  432  ls -l
+  433  cd descargas_guias/
+  434  ls -l
+  435  cd 2023-12-08
+  436  ls -l
+  437  cd..
+  438  cd ..
+  439  ls
+  440  cd ..
+  441  ls -l
+  442  cd validaciones/
+  443  ls -l
+  444   
+  445  exit
+  446  ps -ef | more
+  447   
+  448  exit
+  449  cd /var/mail
+  450  ls
+  451  cd /etc/mail
+  452  ls
+  453  ls -l
+  454  cd spamassassin
+  455  ls
+  456  cd ..
+  457  exit
+  458  ifconfig -a
+  459  df -h
+  460  mount
+  461  clear
+  462  cat /etc/fstab
+  463  ls
+  464  pwd
+  465  ls -la
+  466  cd
+  467  ps -ef
+  468  cd /etc/apache2/
+  469  ls
+  470  cd sites-enabled/
+  471  ls
+  472  ls -l
+  473  more api.enciclovida.mx.conf 
+  474  ls -l
+  475  more ssl-api.enciclovida.mx.conf 
+  476  ls
+  477  more ssl-tunel9999.conf 
+  478  ifconfig -a
+  479  top
+  480  service apache2 stop
+  481  top
+  482  service apache2 start
+  483  top
+  484  ps -ef
+  485  reboot
+  486  top
+  487  shutdown
+  488  shutdown -h now
+  489  apt-get update
+  490  w
+  491  ls -l
+  492  ls -l
+  493  netstat
+  494  top
+  495  netstat -B
+  496  netstat -ap
+  497  nslookup
+  498  service apache2 stop
+  499  top
+  500  service apache2 start
+  501  cd /usr/local/enciclovida/buscador/
+  502  history > hist.txt

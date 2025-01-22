@@ -1,31 +1,26 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Usuario:</strong>
-<%= @usuario_especie.nombre %> <%= @usuario_especie.apellido %>
-</p>
-<p>
-  <strong>UsuarioID:</strong>
-  [<%= @usuario_especie.usuario_id %>]
-</p>
-<p>
-  <strong>Email:</strong>
-  <%= @usuario_especie.email %>
-</p>
-<p>
-  <strong>Institución:</strong>
-  <%= @usuario_especie.institucion%>
-</p>
-<p>
-  <strong>EspecieID:</strong>
-  [<%= @usuario_especie.especie_id %>]
-</p>
-<p>
-  <strong>Nombre científico:</strong>
-  <%= @usuario_especie.nombre_cientifico%>
-</p>
-
-<p class="text-right">
-  <%= link_to 'Editar', edit_usuario_especie_path(@usuario_especie) %> |
-  <%= link_to 'Regresar', usuarios_especie_path %>
-</p>
+<table class="table table-condensed table-hover table-responsive">
+  <thead>
+    <tr>
+      <th>UsuarioID</th>
+      <th>Usuario</th>
+      <th>Email</th>
+      <th>Institución</th>
+      <th>EspecieID</th>
+      <th>Nombre científico</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        <td><%= @usuario_especie.usuario_id %></td>
+        <td><%= @usuario_especie.nombre %> <%= @usuario_especie.apellido %></td>
+        <td><%= @usuario_especie.email %></td>
+        <td><%= @usuario_especie.institucion%></td>
+        <td><%= @usuario_especie.especie_id %></td>
+        <td><%= @usuario_especie.TaxonCompleto%></td>
+        <td><%= link_to 'Editar', edit_usuario_especie_path(@usuario_especie) %> | <%= link_to 'Regresar', usuarios_especie_path %></td>
+    </tr>
+  </tbody>
+</table

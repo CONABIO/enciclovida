@@ -162,7 +162,8 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
 
     por_categoria = taxones.
         select(:categoria_taxonomica_id, "#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, COUNT(DISTINCT #{Especie.table_name}.#{Especie.attribute_alias(:id)}) AS cuantos, #{CategoriaTaxonomica.attribute_alias(:nivel2)} AS nivel2").
-        group(:categoria_taxonomica_id, CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)).
+        # group(:categoria_taxonomica_id, CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)).
+        group(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)).
         order(CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica))
 
     self.por_categoria = por_categoria.map{|cat| {nombre_categoria_taxonomica: cat.nombre_categoria_taxonomica,

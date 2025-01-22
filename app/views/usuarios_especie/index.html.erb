@@ -15,8 +15,8 @@
       <tr>
         <td><%= usuario_especie.id %></td>
         <td><%= usuario_especie.usuario_id %>. <%= usuario_especie.nombre %> <%= usuario_especie.apellido %></td>
-        <td><%= usuario_especie.especie_id %>. <%= usuario_especie.nombre_cientifico %></td>
-        <td><%= link_to 'Ver', usuario_especie %> | <%= link_to 'Editar', edit_usuario_especie_path(usuario_especie) %> | <%= link_to 'Eliminar', usuario_especie, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= usuario_especie.especie_id %>. <%= usuario_especie.TaxonCompleto %></td>
+        <td><%= link_to 'Ver', usuario_especie %> | <%= link_to 'Editar', edit_usuario_especie_path(usuario_especie) %> | <%= link_to 'Eliminar', usuario_especie, method: :delete, data: { confirm: '¿Estás seguro?' } %></td>
       </tr>
     <% end %>
   </tbody>
