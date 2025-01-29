@@ -30,7 +30,6 @@
     <div class="col-12 mt-1 pb-2" id="arbol">
       <%= render :partial => 'especies/arbol/arbol_identado_inicial' %>
     </div>
-
     <div class="col-12 col-md-4 px-2">
       <%= tituloNombreCientifico(@especie, render: 'header') %>
       <%# if (@datos[:especie_o_inferior]) %>
@@ -42,19 +41,22 @@
       <div class="h1 mt-2 pt-2">
         <%= ponCaracteristicaDistribucionAmbienteTaxon(@especie) %>
       </div>
-      <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <b>Las imágenes son ejemplos de los grupos a nivel mundial. Consulta la referencia para su uso.</b>    
-      </div>
     </div>
-
     <div class="col-xs-12 col-md" id="contenedor_fotos">
       <%= cargandoEspera %>
     </div>
-
   </div>
 </div>
 
+<div class="col-md-12 p-0">
+  <div class="text-center p-2" style=" background-color:#EBCB9A;" >
+    <b>Las imágenes son ejemplos de los grupos a nivel mundial.</b>    
+  </div>
+</div>
+
+ 
 <div class="col-12 d-flex flex-column flex-md-row my-0 p-0">
+  
   <div class="flex-row flex-md-column flex-nowrap flex-md-wrap nav-pills justify-content-around justify-content-md-start nav" id="navegacion" role="tablist" aria-orientation="vertical">
 
     <a class="nav-link w-100 text-center text-md-left btn btn-outline-primary rounded-0 mt-2 active" id="geodata-tab" data-toggle="pill" href="#geodata" role="tab" aria-controls="geodata" aria-selected="true">
