@@ -241,7 +241,7 @@ Buscador::Application.routes.draw do
   resources :bitacoras
   resources :roles_categorias_contenido
   resources :usuarios_especie
-  resources :usuarios_roles
+  resources :usuario_roles
 
   # explora por clasificacion
   get 'explora-por-clasificacion' => 'busquedas#por_clasificacion'
