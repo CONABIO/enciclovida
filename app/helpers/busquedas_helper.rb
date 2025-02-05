@@ -1,27 +1,21 @@
 module BusquedasHelper
 
   # Opciones default para el bootstrap-select plugin
-  @@opciones = { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true,
-  'data-live-search': true, 'data-selected-text-format': 'count', 'data-select-all-text': 'Todos', 
-  'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, 'data-none-results-text': 'Sin resultados para {0}',
-  'data-count-selected-text': '{0} seleccionados', title: '- - Selecciona - -', multiple: true, 'data-sanitize': false }
+  @@opciones = { class: 'selectpicker form-control form-group', 'data-live-search-normalize': true, 'data-live-search': true, 'data-selected-text-format': 'count', 'data-select-all-text': 'Todos', 'data-deselect-all-text': 'Ninguno', 'data-actions-box': true, 'data-none-results-text': 'Sin resultados para {0}', 'data-count-selected-text': '{0} seleccionados', title: '- - Selecciona - -', multiple: true, 'data-sanitize': false }
   @@html = ''
 
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos(resultados = false)
     def arma_span(taxon)
-      "<label>#{radio_button_tag('id_gi', taxon.id, params[:id_gi].to_i === taxon.id, id: "id_gi_#{taxon.id}")}
-      <span class='mx-1'><span title='#{taxon.nombre_comun_principal}' 
-      class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn-title'></span></span></label>"
+      "<label>#{radio_button_tag('id_gi', taxon.id, params[:id_gi].to_i === taxon.id, id: "id_gi_#{taxon.id}")}<span class='mx-1'><span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn-title'></span></span></label>"
     end
+
     radios = ''
     radios << '<div class="col-12">'
     radios << '<h6><strong>Animales</strong></h6>'
     @filtros[:animales].each do |taxon|  # Para tener los grupos ordenados
       radios << arma_span(taxon)
     end
-
-    
     radios << '</div>'
     radios << '<div class="w-100"></div>' if resultados
 
