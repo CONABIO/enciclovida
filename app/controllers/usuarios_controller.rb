@@ -4,7 +4,6 @@ class UsuariosController < ApplicationController
   before_action :authenticate_usuario!, :only => [:index, :show, :edit, :update, :destroy, :conabio]
   before_action :set_usuario, only: [:show, :edit, :update, :destroy]
 
-  layout Proc.new{['cambia_locale'].include?(action_name) ? false : 'application_b3'}
 
   before_action :only => [:index] do
     tiene_permiso?('Administrador') # Minimo administrador
