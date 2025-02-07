@@ -33,10 +33,12 @@ gem 'mime-types'
 gem 'mini_racer', git: 'https://github.com/rubyjs/mini_racer', branch: 'refs/pull/186/head'
 gem 'mysql2'
 gem 'nokogiri', '>= 1.10.8'  # Hacer un parse con xml
+gem 'optimist'
 gem 'pg'
 gem 'puma', '>= 3.12.4' # Use Puma as the app server
 gem 'rack-contrib'
 gem 'rails', '5.1.6.2'
+gem 'rails-erd'
 gem 'railties'
 gem 'rake', '>= 12.3.3'
 gem 'recaptcha', :require => 'recaptcha/rails'  # Con el api de google
@@ -51,7 +53,7 @@ gem 'seed_dump'  # Extrae las tuplas de un modelo o de toda la base
 gem 'simple_form', '>= 5.0.0'
 gem 'soulmate', :require => 'soulmate/server'
 gem 'turbolinks', '~> 5'  # Hace mas rapidos los links
-gem 'trollop'
+
 gem 'uglifier'
 gem 'vinted-blurrily', :require => 'blurrily/server.rb'   # Forza a blurrily a usar rails mayor al 4
 gem 'wash_out'
