@@ -1,5 +1,7 @@
 class ComentariosController < ApplicationController
 
+  layout Proc.new{['update', "show", 'dame_correo', 'ultimo_id_comentario'].include?(action_name) ? false : 'application'}
+
   before_action do
     @no_render_busqueda_basica = true
   end
