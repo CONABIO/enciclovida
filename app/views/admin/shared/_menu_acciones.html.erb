@@ -5,8 +5,7 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <%= link_to('Lista de catálogos', admin_catalogos_path, class: 'dropdown-item') %>
-            <%= link_to('Nueva asociación', new_admin_especie_catalogo_path, class: 'dropdown-item') %>
-            <%= link_to('Nueva Bibliografía', new_admin_bibliografia_path, class: 'dropdown-item') %>
+         
 
             <% if @admin_especie_catalogo.present? && !@admin_especie_catalogo.new_record? %>
             <%= link_to('Eliminar', admin_especie_catalogo_path(@admin_especie_catalogo), class: 'dropdown-item', data: { confirm: 'Al eliminar la asociación se eliminarán también las bibliografías y regiones asociadas, ¿estás seguro?', method: :delete }) %>

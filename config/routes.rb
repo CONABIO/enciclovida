@@ -19,11 +19,11 @@ Buscador::Application.routes.draw do
       end
     end
     
-    resources :bibliografias, except: [:index, :show] do
-      collection do
-        get :autocompleta
-      end
-    end
+    #resources :bibliografias, except: [:index, :show] do
+    #  collection do
+    #    get :autocompleta
+    #  end
+    # end
   end
 
   # metamares, alias infoceanos
@@ -234,7 +234,7 @@ Buscador::Application.routes.draw do
   resources :nombres_regiones
   resources :nombre_regiones_bibliografias
   resources :estatuses
-  resources :especies_catalogo
+  #resources :especies_catalogo
   resources :roles
   resources :catalogos
   resources :categorias_taxonomica
