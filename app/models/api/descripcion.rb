@@ -2,7 +2,7 @@ class Api::Descripcion
 
   attr_accessor :taxon, :servidor, :timeout, :debug, :locale, :app
 
-  DESCRIPCIONES_ES = %w(conabio_tecnico conabio_dgcc conabio wikipedia_es iucn wikipedia_en)
+  DESCRIPCIONES_ES = %w(conabio_dgcc conabio wikipedia_es iucn wikipedia_en)
   DESCRIPCIONES_ES_CIENTIFICO = %w(conabio_tecnico iucn wikipedia_es wikipedia_en conabio conabio_dgcc)
 
   def initialize(opc = {})
