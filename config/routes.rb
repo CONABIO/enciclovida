@@ -1,10 +1,13 @@
 # coding: utf-8
 Buscador::Application.routes.draw do
-
   #match '*path' => redirect('/mantenimiento.html'), via: [:get, :post]
 
   # Administracion de los catalogos
   namespace :admin do
+
+    get 'update_maps/upload'
+    post 'import_file', to: "update_maps#process_file"
+    
     resources :catalogos do
       collection do
         get :dame_nivel

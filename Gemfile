@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'actionpack-action_caching'  # Fue removido del core en 4.0
 gem 'activerecord-session_store'  # Pasa los request con POST a traves de la base (para request muy largos)
+gem 'activerecord-import' # Para inserciones masivas eficientes
 gem 'ancestry', git: 'https://github.com/calonsot/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
 gem 'caxlsx'#, git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'caxlsx_rails'  # Gema para exportar en excel
