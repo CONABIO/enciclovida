@@ -188,6 +188,30 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
   BAJO_GENERO = %w(género subgénero sección subsección serie subserie)
 
+  def self.update_geoserver_info(proveedores_hash)
+    proveedores_hash.each do |id_cat, data|
+      # Convierte la colección de mapas a una cadena JSON
+      mapas_json = data["mapas"].to_json
+      # Encuentra el registro en la tabla SCAT donde el IdCat coincida
+      scat_record = Scat.find_by(IdCat: id_cat)
+
+      if scat_record
+        # Busca o inicializa un registro en proveedores con el especie_id correspondiente
+        proveedor = Proveedor.find_or_initialize_by(especie_id: scat_record.IdNombre)
+        # Actualiza el campo geoserver_info
+        proveedor.geoserver_info = mapas_json
+        # Guarda el registro en la base de datos
+        if proveedor.save
+          puts "Registro para IdCat #{id_cat} actualizado/creado exitosamente."
+        else
+          puts "Error al guardar el registro para IdCat #{id_cat}: #{proveedor.errors.full_messages.join(", ")}"
+        end
+      else
+        puts "No se encontró un registro en SCAT con IdCat: #{id_cat}"
+      end  
+    end
+  end
+
   # Sobre escribiendo este metodo para las rutas mas legibles
   def to_param
     [id, nombre_cientifico.parameterize].join("-")
