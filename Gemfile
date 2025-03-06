@@ -35,6 +35,7 @@ gem 'mini_racer', git: 'https://github.com/rubyjs/mini_racer', branch: 'refs/pul
 gem 'mysql2'
 gem 'nokogiri', '>= 1.10.8'  # Hacer un parse con xml
 gem 'optimist'
+gem 'httparty'
 gem 'pg'
 gem 'puma', '>= 3.12.4' # Use Puma as the app server
 gem 'rack-contrib'

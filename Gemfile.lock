@@ -181,6 +181,9 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     httpi (2.4.4)
       rack
       socksify
@@ -234,6 +237,7 @@ GEM
       activesupport
       mongoid (>= 2.0)
     multi_json (1.14.1)
+    multi_xml (0.6.0)
     multipart-post (2.1.1)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
@@ -451,6 +455,7 @@ DEPENDENCIES
   formtastic
   haml
   htmlentities
+  httparty
   i18n-js
   jbuilder (~> 2.5)
   jquery-rails

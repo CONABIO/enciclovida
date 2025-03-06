@@ -22,7 +22,8 @@ class Admin::UpdateMapsController < ApplicationController
       # Itera sobre cada fila del Excel, omitiendo la primera fila de encabezados
       hoja.each_row_streaming(offset: 1) do |fila|
         id_cat = fila[13]&.cell_value
-        nombre_cientifico = fila[1]&.cell_value
+        nombre_cientifico = fila[0]&.cell_value
+        titulo = fila[1]&.cell_value
         layers = fila[15]&.cell_value
         styles = fila[16]&.cell_value
         bbox = fila[17]&.cell_value
@@ -39,6 +40,7 @@ class Admin::UpdateMapsController < ApplicationController
         # Crea el objeto mapa
         mapa = {
           "nombre_cientifico" => nombre_cientifico,
+          "titulo" => titulo,
           "layers" => layers,
           "styles" => styles,
           "bbox" => bbox,
@@ -50,8 +52,8 @@ class Admin::UpdateMapsController < ApplicationController
       end
       # Convierte el hash a un array de objetos
       # proveedores_array = proveedores_hash.values
-      
       Especie.update_geoserver_info(proveedores_hash)
+
       redirect_to admin_update_maps_upload_path, notice: "Datos importados exitosamente."
     rescue => e
       redirect_to admin_update_maps_upload_path, alert: "Hubo un error al importar los datos: #{e.message}"
