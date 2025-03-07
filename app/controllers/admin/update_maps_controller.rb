@@ -1,7 +1,6 @@
 require 'roo'
 
 class Admin::UpdateMapsController < Admin::AdminController
-  before_action :set_admin_especie_catalogo
 
   def upload
   end
