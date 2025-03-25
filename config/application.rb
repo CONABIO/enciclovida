@@ -30,6 +30,7 @@ FUZZY_NOM_CIEN = Blurrily::Client.new(:host => IP, :db_name => 'nombres_cientifi
 
 module Buscador
   class Application < Rails::Application
+ 
     config.assets.precompile << 'delayed/web/application.css'
     config.load_defaults 5.1
     Encoding.default_external = Encoding::UTF_8
