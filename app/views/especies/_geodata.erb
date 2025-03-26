@@ -24,7 +24,7 @@
 
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
     <% if @datos[:geodatos][:cuales].include?('naturalista') %>
-      <h6 class="dropdown-header font-weight-bolder">Observaciones de Naturalista</h6>
+      <h6 class="dropdown-header font-weight-bolder">Observaciones de naturalista</h6>
       <%= link_to(" KML #{icono_descarga}".html_safe, @datos[:geodatos][:naturalista_kml], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_kml].present? %>
       <%= link_to(" KMZ #{icono_descarga}".html_safe, @datos[:geodatos][:naturalista_kmz], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_kmz].present? %>
       <%= link_to(" JSON #{icono_descarga}".html_safe, @datos[:geodatos][:naturalista_json], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_json].present? %>
