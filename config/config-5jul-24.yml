@@ -13,7 +13,7 @@ base: &base
 
   # URL informativas del geoportal
   geoportal_informacion: http://www.conabio.gob.mx/snibgeoportal/Ejemplar.php?id=
-  geoportal_pdf: http://www.snib.mx/ejemplares/docs/CONABIO-SNIB-DiccionarioDatosEjemplaresGeoportal-201906.pdf
+  geoportal_pdf: https://www.snib.mx/ejemplares/docs/CONABIO-SNIB-DiccionarioDatosEjemplaresGeoportal-202412.pdf
 
   # URL geoserver, se realizo un proxy reverse en el puerto 9001
   geoserver_url: https://enciclovida.mx:9001/mapcache/wms
