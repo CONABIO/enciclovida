@@ -41,7 +41,7 @@
 
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header font-weight-bolder">Ejemplares SNIB</h6>
-    <%= link_to "Descargar ejemplares SNIB #{icono_descarga}".html_safe, "https://www.snib.mx/snibgeoportal/enciclovida/?id=#{@especie.scat.catalogo_id}", target: "_blank", class: "dropdown-item" %>
+    <%= link_to "Descargar ejemplares SNIB CSV #{icono_descarga}".html_safe, "https://www.snib.mx/snibgeoportal/enciclovida/?id=#{@especie.scat.catalogo_id}", target: "_blank", class: "dropdown-item" %>
 
 
     <% if @datos[:geodatos][:cuales].include?('geoserver') %>
