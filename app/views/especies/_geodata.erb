@@ -21,22 +21,28 @@
   <button class="btn btn-link btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Descarga de datos <i><%= icono_descarga %></i>
   </button>
+
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
     <% if @datos[:geodatos][:cuales].include?('naturalista') %>
-      <h6 class="dropdown-header font-weight-bolder">Observaciones de <%= imagotipo_naturalista_nombre %></h6>
+      <h6 class="dropdown-header font-weight-bolder">Observaciones de Naturalista</h6>
       <%= link_to(" KML #{icono_descarga}".html_safe, @datos[:geodatos][:naturalista_kml], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_kml].present? %>
       <%= link_to(" KMZ #{icono_descarga}".html_safe, @datos[:geodatos][:naturalista_kmz], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_kmz].present? %>
       <%= link_to(" JSON #{icono_descarga}".html_safe, @datos[:geodatos][:naturalista_json], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:naturalista_json].present? %>
-    <% end %>
+      <% end %>
 
     <% if @datos[:geodatos][:cuales].include?('snib') %>
       <div class="dropdown-divider"></div>
-      <h6 class="dropdown-header font-weight-bolder">Ejemplares del SNIB</h6>
+      <h6 class="dropdown-header font-weight-bolder">Ejemplares excepto naturalista</h6>
       <%= link_to(" KML #{icono_descarga}".html_safe, @datos[:geodatos][:snib_kml], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:snib_kml].present? %>
       <%= link_to(" KMZ #{icono_descarga}".html_safe, @datos[:geodatos][:snib_kmz], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:snib_kmz].present? %>
       <%= link_to(" JSON #{icono_descarga}".html_safe, @datos[:geodatos][:snib_json], :target => :_blank, :class => 'dropdown-item') if @datos[:geodatos][:snib_json].present? %>
       <%= link_to("Diccionario de datos <i class='fa fa-external-link-square'></i>".html_safe, CONFIG.geoportal_pdf, :target => :_blank, :class => 'dropdown-item') %>
     <% end %>
+
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header font-weight-bolder">Ejemplares SNIB</h6>
+    <%= link_to "Descargar ejemplares SNIB #{icono_descarga}".html_safe, "https://www.snib.mx/snibgeoportal/enciclovida/?id=#{@especie.scat.catalogo_id}", target: "_blank", class: "dropdown-item" %>
+
 
     <% if @datos[:geodatos][:cuales].include?('geoserver') %>
       <div class="dropdown-divider"></div>
