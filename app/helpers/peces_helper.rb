@@ -129,13 +129,17 @@ module PecesHelper
           end
         end
       when :edo_cons
-        filtros = filtros.map{ |f| f.to_i }
-        @filtros[f].each do |k,v|
-          v.each do |catalogo|
-            next unless filtros.include?(catalogo.id)
-            filtros_usados.unshift("<span title='#{catalogo.descripcion}' class='btn-title'><i class = '#{catalogo.descripcion.estandariza}-ev-icon'></i></span>")
+        filtros = Array(params[f]).map { |f| f.to_i }
+        if @filtros[f].present? 
+          @filtros[f].each do |k,v|
+            v.each do |catalogo|
+              next unless filtros.include?(catalogo.id)
+              filtros_usados.unshift("<span title='#{catalogo.descripcion}' class='btn-title'><i class = '#{catalogo.descripcion.estandariza}-ev-icon'></i></span>")
+            end
+          
           end
         end
+        
       else
         @filtros[f].map{|k| [k.nombre_propiedad, k.id]}.each do |edo, id|
           edo_p = edo.parameterize
@@ -145,6 +149,7 @@ module PecesHelper
           end
         end
       end
+      
     end
 
     grupo = params[:grupos] || ''
