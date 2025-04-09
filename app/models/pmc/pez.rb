@@ -38,7 +38,7 @@ class Pmc::Pez < ActiveRecord::Base
   accepts_nested_attributes_for :peces_criterios, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :peces_propiedades, reject_if: :all_blank, allow_destroy: true
 
-  GRUPOS_PECES_MARISCOS = %w(Actinopterygii Chondrichthyes Crustacea Mollusca Echinodermata)
+  GRUPOS_PECES_MARISCOS = %w(Actinopteri  Elasmobranchii Crustacea Mollusca Echinodermata)
   CONSUMO_HUMANO = 1217.freeze
 
   # Sobre escribiendo este metodo para las rutas mas legibles

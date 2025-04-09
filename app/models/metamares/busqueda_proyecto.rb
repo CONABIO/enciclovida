@@ -55,7 +55,7 @@ nombre_region, nombre_zona, descarga_datos, titulo_compilacion').
   private
 
   # REVISADO: Algunos valores como el offset, pagina y por pagina
-  def paginado_y_offset
+  def paginado_y_offset 
     self.pagina = (params[:pagina] || 1).to_i
     self.por_pagina = params[:por_pagina].present? ? params[:por_pagina].to_i : POR_PAGINA_PREDETERMINADO
     self.offset = (pagina-1)*por_pagina

@@ -124,7 +124,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Select para nombre de la categoria y niveles
   scope :select_categoria_taxonomica, -> { select("#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} AS nombre_categoria_taxonomica, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)} AS nivel1, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)} AS nivel2, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)} AS nivel3, #{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)} AS nivel4") }
   #select para los grupos iconicos en la busqueda avanzada para no realizar varios queries al mismo tiempo
-  scope :select_grupos_iconicos, -> { select(:id, :nombre_cientifico, :nombre_comun_principal).left_joins(:adicional) }
+  scope :select_grupos_iconicos, -> { select(:id, :nombre_cientifico, :nombre_comun_principal).left_joins(:adicional).where(estadoRegistro: 1) }
   # Select para agurpar el los niveles de categoria taxonomica
   scope :select_nivel_categoria, -> { select("CONCAT(#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel1)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel2)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel3)},#{CategoriaTaxonomica.table_name}.#{CategoriaTaxonomica.attribute_alias(:nivel4)}) AS nivel_categoria") }
   # Scope para saber que taxones inferiores desplegar de acuerdo a la categoria en la busqueda vanzada

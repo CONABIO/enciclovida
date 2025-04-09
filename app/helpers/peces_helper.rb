@@ -2,7 +2,7 @@ module PecesHelper
 
   def checkboxGruposIconicos
     checkBoxes = ''
-    grupos = params[:grupos_iconicos] || []
+    grupos = params[:grupos_iconicos] || [] 
 
     @grupos.each do |taxon|  # Para tener los grupos ordenados
       checkBoxes << "<label>"

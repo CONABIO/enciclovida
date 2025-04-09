@@ -27,8 +27,21 @@ class BusquedaAvanzada < Busqueda
   def categoria_por_nivel
     if taxon.present? && params[:cat].present? && params[:nivel].present?
       # Aplica el query para los descendientes
-      self.taxones = taxones.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,#{taxon.id},%'")
+      if taxon.id == 286957
+        taxon_ids =  [286957,286963]
+        # Construye las condiciones LIKE para cada taxon_id
+        like_conditions = taxon_ids.map do |id|
+          "#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE ?"
+        end.join(' OR ')
 
+        # Construye los valores para las condiciones LIKE
+        like_values = taxon_ids.map { |id| "%,#{id},%" }
+
+        # Aplica las condiciones a la consulta
+        self.taxones = taxones.where(like_conditions, *like_values)
+      else
+        self.taxones = taxones.where("#{Especie.attribute_alias(:ancestry_ascendente_directo)} LIKE '%,#{taxon.id},%'")
+      end
       # Se limita la busqueda al rango de categorias taxonomicas de acuerdo al nivel
       self.taxones = taxones.nivel_categoria(params[:nivel], params[:cat])
     elsif params[:cat].present? && params[:nivel].present?

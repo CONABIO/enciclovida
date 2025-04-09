@@ -14,7 +14,7 @@ class Busqueda
   ]
 
   GRUPOS_REINOS = %w(Animalia Plantae Fungi Prokaryotae Protoctista)
-  GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopterygii Petromyzontidae Myxini Chondrichthyes
+  GRUPOS_ANIMALES = %w(Mammalia Aves Reptilia Amphibia Actinopteri Petromyzontidae Myxini Elasmobranchii 
 Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria Porifera)
   GRUPOS_PLANTAS_Y_HONGOS = %w(Fungi Bryophyta Anthocerotophyta Polypodiidae Pinidae Cycadidae Lilianae Magnoliidae)
   

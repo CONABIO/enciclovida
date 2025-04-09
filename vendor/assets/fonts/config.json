@@ -8,7 +8,7 @@
   "glyphs": [
     {
       "uid": "c01dcf307562bb3aa1cc4457ea89723c",
-      "css": "actinopterygii",
+      "css": "actinopteri",
       "code": 59392,
       "src": "custom_icons",
       "selected": true,
@@ -17,7 +17,7 @@
         "width": 1000
       },
       "search": [
-        "actinopterygii"
+        "actinopteri"
       ]
     },
     {
@@ -428,7 +428,7 @@
     },
     {
       "uid": "587ff6ae142fece62fb1e6afd2f6f4ac",
-      "css": "chondrichthyes",
+      "css": "elasmobranchii",
       "code": 59419,
       "src": "custom_icons",
       "selected": true,
@@ -437,7 +437,7 @@
         "width": 1000
       },
       "search": [
-        "chondrichthyes"
+        "elasmobranchii"
       ]
     },
     {

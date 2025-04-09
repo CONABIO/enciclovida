@@ -23,11 +23,11 @@ class Pmc::PecesController < Pmc::PmcController
       end
     end
     @doc = @doc.to_html
-
   end
 
   # Busqueda por pez y marisco
-  def busqueda
+  def busqueda 
+   
     @filtros = Pmc::Criterio.dame_filtros
     @grupos = Especie.select_grupos_iconicos.where(nombre_cientifico: Pmc::Pez::GRUPOS_PECES_MARISCOS)
     @peces = Pmc::Pez.filtros_peces
@@ -235,7 +235,7 @@ class Pmc::PecesController < Pmc::PmcController
 
         criterios['Características'][4] = dato
 
-      when Pmc::Propiedad::ZONAI
+      when Pmc::Propiedad::ZONAIparams[:grupos_iconicos
         criterios['Estado poblacional en el Pacífico'][0] = dato
       when Pmc::Propiedad::ZONAII
         criterios['Estado poblacional en el Pacífico'][1] = dato
