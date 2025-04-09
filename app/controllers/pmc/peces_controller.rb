@@ -238,7 +238,7 @@ class Pmc::PecesController < Pmc::PmcController
       when Pmc::Propiedad::ZONAI
         criterios['Estado poblacional en el Pacífico'][0] = dato
       when Pmc::Propiedad::ZONAII
-        criterios['Estado poblacioElasmobranchiinal en el Pacífico'][1] = dato
+        criterios['Estado poblacional en el Pacífico'][1] = dato
       when Pmc::Propiedad::ZONAIII
         criterios['Estado poblacional en el Pacífico'][2] = dato
       when Pmc::Propiedad::ZONAIV
