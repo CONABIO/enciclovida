@@ -48,10 +48,10 @@ class Pmc::Pez < ActiveRecord::Base
 
   # REVISADO: Corre los metodos necesarios para actualizar el pez
   def actualiza_pez
-    guarda_nom_iucn
+    #guarda_nom_iucn
     asigna_imagen
-    guarda_redis
-    asigna_valor_zonas_y_total
+   # guarda_redis
+    #asigna_valor_zonas_y_total
   end
 
   # REVISADO: Guarda el redis del pez aprovechando el metodo empaquetado de especie

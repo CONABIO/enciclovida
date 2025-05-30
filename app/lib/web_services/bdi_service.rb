@@ -1,6 +1,6 @@
 class BDIService
 
-  ALBUM_ILUSTRACIONES = '5035-Ilustraciones'.freeze
+    ALBUM_ILUSTRACIONES = '5035-Ilustraciones'.freeze
   ALBUM_USOS = '5010-Usos'.freeze
   ALBUM_VIDEOS = '5121-Video'.freeze
 
