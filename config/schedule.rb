@@ -23,4 +23,5 @@ set :environment, 'production' # O 'development' según tu entorno
 every 1.day, at: '4:30 am' do
   runner 'UpdatePhoto.update_peces'
   runner 'UpdatePhoto.update_enciclo'
+  
 end
