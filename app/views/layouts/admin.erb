@@ -14,6 +14,9 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track': true %>
   <%= javascript_include_tag 'admin/admin', 'data-turbolinks-track': true %>
 
+  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script src="path/to/jquery.endless-scroll.min.js"></script>
+
   <script type="text/javascript" data-turbolinks-track="true">
       TYPES = eval("<%=raw I18n.transliterate(CategoriaTaxonomica.categorias_usos_redis).gsub(' ','_') %>");
       SITE_URL = "<%= CONFIG.site_url %>";

@@ -24,16 +24,16 @@ class UpdatePhoto
     return if url_exists?(foto_actual) 
     especie = taxon.gsub("var.", "").gsub("f.", "").gsub("subsp.", "").strip
     nueva_img = fotoweb_conabio(especie)
-
+    
     if nueva_img != "sin imagen"
-      if campo == "foto_principal"
+      if campo == :foto_principal
         model.where(id: row.id).update_all(campo => nueva_img)
       else
         model.where(especie_id: row.especie_id).update_all(campo => nueva_img)
       end
     else
       nueva_img = img_naturalista(especie)
-      if campo == "foto_principal"
+      if campo == :foto_principal
         model.where(id: row.id).update_all(campo => (nueva_img != "sin imagen" ? nueva_img : " "))
       else
         model.where(especie_id: row.especie_id).update_all(campo => (nueva_img != "sin imagen" ? nueva_img : "/assets/app/peces/silueta.png"))

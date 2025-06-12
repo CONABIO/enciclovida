@@ -37,17 +37,34 @@ function asigna_valores_select()
     }
 }
 
-$(document).ready(function(){
+$(document).ready(function() {
+    var paginaActual = opciones.pagina || 1;
+    var cargando = false;
+    var finComentarios = false;
+
     $('#mas_comentarios').scrollPagination({
-        per_page: opciones.por_pagina, // The number of posts per scroll to be loaded
-        page    : opciones.pagina, // the actual page
-        error   : 'No hay mas comentarios.', // When the user reaches the end this is the message that is
-        // displayed. You can change this if you want.
-        delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
-                       // This is mainly for usability concerns. You can alter this as you see fit
-        scroll  : true // The main bit, if set to false posts will not load as the user scrolls.
-                       // but will still load if the user clicks.
+        per_page: opciones.por_pagina,
+        page: paginaActual,
+        error: 'No hay más comentarios.',
+        delay: 100,
+        scroll: true,
+        beforeLoad: function() {
+            if (cargando || finComentarios) return false;
+            cargando = true;
+            return true;
+        },
+        afterLoad: function(elementsLoaded) {
+            cargando = false;
+            if (!elementsLoaded || elementsLoaded.length === 0) {
+                finComentarios = true;
+                $('#mas_comentarios').append('<p>No hay más comentarios.</p>');
+                $('#mas_comentarios').stopScrollPagination();
+            } else {
+                paginaActual++;
+            }
+        }
     });
+});
     /* Comentado ya que no se muestra el correo extraído de xolo, en un futuro se necesitará
     $('#mas_comentarios').on('click', '.comentarios-correos', function() {
         $(this).children('div.correos, button.btn-correo').toggleClass('hidden');
@@ -300,4 +317,3 @@ $(document).ready(function(){
         }
     });
 
-});

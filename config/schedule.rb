@@ -18,9 +18,14 @@
 # end
 
 # Learn more: https://github.com/javan/whenever
-set :environment, 'production' # O 'development' según tu entorno
+set :environment, 'development' # O 'development' según tu entorno
 
-every 1.day, at: '4:30 am' do
+set :output, {
+    standar: "log/cron.log",
+  error: "log/cron_error.log"
+}
+
+every 1.day, at: '2:38 pm' do
   runner 'UpdatePhoto.update_peces'
   runner 'UpdatePhoto.update_enciclo'
   
