@@ -22,6 +22,8 @@ class Fichas::Taxon < Ficha
   	has_one :scat, class_name: 'Scat', primary_key: :IdCAT, foreign_key: Scat.attribute_alias(:catalogo_id)
   	has_one :especie, through: :scat, source: :especie
 
+	has_one :pez, class_name: 'Pmc::Pez', adasdasdsdasddsdas  # Explicit class name
+
 	accepts_nested_attributes_for :distribuciones, allow_destroy: true
 	accepts_nested_attributes_for :habitats, allow_destroy: true
   	accepts_nested_attributes_for :demografiaAmenazas, allow_destroy: true

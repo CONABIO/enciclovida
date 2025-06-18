@@ -26,12 +26,12 @@ Buscador::Application.configure do
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
   config.assets.debug = true
-  config.active_support.cache_format_version = 7.1
+  config.active_support.cache_format_version = 7.0
   config.active_storage.service = :local
 
   config.assets.initialize_on_precompile = true
 
   # Para habilitar web console en otros enviroments
   config.web_console.development_only = true
-  config.web_console.whitelisted_ips = %w( 172.16.3.0/16 192.168.100.0/16 127.0.0.1 )
+  config.web_console.allowed_ips = %w( 172.16.3.0/16 192.168.100.0/16 127.0.0.1 )
 end

@@ -7,9 +7,12 @@ module BusquedasHelper
   # REVISADO: Filtros para los grupos icónicos en la búsqueda avanzada vista general
   def radioGruposIconicos(resultados = false)
     def arma_span(taxon)
-      "<label>#{radio_button_tag('id_gi', taxon.id, params[:id_gi].to_i === taxon.id, id: "id_gi_#{taxon.id}")}<span class='mx-1'><span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn-title'></span></span></label>"
+      if taxon.nil?
+        "<label>#{radio_button_tag('id_gi', taxon, params[:id_gi].to_i === taxon, id: "id_gi_#{taxon}")}<span class='mx-1'><span title='#{taxon}' class='#{taxon}-ev-icon btn-title'></span></span></label>"
+      else 
+        "<label>#{radio_button_tag('id_gi', taxon.id, params[:id_gi].to_i === taxon.id, id: "id_gi_#{taxon.id}")}<span class='mx-1'><span title='#{taxon.nombre_comun_principal}' class='#{taxon.nombre_cientifico.parameterize}-ev-icon btn-title'></span></span></label>"
+      end
     end
-
     radios = ''
     radios << '<div class="col-12">'
     radios << '<h6><strong>Animales</strong></h6>'

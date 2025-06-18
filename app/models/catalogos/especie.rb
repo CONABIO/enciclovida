@@ -49,7 +49,7 @@ class Especie < ActiveRecord::Base
 
   has_one :proveedor
   has_one :adicional
-  has_one :pez, :class_name => 'Pmc::Pez'
+  has_one :pez, class_name: 'Pmc::Pez', foreign_key: 'especie_id', inverse_of: :especie
   has_one :scat, :foreign_key => attribute_alias(:id)
 
   belongs_to :categoria_taxonomica, :foreign_key => attribute_alias(:categoria_taxonomica_id)
@@ -347,7 +347,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end }
 
     if opc[:iucn_ws]
-      iucn_ws = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico, id: id)
+      iucn_ws = WebServices::IucnService.new.dameRiesgo(:nombre => nombre_cientifico, id: id)
 
       if iucn_ws.present?
         response[:grupo2] << {'IUCN Red List of Threatened Species 2017-1' => [iucn_ws]}
@@ -778,7 +778,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     # URL para la consulta de registros
     url = "#{CONFIG.site_url}especies/#{id}/consulta-registros"
 
-    geo = Geoportal::Snib.new({ params: { catalogo_id: jres[:catalogo_id], coleccion: 'snib' } })
+    geo = ::Geoportal::Snib.new({ params: { catalogo_id: jres[:catalogo_id], coleccion: 'snib' } })
     geo.tiene_registros?
     
     if geo.resp[:estatus]

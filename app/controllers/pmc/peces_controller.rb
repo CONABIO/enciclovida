@@ -11,19 +11,42 @@ class Pmc::PecesController < Pmc::PmcController
   end
 
   def index
-    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/diversidad/alimentos/peces/")).css('#introenciclovida, #introenciclovida2')
-    @doc.xpath('//comment()').remove
-
-    @doc.each do |el|
-      el.traverse do |n|
-        if n.matches?('img')
-          n.attribute('src').value = "https://www.biodiversidad.gob.mx/" + n.attribute('src').value unless  n.attribute('src').value.include?('biodiversidad.gob.mx')
-          n['class'] = n['class'].present? ? (n['class'] + ' img-fluid') : 'img-fluid'
+    begin
+      # Use URI.open instead of deprecated open()
+      url = "https://www.biodiversidad.gob.mx/diversidad/alimentos/peces/"
+      html = URI.open(url, 
+                    'User-Agent' => 'Mozilla/5.0', 
+                    ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).read
+      
+      # Parse and process the document
+      @doc = Nokogiri::HTML(html).css('#introenciclovida, #introenciclovida2')
+      @doc.xpath('//comment()').remove
+      
+      @doc.each do |el|
+        el.traverse do |n|
+          if n.name == 'img' && n['src']
+            # Fix image paths
+            unless n['src'].include?('biodiversidad.gob.mx')
+              n['src'] = URI.join("https://www.biodiversidad.gob.mx/", n['src']).to_s
+            end
+            # Add img-fluid class
+            n['class'] = [n['class'], 'img-fluid'].compact.join(' ')
+          end
         end
       end
+      
+      @doc = @doc.to_html
+      
+    rescue OpenURI::HTTPError => e
+      Rails.logger.error "HTTP Error fetching peces page: #{e.message}"
+      @doc = "<p>No se pudo cargar la información en este momento. Por favor intente más tarde.</p>"
+    rescue SocketError, Timeout::Error, Errno::ECONNRESET => e
+      Rails.logger.error "Network Error fetching peces page: #{e.message}"
+      @doc = "<p>Error de conexión al obtener la información.</p>"
+    rescue StandardError => e
+      Rails.logger.error "Unexpected error: #{e.message}"
+      @doc = "<p>Ocurrió un error inesperado.</p>"
     end
-    @doc = @doc.to_html
-
   end
 
   # Busqueda por pez y marisco

@@ -25,14 +25,14 @@ gem 'fontello_rails_converter', git: 'git@github.com:axgonzalezconabio/fontello_
 gem 'formtastic'
 gem 'haml'
 gem 'htmlentities'
-gem 'i18n-js', '~> 3.0.11'
+gem 'i18n-js', '~> 3.9.1'
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'levenshtein-ffi', :require => 'levenshtein'
 gem 'mail'
 gem 'mime-types'
-gem 'mini_racer', git: 'https://github.com/rubyjs/mini_racer', branch: 'refs/pull/186/head'
+gem 'mini_racer'
 gem 'mysql2'
 gem 'nokogiri', '>= 1.10.8'  # Hacer un parse con xml
 gem 'optimist'
@@ -40,7 +40,7 @@ gem 'httparty'
 gem 'pg'
 gem 'puma', '>= 3.12.4' # Use Puma as the app server
 gem 'rack-contrib'
-gem 'rails', '7.1.3.2'
+gem 'rails', '~> 7.0.8'
 gem 'rails-erd'
 gem 'railties'
 gem 'rake', '>= 12.3.3'
@@ -64,6 +64,8 @@ gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary', '0.12.4'  # Actualizando la version truena (TODO)
 gem 'zip-zip' # Needed by axlsx
 
+#new gems 
+gem 'composite_primary_keys', '~> 14.0'  # Latest 7.0-compatible version
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false

@@ -74,7 +74,7 @@
   </div>
 
   <div class="row">
-    <%= render file: 'busquedas/avanzada' if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
+    <%= render 'busquedas/avanzada' if params[:action]=='resultados' && params[:busqueda]=='avanzada' %>
 
     <div id="pestañas" class="<%= 'col-md-9' if params[:action]=='resultados' && params[:busqueda]=='avanzada' %> col-xs-12 panel">
       <div class="row">

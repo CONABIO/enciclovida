@@ -57,7 +57,7 @@ class WebServices::IucnService
     @token = CONFIG.iucn.token
 
     url = "#{@iucn}/api/v3/species/#{opts[:nombre].limpiar(tipo: 'ssp')}?token=#{@token}"
-    url_escape = URI.escape(url)
+    url_escape = URI.encode_www_form_component(url)
     uri = URI.parse(url_escape)
     req = Net::HTTP::Get.new(uri.to_s)
     begin

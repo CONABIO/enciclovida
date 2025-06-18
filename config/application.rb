@@ -1,8 +1,11 @@
+require 'logger'
+
 require_relative 'boot'
 require 'rails/all'
 require 'uri'
 require 'open-uri'
 require 'csv'
+
 require File.expand_path('../config', __FILE__)
 
 CONFIG = BuscadorConfig.new(File.expand_path('../config.yml', __FILE__))
@@ -41,8 +44,12 @@ module Buscador
     config.middleware.use I18n::JS::Middleware
 
     #config.autoload_paths += %W(#{config.root}/lib)
+    config.autoloader = :zeitwerk  # Rails 7+ ya lo usa por defecto
     config.eager_load_paths += Dir[Rails.root.join('lib')]
-    config.autoload_paths += Dir[Rails.root.join('app', 'models', '{*/}')]
+    config.autoload_paths += Dir["#{config.root}/app/models/**/"]  # Incluir subcarpetas
+
+    #config.autoload_paths += Dir["#{config.root}/app/models/**/"]
+
     #config.sass.preferred_syntax=:sass
 
     # Cambia en nombre de la tabla por default
