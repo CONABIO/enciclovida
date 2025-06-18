@@ -1,4 +1,4 @@
-class BDIService
+class WebServices::BdiService
 
     ALBUM_ILUSTRACIONES = '5035-Ilustraciones'.freeze
   ALBUM_USOS = '5010-Usos'.freeze

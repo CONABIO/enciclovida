@@ -2,7 +2,7 @@
 require 'timeout'
 require 'uri'
 
-class Janium_Service
+class WebServices::JaniumService
 
   def initialize(options = {})
     @service_name = 'Bioteca CONABIO'

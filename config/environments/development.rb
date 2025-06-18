@@ -26,6 +26,8 @@ Buscador::Application.configure do
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
   config.assets.debug = true
+  config.active_support.cache_format_version = 7.1
+  config.active_storage.service = :local
 
   config.assets.initialize_on_precompile = true
 

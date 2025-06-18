@@ -1,4 +1,4 @@
-class MacaulayService
+class WebServices::MacaulayService
 
   def dameMedia_nc(taxonNC, type, page=1, min_page_size = 20)
     cornell = Rails.env.production? ? CONFIG.cornell.api : CONFIG.cornell.api_rp

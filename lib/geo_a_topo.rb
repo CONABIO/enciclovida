@@ -1,4 +1,4 @@
-class GeoAtopo
+class GeoATopo
 
   # Guarda el topo json de la region seleccionada, posibles valores son: estado municipio anp ecorregion
   def topojson_por_region(region)

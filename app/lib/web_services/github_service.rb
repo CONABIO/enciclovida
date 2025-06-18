@@ -1,4 +1,4 @@
-class GithubService
+class WebServices::GithubService
 
   def dame_issues
     resp = Rails.cache.fetch('github_issues', expires_in: eval(CONFIG.cache.github.issues)) do

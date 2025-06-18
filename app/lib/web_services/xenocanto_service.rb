@@ -1,4 +1,4 @@
-class XenoCantoService
+class WebServices::XenocantoService
     def obtener_cantos(taxon)
         taxon_escape = ERB::Util.url_encode(taxon)
         url = "https://www.xeno-canto.org/api/2/recordings?query=#{taxon_escape}"

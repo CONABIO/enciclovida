@@ -45,9 +45,15 @@ class String
   end
 
   # Sobre escribe el metodo para poder convertir las palabras que empiezan con acento
-  def capitalize
-    return self unless self.present?
-    self.sub(/^(.)/) { $1.mb_chars.capitalize }
+  def capitalize(option = :first_letter)
+    case option
+    when :first_letter
+      self.gsub(/(\A\w)/) { $1.upcase }
+    when :first_word
+      self.split(' ').first.gsub(/(\A\w)/) { $1.upcase }
+    else
+      super()  # Fall back to original capitalize
+    end
   end
 
   def estandariza

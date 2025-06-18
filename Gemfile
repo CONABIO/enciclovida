@@ -4,13 +4,13 @@ gem 'actionpack-action_caching'  # Fue removido del core en 4.0
 gem 'activerecord-session_store'  # Pasa los request con POST a traves de la base (para request muy largos)
 gem 'activerecord-import' # Para inserciones masivas eficientes
 gem 'ancestry', git: 'https://github.com/calonsot/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
-gem 'caxlsx'#, git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+#gem 'caxlsx'#, git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+gem 'caxlsx', '~> 4.1.0'
 gem 'caxlsx_rails'  # Gema para exportar en excel
 gem 'bootstrap', '~> 4.5.0'
 gem 'carrierwave'  # Form file upload
 gem 'cocoon'  # Anida las formas de diferentes o del mismo modelo
 gem 'coffee-rails', '~> 4.2'
-gem 'composite_primary_keys'  # Multiples llaves primarias
 gem 'daemons', '1.0.10'  # para hacer ejecutables bash
 gem 'delayed_job'
 gem 'delayed_job_mongoid'
@@ -20,11 +20,12 @@ gem 'elasticsearch-rails'
 gem 'devise', '>= 4.7.1'
 gem 'exifr'
 gem 'font-awesome-rails'
-gem 'fontello_rails_converter', git: 'https://github.com/railslove/fontello_rails_converter.git'
+#gem 'fontello_rails_converter', git: 'https://github.com/railslove/fontello_rails_converter.git'
+gem 'fontello_rails_converter', git: 'git@github.com:axgonzalezconabio/fontello_rails_converter.git', branch: 'ruby3-support'
 gem 'formtastic'
 gem 'haml'
 gem 'htmlentities'
-gem 'i18n-js'
+gem 'i18n-js', '~> 3.0.11'
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
@@ -39,7 +40,7 @@ gem 'httparty'
 gem 'pg'
 gem 'puma', '>= 3.12.4' # Use Puma as the app server
 gem 'rack-contrib'
-gem 'rails', '5.1.6.2'
+gem 'rails', '7.1.3.2'
 gem 'rails-erd'
 gem 'railties'
 gem 'rake', '>= 12.3.3'
@@ -55,7 +56,6 @@ gem 'seed_dump'  # Extrae las tuplas de un modelo o de toda la base
 gem 'simple_form', '>= 5.0.0'
 gem 'soulmate', :require => 'soulmate/server'
 gem 'turbolinks', '~> 5'  # Hace mas rapidos los links
-
 gem 'uglifier'
 gem 'vinted-blurrily', :require => 'blurrily/server.rb'   # Forza a blurrily a usar rails mayor al 4
 gem 'wash_out'

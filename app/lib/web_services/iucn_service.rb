@@ -1,4 +1,4 @@
-class IUCNService
+class WebServices::IucnService
 
   attr_accessor :datos, :row, :validacion, :taxon
 

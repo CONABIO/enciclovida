@@ -1,122 +1,133 @@
 class DefaultFormBuilder < ActionView::Helpers::FormBuilder
   include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::FormTagHelper
+  include ActionView::Helpers::OutputSafetyHelper
+
   helpers = field_helpers +
-            %w{date_select datetime_select time_select} +
-            %w{collection_select select country_select time_zone_select} -
-            %w{hidden_field label fields_for} # Don't decorate these
-  custom_params = %w(description label label_after wrapper label_class field_value)
+            %w[date_select datetime_select time_select] +
+            %w[collection_select select country_select time_zone_select] -
+            %w[hidden_field label fields_for] # Don't decorate these
+
+  custom_params = %w[description label label_after wrapper label_class field_value]
+
   helpers.each do |name|
     define_method(name) do |field, *args|
-      options = if name.to_s == "select"
-        args.last.is_a?(Hash) ? args.last : {}
-      elsif args[-2].is_a?(Hash)
-        args.pop
-      elsif args.last.is_a?(Hash)
-        args.last
-      else
-        args.reverse.detect{|a| a.is_a?(Hash)} || {}
-      end
-      options = options.clone
+      options = args.extract_options!
+      options = options.dup
       options[:field_name] = name
+
       if name == 'radio_button'
         options[:field_value] = args[0]
       end
-      if %w(text_field file_field).include?(name.to_s)
-        css_class = options[:class] || []
-        css_class = [css_class, 'text'].flatten.uniq.join(' ') if name.to_s == "text_field"
-        css_class = [css_class, 'file'].flatten.uniq.join(' ') if name.to_s == "file_field"
-        args << {} unless args.last.is_a?(Hash)
-        args.last[:class] = css_class
+
+      if %w[text_field file_field].include?(name.to_s)
+        css_class = Array(options[:class] || '')
+        css_class << 'text' if name == "text_field"
+        css_class << 'file' if name == "file_field"
+        options[:class] = css_class.uniq.join(' ')
         options[:wrapper] ||= {}
         options[:wrapper][:class] = "#{options[:wrapper][:class]} #{name}".strip
       end
-      args.each_with_index do |a,i|
-        custom_params.each do |p|
-          args[i].delete(p.to_sym) if a.is_a?(Hash)
-        end
-      end
-      content = super(field, *args)
-      form_field(field, content, options)
+
+      custom_params.each { |p| options.delete(p.to_sym) }
+
+      field_content = super(field, *args, options)
+      form_field(field, field_content, options)
     end
   end
-  
-  class INatInstanceTag < ActionView::Helpers::InstanceTag
-    def to_select_tag_with_option_tags(option_tags, options, html_options)
-      html_options = html_options.stringify_keys
-      add_default_name_and_id(html_options)
-      value = value(object)
-      selected_value = options.has_key?(:selected) ? options[:selected] : value
-      disabled_value = options.has_key?(:disabled) ? options[:disabled] : nil
-      content_tag("select", add_options(option_tags, options, selected_value), html_options)
-    end
-  end
-  
-  # Override to get better attrs in there
+
   def time_zone_select(method, priority_zones = nil, options = {}, html_options = {})
-    html_options[:class] = "#{html_options[:class]} time_zone_select"
-    zone_options = "".html_safe
-    selected = options.delete(:selected)
-    model = options.delete(:model) || ActiveSupport::TimeZone
-    zones = model.all
-    convert_zones = lambda {|list, selected| 
-      list.map do |z|
-        opts = {
-          :value => z.name, 
-          "data-time-zone-abbr" => z.tzinfo.current_period.abbreviation, 
-          "data-time-zone-tzname" => z.tzinfo.name,
-          "data-time-zone-offset" => z.utc_offset,
-          "data-time-zone-formatted-offset" => z.formatted_offset
-        }
-        opts[:selected] = "selected" if selected == z.name
-        content_tag(:option, z.to_s, opts)
-      end.join("\n")
-    }
-    if priority_zones
-      if priority_zones.is_a?(Regexp)
-        priority_zones = model.all.find_all {|z| z =~ priority_zones}
-      end
-      zone_options += convert_zones.call(priority_zones, selected).html_safe
-      zone_options += "<option value=\"\" disabled=\"disabled\">-------------</option>\n".html_safe
-      zones = zones.reject { |z| priority_zones.include?( z ) }
-    end
-    zone_options += convert_zones.call(zones, selected).html_safe
-    tag = INatInstanceTag.new(
-      object_name, method, self, options.delete(:object)
-    ).to_select_tag_with_option_tags(zone_options, options, html_options)
-    form_field method, tag, options.merge(html_options)
+    html_options[:class] = "#{html_options[:class]} time_zone_select".strip
+    options[:include_blank] = true unless options.key?(:include_blank)
+    
+    field_content = @template.select(
+      object_name,
+      method,
+      time_zone_options_for_select(priority_zones, options[:selected]),
+      options,
+      html_options
+    )
+    
+    form_field(method, field_content, options.merge(html_options))
   end
-  
+
   def form_field(field, field_content = nil, options = {}, &block)
     options = field_content if block_given?
-    options ||= {}
     wrapper_options = options.delete(:wrapper) || {}
-    wrapper_options[:class] = "#{wrapper_options[:class]} field #{field}_field".strip
-    content, label_content = '', ''
+    wrapper_options[:class] = ["field", "#{field}_field", wrapper_options[:class]].compact.join(' ').strip
     
-    if options[:label] != false
-      label_field = field
-      if options[:field_name] == 'radio_button'
-        label_field = [label_field, options[:field_value]].compact.join('_').gsub(/\W/, '').downcase
-      end
-      label_tag = label(label_field, options[:label].to_s.html_safe, :class => options[:label_class], :for => options[:id])
-      if options[:required]
-        label_tag += content_tag(:span, " *", :class => 'required')
-      end
-      label_content = content_tag(options[:label_after] ? :span : :div, label_tag, :class => "inlabel")
-    end
+    label_content = build_label_content(field, options) if options[:label] != false
+    description = build_description_content(options[:description]) if options[:description]
     
-    description = content_tag(:div, options[:description], :class => "description") if options[:description]
-    content = "#{content}#{block_given? ? @template.capture(&block) : field_content}"
+    content = block_given? ? @template.capture(&block) : field_content
+    arranged_content = arrange_content(label_content, content, description, options)
     
-    content = if options[:label_after]
-      "#{content} #{label_content} #{description}"
-    elsif options[:description_after]
-      "#{label_content} #{content} #{description}"
-    else
-      "#{label_content} #{description} #{content}"
-    end
-    
-    @template.content_tag(:div, content.html_safe, wrapper_options)
+    @template.content_tag(:div, arranged_content.html_safe, wrapper_options)
   end
-  
+
+  private
+
+  def time_zone_options_for_select(priority_zones, selected)
+    zones = ActiveSupport::TimeZone.all
+    option_tags = []
+    
+    if priority_zones
+      if priority_zones.is_a?(Regexp)
+        priority_zones = zones.select { |z| z.to_s.match(priority_zones) }
+      end
+      option_tags += priority_zones.map { |z| time_zone_option_tag(z, selected) }
+      option_tags << ["-------------", "", disabled: true]
+    end
+    
+    option_tags += zones.map { |z| time_zone_option_tag(z, selected) }
+    option_tags.join("\n").html_safe
+  end
+
+  def time_zone_option_tag(zone, selected)
+    opts = {
+      value: zone.name,
+      data: {
+        "time-zone-abbr" => zone.tzinfo&.current_period&.abbreviation.to_s,
+        "time-zone-tzname" => zone.tzinfo&.name.to_s,
+        "time-zone-offset" => zone.utc_offset,
+        "time-zone-formatted-offset" => zone.formatted_offset
+      }
+    }
+    opts[:selected] = "selected" if selected == zone.name
+    content_tag(:option, zone.to_s, opts)
+  end
+
+  def build_label_content(field, options)
+    label_field = if options[:field_name] == 'radio_button'
+      "#{field}_#{options[:field_value]}".parameterize.underscore
+    else
+      field
+    end
+
+    label_tag = label(label_field, options[:label].to_s.html_safe, 
+      class: options[:label_class])
+    
+    if options[:required]
+      label_tag += content_tag(:span, " *", class: 'required')
+    end
+    
+    content_tag(options[:label_after] ? :span : :div, label_tag, class: "inlabel")
+  end
+
+  def build_description_content(text)
+    return unless text.present?
+    content_tag(:div, text, class: "description")
+  end
+
+  def arrange_content(label, content, description, options)
+    parts = []
+    if options[:label_after]
+      parts = [content, label, description]
+    elsif options[:description_after]
+      parts = [label, content, description]
+    else
+      parts = [label, description, content]
+    end
+    parts.compact.join(' ').html_safe
+  end
 end

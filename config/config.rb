@@ -5,13 +5,14 @@ require 'active_support/hash_with_indifferent_access'
 class BuscadorConfig
 
   def initialize(config_file)
-    if config_file.is_a? Hash
-      @config = config_file
+    @config = if config_file.is_a?(Hash)
+      config_file
+    elsif config_file.is_a?(String) && File.exist?(config_file)
+      YAML.load_file(config_file, aliases: true, permitted_classes: [Symbol])[Rails.env] || {}
     else
-      @config = YAML.load_file(config_file)[Rails.env]
+      raise ArgumentError, "Invalid config file: #{config_file.inspect}"
     end
-
-    @config = HashWithIndifferentAccess.new(@config)
+    @config = ActiveSupport::HashWithIndifferentAccess.new(@config || {})
   end
 
   def to_hash

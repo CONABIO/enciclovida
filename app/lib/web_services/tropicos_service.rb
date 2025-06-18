@@ -1,7 +1,7 @@
 require 'rest-client'
 require 'json'
 
-class Tropicos_Service
+class WebServices::TropicosService
 
   def initialize(options = {})
     @service_name = 'Tropicos'
