@@ -1,3 +1,4 @@
+
 class Admin::Catalogo < Catalogo
 
   attr_accessor :ajax, :especie_id, :catalogo_id, :nombre_cientifico

@@ -1,2 +1,2 @@
-class Catalogos::Admin::Especie < Especie
+class Admin::Especie < Especie
 end
