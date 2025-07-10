@@ -7,6 +7,7 @@ class BusquedaBasica < Busqueda
     paginado_y_offset
     estatus
     solo_publicos
+    solo_vivos
     solo_categoria
 
     return unless por_id_o_nombre
