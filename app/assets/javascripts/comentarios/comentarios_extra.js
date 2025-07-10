@@ -209,17 +209,18 @@ $(document).ready(function() {
         });
     });
 
-    $('#escucha_envio').on('change', "[id^='filtro_']", function()
-    {
-        $.ajax({
-            url: "/comentarios/administracion",
-            method: 'GET',
-            data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
+    $(document).on('change', "[id^='filtro_']", function() {
+    console.log('Filtro detectado en cambio');
 
-        }).done(function(html, textStatus, XMLHttpRequest) {
-            $('#totales').html('').html(XMLHttpRequest.getResponseHeader('x-total-entries'));
-            $('#mas_comentarios').empty().append(html);
-        });
+    $.ajax({
+        url: "/comentarios/administracion",
+        method: 'GET',
+        data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
+    }).done(function(html, textStatus, jqXHR) {
+        const total = jqXHR.getResponseHeader('x-total-entries');
+        $('#totales').text(total);
+        $('#mas_comentarios').html(html);
+    });
     });
 
     $('#escucha_envio').on('click', "#filtro_created_at, #filtro_nombre_cientifico", function()

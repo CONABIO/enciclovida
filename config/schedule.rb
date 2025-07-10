@@ -25,7 +25,7 @@ set :output, {
   error: "log/cron_error.log"
 }
 
-every 1.day, at: '2:38 pm' do
+every 1.day, at: '4:30 am' do
   runner 'UpdatePhoto.update_peces'
   runner 'UpdatePhoto.update_enciclo'
   

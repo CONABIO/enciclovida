@@ -4,20 +4,20 @@ require 'json'
 require 'openssl'
 
 class UpdatePhoto 
-  def update_peces
+  def self.update_peces
     peces = Pmc::Pez.joins("INNER JOIN catalogocentralizado.Nombre n ON peces.especie_id = n.IdNombre")
                 .where("imagen LIKE ? OR imagen LIKE ? OR imagen LIKE ? OR imagen LIKE ?", "%enciclovida%", "%bdi.%", "%media.%","%static.%" )
                 .select("peces.especie_id, peces.imagen, n.TaxonCompleto")
     peces.each { |row| actualizar_imagen(Pmc::Pez, row, :imagen) }
   end
 
-  def update_enciclo
+  def self.update_enciclo
     adicionales = Adicional.joins("INNER JOIN catalogocentralizado.Nombre n ON adicionales.especie_id = n.IdNombre")
                        .where("foto_principal LIKE ? OR foto_principal LIKE ? OR foto_principal LIKE ? OR foto_principal LIKE ?", "%enciclovida%", "%bdi.%", "%media.%" ,"%static.%")
                        .select("adicionales.id, adicionales.foto_principal, n.TaxonCompleto")
     adicionales.each { |row| actualizar_imagen(Adicional, row, :foto_principal) }      
   end
-  def actualizar_imagen(model, row, campo)
+  def self.actualizar_imagen(model, row, campo)
     taxon = row[:TaxonCompleto]
     return if taxon == "Incertae sedis"
     foto_actual = row[campo]
@@ -41,7 +41,7 @@ class UpdatePhoto
     end
   end
 
-  def url_exists?(url)
+  def self.url_exists?(url)
     uri = URI.parse(url)
     http = Net::HTTP.new(uri.host, uri.port)
     request = Net::HTTP::Head.new(uri.request_uri)
@@ -52,7 +52,7 @@ class UpdatePhoto
     false
   end
 
-  def consulta_api(url)
+  def self.consulta_api(url)
     uri = URI.parse(url.strip.gsub(" ", "%20"))
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = uri.scheme == "https"
@@ -68,7 +68,7 @@ class UpdatePhoto
     nil
   end
 
-  def fotoweb_conabio(especie)
+  def self.fotoweb_conabio(especie)
     base_url = 'https://bdi.conabio.gob.mx'
     url = "#{base_url}/fotoweb/archives/?q=#{URI.encode(especie)}"
 
@@ -95,7 +95,7 @@ class UpdatePhoto
     "sin imagen"
   end
 
-  def img_naturalista(especie)
+  def self.img_naturalista(especie)
     url = "https://api.inaturalist.org/v1/observations?taxon_name=#{URI.encode(especie)}&order=desc&order_by=created_at"
     json_data = consulta_api(url)
     return "sin imagen" unless json_data
