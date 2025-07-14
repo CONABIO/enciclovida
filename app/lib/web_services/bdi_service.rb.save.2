@@ -1,0 +1,158 @@
+class BDIService
+
+  ALBUM_ILUSTRACIONES = '5035-Ilustraciones'.freeze
+  ALBUM_USOS = '5010-Usos'.freeze
+  ALBUM_VIDEOS = '5121-Video'.freeze
+
+  attr_accessor :assets, :num_assets, :jres, :campo, :type, :nombre_cientifico, :album, :albumes, :autor_campo, :autor, :solo_num_assets
+
+  def initialize(opts)
+    # self.campo = opts[:campo] || 528
+    self.campo = opts[:campo] || 'q'
+    self.nombre_cientifico = opts[:nombre_cientifico]
+    self.album = opts[:album]
+    self.albumes = []
+    self.autor_campo = opts[:autor_campo]
+    self.autor = opts[:autor]
+    self.type = opts[:type]
+    self.jres = nil
+    self.assets = []  # Puede ser foto, video o albumes
+    self.num_assets = 0
+  end
+
+  def dame_fotos
+    bdi_rp = CONFIG.enciclovida_url
+    bdi_url = CONFIG.bdi_imagenes
+    limpia_nombre_cientifico
+    fotos_album
+    return if num_assets == 0
+
+    jres.each do |f|
+      foto = Photo.new
+      foto.large_url = bdi_rp + f['previews'][3]['href']
+      foto.medium_url = bdi_rp + f['previews'][7]['href']
+      foto.native_page_url = bdi_url + f['href']
+      foto.license = f['metadata']['340'].present? ? f['metadata']['340']['value'] : 'Sin licencia'
+      foto.square_url = bdi_rp + f['previews'][10]['href']
+      foto.native_realname = f['metadata']['80'].present? ? f['metadata']['80']['value'].first : "Anónimo"
+      self.assets << foto
+    end
+  end
+
+  def dame_num_fotos
+    limpia_nombre_cientifico
+    lista_albumes
+    fotos_totales
+  end
+
+
+  private
+
+  # Regresa la lista de albumes con al menos una foto en orden por numero de fotos
+  def lista_albumes
+    consulta_api({archives: true})
+
+    jres.each do |a|
+      # Evitamos los albumes sin fotos y los de usos que tienen su propio apartado
+      next if a["assetCount"] == 0 || a["name"] == "Usos"  
+      self.albumes << { nombre_album: a["name"], url: "#{CONFIG.bdi_imagenes}#{a["href"]}", num_assets: a["assetCount"] }
+    end
+
+    albumes.sort_by! { |k| -k[:num_assets] }
+  end
+
+   def consulta_api(opts = {})
+    # Definir constantes para la URL base y los encabezados de aceptación
+    /usr/local/lib/ruby/gems/2.5.0/gems/activesupport-5.1.6.2/lib/active_support/dependencies.rb:292:in `require': /usr/local/enciclovida/buscador/app/lib/web_services/bdi_service.rb:66: dynamic constant assignment (SyntaxError)
+    BASE_FT_URL = CONFIG.bdi_imagenes + '/foto...
+                ^
+/usr/local/enciclovida/buscador/app/lib/web_services/bdi_service.rb:67: dynamic constant assignment
+    ACCEPT_FT_JSON = 'application/json'
+                   ^
+/usr/local/enciclovida/buscador/app/lib/web_services/bdi_service.rb:68: dynamic constant assignment
+    ACCEPT_FT_ASSETLIST = 'application/vnd.fotoware.as...
+                        ^BASE_FT_URL = CONFIG.bdi_imagenes + '/fotoweb/archives'
+    ACCEPT_FT_JSON = 'application/json'
+    ACCEPT_FT_ASSETLIST = 'application/vnd.fotoware.assetlist+json'
+
+    # Validar la presencia de las variables necesarias
+    if campo.blank? || nombre_cientifico.blank?
+      Rails.logger.error 'Error: "campo" y "nombre_cientifico" son obligatorios.'
+      return
+    end
+
+    # Construir la URL según las opciones proporcionadas
+    if opts[:archives]
+      url = "#{BASE_FT_URL}/?#{campo}=#{nombre_cientifico}"
+      accept = ACCEPT_FT_JSON
+    else
+      if album.blank?
+        Rails.logger.error 'Error: "album" es obligatorio cuando no se especifican "archives".'
+        return
+      end
+      url = "#{BASE_FT_URL}/#{album}/?#{campo}=#{nombre_cientifico}"
+      accept = ACCEPT_FT_ASSETLIST
+    end
+
+    # Agregar el parámetro de autor si está presente
+    if autor_campo.present? && autor.present?
+      url << "&#{autor_campo}=#{autor}"
+    end
+
+    # Realizar la solicitud HTTP
+    begin
+      url_escape = URI.encode(url)
+      res = RestClient.get(url_escape, accept: accept)
+      jres = JSON.parse(res.body)
+      self.jres = jres['data']
+      self.num_assets = jres.count unless opts[:no_contar]
+    rescue RestClient::ExceptionWithResponse => e
+      Rails.logger.error "Error en la consulta con #{url_escape}: #{e.response}"
+    rescue JSON::ParserError => e
+      Rails.logger.error "Error al parsear la respuesta JSON de #{url_escape}: #{e.message}"
+    rescue StandardError => e
+      Rails.logger.error "Error inesperado con #{url_escape}: #{e.message}"
+    end
+  end
+
+  # Regresa las 25 primeras fotos de los albumes que mas tiene fotos y una la lista de los demas albumes no vacios
+  def fotos_album
+    # Solo de usos o vacio
+    if album == "usos"
+      self.album = ALBUM_USOS
+      consulta_api
+      return
+    end
+    
+    # Solo ilustraciones o lo demas que tenga
+    if album == "ilustraciones"
+      self.album = ALBUM_ILUSTRACIONES
+      consulta_api
+      return if num_assets > 0  # Regresa solo en el caso de encontrar fotos
+    end
+    
+    # Busca en los demas albumes
+    lista_albumes
+    fotos_totales
+    return if num_assets == 0  # No hay fotos, ni pex!
+
+    dame_album_id(albumes.first[:url])  # El primer album siempre tiene mas fotos
+    consulta_api({no_contar: true})
+    albumes.shift  # Quita el primer album del que trae las fotos de los demas albumes
+  end
+
+  def dame_album_id(url)
+    self.album = url.split("/")[5]
+  end
+
+  def limpia_nombre_cientifico
+    self.nombre_cientifico.limpiar(tipo: 'ssp')
+  end
+
+  # Regresa el numero total de fotos en todos los albumes
+  def fotos_totales
+    self.num_assets = albumes.map{|k| k[:num_assets] }.sum
+  end  
+
+end
+

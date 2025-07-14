@@ -1,6 +1,6 @@
 <% @comentarios.each do |c| %>
     <tr id="renglon_<%= c.id %>">
-      <td width="19%"> 
+      <td width="19%">
         <%= select_tag 'comentario[estatus]', options_for_select(Comentario.options_for_select, c.estatus), class: 'comentario_estatus form-control input-sm', comentario_id: c.id, especie_id: c.especie_id %>
         <div id="comentario_estatus_div_<%= c.id %>" style="display: none;"></div>
         <%= select_tag 'comentario[categorias_contenido_id]', grouped_options_for_select(@categorias_contenido, c.categorias_contenido_id), class: 'comentario_categorias_contenido_id form-control input-sm', comentario_id: c.id, especie_id: c.especie_id %>
