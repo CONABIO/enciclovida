@@ -195,7 +195,6 @@ Arachnida Insecta Mollusca Crustacea Annelida Myriapoda Echinodermata Cnidaria P
   def solo_vivos
     self.taxones = taxones.where("#{Nombre.table_name}.#{Nombre.attribute_alias(:estado_registro)} = 1")
   end
-
   # REVISADO: ALgunos valores como el offset, pagina y por pagina
   def paginado_y_offset
     self.pagina = (params[:pagina] || 1).to_i
