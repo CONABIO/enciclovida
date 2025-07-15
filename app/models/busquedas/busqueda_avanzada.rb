@@ -7,6 +7,7 @@ class BusquedaAvanzada < Busqueda
     paginado_y_offset
     estatus unless params[:checklist] == '1'
     solo_publicos
+    solo_vivos
     estado_conservacion
     tipo_distribucion
     uso
