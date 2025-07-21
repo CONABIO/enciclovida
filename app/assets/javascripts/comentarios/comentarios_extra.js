@@ -53,9 +53,10 @@ $(document).ready(function() {
             cargando = true;
             return true;
         },
-        afterLoad: function(elementsLoaded) {
+        afterLoad: function(elementsLoaded, data) {
             cargando = false;
-            if (!elementsLoaded || elementsLoaded.length === 0) {
+            if (!elementsLoaded || elementsLoaded.length === 0 ||
+                paginaActual * opciones.por_pagina >= data.totalComentarios) {
                 finComentarios = true;
                 $('#mas_comentarios').append('<p>No hay más comentarios.</p>');
                 $('#mas_comentarios').stopScrollPagination();

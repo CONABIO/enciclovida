@@ -302,10 +302,10 @@ class ComentariosController < ApplicationController
     tax_especifica = current_usuario.usuario_especies
     contenido_especifico = current_usuario.categorias_contenidos
 
-    consulta = Comentario.datos_basicos
+    consulta = Comentario.datos_basicos  
 
     if params[:comentario].present?
-      params = comentario_params
+      params = comentario_params 
 
       if params[:categorias_contenido_id].present?
         consulta = consulta.where(categorias_contenido_id: params[:categorias_contenido_id].to_i)
@@ -329,8 +329,7 @@ class ComentariosController < ApplicationController
         consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids).flatten)
       end
 
-      # Comentarios totales
-      @totales = consulta.count(:all)
+     
 
       # Para ordenar por created_at, nombre_cientifico o ambos
       if params[:created_at].present? && params[:nombre_cientifico].present?
@@ -344,6 +343,8 @@ class ComentariosController < ApplicationController
       end
 
       @comentarios = consulta.offset(offset).limit(@por_pagina)
+
+      @totales = consulta.size
 
     else
       # estatus = 5 quiere decir oculto a la vista
@@ -360,7 +361,8 @@ class ComentariosController < ApplicationController
         consulta = consulta.where(:categorias_contenido_id => contenido_especifico.map(&:subtree_ids).flatten)
       end
       # Comentarios totales
-      @totales = consulta.count(:all)
+       #esta tomando este 
+      @totales =consulta.order('comentarios.created_at DESC').offset(offset).size
       @comentarios = consulta.order('comentarios.created_at DESC').offset(offset).limit(@por_pagina)
     end
 
@@ -368,7 +370,7 @@ class ComentariosController < ApplicationController
       c.cuantos = c.descendants.count
       c.completa_info(c.root.usuario_id)
     end
-
+   
     @categorias_contenido = CategoriasContenido.grouped_options
 
     response.headers['x-total-entries'] = @totales.to_s
@@ -379,6 +381,8 @@ class ComentariosController < ApplicationController
     elsif @pagina > 1 && @comentarios.empty?  # Fin del scrolling
       render text: ''
     end
+
+     
 
   end
 
