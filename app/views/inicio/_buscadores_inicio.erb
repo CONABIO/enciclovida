@@ -1,9 +1,7 @@
 <% @buscadores.each do |k,v| %>
 	<div class="col-6 col-lg-3 h4 p-3 my-1 text-center text-dark buscadores">
 		<% if k.to_s == 'region' %>
-			<button id="tutorialGuias" type="button" class="bg-gradient-light btn btn-link btn-outline-success text-info font-weight-bolder position-absolute text-center" style="right:0;top: 5px;z-index: 1;" data-toggle="modal" data-target="#multiModal" title="Tutorial guías de especies" data-body="<%= insertaVideo("YClySqweW7U") %>" onclick="$('#multiModalBody').html($(this).data('body'), $('#multiModalLabel').html('Tutorial guías de especies') );" >
-				Tutorial guías de especies <i class='fa fa-video-camera'></i>
-			</button>
+			
 		<% end %>
 		<div class="portada-buscador bg-light rounded-0 pb-3">
 			<%= link_to "<img src='/assets/portada/#{k.to_s}.jpg' class='mb-2 ml-n3 img-fluid rounded-0' alt='...'><i class='#{k.to_s}-ev-icon mr-1 h1'></i>#{v[:nombre]}".html_safe, v[:url], :class => "font-weight-bold h4 px-3 pb-3 text-center text-dark", data: { turbolinks: false }  %>
