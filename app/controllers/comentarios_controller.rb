@@ -18,6 +18,17 @@ class ComentariosController < ApplicationController
     @folder = Rails.env.production? ? {inbox: 'INBOX', pendientes: 'Pendientes', resueltos: 'Resueltos', sent: 'SENT'} : {inbox: 'INBOXDEV', pendientes: 'PendientesDEV', resueltos: 'ResueltosDEV', sent: 'SENTDEV'}
   end
 
+  def ver_respuestas
+    @comentario = Comentario.find(params[:id])
+    @respuestas = @comentario.children
+                            .where.not(estatus: Comentario::OCULTAR)
+                            .order(:created_at)
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
 
   # GET /comentarios
   # GET /comentarios.json
@@ -128,7 +139,7 @@ class ComentariosController < ApplicationController
 
           # Estatus 6 quiere decir que es parte del historial de un comentario
           @comentario.estatus = Comentario::RESPUESTA
-
+ 
           # Categoria comentario ID
           @comentario.categorias_contenido_id = categoriaContenido
 
@@ -174,6 +185,7 @@ class ComentariosController < ApplicationController
   # POST /comentarios
   # POST /comentarios.json
   def create
+
     @especie_id = params[:especie_id]
     recaptcha_response = params['g-recaptcha-response']
     if @especie_id.present?  && @especie_id != '0'
@@ -196,6 +208,7 @@ class ComentariosController < ApplicationController
     end
 
     respond_to do |format|
+      
       if params[:con_verificacion].present? && params[:con_verificacion] == '1'
         if (recaptcha_response.length > 20 && @comentario.save)
 
@@ -227,6 +240,7 @@ class ComentariosController < ApplicationController
 
         else
           # Hubo un error al enviar el formulario
+          
           if params[:es_respuesta].present? && params[:es_respuesta] == '1'
             format.json {render json: {estatus: 0}.to_json}
           else

@@ -76,6 +76,120 @@ $(document).ready(function() {
     });
     */
 
+    //enviando respuestas a comentarios
+    $(document).on('click', '.historial', function (e) {
+        e.preventDefault();
+
+        const comentarioId = $(this).attr('comentario_id');
+        const especieId = $(this).attr('especie_id');
+        const ficha = $(this).attr('ficha');
+        const accion = $(this).data('accion');
+
+        switch (accion) {
+            case 'responder':
+            muestraFormularioRespuesta(comentarioId, especieId, this); // <-- pasa el botón clicado
+            break;
+            case 'ver_respuestas':
+            muestraRespuestas(comentarioId, especieId);
+            break;
+            case 'ocultar':
+            ocultarRespuestas(comentarioId);
+            break;
+        }
+    });
+
+
+   function muestraFormularioRespuesta(comentarioId, especieId, elemento) {
+    // Verifica si ya existe un formulario
+        if ($(`#formulario_respuesta_${comentarioId}`).length > 0) {
+            return;
+        }
+
+        const formulario = `
+            <div id="formulario_respuesta_${comentarioId}" class="formulario-respuesta" style="margin-top: 10px;">
+                <form action="/especies/${especieId}/comentarios/${comentarioId}/respuestas" method="POST">
+                    <div class="form-group">
+                        <label for="respuesta_${comentarioId}">Tu respuesta</label>
+                        <textarea id="respuesta_${comentarioId}" name="comentario[comentario]" class="form-control" rows="3"></textarea>
+                    </div>
+                    <input type="hidden" name="es_respuesta" value="1">
+                    <button type="submit" class="btn btn-primary btn-sm">Enviar</button>
+                    <button type="button" class="btn btn-secondary btn-sm cancelar-formulario" data-comentario-id="${comentarioId}">Cancelar</button>
+                </form>
+            </div>
+        `;
+
+        // Insertar el formulario justo debajo del botón "Responder"
+        $(elemento).after(formulario);
+    }
+
+    $(document).on('click', '.cancelar-formulario', function () {
+        const comentarioId = $(this).data('comentario-id');
+        $(`#formulario_respuesta_${comentarioId}`).remove();
+    });
+
+    $(document).on('submit', '.formulario-respuesta form', function (e) {
+        e.preventDefault();
+
+        const form = $(this);
+        const action = form.attr('action');
+        const data = form.serialize();
+        const comentarioId = form.closest('.formulario-respuesta').attr('id').split('_').pop();
+        const textarea = form.find('textarea');
+
+        if (textarea.val().trim() === '') {
+            alert('La respuesta no puede ir vacía.');
+            return;
+        }
+
+        $.ajax({
+            url: action,
+            method: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function (resp) {
+            if (resp.estatus === 1) {
+                const nuevoComentario = `
+                <div class="comentario-burbuja respuesta">
+                    ${resp.comentario_html}
+                </div>
+                `;
+                $(`#formulario_respuesta_${comentarioId}`).after(nuevoComentario);
+                $(`#formulario_respuesta_${comentarioId}`).remove();
+            } else {
+                alert('Ocurrió un error al guardar tu respuesta.');
+            }
+            },
+            error: function () {
+            alert('Error al enviar la respuesta. Inténtalo de nuevo.');
+            }
+        });
+    });
+    //ver respuestas
+    function muestraRespuestas(comentarioId, especieId) {
+        $.ajax({
+            url: `/especies/${especieId}/comentarios/${comentarioId}/ver_respuestas`,
+            type: 'GET',
+            dataType: 'script'  // Esto ejecuta el archivo .js.erb que retorna Rails
+        });
+    }
+    //ocultar respuestas 
+    function ocultarRespuestas(comentarioId) {
+    // Elimina el contenedor que tiene las respuestas
+        $(`#respuestas_${comentarioId}`).remove();
+        // Oculta el botón ocultar
+        $(`#ocultar_${comentarioId}`).hide();
+    }
+
+    $(document).on('click', "[id^='ocultar_']", function(e) {
+        e.preventDefault();
+
+        // Obtener el comentarioId del id del botón
+        const comentarioId = this.id.split('_')[1];
+        ocultarRespuestas(comentarioId);
+    });
+
+    //codigo anterior para enviar los cmentarios 
     muestra_historial_comentario('escucha_envio');
     oculta_historial_comentario('escucha_envio');
 

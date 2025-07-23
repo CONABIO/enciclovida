@@ -198,7 +198,10 @@ Buscador::Application.routes.draw do
 
   # La vista mas importante, especies
   resources :especies, :except => :show, as: :especie do
-    resources :comentarios  # Anida este resource para que la URL y el controlador sean mas coherentes
+    resources :comentarios  do # Anida este resource para que la URL y el controlador sean mas coherentes
+      post 'respuestas', on: :member, to: 'comentarios#create'
+      get  'ver_respuestas', on: :member
+    end 
 
     collection do
       get '/:id', action: 'show', constraints: { id: /\d{1,8}[\-A-Za-z]*/ }

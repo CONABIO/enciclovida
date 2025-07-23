@@ -1,0 +1,15 @@
+$('#respuestas_<%= @comentario.id %>').remove();
+
+$("<div id='respuestas_<%= @comentario.id %>' class='respuestas ml-4'></div>")
+  .insertAfter('#comentario_<%= @comentario.id %>');
+
+<% @respuestas.each do |r| %>
+  $('#respuestas_<%= @comentario.id %>').append(`
+    <div class="respuesta mb-2 p-2 border-start border-secondary">
+      <strong><%= j r.nombre %></strong>: <%= j r.comentario %>
+      <div class="text-muted small"><%= r.created_at.strftime('%d/%m/%Y %H:%M') %></div>
+    </div>
+  `);
+<% end %>
+
+$('#ocultar_<%= @comentario.id %>').show();
