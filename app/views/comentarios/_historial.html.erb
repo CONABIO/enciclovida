@@ -1,16 +1,32 @@
 <% ficha ||= @ficha %>
 
 <% if c.cuantos.present? %>
-    <% if c.cuantos > 0 %>
-        <%= link_to("Respuesta(s) ... <span>#{c.cuantos}</span>".html_safe, '', class: 'historial btn btn-link btn-xs', comentario_id: c.id, especie_id: c.especie_id, ficha: ficha ? '1' : '0') %>
-    <% else %>
-        <%= link_to("Responder <i class='glyphicon glyphicon-edit'></i>".html_safe, '', class: 'historial btn btn-link btn-xs', comentario_id: c.id, especie_id: c.especie_id) if !ficha %>
-    <% end %>
-    <%= link_to 'Ocultar', '', id: "ocultar_#{c.id}", class: 'historial btn btn-link btn-xs', style: 'display: none;' %>
-<% end %>
+  <% if c.cuantos > 0 %>
+    <%= link_to("Respuesta(s) ... <span>#{c.cuantos}</span>".html_safe, '#',
+      class: 'historial btn btn-link btn-xs',
+      comentario_id: c.id,
+      especie_id: c.especie_id,
+      ficha: ficha ? '1' : '0',
+      data: { accion: 'ver_respuestas' }
+    ) %>
+  <% else %>
+    <%= link_to("Responder <i class='glyphicon glyphicon-edit'></i>".html_safe, '#',
+      class: 'historial btn btn-link btn-xs',
+      comentario_id: c.id,
+      especie_id: c.especie_id,
+      data: { accion: 'responder' }
+    ) if !ficha %>
+  <% end %>
 
-<div class="comentario-burbuja <%= c.es_propietario ? 'op' : 'respuesta' %>">
-  <%= c.comentario.gsub("\n","<br />").html_safe %> <br />
+  <%= link_to 'Ocultar', '#',
+    id: "ocultar_#{c.id}",
+    class: 'historial btn btn-link btn-xs',
+    style: 'display: none;',
+    data: { accion: 'ocultar' }
+  %>
+<% end %>
+<div id="comentario_<%= c.id %>" class="comentario-burbuja <%= c.es_propietario ? 'op' : 'respuesta' %>">
+  <%= c.comentario.gsub("\n","<br />").html_safe %><br />
 
   <% if cp = c.comentario_proveedor %>
     <% if CategoriasContenido::REGISTROS_SNIB.include?(c.categorias_contenido_id) %>
