@@ -61,30 +61,27 @@ CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, #{Especie.table_name}.#{Especi
   end
 
   # Completa el nombre, correo y de quien es el comentario (OP o respuesta)
-  def completa_info(root_usuario_id=nil)
-    if usuario_id.present?
-      self.es_propietario = root_usuario_id == self.usuario_id ? true : false
+ def completa_info(root_usuario_id = nil)
+  if usuario.present?
+    # Si hay usuario real asociado
+    self.es_propietario = (usuario.id == root_usuario_id)
 
-      begin  # Por si viene del scope datos_basicos y encontro el usuario
-        self.nombre = u_nombre
-        self.correo = u_email
-        self.institucion = u_institucion
-      rescue
-        u = usuario
-        self.nombre = "#{u.nombre} #{u.apellido}".strip
-        self.correo = u.email
-        self.institucion = u.institucion
-      end
-
-    else  # Por si no esta el usuario_id
-      begin  # Trato de ver si venia de un scope
-        self.nombre = c_nombre
-        self.institucion = c_institucion
-        self.es_propietario = true
-      rescue
-        self.es_propietario = true
-      end
-    end
+    # Safe navigation o métodos directos porque usuario no es nil
+    self.nombre      = [usuario.nombre, usuario.apellido].compact.join(' ')
+    self.correo      = usuario.email
+    self.institucion = usuario.institucion.presence || ''
+  elsif c_nombre.present?
+    # Fallback si el comentario muestra un nombre anónimo con campo c_nombre
+    self.nombre      = c_nombre
+    self.institucion = c_institucion if respond_to?(:c_institucion)
+    self.correo      ||= ''
+    self.es_propietario = true
+  else
+    # Fallback genérico para casos donde no hay usuario ni c_nombre
+    self.nombre      = I18n.t('comments.anonymous', default: 'Anónimo')
+    self.correo      = ''
+    self.institucion = ''
+    self.es_propietario = false
   end
-
+end
 end

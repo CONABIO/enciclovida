@@ -185,90 +185,119 @@ class ComentariosController < ApplicationController
   # POST /comentarios
   # POST /comentarios.json
   def create
+  @especie_id = params[:especie_id]
+  recaptcha_response = params['g-recaptcha-response']
+  tipo_proveedor = params[:tipo_proveedor]
+  proveedor_id = params[:proveedor_id]
+  comentario_params_filtrados = comentario_params
 
-    @especie_id = params[:especie_id]
-    recaptcha_response = params['g-recaptcha-response']
-    if @especie_id.present?  && @especie_id != '0'
-      begin
-        @especie = Especie.find(@especie_id)
-      end
-    else
-      @especie = 0
+  if @especie_id.present? && @especie_id != '0'
+    begin
+      @especie = Especie.find(@especie_id)
     end
-
-    @comentario = Comentario.new(comentario_params.merge(especie_id: @especie_id))
-    tipo_proveedor = params[:tipo_proveedor]
-    proveedor_id = params[:proveedor_id]
-    params = comentario_params
-    
-    if params[:con_verificacion] == '1'
-      if recaptcha_response.length < 20 
-        verify_recaptcha(:model => @comentario, :message => t('recaptcha.errors.missing_confirm'))       
-      end
-    end
-
-    respond_to do |format|
-      
-      if params[:con_verificacion].present? && params[:con_verificacion] == '1'
-        if (recaptcha_response.length > 20 && @comentario.save)
-
-          if params[:es_respuesta].present? && params[:es_respuesta] == '1'
-            comentario_root = @comentario.root
-            @comentario.completa_info(comentario_root.usuario_id)
-
-            # Enviar a los responsables de contenido si es que el usuario siguio la charla
-            EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver
-
-            format.json {render json: {estatus: 1, created_at: @comentario.created_at.strftime('%d/%m/%y-%H:%M'),
-                                       nombre: @comentario.nombre}.to_json}
-          else
-            # Para guardar en la tabla comentarios proveedores
-            if proveedor_id.present? && CategoriasContenido::REGISTROS_GEODATA.include?(tipo_proveedor)
-              comentario_proveedor = ComentarioProveedor.new
-              comentario_proveedor.comentario_id = @comentario.id
-              comentario_proveedor.proveedor_id = proveedor_id
-              comentario_proveedor.save
-            end
-
-            EnviaCorreo.confirmacion_comentario(@comentario).deliver
-
-            # No  SÓLO aquí es donde hay q poner el envio a los responsables de contenido (también allá arriba cuando un usuario responde)
-            EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver if dame_usuarios_envio.present?
-            
-            format.html { redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente y lo podrás ver en la ficha una vez que pase la moderación pertinente.' }
-          end
-
-        else
-          # Hubo un error al enviar el formulario
-          
-          if params[:es_respuesta].present? && params[:es_respuesta] == '1'
-            format.json {render json: {estatus: 0}.to_json}
-          else
-            format.html { render action: 'new' }
-          end
-
-        end
-
-        # Para evitar el google captcha a los usuarios administradores, la respuesta siempre es en json
-      else
-        if params[:es_admin].present? && params[:es_admin] == '1' && @comentario.save
-          if @comentario.root.general  # Si es comentario general
-            envia_correo(@comentario)
-          else  # Si fue un comentario en la plataforma de administración de comentarios (IMPORTANTE!!)
-            EnviaCorreo.respuesta_comentario(@comentario).deliver
-          end
-          if usuario=@comentario.usuario
-            nombre = usuario.nombre + usuario.apellido
-          end
-          created_at = @comentario.created_at.strftime('%d/%m/%y-%H:%M')
-          format.json {render json: {estatus: 1, ancestry: "#{@comentario.ancestry}/#{@comentario.id}", nombre: nombre, created_at:  created_at ||= '' }.to_json}
-        else
-          format.json {render json: {estatus: 0}.to_json}
-        end
-
-      end  # end con_verificacion
-    end  # end tipo response
+  else
+    @especie = 0
   end
+
+  @comentario = Comentario.new(comentario_params_filtrados.merge(especie_id: @especie_id))
+
+  respond_to do |format|
+
+    # Caso con recaptcha
+    if comentario_params_filtrados[:con_verificacion].present? && comentario_params_filtrados[:con_verificacion] == '1'
+      if recaptcha_response.length < 20
+        verify_recaptcha(model: @comentario, message: t('recaptcha.errors.missing_confirm'))
+      end
+
+      if recaptcha_response.length > 20 && @comentario.save
+        if comentario_params_filtrados[:es_respuesta] == '1'
+          comentario_root = @comentario.root
+          @comentario.completa_info(comentario_root.usuario_id)
+
+          EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver
+
+          format.json {
+            render json: {
+              estatus: 1,
+              created_at: @comentario.created_at.strftime('%d/%m/%y-%H:%M'),
+              nombre: @comentario.nombre
+            }.to_json
+          }
+        else
+          if proveedor_id.present? && CategoriasContenido::REGISTROS_GEODATA.include?(tipo_proveedor)
+            ComentarioProveedor.create(comentario_id: @comentario.id, proveedor_id: proveedor_id)
+          end
+
+          EnviaCorreo.confirmacion_comentario(@comentario).deliver
+          EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver if dame_usuarios_envio.present?
+
+          format.html {
+            redirect_to especie_path(@especie_id), notice: '¡Gracias! Tu comentario fue enviado satisfactoriamente y lo podrás ver en la ficha una vez que pase la moderación pertinente.'
+          }
+        end
+      else
+        if comentario_params_filtrados[:es_respuesta] == '1'
+          format.json { render json: { estatus: 0 }.to_json }
+        else
+          format.html { render action: 'new' }
+        end
+      end
+
+    # Caso como administrador
+    elsif comentario_params_filtrados[:es_admin] == '1' && @comentario.save
+      if @comentario.root.general
+        envia_correo(@comentario)
+      elsif comentario_params_filtrados[:es_respuesta] == '1'
+        comentario_root = @comentario.root
+        @comentario.completa_info(comentario_root.usuario_id)
+        EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver
+
+        format.json {
+          render json: {
+            estatus: 1,
+            created_at: @comentario.created_at.strftime('%d/%m/%y-%H:%M'),
+            nombre: @comentario.nombre
+          }.to_json
+        }
+      else
+        EnviaCorreo.respuesta_comentario(@comentario).deliver
+      end
+
+      nombre = @comentario.usuario&.nombre.to_s + @comentario.usuario&.apellido.to_s
+      format.json {
+        render json: {
+          estatus: 1,
+          ancestry: "#{@comentario.ancestry}/#{@comentario.id}",
+          nombre: nombre,
+          created_at: @comentario.created_at.strftime('%d/%m/%y-%H:%M')
+        }.to_json
+      }
+
+    # ✅ Caso nuevo: respuesta sin captcha ni admin
+    elsif comentario_params_filtrados[:es_respuesta] == '1' && @comentario.save
+      comentario_root = @comentario.root
+      @comentario.completa_info(comentario_root.usuario_id)
+      EnviaCorreo.avisar_responsable_contenido(@comentario, dame_usuarios_envio).deliver
+
+      format.json {
+        render json: {
+          estatus: 1,
+          created_at: @comentario.created_at.strftime('%d/%m/%y-%H:%M'),
+          nombre: @comentario.nombre
+        }.to_json
+      }
+
+    # ❌ Cualquier otro caso (error)
+    else
+      format.json {
+        render json: {
+            estatus: 0,
+            errores: @comentario.errors.full_messages
+          }, status: :unprocessable_entity
+        }
+    end
+  end
+end
 
   # PATCH/PUT /comentarios/1
   # PATCH/PUT /comentarios/1.json
@@ -531,11 +560,18 @@ class ComentariosController < ApplicationController
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
+  
   def comentario_params
-    params.require(:comentario).permit(:comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
+  params.require(:comentario).permit(
+    :comentario, :usuario_id, :correo, :nombre, :estatus, :ancestry, :institucion,
                                        :con_verificacion, :es_admin, :es_respuesta, :especie_id, :categorias_contenido_id,
-                                       :ajax, :nombre_cientifico, :created_at)
+                                       :ajax, :nombre_cientifico, :created_at
+  ).tap do |whitelisted|
+    # Conversión explícita de tipos
+    whitelisted[:estatus] = whitelisted[:estatus].to_i
+    whitelisted[:usuario_id] = whitelisted[:usuario_id].to_i
   end
+end
 
   #Dado un comentario, regresa un array con los correos a los cuales se tiene q enviar de acuerdo a los responsables tanto del contenido como de taxonomía específica
   # Por último, TODO, All this debería ir en el modelo de comentarios!!!!!!
