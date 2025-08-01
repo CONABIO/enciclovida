@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es-MX" lang="es-MX">
 <head>
+  <% if usuario_signed_in? %>
+    <meta name="current-user-id" content="<%= current_usuario.id %>">
+  <% end %>
   <meta http-equiv="content-type" content="text/html" charset="UTF-8"/>
   <meta name="keywords" content="<%= yield :meta_keywords %>">
   <meta name="viewport" content="width=device-width, initial-scale=1">
