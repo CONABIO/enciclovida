@@ -473,7 +473,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   def dame_nombres_comunes_catalogos
     # Los nombres comunes de catalogos en hash con la lengua
     ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
-    #ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
+    ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
 
     nombres_inicio = []
     nombres_mitad = []
@@ -542,6 +542,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       self.jres = p.jres
     end
 
+    
+
     if jres[:estatus]
       ncn = jres[:nombres_comunes].map do |nc|
         next if nc['name'].blank? || nc['locale'].blank? || nc['locale'] == 'sci' || NombreComun::LENGUAS_PROHIBIDAS.include?(I18n.t("lenguas.#{nc['locale'].estandariza}", default: "ND"))
@@ -555,7 +557,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
         # Asigna la lengua
         lengua = nc['locale']
-
         l = if lengua.present?
               lengua.estandariza
             else
@@ -568,7 +569,6 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     else
       ncn = []
     end
-
     # Para el orden de las lenguas
     nombres = (ncn + ncc).uniq.compact
     nombres_inicio = []
@@ -667,7 +667,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
           else
             ''
           end
-        else
+        else index = NombreComun::LENGUAS_PRIMERO.index(lengua)
           ''
         end
       end
