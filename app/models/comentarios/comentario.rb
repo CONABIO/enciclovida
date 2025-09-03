@@ -70,10 +70,10 @@ CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, #{Especie.table_name}.#{Especi
       self.nombre      = [usuario.nombre, usuario.apellido].compact.join(' ')
       self.correo      = usuario.email
       self.institucion = usuario.institucion.presence || ''
-    elsif read_attribute(:c_nombre).present?
+    elsif c_nombre.present?
       # Fallback si el comentario muestra un nombre anónimo con campo c_nombre
-      self.nombre      = read_attribute(:c_nombre)
-      self.institucion = read_attribute(:c_institucion) if has_attribute?(:c_institucion)
+      self.nombre      = c_nombre
+      self.institucion = c_institucion if respond_to?(:c_institucion)
       self.correo      ||= ''
       self.es_propietario = true
     else

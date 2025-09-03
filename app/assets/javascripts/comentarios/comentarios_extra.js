@@ -37,35 +37,17 @@ function asigna_valores_select()
     }
 }
 
-$(document).ready(function() {
-    var paginaActual = opciones.pagina || 1;
-    var cargando = false;
-    var finComentarios = false;
-
+$(document).ready(function(){
     $('#mas_comentarios').scrollPagination({
-        per_page: opciones.por_pagina,
-        page: paginaActual,
-        error: 'No hay más comentarios.',
-        delay: 100,
-        scroll: true,
-        beforeLoad: function() {
-            if (cargando || finComentarios) return false;
-            cargando = true;
-            return true;
-        },
-        afterLoad: function(elementsLoaded, data) {
-            cargando = false;
-            if (!elementsLoaded || elementsLoaded.length === 0 ||
-                paginaActual * opciones.por_pagina >= data.totalComentarios) {
-                finComentarios = true;
-                $('#mas_comentarios').append('<p>No hay más comentarios.</p>');
-                $('#mas_comentarios').stopScrollPagination();
-            } else {
-                paginaActual++;
-            }
-        }
+        per_page: opciones.por_pagina, // The number of posts per scroll to be loaded
+        page    : opciones.pagina, // the actual page
+        error   : 'No hay mas comentarios.', // When the user reaches the end this is the message that is
+        // displayed. You can change this if you want.
+        delay   : 500, // When you scroll down the posts will load after a delayed amount of time.
+                       // This is mainly for usability concerns. You can alter this as you see fit
+        scroll  : true // The main bit, if set to false posts will not load as the user scrolls.
+                       // but will still load if the user clicks.
     });
-});
     /* Comentado ya que no se muestra el correo extraído de xolo, en un futuro se necesitará
     $('#mas_comentarios').on('click', '.comentarios-correos', function() {
         $(this).children('div.correos, button.btn-correo').toggleClass('hidden');
@@ -76,157 +58,6 @@ $(document).ready(function() {
     });
     */
 
-    //enviando respuestas a comentarios
-    $(document).on('click', '.historial', function (e) {
-        e.preventDefault();
-
-        const $elemento = $(this);
-        const comentarioId = $elemento.attr('comentario_id'); // Obtener comentario_id del atributo
-        const especieId = $elemento.attr('especie_id');
-        const ficha = $elemento.attr('ficha');
-        const accion = $elemento.data('accion');
-        const categoryId = $elemento.data('category-id') || 31; // Obtener categoryId o usar valor p
-
-
-        switch (accion) {
-            case 'responder':
-            muestraFormularioRespuesta(comentarioId, especieId, categoryId, this);
-            break;
-            case 'ver_respuestas':
-            muestraRespuestas(comentarioId, especieId);
-            break;
-            case 'ocultar':
-            ocultarRespuestas(comentarioId);
-            break;
-        }
-    });
-
-
-  function muestraFormularioRespuesta(comentarioId, especieId, categoryId, elemento) {
-    // Verificar si ya existe un formulario
-    if ($(`#formulario_respuesta_${comentarioId}`).length > 0) {
-        return;
-    }
-
-    const currentUserId = $('meta[name="current-user-id"]').attr('content');
-    const csrfToken = $('meta[name="csrf-token"]').attr('content');
-
-    const formulario = `
-    <div id="formulario_respuesta_${comentarioId}" class="formulario-respuesta" style="margin-top: 10px;">
-        <form action="/especies/${especieId}/comentarios/${comentarioId}/respuestas" method="POST">
-            <input type="hidden" name="authenticity_token" value="${csrfToken}">
-            <div class="form-group">
-                <label for="respuesta_${comentarioId}">Tu respuesta</label>
-                <textarea id="respuesta_${comentarioId}" name="comentario[comentario]" class="form-control" rows="3"></textarea>
-            </div>
-            <input type="hidden" name="con_verificacion" value="0">
-            <input type="hidden" name="comentario[ancestry]" value="${comentarioId}">
-            <input type="hidden" name="comentario[especie_id]" value="${especieId}">
-            <input type="hidden" name="comentario[categorias_contenido_id]" value="${categoryId}">
-
-            <input type="hidden" name="comentario[es_respuesta]" value="1">
-            <input type="hidden" name="comentario[usuario_id]" value="${currentUserId}">
-            <button type="submit" class="btn btn-primary btn-sm">Enviar</button>
-            <button type="button" class="btn btn-secondary btn-sm cancelar-formulario" data-comentario-id="${comentarioId}">Cancelar</button>
-        </form>
-    </div>`;
-
-    $(elemento).after(formulario);
-}
-    $(document).on('click', '.cancelar-formulario', function () {
-        const comentarioId = $(this).data('comentario-id');
-        $(`#formulario_respuesta_${comentarioId}`).remove();
-    });
-
-    $(document).on('submit', '.formulario-respuesta form', function(e) {
-    e.preventDefault();
-    const form = $(this);
-    const textarea = form.find('textarea');
-    const comentarioId = form.closest('.formulario-respuesta').attr('id').split('_').pop();
-    const submitBtn = form.find('button[type="submit"]');
-
-    // Validación básica
-    if (textarea.val().trim() === '') {
-        textarea.addClass('is-invalid');
-        return;
-    }
-
-    // Estado de carga
-    submitBtn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Enviando...');
-
-    $.ajax({
-        url: form.attr('action'),
-        method: 'POST',
-        data: form.serialize(),
-        dataType: 'json'
-    }).done(function(resp) {
-        if (resp.estatus === 1) {
-            // Crear elemento de respuesta y animar transición
-            const nuevoComentario = $(resp.comentario_html).hide();
-            $(`#formulario_respuesta_${comentarioId}`)
-                .after(nuevoComentario)
-                .slideUp(200, function() {
-                    $(this).remove();
-                    nuevoComentario.fadeIn(300);    
-                });
-        } else {
-            // Mostrar errores específicos del servidor si existen
-            const errorMsg = resp.errores ? resp.errores.join('<br>') : 'Ocurrió un error al guardar tu respuesta.';
-            mostrarNotificacion('error', errorMsg);
-        }
-    }).fail(function(xhr) {
-        // Manejar errores de conexión
-        const errorMsg = xhr.responseJSON?.errores ? 
-            xhr.responseJSON.errores.join('<br>') : 
-            'Error de conexión. Por favor intenta nuevamente.';
-        mostrarNotificacion('error', errorMsg);
-    }).always(function() {
-        // Restaurar botón
-        submitBtn.prop('disabled', false).html('Enviar');
-    });
-});
-
-// Función auxiliar para mostrar notificaciones
-function mostrarNotificacion(tipo, mensaje) {
-    const notificacion = $(`
-        <div class="alert alert-${tipo} alert-dismissible fade show fixed-alert">
-            ${mensaje}
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-        </div>
-    `);
-    
-    $('body').append(notificacion);
-    
-    // Auto-eliminar después de 5 segundos
-    setTimeout(() => {
-        notificacion.alert('close');
-    }, 5000);
-}
-    //ver respuestas
-    function muestraRespuestas(comentarioId, especieId) {
-        $.ajax({
-            url: `/especies/${especieId}/comentarios/${comentarioId}/ver_respuestas`,
-            type: 'GET',
-            dataType: 'script'  // Esto ejecuta el archivo .js.erb que retorna Rails
-        });
-    }
-    //ocultar respuestas 
-    function ocultarRespuestas(comentarioId) {
-    // Elimina el contenedor que tiene las respuestas
-        $(`#respuestas_${comentarioId}`).remove();
-        // Oculta el botón ocultar
-        $(`#ocultar_${comentarioId}`).hide();
-    }
-
-    $(document).on('click', "[id^='ocultar_']", function(e) {
-        e.preventDefault();
-
-        // Obtener el comentarioId del id del botón
-        const comentarioId = this.id.split('_')[1];
-        ocultarRespuestas(comentarioId);
-    });
-
-    //codigo anterior para enviar los cmentarios 
     muestra_historial_comentario('escucha_envio');
     oculta_historial_comentario('escucha_envio');
 
@@ -361,18 +192,17 @@ function mostrarNotificacion(tipo, mensaje) {
         });
     });
 
-    $(document).on('change', "[id^='filtro_']", function() {
-    console.log('Filtro detectado en cambio');
+    $('#escucha_envio').on('change', "[id^='filtro_']", function()
+    {
+        $.ajax({
+            url: "/comentarios/administracion",
+            method: 'GET',
+            data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
 
-    $.ajax({
-        url: "/comentarios/administracion",
-        method: 'GET',
-        data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
-    }).done(function(html, textStatus, jqXHR) {
-        const total = jqXHR.getResponseHeader('x-total-entries');
-        $('#totales').text(total);
-        $('#mas_comentarios').html(html);
-    });
+        }).done(function(html, textStatus, XMLHttpRequest) {
+            $('#totales').html('').html(XMLHttpRequest.getResponseHeader('x-total-entries'));
+            $('#mas_comentarios').empty().append(html);
+        });
     });
 
     $('#escucha_envio').on('click', "#filtro_created_at, #filtro_nombre_cientifico", function()
@@ -470,3 +300,4 @@ function mostrarNotificacion(tipo, mensaje) {
         }
     });
 
+});
