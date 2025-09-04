@@ -710,7 +710,7 @@ module CacheServices
 
   # REVISADO: Guarda los nombres comunes en adicionales
   def guarda_nombres_comunes_todos
-    dame_nombres_comunes_todos
+    dame_nombres_comunes_catalogos
 
     if x_nombre_comun_principal.present?
       a = adicional ? adicional : Adicional.new(especie_id: id)
