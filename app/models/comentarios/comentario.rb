@@ -62,13 +62,17 @@ CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, #{Especie.table_name}.#{Especi
 
   # Completa el nombre, correo y de quien es el comentario (OP o respuesta)
   def completa_info(root_usuario_id=nil)
-    if usuario_id.present?
-      self.es_propietario = root_usuario_id == self.usuario_id ? true : false
 
-      begin  # Por si viene del scope datos_basicos y encontro el usuario
-        self.nombre = u_nombre
-        self.correo = u_email
-        self.institucion = u_institucion
+      effective_usuario_id = (usuario_id.present? && usuario_id > 0) ? usuario_id : nil
+
+    if effective_usuario_id.present?
+      self.es_propietario = root_usuario_id == self.usuario_id
+
+      begin
+        # Usar read_attribute para acceder a valores de consultas con alias
+        self.nombre = read_attribute(:u_nombre) || "#{usuario.nombre} #{usuario.apellido}".strip
+        self.correo = read_attribute(:u_email) || usuario.email
+        self.institucion = read_attribute(:u_institucion) || usuario.institucion
       rescue
         u = usuario
         self.nombre = "#{u.nombre} #{u.apellido}".strip
@@ -76,10 +80,11 @@ CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, #{Especie.table_name}.#{Especi
         self.institucion = u.institucion
       end
 
-    else  # Por si no esta el usuario_id
-      begin  # Trato de ver si venia de un scope
-        self.nombre = c_nombre
-        self.institucion = c_institucion
+    else
+      begin
+        # Acceder al alias c_nombre usando read_attribute
+        self.nombre = read_attribute(:c_nombre) || self.nombre
+        self.institucion = read_attribute(:c_institucion) || self.institucion
         self.es_propietario = true
       rescue
         self.es_propietario = true
