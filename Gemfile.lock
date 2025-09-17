@@ -250,7 +250,6 @@ GEM
     nori (2.6.0)
     optimist (3.2.0)
     orm_adapter (0.5.0)
-    pagy (6.5.0)
     pg (1.2.2)
     popper_js (1.16.0)
     public_suffix (4.0.3)
@@ -469,7 +468,6 @@ DEPENDENCIES
   mysql2
   nokogiri (>= 1.10.8)
   optimist
-  pagy
   pg
   puma (>= 3.12.4)
   rack-contrib
@@ -503,4 +501,4 @@ DEPENDENCIES
   zip-zip
 
 BUNDLED WITH
-   2.4.1
+   2.0.1
