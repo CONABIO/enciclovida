@@ -42,7 +42,7 @@ CONCAT(u2.nombre, ' ', u2.apellido) AS u2_nombre, #{Especie.table_name}.#{Especi
   MODERADOR = 1  # Significa que esta pendiente de mostrarse en la ficha
 
   # REVISADO: Verifica no validar nombre si ya inicio sesion
-  def inicio_sesion?
+  def inicio_sesion? 
     usuario_id.blank?
   end
 
