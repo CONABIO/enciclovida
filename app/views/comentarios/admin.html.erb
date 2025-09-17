@@ -8,11 +8,9 @@
     opciones.pagina = <%= @pagina %>;
 </script>
 
-<% if @totales.present? %>
-  <p class="text-left pull-left">
-    <span id="totales" class="badge"><%= @totales %></span> comentarios
-  </p>
-<% end %>
+<p id="contenedor-totales" class="text-left pull-left" style="<%= @totales.present? ? '' : 'display: none;' %>">
+  <span id="totales" class="badge"><%= @totales || 0 %></span> comentarios
+</p>
 
 <div class= "row justify-content-end">
   <div  class= "col-md-6">

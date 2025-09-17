@@ -38,6 +38,9 @@ gem 'optimist'
 gem 'httparty'
 gem 'pg'
 gem 'puma', '>= 3.12.4' # Use Puma as the app server
+
+gem 'pagy' #paginacion para comentarios
+
 gem 'rack-contrib'
 gem 'rails', '5.1.6.2'
 gem 'rails-erd'
