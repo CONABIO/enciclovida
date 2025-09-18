@@ -3,72 +3,66 @@
 require("./config.js");
 const http = require("https");
 
-/**
- * Regresa la lista de estados
- * @returns {boolean}
- */
-function dameEstados() {
-  return new Promise((resolve, reject) => {
-    knex
-      .select(knex.raw("entid, nom_ent"))
-      .from("estados")
-      .orderBy("entid")
-      .then((dato) => {
-        resolve(dato);
-      });
-  });
-}
+const TABLES = {
+  estados: "estados",
+  municipios: "municipios",
+  anp: "anp",
+};
 
 /**
- * Regresa ka lista de municipios
- * @returns {boolean}
+ * Regresa la lista de estados
  */
-function dameMunicipios() {
-  return new Promise((resolve, reject) => {
-    knex
-      .select(knex.raw("munid, nom_mun, nom_ent"))
-      .from("municipios")
-      .orderBy("munid")
-      .then((dato) => {
-        resolve(dato);
-      });
-  });
+function dameEstados() {
+  return knex
+    .select(knex.raw("entid, nom_ent"))
+    .from(TABLES.estados)
+    .orderBy("entid");
 }
 
 /**
  * Regresa la lista de municipios
- * @returns {boolean}
+ */
+function dameMunicipios() {
+  return knex
+    .select(knex.raw("munid, nom_mun, nom_ent"))
+    .from(TABLES.municipios)
+    .orderBy("munid");
+}
+
+/**
+ * Regresa la lista de areas naturales protegidas
  */
 function dameANP() {
-  return new Promise((resolve, reject) => {
-    knex
-      .select(knex.raw("anpid, nombre, cat_manejo, estados, municipios"))
-      .from("anp")
-      .orderBy("anpid")
-      .then((dato) => {
-        resolve(dato);
-      });
-  });
+  return knex
+    .select(knex.raw("anpid, nombre, cat_manejo, estados, municipios"))
+    .from(TABLES.anp)
+    .orderBy("anpid");
 }
 
 /**
  * Hace una petición ajax
- * @param url
+ * @param {string} url
+ * @param callback: receives an object
  */
-let ajaxRequest = function (url, reply) {
-  var resultado = "";
+let ajaxRequest = function (url, callback) {
+  let resultado = "";
 
-  http
+  return http
     .get(url, (res) => {
-      res.on("data", (d) => {
-        resultado += d;
+      res.on("data", (chunk) => {
+        resultado += chunk;
       });
     })
-    .on("error", (e) => {
-      console.error(e);
+    .on("error", (error) => {
+      console.error(`ajaxRequest: http.get, url: ${url}`, error);
     })
-    .on("close", (d) => {
-      reply(JSON.parse(resultado));
+    .on("close", () => {
+      try {
+        const obj = JSON.parse(resultado)
+        callback(obj);
+      }catch(error) {
+        console.error(`ajaxRequest: No fue posible parsear string (JSON.parse)`,error)
+      }
     });
 };
 
