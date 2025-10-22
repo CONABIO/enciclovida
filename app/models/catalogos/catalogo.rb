@@ -80,7 +80,7 @@ class Catalogo < ActiveRecord::Base
     nom = self.nom
     nom = [nom[2],nom[0],nom[1],nom[3]]  # Orden propuesto por cgalindo
     iucn = self.iucn
-    iucn = [iucn[0],iucn[1],iucn[2],iucn[3],iucn[4]]  # Orden propuesto por cgalindo
+    iucn = [iucn[0],iucn[1],iucn[2],iucn[3],iucn[4],iucn[6],iucn[8],iucn[9]]  # Orden propuesto por cgalindo
     cites = self.cites
 
     evaluacion_conabio = self.evaluacion_conabio
