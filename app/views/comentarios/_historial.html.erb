@@ -37,5 +37,4 @@
       <p>Enlace a la <%= link_to 'observación', "#{CONFIG.naturalista_url}/observations/#{cp.proveedor_id}", target: :_blank %></p>
     <% end %>
   <% end %>
-  <small><%= c.nombre %> - <%= c.institucion + " - " if c.institucion.present? %><%= c.created_at.strftime('%d/%m/%y-%H:%M') %></small>
   </div>

@@ -64,6 +64,7 @@ class IUCNService
       res = Net::HTTP.start(uri.host, uri.port, :read_timeout => CONFIG.iucn.timeout ) {|http| http.request(req) }
       jres = JSON.parse(res.body)['result']
       jres[0]['category'] if jres.any?
+      debugger
     rescue => e
       nil
     end

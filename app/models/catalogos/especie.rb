@@ -473,7 +473,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   def dame_nombres_comunes_catalogos
     # Los nombres comunes de catalogos en hash con la lengua
     ncc = nombres_comunes.map {|nc| {nc.lengua => nc.nombre_comun.capitalize}}
-    ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
+    #ncc_estandar = ncc.map{|n| n.values.map(&:estandariza)}.flatten
 
     nombres_inicio = []
     nombres_mitad = []
@@ -667,7 +667,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
           else
             ''
           end
-        else index = NombreComun::LENGUAS_PRIMERO.index(lengua)
+        else 
           ''
         end
       end

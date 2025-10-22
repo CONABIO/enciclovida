@@ -1,40 +1,148 @@
-function es_correo(email) {
-    var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    return regex.test(email);
-}
 
-function getUrlVars()
-{
-    var vars = [], hash;
+// Función para manejar parámetros URL
+function getUrlVars() {
+    var vars = {};
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
+    
+    for(var i = 0; i < hashes.length; i++) {
         hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
+        if (hash[0]) {
+            // Decodificar el nombre del parámetro
+            var key = decodeURIComponent(hash[0]);
+            var value = hash[1] ? decodeURIComponent(hash[1]) : '';
+            vars[key] = value;
+        }
     }
     return vars;
 }
 
-function asigna_valores_select()
-{
+function asigna_valores_select() {
     var params = getUrlVars();
 
-    if (params["comentario%5Bestatus%5D"] != undefined)
-        $('#filtro_estatus').val(params["comentario%5Bestatus%5D"]);
+    if (params["comentario[estatus]"] != undefined)
+        $('#filtro_estatus').val(params["comentario[estatus]"]);
 
-    if (params["comentario%5Bcategorias_contenido_id%5D"] != undefined)
-        $('#filtro_categorias_contenido_id').val(params["comentario%5Bcategorias_contenido_id%5D"]);
+    if (params["comentario[categorias_contenido_id]"] != undefined)
+        $('#filtro_categorias_contenido_id').val(params["comentario[categorias_contenido_id]"]);
 
-    if (params["comentario%5Bcreated_at%5D"] != undefined)
-    {
-        if (params["comentario%5Bcreated_at%5D"] == "ASC")
-            $('#filtro_created_at > i').removeClass("glyphicon-sort").removeClass("glyphicon-down").addClass("glyphicon-chevron-up");
-        if (params["comentario%5Bcreated_at%5D"] == "DESC")
-            $('#filtro_created_at > i').removeClass("glyphicon-sort").removeClass("glyphicon-up").addClass("glyphicon-chevron-down");
-
-        $('#comentario_created_at').val(params["comentario%5Bcreated_at%5D"]);
+    // Manejar los iconos de ordenamiento con FontAwesome
+    if (params["comentario[created_at]"] != undefined) {
+        if (params["comentario[created_at]"] == "ASC") {
+            $('#filtro_created_at i').removeClass("fa-sort fa-sort-down").addClass("fa-sort-up");
+        } else if (params["comentario[created_at]"] == "DESC") {
+            $('#filtro_created_at i').removeClass("fa-sort fa-sort-up").addClass("fa-sort-down");
+        }
+        $('#comentario_created_at').val(params["comentario[created_at]"]);
     }
+
+    if (params["comentario[nombre_cientifico]"] != undefined) {
+        if (params["comentario[nombre_cientifico]"] == "ASC") {
+            $('#filtro_nombre_cientifico i').removeClass("fa-sort fa-sort-down").addClass("fa-sort-up");
+        } else if (params["comentario[nombre_cientifico]"] == "DESC") {
+            $('#filtro_nombre_cientifico i').removeClass("fa-sort fa-sort-up").addClass("fa-sort-down");
+        }
+        $('#comentario_nombre_cientifico').val(params["comentario[nombre_cientifico]"]);
+    }
+}
+
+// Función para manejar el ordenamiento
+function manejarOrdenamiento($elemento) {
+    var id = $elemento.attr("id");
+    console.log('Botón clickeado:', id);
+
+    var config = {
+        "filtro_created_at": {
+            obj: "#comentario_created_at",
+            campo: "created_at"
+        },
+        "filtro_nombre_cientifico": {
+            obj: "#comentario_nombre_cientifico", 
+            campo: "nombre_cientifico"
+        }
+    };
+
+    if (!config[id]) {
+        console.log('Configuración no encontrada para:', id);
+        return false;
+    }
+
+    var conf = config[id];
+    var icono = $elemento.find('i');
+    var $input = $(conf.obj);
+    var valorActual = $input.val();
+
+    console.log('Valor actual:', valorActual);
+
+    // Ciclo de estados usando FontAwesome
+    if (!valorActual || valorActual === "" || valorActual === "DESC") {
+        // Cambiar a ascendente
+        icono.removeClass("fa-sort fa-sort-down text-success").addClass("fa-sort-up text-success");
+        $input.val('ASC');
+    } else if (valorActual === "ASC") {
+        // Cambiar a descendente
+        icono.removeClass("fa-sort-up text-success").addClass("fa-sort-down text-success");
+        $input.val('DESC');
+    }
+
+    console.log('Nuevo valor:', $input.val());
+    enviarFiltros();
+}
+
+// Función para enviar los filtros via AJAX
+function enviarFiltros() {
+    console.log('Enviando filtros...');
+    
+    $.ajax({
+        url: "/comentarios/administracion",
+        method: 'GET',
+        data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
+    }).done(function(html, textStatus, XMLHttpRequest) {
+        $('#totales').html(XMLHttpRequest.getResponseHeader('x-total-entries'));
+        $('#mas_comentarios').empty().append(html);
+        
+        // Re-inicializar tooltips después del AJAX
+        $('[data-toggle="tooltip"]').tooltip({html: true});
+    }).fail(function(xhr, status, error) {
+        console.error('Error en la petición AJAX:', error);
+    });
+}
+
+// Función para limpiar filtros
+function limpiarFiltros() {
+    // Limpiar los valores de los selects
+    $('#filtro_estatus').val('');
+    $('#filtro_categorias_contenido_id').val('');
+    
+    // Limpiar los inputs hidden de ordenamiento
+    $('#comentario_created_at').val('');
+    $('#comentario_nombre_cientifico').val('');
+    
+    // Resetear los iconos a su estado inicial
+    $('#filtro_created_at i').removeClass("fa-sort-up fa-sort-down").addClass("fa-sort text-success");
+    $('#filtro_nombre_cientifico i').removeClass("fa-sort-up fa-sort-down").addClass("fa-sort text-success");
+    
+    // Enviar la petición para recargar sin filtros
+    enviarFiltros();
+}
+
+// Inicializar eventos de ordenamiento y filtros
+function inicializarFiltrosYOrdenamiento() {
+    // Evento para los botones de ordenamiento
+    $(document).off('click', '#filtro_created_at, #filtro_nombre_cientifico').on('click', '#filtro_created_at, #filtro_nombre_cientifico', function(e) {
+        e.preventDefault();
+        manejarOrdenamiento($(this));
+    });
+
+    // Evento para limpiar filtros
+    $(document).off('click', '.limpiar-filtros').on('click', '.limpiar-filtros', function(e) {
+        e.preventDefault();
+        limpiarFiltros();
+    });
+
+    // Evento para cambios en los selects
+    $('#filtro_estatus, #filtro_categorias_contenido_id').off('change').on('change', function() {
+        enviarFiltros();
+    });
 }
 
 $(document).ready(function(){
@@ -42,6 +150,10 @@ $(document).ready(function(){
     console.log('✅ scrollPagination inicializado');
     console.log('🔍 opciones.por_pagina:', opciones.por_pagina);
     console.log('🔍 opciones.pagina:', opciones.pagina);
+    
+    // Inicializar filtros y ordenamiento
+    inicializarFiltrosYOrdenamiento();
+    asigna_valores_select();
     
     // Interceptar todas las llamadas AJAX para ver los headers
     $(document).ajaxComplete(function(event, xhr, settings) {
@@ -69,9 +181,8 @@ $(document).ready(function(){
         error   : 'No hay mas comentarios.',
         delay   : 500,
         scroll  : true,
-        
-        
     });
+
     /* Comentado ya que no se muestra el correo extraído de xolo, en un futuro se necesitará
     $('#mas_comentarios').on('click', '.comentarios-correos', function() {
         $(this).children('div.correos, button.btn-correo').toggleClass('hidden');
@@ -81,7 +192,6 @@ $(document).ready(function(){
         }
     });
     */
-    
     
     muestra_historial_comentario('escucha_envio');
     oculta_historial_comentario('escucha_envio');
@@ -217,63 +327,10 @@ $(document).ready(function(){
         });
     });
 
-    $('#escucha_envio').on('change', "[id^='filtro_']", function()
-    {
-        $.ajax({
-            url: "/comentarios/administracion",
-            method: 'GET',
-            data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
-
-        }).done(function(html, textStatus, XMLHttpRequest) {
-            $('#totales').html('').html(XMLHttpRequest.getResponseHeader('x-total-entries'));
-            $('#mas_comentarios').empty().append(html);
-        });
-    });
-
-    $('#escucha_envio').on('click', "#filtro_created_at, #filtro_nombre_cientifico", function()
-    {
-        if ($(this).attr("id") == "filtro_created_at")
-        {
-            var filtro = "#filtro_created_at";
-            var obj = "#comentario_created_at";
-        } else if ($(this).attr("id") == "filtro_nombre_cientifico") {
-            var filtro = "#filtro_nombre_cientifico";
-            var obj = "#comentario_nombre_cientifico";
-        } else
-            return false;
-
-        if ($(filtro + ' > i').hasClass("glyphicon-sort"))
-        {
-            $(filtro + ' > i').removeClass("glyphicon-sort").addClass("glyphicon-chevron-up");
-            $(obj).val('ASC');
-
-        } else if ($(filtro + ' > i').hasClass("glyphicon-chevron-up"))
-        {
-            $(filtro + ' > i').removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
-            $(obj).val('DESC');
-
-        } else if ($(filtro + ' > i').hasClass("glyphicon-chevron-down"))
-        {
-            $(filtro + ' > i').removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
-            $(obj).val('ASC');
-        }
-
-        $.ajax({
-            url: "/comentarios/administracion",
-            method: 'GET',
-            data: $('#filtro_form').serialize() + '&comentario[ajax]=1'
-
-        }).done(function(html, textStatus, XMLHttpRequest) {
-            $('#totales').html('').html(XMLHttpRequest.getResponseHeader('x-total-entries'));
-            $('#mas_comentarios').empty().append(html);
-        });
-
-        return false;
-    });
+    // ELIMINADO: El evento change para [id^='filtro_'] que causaba conflicto
+    // ELIMINADO: El evento click antiguo para los botones de ordenamiento
 
     $('[data-toggle="tooltip"]').tooltip({html: true});
-    asigna_valores_select();
-
 
     $('#escucha_envio').on('click', '.comentario_submit', function() {
         // Busco AHORA sí las etiquetas ADECUADAS (¬¬ ggonzalez)
@@ -324,5 +381,11 @@ $(document).ready(function(){
             });
         }
     });
+});
 
+// Si usas Turbolinks, agregar esto también
+$(document).on('turbolinks:load', function() {
+    inicializarFiltrosYOrdenamiento();
+    asigna_valores_select();
+    $('[data-toggle="tooltip"]').tooltip({html: true});
 });
