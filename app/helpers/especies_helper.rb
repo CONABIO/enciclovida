@@ -113,7 +113,9 @@ module EspeciesHelper
 
     otros_attr.each do |nom, attr|
       # Este cambio es para quitar anotaciones que diga eliminar, peticion del CAT
-      next if attr == "anotacion" && taxon.anotacion.estandariza.include?("eliminar")
+      if attr == "anotacion" && taxon.anotacion
+        next if taxon.anotacion.estandariza.include?("eliminar")
+      end
 
       valor = taxon.send(attr)
       if valor.present?
