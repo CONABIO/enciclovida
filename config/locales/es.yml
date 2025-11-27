@@ -466,7 +466,12 @@ es:
     zh-cn: Chino
     zh-tw: Chino
   listas_columnas:
+
     generales:
+      x_prioritaria: "Nivel de prioridad DOF 2014"
+      x_prioritaria_conabio: "Nivel de prioridad CONABIO 2012" 
+      x_observacion_prioritarias: "Observaciones "
+
       anotacion: Anotación
       catalogo_id: Identificador de catalogos
       cita_nomenclatural: Cita nomenclatural
