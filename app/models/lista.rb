@@ -37,8 +37,11 @@ class Lista < ActiveRecord::Base
   COLUMNAS_BASICAS = %w(x_idcat id nombre_cientifico x_categoria_taxonomica x_estatus x_nombre_comun_principal x_foto_principal x_url_ev)                        
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
 
+  #columnas de prioritarias
+  COLUMNAS_CONSERVACION = %w(x_prioritaria x_prioritaria_conabio x_observacion_prioritarias)
+
   # El orden absoluto de las columnas en el excel
-  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes x_categoria_taxonomica x_estatus x_tipo_distribucion x_usos x_ambiente x_num_reg x_nombre_comun_principal x_foto_principal) + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES + %w(x_bibliografia x_url_ev id x_idcat)
+  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes x_categoria_taxonomica x_estatus x_tipo_distribucion x_usos x_ambiente x_num_reg x_nombre_comun_principal x_foto_principal) + COLUMNAS_RIESGO_COMERCIO  + COLUMNAS_CATEGORIAS_PRINCIPALES + %w(x_bibliografia x_url_ev id x_idcat)+ COLUMNAS_CONSERVACION
 
   def after_initialize(opts)
     self.taxones = []
@@ -376,6 +379,52 @@ end
         tipos_distribuciones = taxon.tipos_distribuciones.map(&:descripcion).uniq
         next unless tipos_distribuciones.any?
         self.taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
+      when 'x_prioritaria', 'x_prioritaria_conabio',  'x_observacion_prioritarias'
+        next if tabla_catalogos  # Ya no entra una segunda vez
+        
+        prioritaria, prioritaria_conabio, observacion_prioritarias =  [], [],[]
+        catalogos_existe = false
+
+        taxon.catalogos.each do |cat|
+          next unless cat.es_catalogo_permitido?
+
+          if cat.es_prioritaria?
+            prioritaria << cat.descripcion
+            catalogos_existe = true 
+            next
+          end
+
+          if cat.es_prioritaria_conabio?
+            prioritaria_conabio << cat.descripcion  
+            catalogos_existe = true 
+            next
+          end
+
+          
+        end
+
+         # AGREGAR ESTA PARTE PARA LAS OBSERVACIONES DE PRIORITARIAS
+        taxon.especies_catalogos.each do |cat|
+          next if cat.observaciones.blank?
+          
+          # Para observaciones de prioritarias DOF (nivel2 = 4)
+          if [44,45,46,47,48].include?(cat.catalogo_id)  # IDs de catalogos prioritarios DOF
+            observacion_prioritarias << cat.observaciones
+            catalogos_existe = true
+          end
+          
+          # Para observaciones de prioritarias CONABIO (nivel2 = 5)  
+          if [49,50,51,52,53].include?(cat.catalogo_id)  # IDs de catalogos prioritarios CONABIO
+            observacion_prioritarias << cat.observaciones
+            catalogos_existe = true
+          end
+        end
+        
+        next unless catalogos_existe
+        self.taxon.x_prioritaria = prioritaria.join(', ') if prioritaria.any?
+        self.taxon.x_prioritaria_conabio = prioritaria_conabio.join(', ') if prioritaria_conabio.any?
+        self.taxon.x_observacion_prioritarias = observacion_prioritarias.join(', ') if observacion_prioritarias.any?
+
       when 'x_nom', 'x_iucn', 'x_cites', 'x_ambiente', 'x_usos'
         next if tabla_catalogos  # Ya no entra una segunda vez
 
@@ -522,6 +571,11 @@ end
     if columnas_array.include?('x_cat_riesgo')
       self.columnas_array = columnas_array << COLUMNAS_RIESGO_COMERCIO
       self.columnas_array.delete('x_cat_riesgo')
+    end
+
+    if columnas_array.include?('x_conservación')
+      self.columnas_array = columnas_array << COLUMNAS_CONSERVACION
+      self.columnas_array.delete('x_conservación')
     end
     
     if columnas_array.include?('x_taxa_sup')

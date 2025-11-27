@@ -47,11 +47,23 @@ module BusquedasHelper
   end
 
   # REVISADO: Filtros para Especies prioritarias para la conservación
-  def checkboxPrioritaria(opciones={})
-    selected = (params[:prior].present? && params[:prior].any?) ? params[:prior] : []
+  def checkboxPrioritaria(opciones = {})
+    selected = params[:prior].present? && params[:prior].any? ? params[:prior] : []
     opc = @@opciones.merge(opciones)
-    options = @filtros[:prioritarias].map{ |p| [p.descripcion, p.id, { class: "#{p.descripcion.estandariza}-ev-icon f-fuentes" }] }
-    select_tag('prior', options_for_select(options, selected), opc)
+
+    grupo1 = Array.wrap(@filtros[:prioritarias]).map do |p|
+      [ p.descripcion, p.id, { class: "#{p.descripcion.estandariza}-ev-icon f-fuentes" } ]
+    end
+    grupo2 = Array.wrap(@filtros[:prioritarias_conabio]).map do |p|
+      [ p.descripcion, p.id, { class: "#{p.descripcion.estandariza}-ev-icon f-fuentes" } ]
+    end
+
+    grouped = [
+      ['Prioritarias DOF 2014', grupo1],
+      ['Prioritarias CONABIO 2012', grupo2],
+    ]
+
+    select_tag('prior', grouped_options_for_select(grouped, selected), opc)
   end
 
   # REVISADO: Filtros para estatus taxonómico en la busqueda avanzada
@@ -128,9 +140,11 @@ module BusquedasHelper
   end
 
   # Los checkbox para que el usuario decida que descargar, se ocupa en descarga de busqueda basica, avanzada, por region y el checklist
-  def camposDescarga(tipo_descarga=nil)
+  def camposDescarga(tipo_descarga=nil) 
     checkbox = ''
-    campos = { x_tipo_distribucion: 'Tipo de distribución', x_cat_riesgo: 'Categorías de riesgo y comercio internacional', x_ambiente: 'Ambiente', x_nombres_comunes: 'Nombres comunes', x_bibliografia: 'Bibliografía' }
+    campos = { x_tipo_distribucion: 'Tipo de distribución', x_cat_riesgo: 'Categorías de riesgo y comercio internacional',
+     x_ambiente: 'Ambiente', x_nombres_comunes: 'Nombres comunes', x_bibliografia: 'Bibliografía',
+     x_conservación: 'Especies prioritarias para la conservación' }
     
     case tipo_descarga
     when 'basica'

@@ -20,6 +20,7 @@ class Catalogo < ActiveRecord::Base
   scope :iucn, -> { where(nivel1: 4, nivel2: 2).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: 'Riesgo bajo (LR): Dependiente de conservación (cd)') }
   scope :cites, -> { where(nivel1: 4, nivel2: 3).where("#{attribute_alias(:nivel3)} > 0") }
   scope :prioritarias, -> { where(nivel1: 4, nivel2: 4).where("#{attribute_alias(:nivel3)} > 0") }
+  scope :prioritarias_conabio, -> {where(nivel1:4, nivel2:5).where("#{attribute_alias(:nivel3)} > 0")}
   scope :ambientes, -> { where(nivel1: 2, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where.not(descripcion: AMBIENTE_EQUIV_MARINO) }
   scope :usos, -> { where(id: USOS).order(:descripcion) }
   scope :evaluacion_conabio, -> { where(nivel1: 4, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where("#{attribute_alias(:nivel3)} < 4") }
@@ -33,6 +34,15 @@ class Catalogo < ActiveRecord::Base
   def es_catalogo_permitido?
     [4,11,18,25].include?(nivel1) || (nivel1 == 2 && nivel2 == 6 && nivel3>0)
   end
+
+  def es_prioritaria?
+  nivel1 == 4 && nivel2 == 4 && nivel3 > 0
+  end
+
+  def es_prioritaria_conabio?
+    nivel1 == 4 && nivel2 == 5 && nivel3 > 0
+  end
+
 
   def es_nom?
     nivel1 == 4 && nivel2 == 1 && nivel3 > 0
@@ -97,3 +107,4 @@ class Catalogo < ActiveRecord::Base
     prioritarias
   end
 end
+  

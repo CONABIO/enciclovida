@@ -55,7 +55,7 @@ base: &base
 
   # Cache de los servicios que guarda en disco
   cache:
-    filtros_ev: 1.day
+    filtros_ev: 1.second
     ficha_naturalista: 1.week
     fichas: 1.week
     iucn: 1.week
