@@ -8,27 +8,40 @@
 %>
 
 <% @tabla_exoticas[:datos].each do |row| %>
-<tr>
+  <tr>
     <% row.each_with_index do |col, index| %>
-    <td>
+      <td>
         <% case index %>
         <% when 0  # Foto %>
-        <%= image_tag(col, class: 'img-fluid rounded') if col.present? %>
-        <% when 1  # Nombre cientifico %>
-        <%= col.is_a?(String) ? col : link_to(col.nombre_cientifico, especie_path(col), { target: :_blank }) %>
-        <% when 8  # PDF instrumentos legales %>
-        <% col.each do |instrumento| %>
-        <p><%= link_to instrumento[:nombre], instrumento[:pdf] %></p>
-        <% end %>
+          <%= image_tag(col, class: 'img-fluid rounded') if col.present? %>
 
-        <% when 9  # el PDF %>
-        <%= link_to('Ficha'.html_safe, col, target: :_blank) if col.present? %>
+        <% when 1  # Nombre científico %>
+          <% if col.present? %>
+            <% if col.is_a?(String) %>
+              <%= col %>
+            <% else %>
+              <%= link_to col.nombre_cientifico, especie_path(col), target: :_blank %>
+            <% end %>
+          <% else %>
+            <em>Nombre no disponible</em>
+          <% end %>
+
+        <% when 8  # PDF instrumentos legales %>
+          <% if col.present? && col.is_a?(Enumerable) %>
+            <% col.each do |instrumento| %>
+              <p><%= link_to instrumento[:nombre], instrumento[:pdf] if instrumento[:pdf].present? %></p>
+            <% end %>
+          <% end %>
+
+        <% when 9  # el PDF principal %>
+          <%= link_to('Ficha'.html_safe, col, target: :_blank) if col.present? %>
+
         <% else %>
-        <%= col %>
+          <%= col %>
         <% end %>
-    </td>
+      </td>
     <% end %>
-</tr>
+  </tr>
 <% end %>
 
 <script>

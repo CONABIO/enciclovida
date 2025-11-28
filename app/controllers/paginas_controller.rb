@@ -21,115 +21,122 @@ class PaginasController < ApplicationController
   protected
 
   def lee_csv
-    @tabla_exoticas = {}
-    @tabla_exoticas[:datos] = []
+  @tabla_exoticas = {}
+  @tabla_exoticas[:datos] = []
 
-    opciones_posibles
-    opciones_seleccionadas
+  opciones_posibles
+  opciones_seleccionadas
 
-    file = File.dirname(__FILE__) << '/../../public/exoticas_invasoras/exoticas-invasoras.csv'
-    exoticas_url = '/pdfs/exoticas_invasoras/'
-    instrumentos_url = '/pdfs/exoticas_invasoras/instrumentos_legales/'
-    exoticas_dir = File.dirname(__FILE__) << '/../../public' << exoticas_url
-    inst_dir = File.dirname(__FILE__) << '/../../public' << instrumentos_url
+  file = File.join(Rails.root, 'public', 'exoticas_invasoras', 'exoticas-invasoras.csv')
+  exoticas_url = '/pdfs/exoticas_invasoras/'
+  instrumentos_url = '/pdfs/exoticas_invasoras/instrumentos_legales/'
+  exoticas_dir = File.join(Rails.root, 'public', exoticas_url)
+  inst_dir = File.join(Rails.root, 'public', instrumentos_url)
 
-    csv_text = File.read(file)
-    csv = CSV.parse(csv_text, :headers => true)
+  csv_text = File.read(file)
+  csv = CSV.parse(csv_text, headers: true)
 
-    @por_pagina = 30
-    @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-    @totales = 0  # Cuenta los que han pasado el filtro
+  @por_pagina = 30
+  @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+  @totales = 0
 
-    csv.each_with_index do |row, index|
-      next unless condiciones_filtros(row)
+  csv.each_with_index do |row, index|
+    next unless condiciones_filtros(row)
 
-      @totales+= 1
-      next if (@por_pagina*(@pagina-1)+1) > @totales || @por_pagina*@pagina < @totales  # Por si esta fuera de rango del paginado
+    @totales += 1
+    if (@por_pagina * (@pagina - 1) + 1) > @totales || @por_pagina * @pagina < @totales
+      next
+    end
 
-      pdf = false
-      datos = []
+    datos = []
 
-      t = if row['enciclovida_id'].present?
-            begin
-              Especie.find(row['enciclovida_id'])
-            rescue
-              nil
-            end
-          else  
+    t = if row['enciclovida_id'].present?
+          begin
+            Especie.find(row['enciclovida_id'])
+          rescue
             nil
           end
-
-      if t
-        datos << t.adicional.try(:foto_principal)
-        datos << t
-
-        if familia = t.ancestors.left_joins(:categoria_taxonomica).where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} = 'familia'")
-          datos << familia.first.nombre_cientifico
-        else
-          datos << nil
         end
 
-        datos << row['Grupo']
+    # determinar nombre para pdf (si existe)
+    nombre = if t
+               t.nombre_cientifico
+             else
+               row['Nombre científico']
+             end
 
-        pdf_path = exoticas_dir + t.nombre_cientifico + '.pdf'
-        pdf = exoticas_url + t.nombre_cientifico + '.pdf' if File.exist?(pdf_path)
+    # agregar datos previos
+    if t
+      datos << t.adicional.try(:foto_principal)
+      datos << t
 
+      if familia = t.ancestors.left_joins(:categoria_taxonomica)
+                         .where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} = 'familia'")
+        datos << familia.first.nombre_cientifico
       else
-        # Para poner una foto de la carpeta, si es que tiene
-        if row['Creditos Fotos'].present?
-          nombre = "#{row['Nombre científico']}.jpg"
-          foto = Rails.root.join('public','fotos_invasoras', nombre)
-
-          if File.exists?(foto)
-            foto_url = "/fotos_invasoras/#{nombre}"
-            datos << foto_url
-          else
-            datos << nil
-          end
-        else
-          datos << nil
-        end
-
-        datos << row['Nombre científico']
-        datos << row['Familia']
-        datos << row['Grupo']
-
-        pdf_path = exoticas_dir + row['Nombre científico'] + '.pdf'
-        pdf = exoticas_url + row['Nombre científico'] + '.pdf' if File.exist?(pdf_path)
-
-      end  # End con id enciclovida
-
-      datos << row['Ambiente']
-      #datos << row['DistribuciónNativa']
-      #datos << row['DistribuciónInvasora']
-      datos << row['Origen']
-      datos << row['Presencia']
-      datos << row['Estatus']
-
-      instrumentos = []
-      if row['Regulada por otros instrumentos'].present?
-        row['Regulada por otros instrumentos'].split('/').each do |inst|
-          inst = inst.strip
-          pdf_inst_path = inst_dir + inst + '.pdf'
-          if File.exist?(pdf_inst_path)
-            pdf_inst = instrumentos_url + inst + '.pdf'
-            instrumentos << {nombre: inst, pdf: pdf_inst}
-          else  # Por si esta mal renombrado el pdf
-            instrumentos << {nombre: 'No existe pdf', pdf: nil}
-          end
-        end  # End each do
+        datos << nil
       end
 
-      datos << instrumentos
-      pdf.present? ? datos << pdf : datos << nil
+      datos << row['Grupo']
+    else
+      # si hay foto alternativa
+      if row['Creditos Fotos'].present?
+        nombre_foto = "#{row['Nombre científico']}.jpg"
+        foto = Rails.root.join('public', 'fotos_invasoras', nombre_foto)
+        if File.exist?(foto)
+          foto_url = "/fotos_invasoras/#{nombre_foto}"
+          datos << foto_url
+        else
+          datos << nil
+        end
+      else
+        datos << nil
+      end
 
-      @tabla_exoticas[:datos] << datos
+      datos << row['Nombre científico']
+      datos << row['Familia']
+      datos << row['Grupo']
+    end
 
-    end  # End each row
+    # construir ruta de pdf solo si nombre está presente
+    pdf = nil
+    if nombre.present?
+      pdf_path = File.join(exoticas_dir, "#{nombre}.pdf")
+      if File.exist?(pdf_path)
+        pdf = File.join(exoticas_url, "#{nombre}.pdf")
+      end
+    else
+      Rails.logger.warn "CSV fila #{index}: nombre científico vacío — no se genera pdf"
+    end
 
-    # El paginado
-    @paginas = @totales%@por_pagina == 0 ? @totales/@por_pagina : (@totales/@por_pagina) +1
+    datos << row['Ambiente']
+    datos << row['Origen']
+    datos << row['Presencia']
+    datos << row['Estatus']
+
+    # manejar instrumentos reguladores
+    instrumentos = []
+    if row['Regulada por otros instrumentos'].present?
+      row['Regulada por otros instrumentos'].split('/').each do |inst|
+        inst = inst.strip
+        pdf_inst_path = File.join(inst_dir, "#{inst}.pdf")
+        if File.exist?(pdf_inst_path)
+          pdf_inst = File.join(instrumentos_url, "#{inst}.pdf")
+          instrumentos << { nombre: inst, pdf: pdf_inst }
+        else
+          instrumentos << { nombre: 'No existe pdf', pdf: nil }
+        end
+      end
+    end
+
+    datos << instrumentos
+    datos << pdf
+
+    @tabla_exoticas[:datos] << datos
   end
+
+  @paginas = (@totales % @por_pagina).zero? ? @totales / @por_pagina : (@totales / @por_pagina) + 1
+end
 
   def opciones_posibles
     @select = {}
