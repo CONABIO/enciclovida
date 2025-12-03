@@ -51,10 +51,10 @@ class BDIService
   # Regresa la lista de albumes con al menos una foto en orden por numero de fotos
   def lista_albumes
     consulta_api({archives: true})
+    return unless jres.present?           # ⚠️ Si jres es nil o vacío, salir
 
     jres.each do |a|
-      # Evitamos los albumes sin fotos y los de usos que tienen su propio apartado
-      next if a["assetCount"] == 0 || a["name"] == "Usos"  
+      next if a["assetCount"].zero? || a["name"] == "Usos"
       self.albumes << { nombre_album: a["name"], url: "#{CONFIG.bdi_imagenes}#{a["href"]}", num_assets: a["assetCount"] }
     end
 
