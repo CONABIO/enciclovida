@@ -24,11 +24,10 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <% if totales.gsub(',', '').to_i > 200 %>
-          Debe selecccionar maximo 200 especies para esta descarga
-        <% else %>
+        <% #if totales.gsub(',', '').to_i > 200 %>
+        <% #else %>
           <%= botonDescarga(tipo_descarga) %>
-       <%end%>
+       <%#end%>
       </div>
     </div>
   </div>
