@@ -145,7 +145,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   scope :asigna_info_ancestros, -> { path.select("#{Especie.attribute_alias(:nombre)}, #{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)}").left_joins(:categoria_taxonomica) }  
   
   # Scope para cargar el arbol identado en la ficha de la espcie
-  scope :arbol_select, -> { Especie.select_basico(['conteo']).select_nivel_categoria.left_joins(:adicional, :categoria_taxonomica, :especie_estadisticas) }
+  scope :arbol_select, -> { Especie.select_basico(['conteo']).select_nivel_categoria.left_joins(:adicional, :categoria_taxonomica, :especie_estadisticas).where(estadoRegistro: 1) }
   # Scope para cargar el arbol identado inical en la ficha de la especie
   scope :arbol_inicial, ->(taxon, estadistica_id) { arbol_select.solo_publicos.where(id: taxon.path_ids).order('nivel_categoria ASC').where("estadistica_id=?",estadistica_id) }
   # Scope para cargar el arbol identado inical en la ficha de la especie, solo las categorias obligatorias
