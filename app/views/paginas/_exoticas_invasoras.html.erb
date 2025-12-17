@@ -13,7 +13,7 @@
       <td>
         <% case index %>
         <% when 0  # Foto %>
-          <%= image_tag(col, class: 'img-fluid rounded') if col.present? %>
+          <%= image_tag(col, class: 'img rounded',style:"width: 15em" ) if col.present? %>
 
         <% when 1  # Nombre científico %>
           <% if col.present? %>

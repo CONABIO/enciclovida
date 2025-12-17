@@ -34,14 +34,14 @@ class Lista < ActiveRecord::Base
   COLUMNAS_DEFAULT = %w(id nombre_cientifico x_nombre_comun_principal x_nombres_comunes x_categoria_taxonomica
                         x_estatus x_tipo_distribucion
                         cita_nomenclatural nombre_autoridad)
-  COLUMNAS_BASICAS = %w(x_idcat id nombre_cientifico x_categoria_taxonomica x_estatus x_nombre_comun_principal x_foto_principal x_url_ev)                        
+  COLUMNAS_BASICAS = %w(x_idcat id nombre_cientifico x_categoria_taxonomica x_estatus x_nombre_comun_principal  x_url_ev)                        
   COLUMNAS_GENERALES = COLUMNAS_DEFAULT + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CATEGORIAS_PRINCIPALES
 
   #columnas de prioritarias
   COLUMNAS_CONSERVACION = %w(x_prioritaria x_prioritaria_conabio x_observacion_prioritarias)
 
   # El orden absoluto de las columnas en el excel
-  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes x_categoria_taxonomica x_estatus x_tipo_distribucion x_usos x_ambiente x_num_reg x_nombre_comun_principal x_foto_principal) + COLUMNAS_RIESGO_COMERCIO  + COLUMNAS_CATEGORIAS_PRINCIPALES + %w(x_bibliografia x_url_ev id x_idcat)+ COLUMNAS_CONSERVACION
+  COLUMNAS_ORDEN = %w(nombre_cientifico x_nombres_comunes x_categoria_taxonomica x_estatus x_tipo_distribucion x_usos x_ambiente x_num_reg x_nombre_comun_principal) + COLUMNAS_RIESGO_COMERCIO + COLUMNAS_CONSERVACION + COLUMNAS_CATEGORIAS_PRINCIPALES + %w(x_bibliografia x_url_ev x_idcat) 
 
   def after_initialize(opts)
     self.taxones = []
@@ -380,7 +380,6 @@ end
         next unless tipos_distribuciones.any?
         self.taxon.x_tipo_distribucion = tipos_distribuciones.join(',')
       when 'x_prioritaria', 'x_prioritaria_conabio',  'x_observacion_prioritarias'
-        next if tabla_catalogos  # Ya no entra una segunda vez
         
         prioritaria, prioritaria_conabio, observacion_prioritarias =  [], [],[]
         catalogos_existe = false

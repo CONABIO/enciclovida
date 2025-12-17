@@ -48,7 +48,17 @@ module BusquedasHelper
 
   # REVISADO: Filtros para Especies prioritarias para la conservación
   def checkboxPrioritaria(opciones = {})
-    selected = params[:prior].present? && params[:prior].any? ? params[:prior] : []
+    # Obtener todos los IDs disponibles de ambos grupos
+    all_ids = Array.wrap(@filtros[:prioritarias]).map(&:id) + 
+              Array.wrap(@filtros[:prioritarias_conabio]).map(&:id)
+    
+    # Si hay parámetros enviados, usarlos; si no, seleccionar todos por defecto
+    selected = if params[:prior].present? && params[:prior].any?
+                params[:prior]
+              else
+                all_ids
+              end
+    
     opc = @@opciones.merge(opciones)
 
     grupo1 = Array.wrap(@filtros[:prioritarias]).map do |p|
@@ -63,8 +73,13 @@ module BusquedasHelper
       ['Prioritarias CONABIO 2012', grupo2],
     ]
 
-    select_tag('prior', grouped_options_for_select(grouped, selected), opc)
+    # Asegurar que sea múltiple y agregar estilos si es necesario
+    html_options = opc.merge(multiple: true)
+    
+    select_tag('prior[]', grouped_options_for_select(grouped, selected), html_options)
   end
+
+  
 
   # REVISADO: Filtros para estatus taxonómico en la busqueda avanzada
   def checkboxSoloValidos
@@ -141,34 +156,65 @@ module BusquedasHelper
 
   # Los checkbox para que el usuario decida que descargar, se ocupa en descarga de busqueda basica, avanzada, por region y el checklist
   def camposDescarga(tipo_descarga=nil) 
-    checkbox = ''
-    campos = { x_tipo_distribucion: 'Tipo de distribución', x_cat_riesgo: 'Categorías de riesgo y comercio internacional',
-     x_ambiente: 'Ambiente', x_nombres_comunes: 'Nombres comunes', x_bibliografia: 'Bibliografía',
-     x_conservación: 'Especies prioritarias para la conservación' }
+  # Cache los parámetros
+  f_desc_params = params[:f_desc]
+  
+  # Predefinir campos comunes
+  common_fields = [
+    [:x_tipo_distribucion, 'Tipo de distribución'],
+    [:x_cat_riesgo, 'Categorías de riesgo y comercio internacional'],
+    [:x_ambiente, 'Ambiente'],
+    [:x_nombres_comunes, 'Nombres comunes'],
+    [:x_bibliografia, 'Bibliografía'],
+    [:x_conservación, 'Especies prioritarias para la conservación']
+  ]
+  
+  # Agregar campos específicos
+  case tipo_descarga
+  when 'avanzada', 'region'
+    common_fields += [
+      [:x_col_basicas, 'Columnas basicas'],
+      [:x_usos, 'Usos y Agrobiodiversidad'],
+      [:x_taxa_sup, 'Taxonomía superior']
+    ]
+  when 'checklist'
+    common_fields += [
+      [:x_estatus, 'Solo válidos/aceptados'],
+      [:x_distribucion, 'Distribución (reportada en literatura)'],
+      [:x_residencia, 'Categoría de residencia (aves)'],
+      [:x_formas, 'Formas de crecimiento (plantas)'],
+      [:x_interaccion, 'Interacciones biológicas']
+    ]
+  end
+  
+  # Construir checkboxes de manera eficiente
+  checkboxes = common_fields.map do |field, label|
+    field_str = field.to_s
+    field_id = "f_#{tipo_descarga}_#{field_str}"
     
-    case tipo_descarga
-    when 'basica'
-    when 'avanzada'
-      campos.merge!({ x_col_basicas: 'Columnas basicas', x_usos: 'Usos y Agrobiodiversidad', x_taxa_sup: 'Taxonomía superior' })
-    when 'region'
-      campos = campos.merge!({ x_col_basicas: 'Columnas basicas', x_usos: 'Usos y Agrobiodiversidad', x_taxa_sup: 'Taxonomía superior' })
-    when 'checklist'
-      campos.merge!({ x_estatus: 'Solo válidos/aceptados', x_distribucion: 'Distribución (reportada en literatura)', x_residencia: 'Categoría de residencia (aves)', x_formas: 'Formas de crecimiento (plantas)', x_interaccion: 'Interacciones biológicas' })  
-    end
-    
-    campos.each do |valor, label|
-      if valor.to_s == 'x_col_basicas'
-        checkbox << check_box_tag('f_desc[]', valor, true, style: 'display: none;', id: "f_#{tipo_descarga}_#{valor}")
-      else
-        checkbox << "<div class='custom-control custom-switch'>"
-        checkbox << check_box_tag('f_desc[]', valor, false, class: "custom-control-input", id: "f_#{tipo_descarga}_#{valor}")
-        checkbox << "<label class='custom-control-label' for='f_#{tipo_descarga}_#{valor}'>#{label}</label>"
-        checkbox << "</div>"
+    if field_str == 'x_col_basicas'
+      # Campo oculto siempre seleccionado
+      check_box_tag('f_desc[]', field, true, style: 'display: none;', id: field_id)
+    else
+      # Determinar estado del checkbox
+      checked = if field_str == 'x_conservación'
+                  true  # Siempre seleccionado
+                elsif f_desc_params
+                  Array(f_desc_params).include?(field_str)
+                else
+                  false
+                end
+      
+      # Usar tag.span para mejor rendimiento
+      content_tag(:div, class: 'custom-control custom-switch') do
+        check_box_tag('f_desc[]', field, checked, class: "custom-control-input", id: field_id) +
+        content_tag(:label, label, class: 'custom-control-label', for: field_id)
       end
     end
-
-    checkbox.html_safe
   end
+  
+  safe_join(checkboxes)
+end
 
   # Despliega el checklist
   def generaChecklist(taxon)
