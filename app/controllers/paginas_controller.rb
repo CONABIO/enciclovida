@@ -33,23 +33,47 @@ class PaginasController < ApplicationController
   exoticas_dir = File.join(Rails.root, 'public', exoticas_url)
   inst_dir = File.join(Rails.root, 'public', instrumentos_url)
 
-  csv_text = File.read(file)
-  csv = CSV.parse(csv_text, headers: true)
-
+  # Leer y procesar SOLO los datos necesarios para la página actual
   @por_pagina = 30
   @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-  @totales = 0
-
-  csv.each_with_index do |row, index|
+  
+  # Opción 1: Usar CSV con streaming (más eficiente para archivos grandes)
+  todos_datos = []
+  
+  # Primera pasada: recolectar solo los datos que pasan los filtros
+  CSV.foreach(file, headers: true) do |row|
     next unless condiciones_filtros(row)
-
-    @totales += 1
-    if (@por_pagina * (@pagina - 1) + 1) > @totales || @por_pagina * @pagina < @totales
-      next
-    end
-
+    
+    # Determinar nombre para ordenar (solo esto, no todo el procesamiento)
+    nombre = row['Nombre cientifico'] || row['Nombre científico'] || ''
+    nombre_para_ordenar = nombre.to_s.downcase.strip
+    
+    # Guardar mínimo de información para ordenar
+    todos_datos << {
+      nombre_ordenar: nombre_para_ordenar,
+      row_data: row,
+      row_index: todos_datos.size
+    }
+  end
+  
+  # ORDENAR solo la lista ligera de nombres
+  todos_datos.sort_by! { |item| item[:nombre_ordenar] }
+  
+  @totales = todos_datos.size
+  
+  # Calcular qué filas mostrar en esta página
+  inicio = (@pagina - 1) * @por_pagina
+  fin = [inicio + @por_pagina - 1, @totales - 1].min
+  
+  # Segunda pasada: procesar solo las filas de la página actual
+  filas_a_procesar = todos_datos[inicio..fin] || []
+  
+  filas_a_procesar.each_with_index do |item, page_index|
+    row = item[:row_data]
+    
     datos = []
-
+    
+    # Buscar en Especie si existe
     t = if row['enciclovida_id'].present?
           begin
             Especie.find(row['enciclovida_id'])
@@ -57,31 +81,32 @@ class PaginasController < ApplicationController
             nil
           end
         end
-
-    # determinar nombre para pdf (si existe)
+    
+    # Determinar nombre final
     nombre = if t
-               t.nombre_cientifico
-             else
-               row['Nombre científico']
-             end
-
-    # agregar datos previos
+              t.nombre_cientifico
+            else
+              row['Nombre cientifico'] || row['Nombre científico'] || ''
+            end
+    
+    # Procesar como antes, pero solo para estas filas
     if t
       datos << t.adicional.try(:foto_principal)
       datos << t
-
+      
       if familia = t.ancestors.left_joins(:categoria_taxonomica)
-                         .where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} = 'familia'")
+                        .where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} = 'familia'")
         datos << familia.first.nombre_cientifico
       else
         datos << nil
       end
-
+      
       datos << row['Grupo']
     else
-      # si hay foto alternativa
-      if row['Creditos Fotos'].present?
-        nombre_foto = "#{row['Nombre científico']}.jpg"
+      # Foto alternativa
+      creditos_fotos = row['Creditos Fotos'] || row['Créditos Fotos'] || row['Creditos fotos']
+      if creditos_fotos.present?
+        nombre_foto = "#{nombre}.jpg"
         foto = Rails.root.join('public', 'fotos_invasoras', nombre_foto)
         if File.exist?(foto)
           foto_url = "/fotos_invasoras/#{nombre_foto}"
@@ -92,32 +117,32 @@ class PaginasController < ApplicationController
       else
         datos << nil
       end
-
-      datos << row['Nombre científico']
-      datos << row['Familia']
+      
+      datos << nombre
+      datos << (row['Familia'] || row['familia'])
       datos << row['Grupo']
     end
-
-    # construir ruta de pdf solo si nombre está presente
+    
+    # PDF
     pdf = nil
     if nombre.present?
       pdf_path = File.join(exoticas_dir, "#{nombre}.pdf")
       if File.exist?(pdf_path)
         pdf = File.join(exoticas_url, "#{nombre}.pdf")
       end
-    else
-      Rails.logger.warn "CSV fila #{index}: nombre científico vacío — no se genera pdf"
     end
-
-    datos << row['Ambiente']
-    datos << row['Origen']
-    datos << row['Presencia']
-    datos << row['Estatus']
-
-    # manejar instrumentos reguladores
+    
+    # Resto de campos
+    datos << (row['Ambiente'] || row['ambiente'])
+    datos << (row['Origen'] || row['origen'])
+    datos << (row['Presencia'] || row['presencia'])
+    datos << (row['Estatus'] || row['estatus'])
+    
+    # Instrumentos
     instrumentos = []
-    if row['Regulada por otros instrumentos'].present?
-      row['Regulada por otros instrumentos'].split('/').each do |inst|
+    regulada_por = row['Regulada por otros instrumentos'] || row['Instrumento legal'] || row['instrumento legal']
+    if regulada_por.present?
+      regulada_por.split('/').each do |inst|
         inst = inst.strip
         pdf_inst_path = File.join(inst_dir, "#{inst}.pdf")
         if File.exist?(pdf_inst_path)
@@ -128,14 +153,17 @@ class PaginasController < ApplicationController
         end
       end
     end
-
+    
     datos << instrumentos
     datos << pdf
-
+    
     @tabla_exoticas[:datos] << datos
   end
-
+  
   @paginas = (@totales % @por_pagina).zero? ? @totales / @por_pagina : (@totales / @por_pagina) + 1
+  
+  # Cache para mejor performance si es necesario
+  Rails.cache.write("exoticas_ordenadas_#{@filtros_cache_key}", todos_datos, expires_in: 1.hour) if @filtros_cache_key
 end
 
   def opciones_posibles
