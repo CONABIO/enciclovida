@@ -48,17 +48,7 @@ module BusquedasHelper
 
   # REVISADO: Filtros para Especies prioritarias para la conservación
   def checkboxPrioritaria(opciones = {})
-    # Obtener todos los IDs disponibles de ambos grupos
-    all_ids = Array.wrap(@filtros[:prioritarias]).map(&:id) + 
-              Array.wrap(@filtros[:prioritarias_conabio]).map(&:id)
-    
-    # Si hay parámetros enviados, usarlos; si no, seleccionar todos por defecto
-    selected = if params[:prior].present? && params[:prior].any?
-                params[:prior]
-              else
-                all_ids
-              end
-    
+    selected = params[:prior].present? && params[:prior].any? ? params[:prior] : []
     opc = @@opciones.merge(opciones)
 
     grupo1 = Array.wrap(@filtros[:prioritarias]).map do |p|
@@ -72,15 +62,9 @@ module BusquedasHelper
       ['Prioritarias DOF 2014', grupo1],
       ['Prioritarias CONABIO 2012', grupo2],
     ]
-
-    # Asegurar que sea múltiple y agregar estilos si es necesario
-    html_options = opc.merge(multiple: true)
+     select_tag('prior', grouped_options_for_select(grouped, selected), opc)
     
-    select_tag('prior[]', grouped_options_for_select(grouped, selected), html_options)
   end
-
-  
-
   # REVISADO: Filtros para estatus taxonómico en la busqueda avanzada
   def checkboxSoloValidos
     "<label for='estatus'><span title='Solo válidos/aceptados'>Solo válidos/aceptados</span></label> #{check_box_tag('estatus[]', 2, params[:estatus].present? ? true: false, id: "estatus_2", class:'form-control')}"
@@ -198,7 +182,7 @@ module BusquedasHelper
     else
       # Determinar estado del checkbox
       checked = if field_str == 'x_conservación'
-                  true  # Siempre seleccionado
+                  false  # Siempre seleccionado
                 elsif f_desc_params
                   Array(f_desc_params).include?(field_str)
                 else
