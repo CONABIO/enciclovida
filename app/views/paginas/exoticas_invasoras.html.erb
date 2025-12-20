@@ -99,7 +99,7 @@
             Estatus<br /><%= select_tag :estatus, options_for_select(@select[:estatus], valor), prompt: 'Todos', class: 'form-control' %>
           <% when 'Ficha' %>
             <% valor = @selected.present? && @selected[:ficha].present? ? @selected[:ficha][:valor] : nil %>
-            Ficha<br /><%= select_tag :ficha, options_for_select(@select[:fichas], valor), prompt: 'Todos', class: 'form-control' %>
+            Análisis de riesgo<br /><%= select_tag :ficha, options_for_select(@select[:fichas], valor), prompt: 'Todos', class: 'form-control' %>
           <% else %>
             <%= cabecera %>
           <% end %>
