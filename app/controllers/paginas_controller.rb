@@ -17,11 +17,7 @@ class PaginasController < ApplicationController
     render partial: 'exoticas_invasoras'
   end
 
-
-  protected
-
-  # En tu PaginasController, agrega solo este método nuevo:
-  def buscar_especies
+ def buscar_especies
     termino = params[:q].to_s.downcase.strip
     limite = (params[:limit] || 10).to_i
     
@@ -47,6 +43,11 @@ class PaginasController < ApplicationController
     
     render json: {resultados: resultados, total: resultados.size}
   end
+
+
+  protected
+
+  # En tu PaginasController, agrega solo este método nuevo:
 
   def lee_csv
   termino_busqueda = params[:nombre_cientifico].to_s.downcase.strip
