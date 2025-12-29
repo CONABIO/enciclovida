@@ -140,6 +140,8 @@ Buscador::Application.routes.draw do
   # Pagina de exoticas, mal quitar en eun futuro
   get 'exoticas-invasoras' => 'paginas#exoticas_invasoras'
   get 'exoticas-invasoras-paginado' => 'paginas#exoticas_invasoras_paginado'
+  get 'exoticas-invasoras/buscar', to: 'paginas#buscar_especies'
+
 
   # Busquedas por region
   #get 'explora-por-ubicacion' => 'busquedas_regiones#ubicacion'

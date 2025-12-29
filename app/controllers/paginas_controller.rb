@@ -20,7 +20,37 @@ class PaginasController < ApplicationController
 
   protected
 
+  # En tu PaginasController, agrega solo este método nuevo:
+  def buscar_especies
+    termino = params[:q].to_s.downcase.strip
+    limite = (params[:limit] || 10).to_i
+    
+    return render json: {resultados: [], total: 0} if termino.length < 2
+    
+    file = File.join(Rails.root, 'public', 'exoticas_invasoras', 'exoticas-invasoras.csv')
+    resultados = []
+    
+    CSV.foreach(file, headers: true) do |row|
+      nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase
+      
+      if nombre_cientifico.include?(termino)
+        resultados << {
+          nombre_cientifico: row['Nombre cientifico'] || row['Nombre científico'],
+          nombre_comun: row['Nombre común'] || row['Nombre comun'] || ''
+        }
+        
+        break if resultados.size >= limite
+      end
+    end
+    
+    resultados.sort_by! { |r| r[:nombre_cientifico].to_s.downcase }
+    
+    render json: {resultados: resultados, total: resultados.size}
+  end
+
   def lee_csv
+  termino_busqueda = params[:nombre_cientifico].to_s.downcase.strip
+
   @tabla_exoticas = {}
   @tabla_exoticas[:datos] = []
 
@@ -44,6 +74,10 @@ class PaginasController < ApplicationController
   CSV.foreach(file, headers: true) do |row|
     next unless condiciones_filtros(row)
     
+    if termino_busqueda.present?
+      nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase
+      next unless nombre_cientifico.include?(termino_busqueda)
+    end
     # Determinar nombre para ordenar (solo esto, no todo el procesamiento)
     nombre = row['Nombre cientifico'] || row['Nombre científico'] || ''
     nombre_para_ordenar = nombre.to_s.downcase.strip
@@ -179,6 +213,12 @@ end
 
   def opciones_seleccionadas
     @selected = {}
+    if params[:nombre_cientifico].present?
+      @selected[:nombre_cientifico] = {
+        valor: params[:nombre_cientifico],
+        nom_campo: 'Nombre cientifico'
+      }
+    end
     if params[:grupo].present?
       @selected[:grupo] = {}
       @selected[:grupo][:valor] = params[:grupo]
@@ -224,6 +264,14 @@ end
 
   def condiciones_filtros(row)
     @selected.each do |campo, v|  # Compara que las condiciones se cumplan
+      if campo == :nombre_cientifico
+        termino = v[:valor].to_s.downcase.strip
+        nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase.strip
+        
+        next if termino.blank?
+        return false unless nombre_cientifico.include?(termino)
+        next
+      end
       if v[:nom_campo] == 'Ficha'
         if v[:valor] == 'Sí'
           if row[v[:nom_campo]].blank?

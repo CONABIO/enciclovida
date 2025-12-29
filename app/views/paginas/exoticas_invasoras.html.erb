@@ -4,59 +4,553 @@
 
 <% content_for(:delayedjs) do %>
   <script>
-      var es_primero = null;
 
-      $('.page-selection1').bootpag({
-          total: <%= @paginas %>,          // total pages
-          page: <%= @pagina.present? ? @pagina : 1 %>,            // default page
-          maxVisible: 5,     // visible pagination
-          leaps: true,         // next/prev leaps through maxVisible
-          firstLastUse: true,
-          first: '←',
-          last: '→',
-          wrapClass: 'justify-content-center pagination'
-      }).on("page", function(event, pagina){
-          if (es_primero == pagina)
-              return;
-          else {
-              $.ajax(
-                  {
-                      url: "/exoticas-invasoras-paginado",
-                      type: 'GET',
-                      data: $('#form-exoticas').serialize() + '&pagina=' +pagina
 
-                  }).done(function(res)
-              {
-                  $('#tbody').empty().append(res);
-              });
+  // BUSCADOR MINIMALISTA
+var timeoutBusqueda;
+
+function buscarEspecies() {
+  var input = document.getElementById("buscadorCientifico");
+  var termino = input.value.trim();
+  
+  if (!termino) {
+    limpiarBusqueda();
+    return;
+  }
+  
+  // Agregar campo oculto al formulario
+  var form = document.getElementById('form-exoticas');
+  var hiddenInput = document.getElementById('busquedaHidden');
+  
+  if (!hiddenInput) {
+    hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'nombre_cientifico';
+    hiddenInput.id = 'busquedaHidden';
+    form.appendChild(hiddenInput);
+  }
+  
+  hiddenInput.value = termino;
+  
+  // Ir a página 1 y enviar
+  $('.page-selection1').bootpag({page: 1});
+  form.submit();
+}
+
+function limpiarBusqueda() {
+  var form = document.getElementById('form-exoticas');
+  var hiddenInput = document.getElementById('busquedaHidden');
+  var input = document.getElementById("buscadorCientifico");
+  
+  if (input) input.value = '';
+  if (hiddenInput) hiddenInput.remove();
+  
+  $('.page-selection1').bootpag({page: 1});
+  form.submit();
+}
+
+function mostrarSugerencias() {
+  var input = document.getElementById("buscadorCientifico");
+  var termino = input.value.trim();
+  var sugerenciasDiv = document.getElementById("sugerencias");
+  
+  if (termino.length < 2) {
+    if (sugerenciasDiv) sugerenciasDiv.style.display = 'none';
+    return;
+  }
+  
+  clearTimeout(timeoutBusqueda);
+  
+  timeoutBusqueda = setTimeout(function() {
+    $.ajax({
+      url: '/exoticas-invasoras/buscar',
+      type: 'GET',
+      data: {q: termino, limit: 8},
+      success: function(data) {
+        if (data.resultados && data.resultados.length > 0) {
+          var html = '';
+          data.resultados.forEach(function(especie) {
+            html += '<div style="padding: 8px 12px; border-bottom: 1px solid #eee; cursor: pointer;" onclick="seleccionarSugerencia(\'' + 
+                    especie.nombre_cientifico.replace(/'/g, "\\'") + '\')">';
+            html += '<div style="font-style: italic;">' + especie.nombre_cientifico + '</div>';
+            if (especie.nombre_comun) {
+              html += '<div style="font-size: 12px; color: #666;">' + especie.nombre_comun + '</div>';
+            }
+            html += '</div>';
+          });
+          
+          if (sugerenciasDiv) {
+            sugerenciasDiv.innerHTML = html;
+            sugerenciasDiv.style.display = 'block';
           }
+        } else {
+          if (sugerenciasDiv) sugerenciasDiv.style.display = 'none';
+        }
+      }
+    });
+  }, 300);
+}
 
-          es_primero = pagina;
+function seleccionarSugerencia(nombre) {
+  var input = document.getElementById("buscadorCientifico");
+  if (input) {
+    input.value = nombre;
+    var sugerenciasDiv = document.getElementById("sugerencias");
+    if (sugerenciasDiv) sugerenciasDiv.style.display = 'none';
+    buscarEspecies();
+  }
+}
+
+// Inicialización
+$(document).ready(function() {
+  var buscador = document.getElementById("buscadorCientifico");
+  
+  // Cargar valor si existe
+  var urlParams = new URLSearchParams(window.location.search);
+  var busqueda = urlParams.get('nombre_cientifico');
+  if (busqueda && buscador) {
+    buscador.value = busqueda;
+  }
+  
+  // Eventos
+  if (buscador) {
+    // Enter para buscar
+    buscador.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        buscarEspecies();
+      }
+    });
+    
+    // Sugerencias mientras escribe
+    buscador.addEventListener('input', mostrarSugerencias);
+  }
+  
+  // Ocultar sugerencias al hacer clic fuera
+  document.addEventListener('click', function(e) {
+    var sugerenciasDiv = document.getElementById("sugerencias");
+    if (sugerenciasDiv && e.target !== buscador && !sugerenciasDiv.contains(e.target)) {
+      sugerenciasDiv.style.display = 'none';
+    }
+  });
+  
+  // Tu código de paginación ORIGINAL (sin tocar)
+  var es_primero = null;
+  $('.page-selection1').bootpag({
+    total: <%= @paginas %>,
+    page: <%= @pagina.present? ? @pagina : 1 %>,
+    maxVisible: 5,
+    leaps: true,
+    firstLastUse: true,
+    first: '←',
+    last: '→',
+    wrapClass: 'justify-content-center pagination'
+  }).on("page", function(event, pagina){
+    if (es_primero == pagina)
+      return;
+    else {
+      $.ajax({
+        url: "/exoticas-invasoras-paginado",
+        type: 'GET',
+        data: $('#form-exoticas').serialize() + '&pagina=' + pagina
+      }).done(function(res) {
+        $('#tbody').empty().append(res);
       });
+    }
+    es_primero = pagina;
+  });
+  
+  $("#form-exoticas :input").on('change', function(){
+    $('#form-exoticas').submit();
+  });
+  
+  $('ul li a').addClass('page-link');
+  $('ul li').addClass('page-item');
+});
 
-      $("#form-exoticas :input").on('change', function(){
+
+
+
+
+
+    // Variables globales
+    var busquedaTimeout;
+    var busquedaActiva = false;
+    var terminoBusqueda = '';
+    
+    // Función para buscar en todas las especies
+    function buscarEnTodasEspecies() {
+      var input = document.getElementById("buscadorCientifico");
+      var termino = input.value.trim();
+      var btnLimpiar = document.getElementById("btnLimpiarBusqueda");
+      var btnBuscar = document.getElementById("btnBuscar");
+      var contador = document.getElementById("contadorBusqueda");
+      
+      // Mostrar/ocultar botón de limpiar
+      if (btnLimpiar) {
+        if (termino.length > 0) {
+          btnLimpiar.style.display = 'inline-block';
+          if (btnBuscar) btnBuscar.disabled = false;
+        } else {
+          btnLimpiar.style.display = 'none';
+          if (btnBuscar) btnBuscar.disabled = true;
+        }
+      }
+      
+      // Si el término está vacío, limpiar búsqueda
+      if (termino === '') {
+        if (busquedaActiva) {
+          limpiarBusqueda();
+        }
+        return;
+      }
+
+      // Evitar búsquedas muy frecuentes
+      clearTimeout(busquedaTimeout);
+    
+      // Mostrar loading
+      if (contador) {
+        contador.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
+        contador.style.display = 'block';
+      }
+      
+      busquedaTimeout = setTimeout(function() {
+        // Actualizar el formulario con el término de búsqueda
+        var form = document.getElementById('form-exoticas');
+        var inputHidden = document.getElementById('nombre_cientifico_hidden');
+        
+        if (!inputHidden) {
+          inputHidden = document.createElement('input');
+          inputHidden.type = 'hidden';
+          inputHidden.name = 'nombre_cientifico';
+          inputHidden.id = 'nombre_cientifico_hidden';
+          form.appendChild(inputHidden);
+        }
+        
+        inputHidden.value = termino;
+        
+        // Guardar término para uso posterior
+        terminoBusqueda = termino;
+        busquedaActiva = true;
+        
+        // Resetear a página 1 cuando se busca
+        $('.page-selection1').bootpag({page: 1});
+        
+        // Enviar el formulario (esto recargará la página con los resultados)
+        form.submit();
+      }, 500); // Delay de 500ms
+    }
+    
+    // Función para limpiar la búsqueda
+    function limpiarBusqueda() {
+      var input = document.getElementById("buscadorCientifico");
+      var form = document.getElementById('form-exoticas');
+      var inputHidden = document.getElementById('nombre_cientifico_hidden');
+      
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+      
+      if (inputHidden) {
+        inputHidden.remove();
+      }
+    
+      // Resetear variables
+      terminoBusqueda = '';
+      busquedaActiva = false;
+      
+      // Ocultar botón de limpiar
+      var btnLimpiar = document.getElementById("btnLimpiarBusqueda");
+      if (btnLimpiar) {
+        btnLimpiar.style.display = 'none';
+      }
+      
+      // Resetear a página 1
+      $('.page-selection1').bootpag({page: 1});
+      
+      // Enviar formulario sin término de búsqueda
+      form.submit();
+    }
+
+    // Función para autocomplete
+    function mostrarAutocomplete() {
+      var input = document.getElementById("buscadorCientifico");
+      var termino = input.value.trim();
+      var sugerenciasDiv = document.getElementById("sugerenciasAutocomplete");
+      
+      if (termino.length < 2) {
+        if (sugerenciasDiv) sugerenciasDiv.style.display = 'none';
+        return;
+      }
+      
+      clearTimeout(busquedaTimeout);
+      
+      busquedaTimeout = setTimeout(function() {
+        $.ajax({
+          url: '/exoticas-invasoras/buscar',
+          type: 'GET',
+          data: {
+            q: termino,
+            limit: 10
+          },
+          success: function(data) {
+            if (data.resultados && data.resultados.length > 0) {
+              var html = '<div class="list-group">';
+              data.resultados.forEach(function(especie) {
+                html += '<a href="javascript:void(0)" class="list-group-item list-group-item-action" onclick="seleccionarSugerencia(\'' + 
+                        especie.nombre_cientifico.replace(/'/g, "\\'") + '\')">';
+                html += '<div class="font-italic text-primary">' + especie.nombre_cientifico + '</div>';
+                if (especie.nombre_comun) {
+                  html += '<small class="text-muted">' + especie.nombre_comun + '</small>';
+                }
+                html += '</a>';
+              });
+              html += '</div>';
+              
+              if (sugerenciasDiv) {
+                sugerenciasDiv.innerHTML = html;
+                sugerenciasDiv.style.display = 'block';
+              }
+            } else {
+              if (sugerenciasDiv) sugerenciasDiv.style.display = 'none';
+            }
+          }
+        });
+      }, 300);
+    }
+
+    // Función para seleccionar una sugerencia
+    function seleccionarSugerencia(nombre) {
+      var input = document.getElementById("buscadorCientifico");
+      if (input) {
+        input.value = nombre;
+        // Ocultar sugerencias
+        var sugerenciasDiv = document.getElementById("sugerenciasAutocomplete");
+        if (sugerenciasDiv) sugerenciasDiv.style.display = 'none';
+        // Realizar búsqueda
+        buscarEnTodasEspecies();
+      }
+    }
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', function() {
+      var buscador = document.getElementById("buscadorCientifico");
+      var btnLimpiar = document.getElementById("btnLimpiarBusqueda");
+      var btnBuscar = document.getElementById("btnBuscar");
+      
+      // Si hay término de búsqueda en los parámetros, mostrarlo en el input
+      var urlParams = new URLSearchParams(window.location.search);
+      var nombreParam = urlParams.get('nombre_cientifico');
+      if (nombreParam && buscador) {
+        buscador.value = nombreParam;
+        busquedaActiva = true;
+        terminoBusqueda = nombreParam;
+        
+        // Mostrar botón de limpiar
+        if (btnLimpiar) {
+          btnLimpiar.style.display = 'inline-block';
+        }
+      }
+      
+      // Event listeners
+      if (buscador) {
+        // Buscar al presionar Enter
+        buscador.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            buscarEnTodasEspecies();
+          }
+        });
+        
+        // Autocomplete mientras escribe
+        buscador.addEventListener('input', function() {
+          mostrarAutocomplete();
+        });
+      }
+
+      if (btnBuscar) {
+        btnBuscar.addEventListener('click', function(e) {
+          e.preventDefault();
+          buscarEnTodasEspecies();
+        });
+      }
+      
+      if (btnLimpiar) {
+        btnLimpiar.addEventListener('click', function(e) {
+          e.preventDefault();
+          limpiarBusqueda();
+        });
+      }
+      
+      // Ocultar sugerencias al hacer clic fuera
+      document.addEventListener('click', function(e) {
+        var sugerenciasDiv = document.getElementById("sugerenciasAutocomplete");
+        if (sugerenciasDiv && !sugerenciasDiv.contains(e.target) && e.target !== buscador) {
+          sugerenciasDiv.style.display = 'none';
+        }
+      });
+      
+      // Tu código de paginación existente
+
+
+      var es_primero = null;
+      $('.page-selection1').bootpag({
+  total: <%= @paginas %>,
+  page: <%= @pagina.present? ? @pagina : 1 %>,
+  maxVisible: 5,
+  leaps: true,
+  firstLastUse: true,
+  first: '←',
+  last: '→',
+  wrapClass: 'justify-content-center pagination'
+}).on("page", function(event, pagina){
+  if (es_primero == pagina)
+    return;
+  else {
+    $.ajax({
+      url: "/exoticas-invasoras-paginado",
+      type: 'GET',
+      data: $('#form-exoticas').serialize() + '&pagina=' + pagina,
+      beforeSend: function() {
+        // Opcional: mostrar indicador de carga
+        $('#tbody').html('<tr><td colspan="10" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="sr-only">Cargando...</span></div></td></tr>');
+      }
+    }).done(function(res) {
+      $('#tbody').empty().append(res);
+      
+      // Forzar la ejecución de scripts en el contenido cargado
+      setTimeout(function() {
+        // Buscar y ejecutar scripts en el contenido cargado
+        $('#tbody script').each(function() {
+          try {
+            eval($(this).text());
+          } catch(e) {
+            console.log('Error ejecutando script:', e);
+          }
+        });
+        
+        // También intentar ejecutar funciones específicas
+        if (typeof inicializarDespuesDeCarga === 'function') {
+          inicializarDespuesDeCarga();
+        }
+        
+        if (typeof actualizarContadorBusqueda === 'function') {
+          actualizarContadorBusqueda();
+        }
+        
+        // Actualizar el elemento num-res-exoticas
+        var texto = "Página " + pagina + " de <%= @paginas %>";
+        $('#num-res-exoticas').html(texto);
+        
+      }, 100);
+    });
+  }
+  es_primero = pagina;
+});
+
+
+
+
+
+      // Para otros filtros (dropdowns) - mantener el comportamiento original
+      $("#form-exoticas select").on('change', function(){
+        // Si es un filtro diferente al buscador, enviar formulario
+        if (this.id !== 'buscadorCientifico') {
           $('#form-exoticas').submit();
+        }
       });
 
       jQuery('ul li a').addClass('page-link');
       jQuery('ul li').addClass('page-item');
+      
+      // Actualizar contador inicial
+      actualizarContadorInicial();
+    });
+    
+    // Función para actualizar contador inicial
+    function actualizarContadorInicial() {
+      var total = <%= @totales %>;
+      var termino = '<%= params[:nombre_cientifico].present? ? params[:nombre_cientifico] : "" %>';
+      var contador = document.getElementById("contadorBusqueda");
+      var numResElement = document.getElementById("num-res-exoticas");
+      
+      if (contador) {
+        if (termino.length > 0) {
+          contador.innerHTML = '<i class="fas fa-search"></i> Encontradas <strong>' + total + '</strong> especies con "' + termino + '"';
+          contador.style.display = 'block';
+          contador.className = 'alert alert-info mt-2';
+        } else {
+          contador.innerHTML = '<i class="fas fa-info-circle"></i> Total de especies: <strong>' + total + '</strong>';
+          contador.style.display = 'block';
+          contador.className = 'alert alert-secondary mt-2';
+        }
+      }
+      
+      // Actualizar también el contador de página
+      if (numResElement) {
+        var texto = "Mostrando del <%= @por_pagina*(@pagina-1) + 1 %> al <%= [@por_pagina*(@pagina-1) + @tabla_exoticas[:datos].count, @totales].min %> de <%= @totales %> resultados";
+        if (termino.length > 0) {
+          texto += " para '" + termino + "'";
+        }
+        numResElement.innerHTML = texto;
+      }
+    }
   </script>
 <% end %>
 
 <% content_for(:extracss) do %>
   <style>
-    #tbody td{vertical-align: middle;}
-    #tbody tr td:nth-child(11){font-size: 1.5em;}
-    #tbody tr td:nth-child(2){font-style: italic;}
-    #tbody tr td:nth-child(1){width: 10%;}
-    #tbody tr td:nth-child(2), #tbody tr td:nth-child(3){width: 13%;}
-    #tbody tr td:nth-child(4), #tbody tr td:nth-child(5), #tbody tr td:nth-child(6), #tbody tr td:nth-child(7), #tbody tr td:nth-child(8), #tbody tr td:nth-child(9){width: 6%;}
+    /* Estilos principales que NO deben repetirse en el partial */
+    .buscador-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    #sugerenciasAutocomplete {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+    }
+    
+    .list-group-item {
+      border-left: none;
+      border-right: none;
+      border-radius: 0 !important;
+      cursor: pointer;
+    }
+    
+    .list-group-item:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .input-group-busqueda {
+      position: relative;
+    }
+    
+    /* Estilos que SÍ pueden repetirse (seguros) */
+    .resaltado {
+      background-color: #fff3cd;
+      padding: 1px 3px;
+      border-radius: 3px;
+      font-weight: bold;
+    }
   </style>
 <% end %>
 
 <% content_for(:extra_title_header) do %>
   <%= render :partial => 'shared_b4/tituloBuscador', locals: { icon_class: 'exotica-invasora', titulo: "Búsqueda de especies exóticas invasoras" } %>
 <% end %>
+
 <div class="col ">
   <div class="dropdown float-right">
     <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Descarga la lista
@@ -67,51 +561,80 @@
     </ul>
   </div>
 
+  <!-- BUSCADOR MINIMALISTA - SIN ESTILOS EXTRA -->
+  <div style="margin: 10px 0;">
+    <div>
+      <label style="display: block; margin-bottom: 5px;">
+        Buscar nombre científico:
+      </label>
+      <div style="position: relative; display: inline-block;">
+        <input 
+          type="text" 
+          id="buscadorCientifico" 
+          placeholder="Ej: Canis lupus..."
+          value="<%= params[:nombre_cientifico] %>"
+          style="padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px; width: 250px;"
+        >
+        <% if params[:nombre_cientifico].present? %>
+          <button 
+            onclick="limpiarBusqueda()"
+            style="margin-left: 5px; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; background: #f8f9fa; cursor: pointer;"
+          >
+            ×
+          </button>
+        <% end %>
+        <div id="sugerencias" style="position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; width: 100%; display: none; z-index: 1000;"></div>
+      </div>
+      <div style="font-size: 12px; color: #666; margin-top: 3px;">
+        Presiona Enter para buscar. Escribe 2+ caracteres para sugerencias.
+      </div>
+    </div>
+  </div>
+
   <div class="text-center page-selection1"></div>
 
   <div class="float-left" id="num-res-exoticas"></div>
 </div>
-<form method="get" action="/exoticas-invasoras" id="form-exoticas">
-  <table class="table table-responsive table-hover">
+ 
 
+<form method="get" action="/exoticas-invasoras" id="form-exoticas">
+  <table class="table table-responsive table-hover" id="tablaExoticas">
     <thead>
-    <tr>
-      <% @tabla_exoticas[:cabeceras].each do |cabecera| %>
-        <th >
-          <% case cabecera %>
-          <% when 'Grupo' %>
-            <% valor = @selected.present? && @selected[:grupo].present? ? @selected[:grupo][:valor] : nil %>
-            Grupo<br /><%= select_tag :grupo, options_for_select(@select[:grupos], valor), prompt: 'Todos', class: 'form-control' %>
-          <% when 'Origen' %>
-            <% valor = @selected.present? && @selected[:origen].present? ? @selected[:origen][:valor] : nil %>
-            Origen<br /><%= select_tag :origen, options_for_select(@select[:origenes], valor), prompt: 'Todos', class: 'form-control' %>
-          <% when 'Presencia' %>
-            <% valor = @selected.present? && @selected[:presencia].present? ? @selected[:presencia][:valor] : nil %>
-            Presencia<br /><%= select_tag :presencia, options_for_select(@select[:presencias], valor), prompt: 'Todos', class: 'form-control' %>
-          <% when 'Ambiente' %>
-            <% valor = @selected.present? && @selected[:ambiente].present? ? @selected[:ambiente][:valor] : nil %>
-            Ambiente<br /><%= select_tag :ambiente, options_for_select(@select[:ambientes], valor), prompt: 'Todos', class: 'form-control' %>
-          <% when 'Instrumento legal' %>
-            <% valor = @selected.present? && @selected[:instrumento].present? ? @selected[:instrumento][:valor] : nil %>
-            Instrumento legal<br /><%= select_tag :instrumento, options_for_select(@select[:instrumentos_legales], valor), prompt: 'Todos', class: 'form-control' %>
-          <% when 'Estatus' %>
-            <% valor = @selected.present? && @selected[:estatus].present? ? @selected[:estatus][:valor] : nil %>
-            Estatus<br /><%= select_tag :estatus, options_for_select(@select[:estatus], valor), prompt: 'Todos', class: 'form-control' %>
-          <% when 'Ficha' %>
-            <% valor = @selected.present? && @selected[:ficha].present? ? @selected[:ficha][:valor] : nil %>
-            Análisis de riesgo<br /><%= select_tag :ficha, options_for_select(@select[:fichas], valor), prompt: 'Todos', class: 'form-control' %>
-          <% else %>
-            <%= cabecera %>
-          <% end %>
-        </th>
-      <% end %>
-    </tr>
+      <tr>
+        <% @tabla_exoticas[:cabeceras].each do |cabecera| %>
+          <th>
+            <% case cabecera %>
+            <% when 'Grupo' %>
+              <% valor = @selected.present? && @selected[:grupo].present? ? @selected[:grupo][:valor] : nil %>
+              Grupo<br /><%= select_tag :grupo, options_for_select(@select[:grupos], valor), prompt: 'Todos', class: 'form-control' %>
+            <% when 'Origen' %>
+              <% valor = @selected.present? && @selected[:origen].present? ? @selected[:origen][:valor] : nil %>
+              Origen<br /><%= select_tag :origen, options_for_select(@select[:origenes], valor), prompt: 'Todos', class: 'form-control' %>
+            <% when 'Presencia' %>
+              <% valor = @selected.present? && @selected[:presencia].present? ? @selected[:presencia][:valor] : nil %>
+              Presencia<br /><%= select_tag :presencia, options_for_select(@select[:presencias], valor), prompt: 'Todos', class: 'form-control' %>
+            <% when 'Ambiente' %>
+              <% valor = @selected.present? && @selected[:ambiente].present? ? @selected[:ambiente][:valor] : nil %>
+              Ambiente<br /><%= select_tag :ambiente, options_for_select(@select[:ambientes], valor), prompt: 'Todos', class: 'form-control' %>
+            <% when 'Instrumento legal' %>
+              <% valor = @selected.present? && @selected[:instrumento].present? ? @selected[:instrumento][:valor] : nil %>
+              Instrumento legal<br /><%= select_tag :instrumento, options_for_select(@select[:instrumentos_legales], valor), prompt: 'Todos', class: 'form-control' %>
+            <% when 'Estatus' %>
+              <% valor = @selected.present? && @selected[:estatus].present? ? @selected[:estatus][:valor] : nil %>
+              Estatus<br /><%= select_tag :estatus, options_for_select(@select[:estatus], valor), prompt: 'Todos', class: 'form-control' %>
+            <% when 'Ficha' %>
+              <% valor = @selected.present? && @selected[:ficha].present? ? @selected[:ficha][:valor] : nil %>
+              Análisis de riesgo<br /><%= select_tag :ficha, options_for_select(@select[:fichas], valor), prompt: 'Todos', class: 'form-control' %>
+            <% else %>
+              <%= cabecera %>
+            <% end %>
+          </th>
+        <% end %>
+      </tr>
     </thead>
 
     <tbody id="tbody"><%= render 'exoticas_invasoras' %></tbody>
-
   </table>
 </form>
 
 <div class="col text-center page-selection1"></div>
-
