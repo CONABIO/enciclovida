@@ -17,7 +17,7 @@ class PaginasController < ApplicationController
     render partial: 'exoticas_invasoras'
   end
 
- def buscar_especies
+  def buscar_especies
     termino = params[:q].to_s.downcase.strip
     limite = (params[:limit] || 10).to_i
     
@@ -44,10 +44,7 @@ class PaginasController < ApplicationController
     render json: {resultados: resultados, total: resultados.size}
   end
 
-
   protected
-
-  # En tu PaginasController, agrega solo este método nuevo:
 
   def lee_csv
     termino_busqueda = params[:nombre_cientifico].to_s.downcase.strip
@@ -63,9 +60,8 @@ class PaginasController < ApplicationController
     # RUTAS PARA LAS 3 CARPETAS DE PDFs
     # Carpeta 1: MERI
     meri_url = '/pdfs/exoticas_invasoras/MERI'
-    meri_dir = File.join(Rails.root,'public',meri_url )
+    meri_dir = File.join(Rails.root,'public',meri_url)
 
-  
     # Carpeta 2: MERI_Extenso
     meri_extenso_url = '/pdfs/exoticas_invasoras/MERI_Extenso/'
     meri_extenso_dir = File.join(Rails.root,'public', meri_extenso_url)
@@ -105,6 +101,7 @@ class PaginasController < ApplicationController
         row_index: todos_datos.size
       }
     end
+    
     # ORDENAR solo la lista ligera de nombres
     todos_datos.sort_by! { |item| item[:nombre_ordenar] }
   
@@ -120,6 +117,7 @@ class PaginasController < ApplicationController
     filas_a_procesar.each_with_index do |item, page_index|
       row = item[:row_data]
       datos = []
+      
       # Buscar en Especie si existe
       t = if row['enciclovida_id'].present?
         begin
@@ -128,12 +126,14 @@ class PaginasController < ApplicationController
           nil
         end
       end
+      
       # Determinar nombre final
       nombre = if t
         t.nombre_cientifico
       else
         row['Nombre cientifico'] || row['Nombre científico'] || ''
       end
+      
       # Procesar como antes, pero solo para estas filas
       if t
         datos << t.adicional.try(:foto_principal)
@@ -175,25 +175,27 @@ class PaginasController < ApplicationController
       if nombre.present?
         # Normalizar nombre para búsqueda
         nombre_busqueda = nombre.to_s.strip
-        nombre_busqueda_normalizado = nombre_busqueda.downcase.gsub(/[^a-z0-9]/, '')
       
-        # BUSCAR EN MERI (estructura plana)
+        # BUSCAR EN MERI (estructura plana) - puede haber múltiples
         if File.directory?(meri_dir)
-          pdf_meri = buscar_pdf_en_carpeta_plana(nombre_busqueda, meri_dir, meri_url, 'MERI')
-          pdfs_encontrados << pdf_meri if pdf_meri
+          pdfs_meri = buscar_pdfs_en_carpeta_plana(nombre_busqueda, meri_dir, meri_url, 'MERI')
+          pdfs_encontrados.concat(pdfs_meri) if pdfs_meri.any?
         end
       
-        # BUSCAR EN MERI_Extenso (con subcarpetas)
+        # BUSCAR EN MERI_Extenso (con subcarpetas) - puede haber múltiples
         if File.directory?(meri_extenso_dir)
-          pdf_meri_extenso = buscar_pdf_en_carpeta_con_subcarpetas(nombre_busqueda, meri_extenso_dir, meri_extenso_url, 'MERI_Extenso')
-          pdfs_encontrados << pdf_meri_extenso if pdf_meri_extenso
+          pdfs_meri_extenso = buscar_pdfs_en_carpeta_con_subcarpetas(nombre_busqueda, meri_extenso_dir, meri_extenso_url)
+          pdfs_encontrados.concat(pdfs_meri_extenso) if pdfs_meri_extenso.any?
         end
       
-        # BUSCAR EN Extenso (estructura plana)
+        # BUSCAR EN Extenso (estructura plana) - puede haber múltiples
         if File.directory?(extenso_dir)
-          pdf_extenso = buscar_pdf_en_carpeta_plana(nombre_busqueda, extenso_dir, extenso_url, 'Extenso')
-          pdfs_encontrados << pdf_extenso if pdf_extenso
+          pdfs_extenso = buscar_pdfs_en_carpeta_plana(nombre_busqueda, extenso_dir, extenso_url, 'Extenso')
+          pdfs_encontrados.concat(pdfs_extenso) if pdfs_extenso.any?
         end
+        
+        # Ordenar los PDFs encontrados por tipo para consistencia
+        pdfs_encontrados.sort_by! { |pdf| pdf[:tipo] }
       end
     
       # ============================================
@@ -234,147 +236,203 @@ class PaginasController < ApplicationController
     Rails.cache.write("exoticas_ordenadas_#{@filtros_cache_key}", todos_datos, expires_in: 1.hour) if @filtros_cache_key
   end
 
-# ============================================
-# MÉTODOS HELPER PARA BÚSQUEDA DE PDFs
-# ============================================
+  # ============================================
+  # MÉTODOS HELPER PARA BÚSQUEDA DE PDFs
+  # ============================================
 
-private
+  private
 
-# Método para buscar PDF en carpeta plana (MERI y Extenso)
-def buscar_pdf_en_carpeta_plana(nombre_especie, carpeta_dir, carpeta_url, tipo_pdf)
-  # Generar posibles nombres de archivo
-  nombres_posibles = [
-    nombre_especie,
-    nombre_especie.gsub(' ', '_'),
-    nombre_especie.gsub(' ', '-'),
-    nombre_especie.downcase,
-    nombre_especie.downcase.gsub(' ', '_'),
-    nombre_especie.downcase.gsub(' ', '-'),
-    nombre_especie.split(' ').first,  # Solo género
-    nombre_especie.split(' ').first.downcase
-  ].uniq
-  
-  # Buscar por nombre exacto
-  nombres_posibles.each do |nombre_posible|
-    ruta_pdf = File.join(carpeta_dir, "#{nombre_posible}.pdf")
-    if File.exist?(ruta_pdf)
-      return {
-        tipo: tipo_pdf,
-        carpeta: tipo_pdf,
-        ruta: File.join(carpeta_url, "#{nombre_posible}.pdf"),
-        nombre_archivo: "#{nombre_posible}.pdf",
-        encontrado: true
-      }
-    end
-  end
-  
-  # Si no se encontró por nombre exacto, buscar coincidencias parciales
-  nombre_busqueda_normalizado = nombre_especie.downcase.gsub(/[^a-z0-9]/, '')
-  
-  Dir.glob(File.join(carpeta_dir, "*.pdf")).each do |ruta_pdf|
-    nombre_archivo = File.basename(ruta_pdf, '.pdf')
-    nombre_archivo_normalizado = nombre_archivo.downcase.gsub(/[^a-z0-9]/, '')
+  # Método para buscar TODOS los PDFs en carpeta plana (MERI y Extenso)
+  def buscar_pdfs_en_carpeta_plana(nombre_especie, carpeta_dir, carpeta_url, tipo_pdf)
+    pdfs_encontrados = []
     
-    # Coincidencia parcial
-    if nombre_busqueda_normalizado.include?(nombre_archivo_normalizado) ||
-       nombre_archivo_normalizado.include?(nombre_busqueda_normalizado)
-      
-      return {
-        tipo: tipo_pdf,
-        carpeta: tipo_pdf,
-        ruta: File.join(carpeta_url, "#{nombre_archivo}.pdf"),
-        nombre_archivo: "#{nombre_archivo}.pdf",
-        encontrado: true
-      }
-    end
-  end
-  
-  nil
-end
-
-# Método para buscar PDF en carpeta con subcarpetas (MERI_Extenso)
-def buscar_pdf_en_carpeta_con_subcarpetas(nombre_especie, carpeta_dir, carpeta_url, tipo_pdf)
-  # Generar posibles nombres de subcarpeta
-  nombres_subcarpeta_posibles = [
-    nombre_especie,
-    nombre_especie.gsub(' ', '_'),
-    nombre_especie.gsub(' ', '-'),
-    nombre_especie.downcase,
-    nombre_especie.downcase.gsub(' ', '_'),
-    nombre_especie.downcase.gsub(' ', '-'),
-    nombre_especie.split('_').map(&:capitalize).join('_'),  # Capitalizado con guión bajo
-    nombre_especie.split(' ').map(&:capitalize).join('_')   # Capitalizado con espacio
-  ].uniq
-  
-  # Buscar subcarpeta exacta
-  nombres_subcarpeta_posibles.each do |nombre_subcarpeta|
-    ruta_subcarpeta = File.join(carpeta_dir, nombre_subcarpeta)
+    # Normalizar nombre para búsqueda
+    nombre_busqueda_normalizado = nombre_especie.downcase.gsub(/[^a-z0-9]/, '')
     
-    if File.directory?(ruta_subcarpeta)
-      # Buscar PDF dentro de la subcarpeta
-      # Opción 1: PDF con mismo nombre que la subcarpeta
-      ruta_pdf = File.join(ruta_subcarpeta, "#{nombre_subcarpeta}.pdf")
-      if File.exist?(ruta_pdf)
-        return {
-          tipo: tipo_pdf,
-          carpeta: tipo_pdf,
-          ruta: File.join(carpeta_url, nombre_subcarpeta, "#{nombre_subcarpeta}.pdf"),
-          nombre_archivo: "#{nombre_subcarpeta}.pdf",
-          encontrado: true
-        }
-      end
+    # Buscar TODOS los PDFs que coincidan
+    Dir.glob(File.join(carpeta_dir, "*.pdf")).each do |ruta_pdf|
+      nombre_archivo = File.basename(ruta_pdf, '.pdf')
+      nombre_archivo_normalizado = nombre_archivo.downcase.gsub(/[^a-z0-9]/, '')
       
-      # Opción 2: Cualquier PDF dentro de la subcarpeta
-      pdfs_en_subcarpeta = Dir.glob(File.join(ruta_subcarpeta, "*.pdf"))
-      if pdfs_en_subcarpeta.any?
-        # Tomar el primer PDF
-        primer_pdf = pdfs_en_subcarpeta.first
-        nombre_archivo = File.basename(primer_pdf)
+      # Coincidencia exacta o parcial
+      if nombre_busqueda_normalizado == nombre_archivo_normalizado ||
+         nombre_busqueda_normalizado.include?(nombre_archivo_normalizado) ||
+         nombre_archivo_normalizado.include?(nombre_busqueda_normalizado)
         
-        return {
+        pdfs_encontrados << {
           tipo: tipo_pdf,
           carpeta: tipo_pdf,
-          ruta: File.join(carpeta_url, nombre_subcarpeta, nombre_archivo),
-          nombre_archivo: nombre_archivo,
+          ruta: File.join(carpeta_url, "#{nombre_archivo}.pdf"),
+          nombre_archivo: "#{nombre_archivo}.pdf",
           encontrado: true
         }
       end
     end
-  end
-  
-  # Si no se encontró subcarpeta exacta, buscar coincidencias parciales
-  nombre_busqueda_normalizado = nombre_especie.downcase.gsub(/[^a-z0-9]/, '')
-  
-  # Listar todas las subcarpetas
-  Dir.glob(File.join(carpeta_dir, "*")).each do |ruta_item|
-    next unless File.directory?(ruta_item)
     
-    nombre_subcarpeta = File.basename(ruta_item)
-    nombre_subcarpeta_normalizado = nombre_subcarpeta.downcase.gsub(/[^a-z0-9]/, '')
-    
-    # Coincidencia parcial
-    if nombre_busqueda_normalizado.include?(nombre_subcarpeta_normalizado) ||
-       nombre_subcarpeta_normalizado.include?(nombre_busqueda_normalizado)
+    # Si no se encontraron coincidencias, intentar con posibles variantes del nombre
+    if pdfs_encontrados.empty?
+      # Generar posibles nombres de archivo
+      nombres_posibles = [
+        nombre_especie,
+        nombre_especie.gsub(' ', '_'),
+        nombre_especie.gsub(' ', '-'),
+        nombre_especie.downcase,
+        nombre_especie.downcase.gsub(' ', '_'),
+        nombre_especie.downcase.gsub(' ', '-'),
+        nombre_especie.split(' ').first,  # Solo género
+        nombre_especie.split(' ').first.downcase,
+        nombre_especie.split(' ').map(&:downcase).join('_'),
+        nombre_especie.split(' ').map(&:downcase).join('-')
+      ].uniq
       
-      # Buscar PDF dentro de esta subcarpeta
-      pdfs_en_subcarpeta = Dir.glob(File.join(ruta_item, "*.pdf"))
-      if pdfs_en_subcarpeta.any?
-        primer_pdf = pdfs_en_subcarpeta.first
-        nombre_archivo = File.basename(primer_pdf)
-        
-        return {
-          tipo: tipo_pdf,
-          carpeta: tipo_pdf,
-          ruta: File.join(carpeta_url, nombre_subcarpeta, nombre_archivo),
-          nombre_archivo: nombre_archivo,
-          encontrado: true
-        }
+      # Buscar por cada variante posible
+      nombres_posibles.each do |nombre_posible|
+        ruta_pdf = File.join(carpeta_dir, "#{nombre_posible}.pdf")
+        if File.exist?(ruta_pdf)
+          pdfs_encontrados << {
+            tipo: tipo_pdf,
+            carpeta: tipo_pdf,
+            ruta: File.join(carpeta_url, "#{nombre_posible}.pdf"),
+            nombre_archivo: "#{nombre_posible}.pdf",
+            encontrado: true
+          }
+        end
       end
     end
+    
+    pdfs_encontrados
   end
-  
-  nil
-end
+
+  # Método para buscar TODOS los PDFs en carpeta con subcarpetas (MERI_Extenso)
+  # Ahora identifica si es MERI o Extenso basado en el nombre del archivo
+  def buscar_pdfs_en_carpeta_con_subcarpetas(nombre_especie, carpeta_dir, carpeta_url)
+    pdfs_encontrados = []
+    
+    # Normalizar nombre para búsqueda
+    nombre_busqueda_normalizado = nombre_especie.downcase.gsub(/[^a-z0-9]/, '')
+    
+    # Generar posibles nombres de subcarpeta
+    nombres_subcarpeta_posibles = [
+      nombre_especie,
+      nombre_especie.gsub(' ', '_'),
+      nombre_especie.gsub(' ', '-'),
+      nombre_especie.downcase,
+      nombre_especie.downcase.gsub(' ', '_'),
+      nombre_especie.downcase.gsub(' ', '-'),
+      nombre_especie.split('_').map(&:capitalize).join('_'),
+      nombre_especie.split(' ').map(&:capitalize).join('_'),
+      nombre_especie.split(' ').map(&:downcase).join('_'),
+      nombre_especie.split(' ').map(&:downcase).join('-')
+    ].uniq
+    
+    # Buscar en cada posible subcarpeta
+    nombres_subcarpeta_posibles.each do |nombre_subcarpeta|
+      ruta_subcarpeta = File.join(carpeta_dir, nombre_subcarpeta)
+      
+      if File.directory?(ruta_subcarpeta)
+        # Buscar TODOS los PDFs dentro de la subcarpeta
+        Dir.glob(File.join(ruta_subcarpeta, "*.pdf")).each do |ruta_pdf|
+          nombre_archivo = File.basename(ruta_pdf)
+          
+          # Determinar si es MERI o Extenso basado en el nombre del archivo
+          tipo_documento = determinar_tipo_documento(nombre_archivo)
+          
+          pdfs_encontrados << {
+            tipo: tipo_documento,
+            carpeta: 'MERI_Extenso',  # Mantenemos la carpeta original para referencia
+            ruta: File.join(carpeta_url, nombre_subcarpeta, nombre_archivo),
+            nombre_archivo: nombre_archivo,
+            encontrado: true,
+            subcarpeta: nombre_subcarpeta
+          }
+        end
+      end
+    end
+    
+    # Si no se encontró en subcarpetas exactas, buscar en todas las subcarpetas
+    if pdfs_encontrados.empty?
+      Dir.glob(File.join(carpeta_dir, "*")).each do |ruta_item|
+        next unless File.directory?(ruta_item)
+        
+        nombre_subcarpeta = File.basename(ruta_item)
+        nombre_subcarpeta_normalizado = nombre_subcarpeta.downcase.gsub(/[^a-z0-9]/, '')
+        
+        # Coincidencia parcial con el nombre de la subcarpeta
+        if nombre_busqueda_normalizado.include?(nombre_subcarpeta_normalizado) ||
+           nombre_subcarpeta_normalizado.include?(nombre_busqueda_normalizado)
+          
+          # Buscar TODOS los PDFs dentro de esta subcarpeta
+          Dir.glob(File.join(ruta_item, "*.pdf")).each do |ruta_pdf|
+            nombre_archivo = File.basename(ruta_pdf)
+            
+            # Determinar si es MERI o Extenso basado en el nombre del archivo
+            tipo_documento = determinar_tipo_documento(nombre_archivo)
+            
+            pdfs_encontrados << {
+              tipo: tipo_documento,
+              carpeta: 'MERI_Extenso',  # Mantenemos la carpeta original para referencia
+              ruta: File.join(carpeta_url, nombre_subcarpeta, nombre_archivo),
+              nombre_archivo: nombre_archivo,
+              encontrado: true,
+              subcarpeta: nombre_subcarpeta
+            }
+          end
+        end
+      end
+    end
+    
+    pdfs_encontrados
+  end
+
+  # Método para determinar si un documento es MERI o Extenso basado en su nombre
+  def determinar_tipo_documento(nombre_archivo)
+    nombre_archivo_lower = nombre_archivo.downcase
+    
+    # Patrones comunes para identificar MERI
+    patrones_meri = [
+      'meri',
+      '_m.',
+      '_m_',
+      '-m.',
+      '-m_',
+      ' meri',
+      '_meri',
+      '-meri',
+      'meri_',
+      'meri-'
+    ]
+    
+    # Patrones comunes para identificar Extenso
+    patrones_extenso = [
+      'extenso',
+      '_e.',
+      '_e_',
+      '-e.',
+      '-e_',
+      ' extenso',
+      '_extenso',
+      '-extenso',
+      'extenso_',
+      'extenso-'
+    ]
+    
+    # Verificar si contiene patrones de MERI
+    patrones_meri.each do |patron|
+      return 'MERI' if nombre_archivo_lower.include?(patron)
+    end
+    
+    # Verificar si contiene patrones de Extenso
+    patrones_extenso.each do |patron|
+      return 'Extenso' if nombre_archivo_lower.include?(patron)
+    end
+    
+    # Si no se puede determinar por patrones, usar heurísticas adicionales
+    # Normalmente los documentos MERI son más cortos o tienen nombres específicos
+    # Aquí puedes agregar más lógica según cómo estén nombrados tus archivos
+    
+    # Por defecto, si no se puede determinar, usar 'MERI_Extenso'
+    'MERI_Extenso'
+  end
 
   def opciones_posibles
     @select = {}
