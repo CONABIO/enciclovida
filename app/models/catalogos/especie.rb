@@ -1,46 +1,112 @@
-module EspecieBDILoader
+module EspecieServicesPreloader
   def self.prepended(base)
-    # Cargar BDIService cuando se carga la clase Especie
-    bdi_path = Rails.root.join('app/lib/web_services/bdi_service.rb')
-    
-    if File.exist?(bdi_path)
-      # Usar Kernel.load para forzar la carga
-      Kernel.load bdi_path.to_s
-      Rails.logger.info "✅ BDIService precargado para Especie"
-    else
-      Rails.logger.error "❌ No se encuentra BDIService en #{bdi_path}"
+    # Solo cargar en producción o cuando se necesite para DelayedJob
+    if Rails.env.production? || ENV['PRECARGAR_SERVICIOS']
+      precargar_servicios_para_delayed_job
     end
   end
-end
-
-begin
-  # Buscar BDIService en todas las rutas posibles
-  bdi_paths = [
-    Rails.root.join('app/lib/web_services/bdi_service.rb'),
-    Rails.root.join('lib/web_services/bdi_service.rb'),
-    File.expand_path('../../../lib/web_services/bdi_service.rb', __FILE__)
-  ]
   
-  bdi_loaded = false
-  bdi_paths.each do |path|
-    if File.exist?(path)
+  private
+  
+  def self.precargar_servicios_para_delayed_job
+    Rails.logger.info "🔧 Precargando servicios para DelayedJob..."
+    
+    # 1. Cargar todos los servicios de la carpeta principal
+    cargar_directorio_completo('app/lib/web_services')
+    cargar_directorio_completo('lib/web_services')
+    
+    # 2. Cargar servicios específicos mencionados en el código
+    cargar_servicios_criticos
+    
+    # 3. Verificar que los esenciales estén cargados
+    verificar_servicios_esenciales
+  end
+  
+  def self.cargar_directorio_completo(ruta_relativa)
+    dir_path = Rails.root.join(ruta_relativa)
+    
+    return unless Dir.exist?(dir_path)
+    
+    Dir.glob(File.join(dir_path, '*.rb')).each do |file|
       begin
-        # Usar Kernel.load para forzar la carga
-        Kernel.load path.to_s
-        Rails.logger.info "[Especie] ✅ BDIService cargado desde: #{path}"
-        bdi_loaded = true
-        break
+        # Evitar recargar si ya está en memoria
+        load file unless cargado_recientemente?(file)
       rescue => e
-        Rails.logger.error "[Especie] ❌ Error cargando BDIService: #{e.message}"
+        Rails.logger.error "Error cargando #{file}: #{e.message}"
       end
     end
   end
   
-  unless bdi_loaded
-    Rails.logger.error "[Especie] ⚠️  BDIService no pudo ser cargado"
+  def self.cargado_recientemente?(file)
+    # Lógica simple para evitar recargas
+    @cargados ||= {}
+    
+    if @cargados[file] && @cargados[file] > 5.minutes.ago
+      true
+    else
+      @cargados[file] = Time.now
+      false
+    end
   end
-rescue => e
-  Rails.logger.error "[Especie] ❌ Error en precarga BDIService: #{e.message}"
+  
+  def self.cargar_servicios_criticos
+    # Servicios específicos que sabemos que usa Especie
+    servicios = [
+      {const: 'BDIService', file: 'bdi_service.rb'},
+      {const: 'IUCNService', file: 'iucn_service.rb'},
+      {const: 'Tropicos_Service', file: 'tropicos_service.rb'},
+      {const: 'MacaulayService', file: 'macaulay_service.rb'},
+      {const: 'TaxonNaturalistaClient', file: 'naturalista_service.rb'},
+      {const: 'Geoportal::Snib', file: 'geoportal_service.rb'}
+    ]
+    
+    servicios.each do |serv|
+      next if defined?(serv[:const].constantize) rescue false
+      
+      # Buscar en múltiples ubicaciones
+      ['app/lib/web_services', 'lib/web_services', 'app/services'].each do |base_dir|
+        path = Rails.root.join(base_dir, serv[:file])
+        if File.exist?(path)
+          load path.to_s
+          Rails.logger.debug "✅ #{serv[:const]} cargado desde #{base_dir}/"
+          break
+        end
+      end
+    end
+  end
+  
+  def self.verificar_servicios_esenciales
+    esenciales = ['BDIService', 'IUCNService']
+    faltantes = []
+    
+    esenciales.each do |const|
+      unless defined?(const.constantize) rescue false
+        faltantes << const
+      end
+    end
+    
+    if faltantes.any?
+      Rails.logger.error "🚨 SERVICIOS ESENCIALES FALTANTES: #{faltantes.join(', ')}"
+      # En desarrollo, crear dummies
+      crear_dummies_si_es_necesario(faltantes) unless Rails.env.production?
+    end
+  end
+  
+  def self.crear_dummies_si_es_necesario(faltantes)
+    faltantes.each do |const|
+      Object.const_set(const, Class.new do
+        def self.new(*args)
+          self
+        end
+        
+        def method_missing(method, *args, &block)
+          Rails.logger.warn "⚠️  Método #{method} llamado en dummy #{const}"
+          nil
+        end
+      end)
+      Rails.logger.warn "⚠️  Clase dummy creada para #{const}"
+    end
+  end
 end
 
 class Especie < ActiveRecord::Base
