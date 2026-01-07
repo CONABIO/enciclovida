@@ -13,6 +13,36 @@ module EspecieBDILoader
   end
 end
 
+begin
+  # Buscar BDIService en todas las rutas posibles
+  bdi_paths = [
+    Rails.root.join('app/lib/webservices/bdi_service.rb'),
+    Rails.root.join('lib/webservices/bdi_service.rb'),
+    File.expand_path('../../../lib/webservices/bdi_service.rb', __FILE__)
+  ]
+  
+  bdi_loaded = false
+  bdi_paths.each do |path|
+    if File.exist?(path)
+      begin
+        # Usar Kernel.load para forzar la carga
+        Kernel.load path.to_s
+        Rails.logger.info "[Especie] ✅ BDIService cargado desde: #{path}"
+        bdi_loaded = true
+        break
+      rescue => e
+        Rails.logger.error "[Especie] ❌ Error cargando BDIService: #{e.message}"
+      end
+    end
+  end
+  
+  unless bdi_loaded
+    Rails.logger.error "[Especie] ⚠️  BDIService no pudo ser cargado"
+  end
+rescue => e
+  Rails.logger.error "[Especie] ❌ Error en precarga BDIService: #{e.message}"
+end
+
 class Especie < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.cat}.Nombre"
