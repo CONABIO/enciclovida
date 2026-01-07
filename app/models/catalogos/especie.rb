@@ -1,7 +1,7 @@
 module EspecieBDILoader
   def self.prepended(base)
     # Cargar BDIService cuando se carga la clase Especie
-    bdi_path = Rails.root.join('app/lib/web_services')
+    bdi_path = Rails.root.join('app/lib/web_services/bdi_service.rb')
     
     if File.exist?(bdi_path)
       # Usar Kernel.load para forzar la carga
