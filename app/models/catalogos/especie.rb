@@ -1,3 +1,18 @@
+module EspecieBDILoader
+  def self.prepended(base)
+    # Cargar BDIService cuando se carga la clase Especie
+    bdi_path = Rails.root.join('app/lib/webservices/bdi_service.rb')
+    
+    if File.exist?(bdi_path)
+      # Usar Kernel.load para forzar la carga
+      Kernel.load bdi_path.to_s
+      Rails.logger.info "✅ BDIService precargado para Especie"
+    else
+      Rails.logger.error "❌ No se encuentra BDIService en #{bdi_path}"
+    end
+  end
+end
+
 class Especie < ActiveRecord::Base
 
   self.table_name = "#{CONFIG.bases.cat}.Nombre"

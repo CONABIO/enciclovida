@@ -43,17 +43,6 @@ module Buscador
     #config.autoload_paths += %W(#{config.root}/lib)
     config.eager_load_paths += Dir[Rails.root.join('lib')]
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '{*/}')]
-    config.autoload_paths += %W[
-      #{config.root}/app/lib
-      #{config.root}/app/lib/webservices
-      #{config.root}/lib
-      #{config.root}/lib/webservices
-    ]
-    
-    config.eager_load_paths += %W[
-      #{config.root}/app/lib
-      #{config.root}/app/lib/webservices
-    ]
     #config.sass.preferred_syntax=:sass
 
     # Cambia en nombre de la tabla por default
