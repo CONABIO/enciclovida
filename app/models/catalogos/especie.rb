@@ -55,21 +55,31 @@ module EspecieServicesPreloader
       {const: 'BDIService', file: 'bdi_service.rb'},
       {const: 'IUCNService', file: 'iucn_service.rb'},
       {const: 'Tropicos_Service', file: 'tropicos_service.rb'},
-      {const: 'MacaulayService', file: 'macaulay_service.rb'},
-      {const: 'TaxonNaturalistaClient', file: 'naturalista_service.rb'},
-      {const: 'Geoportal::Snib', file: 'geoportal_service.rb'}
+      {const: 'MacaulayService', file: 'macaulay_service.rb'}
     ]
     
     servicios.each do |serv|
-      next if defined?(serv[:const].constantize) rescue false
+      # Verificar si la constante ya está definida (forma CORRECTA)
+      constante_definida = false
+      begin
+        constante_definida = Object.const_defined?(serv[:const])
+      rescue NameError
+        constante_definida = false
+      end
+      
+      next if constante_definida
       
       # Buscar en múltiples ubicaciones
       ['app/lib/web_services', 'lib/web_services', 'app/services'].each do |base_dir|
         path = Rails.root.join(base_dir, serv[:file])
         if File.exist?(path)
-          load path.to_s
-          Rails.logger.debug "✅ #{serv[:const]} cargado desde #{base_dir}/"
-          break
+          begin
+            load path.to_s
+            Rails.logger.info "✅ #{serv[:const]} cargado desde #{base_dir}/"
+            break
+          rescue => e
+            Rails.logger.error "❌ Error cargando #{serv[:const]}: #{e.message}"
+          end
         end
       end
     end
@@ -80,7 +90,15 @@ module EspecieServicesPreloader
     faltantes = []
     
     esenciales.each do |const|
-      unless defined?(const.constantize) rescue false
+      # Verificar de forma segura si está definida
+      definida = false
+      begin
+        definida = Object.const_defined?(const)
+      rescue NameError
+        definida = false
+      end
+      
+      unless definida
         faltantes << const
       end
     end
@@ -102,6 +120,10 @@ module EspecieServicesPreloader
         def method_missing(method, *args, &block)
           Rails.logger.warn "⚠️  Método #{method} llamado en dummy #{const}"
           nil
+        end
+        
+        def respond_to_missing?(method_name, include_private = false)
+          true
         end
       end)
       Rails.logger.warn "⚠️  Clase dummy creada para #{const}"
