@@ -26,7 +26,7 @@ class PaginasController < ApplicationController
     file = File.join(Rails.root, 'public', 'exoticas_invasoras', 'exoticas-invasoras.csv')
     resultados = []
     
-    CSV.foreach(file, headers: true) do |row|
+    CSV.foreach(file, headers: true,encoding: 'ISO-8859-1:UTF-8') do |row|
       nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase
       
       if nombre_cientifico.include?(termino)
@@ -438,97 +438,282 @@ class PaginasController < ApplicationController
     @select = {}
     @select[:grupos] = ['Algas y protoctistas', 'Anfibios', 'Arácnidos', 'Aves', 'Crustáceos', 'Hongos', 'Insectos', 'Mamíferos', 'Moluscos', 'Otros invertebrados', 'Peces', 'Plantas', 'Reptiles', 'Virus y bacterias']
     @select[:origenes] = ['Criptogénica', 'Exótica', 'Nativa', 'Se desconoce']
-    @select[:presencias] = ['Ausente', 'Confinado', 'Indeterminada', 'Por confirmar', 'Presente', 'Se desconoce']
-    @select[:instrumentos_legales] = ['Acuerdo enfermedades y plagas SAGARPA 2016', 'Acuerdo especies exóticas SEMARNAT', 'MOD NOM-005-FITO-1995', 'NOM-016-SEMARNAT-2013', 'NOM-043-FITO-1999']
-    @select[:ambientes] = ['Dulceacuícola', 'Marino', 'Salobre', 'Terrestre', 'Se desconoce']  # Se necesita estandarizar
-    @select[:estatus] = ['Invasora', 'No invasora']
+    @select[:presencias] = ['Ausente', 'Presente', 'Se desconoce']
+    
+    # CORREGIDO: Leer instrumentos del CSV con manejo de codificación
+    @select[:instrumentos_legales] = obtener_instrumentos_desde_csv
+    
+    @select[:ambientes] = ['Dulceacuícola', 'Marino', 'Salobre', 'Terrestre', 'Se desconoce']
+    @select[:estatus] = ['Invasora']
     @select[:fichas] = ['Sí', 'No']
+  end
+  
+  def obtener_instrumentos_desde_csv
+    csv_path = Rails.root.join('public', 'exoticas_invasoras', 'exoticas-invasoras.csv')
+    instrumentos = Set.new
+    
+    # Intentar diferentes codificaciones
+    encodings_to_try = ['UTF-8', 'ISO-8859-1:UTF-8', 'Windows-1252:UTF-8']
+    
+    encodings_to_try.each do |encoding|
+      begin
+        CSV.foreach(csv_path, headers: true, encoding: encoding) do |row|
+          # Buscar en la columna correcta
+          valor = row['Regulada por otros instrumentos'] || row['Instrumento legal'] || row['instrumento legal']
+          
+          if valor.present?
+            # Separar por / si hay múltiples valores
+            valor.to_s.split('/').each do |inst|
+              inst = inst.strip
+              # Corregir posibles problemas de codificación
+              inst = corregir_codificacion(inst)
+              instrumentos.add(inst) unless inst.blank?
+            end
+          end
+        end
+        break # Si llegamos aquí, la codificación funcionó
+      rescue ArgumentError, Encoding::InvalidByteSequenceError => e
+        puts "Error con encoding #{encoding}: #{e.message}"
+        next
+      end
+    end
+    
+    # Si después de intentar todas las codificaciones no se obtuvo nada,
+    # usar el array manual como fallback
+    if instrumentos.empty?
+      instrumentos = Set.new([
+        'Acuerdo EEI SEMARNAT, Plagas bajo vigilancia Senasica 2025',
+        'LISTA DE PLAGAS BAJO VIGILANCIA, 2025',
+        'Lista oficial invasoras México',
+        'Lista oficial invasoras México NOM-002-FITO-2000',
+        'Lista oficial invasoras México NOM-013-SEMARNAT-2020',
+        'Lista oficial invasoras México NOM-016-SEMARNAT-2013',
+        'Lista oficial invasoras México NOM-043-FITO-1999',
+        'Lista oficial invasoras México NOM-059-SEMARNAT-2010',
+        'Lista oficial invasoras México Plagas bajo vigilancia Senasica 2025',
+        'Lista plagas bajo vigilancia 2025',
+        'Lista Plagas en Vigilancia Activa Senasica',
+        'NOM-005-FITO-1995; LISTA DE PLAGAS BAJO VIGILANCIA, 2025',
+        'NOM-010-FITO-1995, LISTA DE PLAGAS BAJO VIGILANCIA, 2025',
+        'NOM-013-SEMARNAT-2020',
+        'NOM-013-SEMARNAT-2020; Lista Plagas en Vigilancia Activa Senasica 2025',
+        'NOM-014-FITO-1995',
+        'NOM-016-SEMARNAT-2013',
+        'NOM-043-FITO-1999',
+        'Plagas bajo vigilancia Senasica 2025'
+      ])
+    end
+    
+    instrumentos.to_a.sort
+  end
+  
+  def corregir_codificacion(texto)
+    return texto if texto.blank?
+    
+    # Correcciones comunes para UTF-8 mal interpretado como Latin-1
+    texto = texto.gsub('MÃ©xico', 'México')
+                 .gsub('Ã©', 'é').gsub('Ã¡', 'á').gsub('Ã³', 'ó')
+                 .gsub('Ã±', 'ñ').gsub('Ãº', 'ú').gsub('Ã¼', 'ü')
+                 .gsub('Ã', 'Á').gsub('Ã', 'É').gsub('Ã', 'Ó')
+                 .gsub('Ã', 'Ñ').gsub('Ã', 'Ú')
+    
+    texto.strip
   end
 
   def opciones_seleccionadas
-    @selected = {}
-    if params[:nombre_cientifico].present?
-      @selected[:nombre_cientifico] = {
-        valor: params[:nombre_cientifico],
-        nom_campo: 'Nombre cientifico'
-      }
-    end
-    if params[:grupo].present?
-      @selected[:grupo] = {}
-      @selected[:grupo][:valor] = params[:grupo]
-      @selected[:grupo][:nom_campo] = 'Grupo'
-    end
-
-    if params[:origen].present?
-      @selected[:origen] = {}
-      @selected[:origen][:valor] = params[:origen]
-      @selected[:origen][:nom_campo] = 'Origen'
-    end
-
-    if params[:presencia].present?
-      @selected[:presencia] = {}
-      @selected[:presencia][:valor] = params[:presencia]
-      @selected[:presencia][:nom_campo] = 'Presencia'
-    end
-
-    if params[:instrumento].present?
-      @selected[:instrumento] = {}
-      @selected[:instrumento][:valor] = params[:instrumento]
-      @selected[:instrumento][:nom_campo] = 'Regulada por otros instrumentos'
-    end
-
-    if params[:ambiente].present?
-      @selected[:ambiente] = {}
-      @selected[:ambiente][:valor] = params[:ambiente]
-      @selected[:ambiente][:nom_campo] = 'Ambiente'
-    end
-
-    if params[:estatus].present?
-      @selected[:estatus] = {}
-      @selected[:estatus][:valor] = params[:estatus]
-      @selected[:estatus][:nom_campo] = 'Estatus'
-    end
-
-    if params[:ficha].present?
-      @selected[:ficha] = {}
-      @selected[:ficha][:valor] = params[:ficha]
-      @selected[:ficha][:nom_campo] = 'Ficha'
-    end
+  @selected = {}
+  
+  if params[:nombre_cientifico].present?
+    @selected[:nombre_cientifico] = {
+      valor: params[:nombre_cientifico].to_s.strip,
+      nom_campo: 'Nombre cientifico'
+    }
+  end
+  
+  if params[:grupo].present?
+    @selected[:grupo] = {
+      valor: params[:grupo].to_s.strip,
+      nom_campo: 'Grupo'
+    }
   end
 
-  def condiciones_filtros(row)
-    @selected.each do |campo, v|  # Compara que las condiciones se cumplan
-      if campo == :nombre_cientifico
-        termino = v[:valor].to_s.downcase.strip
-        nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase.strip
+  if params[:origen].present?
+    @selected[:origen] = {
+      valor: params[:origen].to_s.strip,
+      nom_campo: 'Origen'
+    }
+  end
+
+  if params[:presencia].present?
+    @selected[:presencia] = {
+      valor: params[:presencia].to_s.strip,
+      nom_campo: 'Presencia'
+    }
+  end
+
+  # ¡CORRECCIÓN AQUÍ! Usar 'Instrumento legal' en lugar de 'Regulada por otros instrumentos'
+  if params[:instrumento].present?
+    @selected[:instrumento] = {
+      valor: params[:instrumento].to_s.strip,
+      nom_campo: 'Instrumento legal'  # ← CAMBIADO
+    }
+  end
+
+  if params[:ambiente].present?
+    @selected[:ambiente] = {
+      valor: params[:ambiente].to_s.strip,
+      nom_campo: 'Ambiente'
+    }
+  end
+
+  if params[:estatus].present?
+    @selected[:estatus] = {
+      valor: params[:estatus].to_s.strip,
+      nom_campo: 'Estatus'
+    }
+  end
+
+  if params[:ficha].present?
+    @selected[:ficha] = {
+      valor: params[:ficha].to_s.strip,
+      nom_campo: 'Ficha'
+    }
+  end
+end
+
+ def condiciones_filtros(row)
+ 
+  
+  return true if @selected.empty?
+  
+  @selected.each do |campo, v|
+  
+    if campo == :nombre_cientifico
+      termino = v[:valor].to_s.downcase.strip
+      nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase.strip
+      
+      next if termino.blank?
+      puts "  Buscando '#{termino}' en '#{nombre_cientifico}'"
+      if nombre_cientifico.include?(termino)
+        puts "  ✓ ENCONTRADO"
+      else
+        puts "  ✗ NO ENCONTRADO - RECHAZANDO FILA"
+        return false
+      end
+      next
+    end
+    
+    if v[:nom_campo] == 'Ficha'
+      puts "  Procesando campo Ficha"
+      if v[:valor] == 'Sí'
+        if row[v[:nom_campo]].blank?
+          puts "  ✗ Ficha vacía cuando debería tener - RECHAZANDO FILA"
+          return false
+        else
+          puts "  ✓ Ficha tiene valor"
+        end
+      else
+        if row[v[:nom_campo]].present?
+          puts "  ✗ Ficha tiene valor cuando debería estar vacía - RECHAZANDO FILA"
+          return false
+        else
+          puts "  ✓ Ficha vacía como se esperaba"
+        end
+      end
+    elsif v[:nom_campo] == 'Regulada por otros instrumentos'
+      puts "  === PROCESANDO INSTRUMENTO ==="
+      valor_seleccionado = v[:valor].to_s.strip
+      valor_csv = row[v[:nom_campo]].to_s.strip
+      
+      puts "  Valor seleccionado: '#{valor_seleccionado}'"
+      puts "  Valor en CSV: '#{valor_csv}'"
+      
+      # Si no se seleccionó nada de instrumento, continuar
+      if valor_seleccionado.blank?
         
-        next if termino.blank?
-        return false unless nombre_cientifico.include?(termino)
         next
       end
-      if v[:nom_campo] == 'Ficha'
-        if v[:valor] == 'Sí'
-          if row[v[:nom_campo]].blank?
-            return false
-          end
-        else
-          if row[v[:nom_campo]].present?
-            return false
-          end
+      
+      # Si el valor CSV está vacío y se seleccionó algo, rechazar
+      if valor_csv.blank?
+        return false
+      end
+      
+      # DEBUG adicional: mostrar longitud y caracteres
+   
+      
+      # Convertir a minúsculas para comparación
+      seleccionado_lower = valor_seleccionado.downcase
+      csv_lower = valor_csv.downcase
+      
+      # Opción 1: Comparación exacta
+      if csv_lower == seleccionado_lower
+        next
+      end
+      
+      # Opción 2: Buscar si está contenido
+      if csv_lower.include?('/')
+        partes_csv = csv_lower.split('/').map(&:strip)
+        if partes_csv.include?(seleccionado_lower)
+          next
         end
-
+      end
+      
+      # Opción 3: Búsqueda inversa (por si el CSV es parte del seleccionado)
+      if seleccionado_lower.include?(csv_lower)
+        next
+      end
+      
+      # Opción 4: Búsqueda de palabras clave
+      palabras_seleccionadas = seleccionado_lower.split(/[ ,.;:]/).reject(&:blank?)
+      palabras_csv = csv_lower.split(/[ ,.;:]/).reject(&:blank?)
+      
+      # Verificar si al menos algunas palabras coinciden
+      coincidencias = palabras_seleccionadas & palabras_csv
+      if coincidencias.any?
+        next
+      end
+      return false
+      
+    else
+      # Para otros campos
+      valor_seleccionado = v[:valor].to_s.strip.downcase
+      valor_csv = row[v[:nom_campo]].to_s.strip.downcase
+      
+      if valor_csv.blank?
+        return false
+      end
+      
+      if valor_csv.include?('/')
+        valores_csv = valor_csv.split('/').map(&:strip)
       else
-        if row[v[:nom_campo]].blank?  # Si es vacio entonces no coincide
+        if valor_csv == valor_seleccionado
+          puts "  ✓ COINCIDENCIA EXACTA"
+        else
+          puts "  ✗ NO COINCIDE - RECHAZANDO FILA"
           return false
         end
-
-        val_params = v[:valor].split('/')
-        val_excel = row[v[:nom_campo]].gsub('/ ', '/').split('/')
-        return false unless (val_params & val_excel).present?
       end
-    end  # End @selected.each
-
-    true
+    end
   end
-
+  true
+end
+  
+  def normalizar_para_comparacion(texto)
+    return '' if texto.blank?
+    
+    # Convertir a minúsculas
+    texto = texto.downcase
+    
+    # Quitar espacios al inicio y final
+    texto = texto.strip
+    
+    # Quitar espacios múltiples
+    texto = texto.gsub(/\s+/, ' ')
+    
+    # Quitar puntuación extra al final
+    texto = texto.gsub(/[.,;:]$/, '')
+    
+    texto
+  end
 end
