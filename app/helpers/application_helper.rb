@@ -28,9 +28,9 @@ module ApplicationHelper
 		end
 		
 		if I18n.locale.to_s == 'es-cientifico'
-			if taxon.IdCategoriaTaxonomica < 25 
+			if taxon.IdCategoriaTaxonomica < 25 && taxon.IdNombre != 1 
 				estatus = 'aceptado'
-			else taxon.IdCategoriaTaxonomica > 25
+			else 
 				estatus = 'válido'
 			end
 			case params[:render]
