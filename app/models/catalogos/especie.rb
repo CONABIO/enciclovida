@@ -160,37 +160,10 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   # Scopes de estadisticas
   scope :conteo_estadisticas, ->(estadisticas, conteo) { left_joins(:estadisticas).where("estadistica_id IN (#{estadisticas})").where("conteo #{conteo} 0") }
 
-  CON_REGION = [19, 50]
-
-  ESTATUS = [
-      [2, 'válido'],
-      [1, 'sinónimo'],
-      [6, 'No disponible'],
-      [9, 'No aplica']
-  ]
-
-  ESTATUS_BUSQUEDA = [
-      [2, 'válido'],
-      [1, 'sinónimo']
-  ]
-
-  ESTATUS_VALOR = {
-      ESTATUS[0][0] => ESTATUS[0][1],
-      ESTATUS[1][0] => ESTATUS[1][1]
-  }
-
-  ESTATUS_SIGNIFICADO = {
-      2 => 'válido',
-      1 => 'sinónimo',
-      6 => 'No disponible',
-      9 => 'No aplica'
-  }
 
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
   BAJO_GENERO = %w(género subgénero sección subsección serie subserie)
 
-  
-  
   def self.update_geoserver_info(proveedores_hash)
     ts_req = Tropicos_Service.new
 

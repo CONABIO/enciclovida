@@ -28,8 +28,11 @@ module ApplicationHelper
 		end
 		
 		if I18n.locale.to_s == 'es-cientifico'
-			estatus = Especie::ESTATUS_VALOR[taxon.estatus]
-			
+			if taxon.IdCategoriaTaxonomica < 25 
+				estatus = 'aceptado'
+			else taxon.IdCategoriaTaxonomica > 25
+				estatus = 'válido'
+			end
 			case params[:render]
 				when 'title'
 					taxon.nombre_cientifico.sanitize.html_safe
@@ -46,7 +49,7 @@ module ApplicationHelper
 			end
 		
 		else   #vista general
-			nombre_cientifico = nombre_cientifico.limpiar({tipo: 'show'})
+			nombre_cientifico = nombre_cientifico.limpiar({tipo: 'show'}) 
 			nombre_comun = "<b>#{nom_comun}</b>" if nom_comun.present?
 			
 			case params[:render]
