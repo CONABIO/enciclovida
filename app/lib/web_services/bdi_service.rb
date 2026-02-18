@@ -20,28 +20,23 @@ class BDIService
   end
 
   def dame_fotos
+    bdi_rp = CONFIG.enciclovida_url
+    bdi_url = CONFIG.bdi_imagenes
     limpia_nombre_cientifico
     fotos_album
+    return if num_assets == 0
 
-    return if assets.empty?
-
-    # Asegurarse de que jres es un array antes de iterar
-    Array(jres).each do |f|
-      # usar navegación segura (&.) para prevenir nil
-      previews = f['previews'] || []
-      metadata = f['metadata'] || {}
-
+    jres.each do |f|
       foto = Photo.new
-      foto.large_url       = build_url(CONFIG.enciclovida_url, previews[3], 'href')
-      foto.medium_url      = build_url(CONFIG.enciclovida_url, previews[7], 'href')
-      foto.native_page_url = build_url(CONFIG.bdi_imagenes, f, 'href')
-      foto.license         = metadata.dig('340', 'value') || 'Sin licencia'
-      foto.square_url      = build_url(CONFIG.enciclovida_url, previews[10], 'href')
-      # si metadata['80']['value'] no existe o no es array, fallback a "Anónimo"
-      foto.native_realname = metadata.dig('80', 'value')&.first || "Anónimo"
-
+      foto.large_url = bdi_rp + f['previews'][3]['href']
+      foto.medium_url = bdi_rp + f['previews'][7]['href']
+      foto.native_page_url = bdi_url + f['href']
+      foto.license = f['metadata']['340'].present? ? f['metadata']['340']['value'] : 'Sin licencia'
+      foto.square_url = bdi_rp + f['previews'][10]['href']
+      foto.native_realname = f['metadata']['80'].present? ? f['metadata']['80']['value'].first : "Anónimo"
       self.assets << foto
     end
+    
   end
 
   def dame_num_fotos
@@ -71,26 +66,26 @@ class BDIService
     albumes.sort_by! { |k| -k[:num_assets] }
   end
 
-  def consulta_api(opts = {})
-    url = if opts[:archives]
-            "#{CONFIG.bdi_imagenes}/fotoweb/archives/?#{campo}=#{nombre_cientifico}"
-          else
-            "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{album}/?#{campo}=#{nombre_cientifico}"
-          end
+   def consulta_api(opts={})
+
+    if opts[:archives]
+      url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/?#{campo}=#{nombre_cientifico}"
+      accept = 'application/json'
+    else
+      url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{album}/?#{campo}=#{nombre_cientifico}"
+      accept = 'application/vnd.fotoware.assetlist+json'
+    end
 
     url << "&#{autor_campo}=#{autor}" if autor_campo.present? && autor.present?
 
     begin
       url_escape = URI::DEFAULT_PARSER.escape(url)
-      res = RestClient.get url_escape, accept: api_accept_header(opts)
-      body = res.body
-      parsed = JSON.parse(body) rescue nil
-      self.jres = parsed&.[]("data")
-      # actualizar num_assets sólo si data es un arreglo (y sólo en consulta “normal”)
-      self.num_assets = jres.size if jres.is_a?(Array) && !opts[:archives] && !opts[:no_contar]
+      res = RestClient.get url_escape, accept: accept
+      jres = JSON.parse(res.body)
+      self.jres = jres["data"]
+      self.num_assets = jres.count if !opts[:archives] && !opts[:no_contar]    
     rescue => e
-      Rails.logger.error "[BDIService] Error al consultar #{url_escape}: #{e.class} -- #{e.message}"
-      self.jres = nil
+      Rails.logger.error "Falló en la consulta con #{url_escape}: #{e.inspect} "
     end
   end
 

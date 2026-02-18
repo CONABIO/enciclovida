@@ -291,7 +291,6 @@ class EspeciesController < ApplicationController
   # Servicio de lib/bdi_service.rb
   def bdi_photos
     bdi = @especie.fotos_bdi({album: params[:album]})
-
     respond_to do |format|
       format.json do
         if params[:api] == "1" && bdi.num_assets == 0 # Si viene de la API y NO hay resultados
@@ -308,13 +307,14 @@ class EspeciesController < ApplicationController
         @fotos = bdi.assets
         @albumes = bdi.albumes
         @num_fotos = bdi.num_assets
-
         # Caso especicial para el icono de usos
         type = params[:album].present? && params[:album] == "usos" ? "usos" : "photo"
 
         render 'especies/media/bdi_photos', locals: { type: type }
       end  # End format html
     end  # End respond
+    
+
   end
 
   #servicio Macaulay Library (eBird)
