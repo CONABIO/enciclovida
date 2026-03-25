@@ -18,15 +18,21 @@
 # end
 
 # Learn more: https://github.com/javan/whenever
-set :environment, 'development' # O 'development' según tu entorno
+set :environment, 'production' # O 'development' según tu entorno
 
 set :output, {
     standar: "log/cron.log",
   error: "log/cron_error.log"
 }
 
+set path:, '/home/enciclovida/buscador'
+
 every 1.day, at: '4:30 am' do
   runner 'UpdatePhoto.update_peces'
   runner 'UpdatePhoto.update_enciclo'
   
+end
+
+every 1.week, at: '3:00 am' do
+  runner "EstadisticasService.actualizar_masivo"
 end
