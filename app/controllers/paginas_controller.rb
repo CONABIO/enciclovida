@@ -8,7 +8,7 @@ class PaginasController < ApplicationController
   def exoticas_invasoras
     lee_csv
     @tabla_exoticas[:cabeceras] = ['', 'Nombre científico', 'Familia', 'Grupo', 'Ambiente',
-                                   'Origen', 'Presencia', 'Estatus', 'Instrumento legal', 'Ficha']
+  'Origen', 'Presencia', 'Estatus', 'Instrumento legal', 'Ficha', 'Rutas']
   end
 
   # La resultados que provienen del paginado
@@ -117,6 +117,15 @@ class PaginasController < ApplicationController
     filas_a_procesar.each_with_index do |item, page_index|
       row = item[:row_data]
       datos = []
+
+      rutas = []
+
+      rutas << 'Liberación intencional' if row['Ruta_Liberación intencional'] == 'x'
+      rutas << 'Escapes' if row['Ruta_Escapes'] == 'x'
+      rutas << 'Contaminante' if row['Ruta_Contaminante'] == 'x'
+      rutas << 'Polizón' if row['Ruta_Polizón'] == 'x'
+      rutas << 'Corredores' if row['Ruta_Creación de Corredores'] == 'x'
+      rutas << 'Independiente' if row['Ruta_Independiente'] == 'x'
       
       # Buscar en Especie si existe
       t = if row['enciclovida_id'].present?
@@ -226,7 +235,8 @@ class PaginasController < ApplicationController
     
       datos << instrumentos
       datos << pdfs_encontrados  # Array de PDFs encontrados
-    
+      datos << rutas.join(', ')
+
       @tabla_exoticas[:datos] << datos
     end
   
@@ -446,6 +456,15 @@ class PaginasController < ApplicationController
     @select[:ambientes] = ['Dulceacuícola', 'Marino', 'Salobre', 'Terrestre', 'Se desconoce']
     @select[:estatus] = ['Invasora']
     @select[:fichas] = ['Sí', 'No']
+    @select[:rutas] = [
+      'Ruta_Liberación intencional',
+      'Ruta_Escapes',
+      'Ruta_Contaminante',
+      'Ruta_Polizón',
+      'Ruta_Creación de Corredores',
+      'Ruta_Independiente',
+      'Acuerdo SEMARNAT'
+    ]
   end
   
   def obtener_instrumentos_desde_csv
@@ -522,7 +541,13 @@ class PaginasController < ApplicationController
 
   def opciones_seleccionadas
   @selected = {}
-  
+  if params[:ruta].present?
+    @selected[:ruta] = {
+      valor: params[:ruta].to_s.strip,
+      nom_campo: params[:ruta].to_s.strip
+    }
+  end
+
   if params[:nombre_cientifico].present?
     @selected[:nombre_cientifico] = {
       valor: params[:nombre_cientifico].to_s.strip,
@@ -587,7 +612,14 @@ end
   return true if @selected.empty?
   
   @selected.each do |campo, v|
-  
+    if campo == :ruta
+      columna = v[:nom_campo]
+      valor = row[columna].to_s.strip.downcase
+
+      # Solo pasar si tiene "x"
+      return false unless valor == 'x'
+      next
+    end
     if campo == :nombre_cientifico
       termino = v[:valor].to_s.downcase.strip
       nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase.strip

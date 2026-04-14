@@ -556,8 +556,8 @@ $(document).ready(function() {
     <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Descarga la lista
     <span class="caret"></span></button>
     <ul class="dropdown-menu">
-      <li><%= link_to 'Excel', '/exoticas_invasoras/lista_sp_enciclovida_2026.xlsx', target: :_blank %></li>
-      
+      <li><%= link_to 'Excel', '/exoticas_invasoras/lista_sp_enciclovida_2025.xlsx', target: :_blank %></li>
+      <li><%= link_to 'PDF', '/exoticas_invasoras/lista_sp_enciclovida_2025.pdf', target: :_blank %></li>
     </ul>
   </div>
 
@@ -604,6 +604,10 @@ $(document).ready(function() {
         <% @tabla_exoticas[:cabeceras].each do |cabecera| %>
           <th>
             <% case cabecera %>
+            <% when 'Rutas' %>
+              Ruta<br />
+              <%= select_tag :ruta, options_for_select(@select[:rutas], params[:ruta]), 
+                  prompt: 'Todas', class: 'form-control' %>
             <% when 'Grupo' %>
               <% valor = @selected.present? && @selected[:grupo].present? ? @selected[:grupo][:valor] : nil %>
               Grupo<br /><%= select_tag :grupo, options_for_select(@select[:grupos], valor), prompt: 'Todos', class: 'form-control' %>
@@ -630,6 +634,7 @@ $(document).ready(function() {
             <% end %>
           </th>
         <% end %>
+        
       </tr>
     </thead>
 
