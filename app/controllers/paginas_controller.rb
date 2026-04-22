@@ -7,8 +7,6 @@ class PaginasController < ApplicationController
   # La pagina cuando entran por get
   def exoticas_invasoras
     lee_csv
-    @tabla_exoticas[:cabeceras] = ['', 'Nombre científico', 'Familia', 'Grupo', 'Ambiente',
-  'Origen', 'Presencia', 'Estatus', 'Instrumento legal', 'Ficha', 'Rutas']
   end
 
   # La resultados que provienen del paginado
@@ -17,32 +15,61 @@ class PaginasController < ApplicationController
     render partial: 'exoticas_invasoras'
   end
 
-  def buscar_especies
-    termino = params[:q].to_s.downcase.strip
-    limite = (params[:limit] || 10).to_i
-    
-    return render json: {resultados: [], total: 0} if termino.length < 2
-    
-    file = File.join(Rails.root, 'public', 'exoticas_invasoras', 'exoticas-invasoras.csv')
-    resultados = []
-    
-    CSV.foreach(file, headers: true,encoding: 'ISO-8859-1:UTF-8') do |row|
-      nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase
+ def buscar_especies
+  termino = params[:q].to_s.downcase.strip
+  limite = (params[:limit] || 10).to_i
+  
+  Rails.logger.info "=== BUSCAR ESPECIES ==="
+  Rails.logger.info "Término: #{termino}"
+  
+  return render json: {resultados: [], total: 0} if termino.length < 2
+  
+  file = File.join(Rails.root, 'public', 'exoticas_invasoras', 'exoticas-invasoras.csv')
+  
+  unless File.exist?(file)
+    Rails.logger.error "ARCHIVO NO ENCONTRADO: #{file}"
+    return render json: {resultados: [], total: 0, error: "Archivo no encontrado"}
+  end
+  
+  resultados = []
+  
+  begin
+    # USAR EL MISMO ENCODING que en lee_csv
+    CSV.foreach(file, headers: true) do |row|
+      # Usar los mismos nombres de columnas que en lee_csv
+      nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s
+      nombre_comun = (row['Nombre común'] || row['Nombre comun'] || '').to_s
       
-      if nombre_cientifico.include?(termino)
+      # Depuración: mostrar primeros 5 nombres
+      if resultados.empty? && rand < 0.01 # Solo ocasionalmente para no llenar logs
+        Rails.logger.info "Ejemplo de nombre: #{nombre_cientifico}"
+      end
+      
+      if nombre_cientifico.downcase.include?(termino)
         resultados << {
-          nombre_cientifico: row['Nombre cientifico'] || row['Nombre científico'],
-          nombre_comun: row['Nombre común'] || row['Nombre comun'] || ''
+          nombre_cientifico: nombre_cientifico,
+          nombre_comun: nombre_comun
         }
         
+        Rails.logger.info "✓ Encontrado: #{nombre_cientifico}"
         break if resultados.size >= limite
       end
     end
     
-    resultados.sort_by! { |r| r[:nombre_cientifico].to_s.downcase }
+    Rails.logger.info "Total resultados: #{resultados.size}"
     
-    render json: {resultados: resultados, total: resultados.size}
+    render json: {
+      resultados: resultados,
+      total: resultados.size,
+      query: termino
+    }
+    
+  rescue => e
+    Rails.logger.error "ERROR: #{e.message}"
+    Rails.logger.error e.backtrace.first(5)
+    render json: {resultados: [], total: 0, error: e.message}
   end
+end
 
   protected
 
@@ -58,30 +85,23 @@ class PaginasController < ApplicationController
     file = File.join(Rails.root, 'public', 'exoticas_invasoras', 'exoticas-invasoras.csv')
   
     # RUTAS PARA LAS 3 CARPETAS DE PDFs
-    # Carpeta 1: MERI
     meri_url = '/pdfs/exoticas_invasoras/MERI'
-    meri_dir = File.join(Rails.root,'public',meri_url)
+    meri_dir = File.join(Rails.root, 'public', meri_url)
 
-    # Carpeta 2: MERI_Extenso
     meri_extenso_url = '/pdfs/exoticas_invasoras/MERI_Extenso/'
-    meri_extenso_dir = File.join(Rails.root,'public', meri_extenso_url)
+    meri_extenso_dir = File.join(Rails.root, 'public', meri_extenso_url)
   
-    # Carpeta 3: Extenso
     extenso_url = '/pdfs/exoticas_invasoras/Extenso/'
-    extenso_dir = File.join(Rails.root,'public', extenso_url)
+    extenso_dir = File.join(Rails.root, 'public', extenso_url)
   
-    # URLs para instrumentos legales
     instrumentos_url = '/pdfs/exoticas_invasoras/instrumentos_legales/'
     inst_dir = Rails.root.join('public', instrumentos_url)
 
-    # Leer y procesar SOLO los datos necesarios para la página actual
     @por_pagina = 30
     @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
   
-    # Opción 1: Usar CSV con streaming (más eficiente para archivos grandes)
     todos_datos = []
   
-    # Primera pasada: recolectar solo los datos que pasan los filtros
     CSV.foreach(file, headers: true) do |row|
       next unless condiciones_filtros(row)
     
@@ -90,11 +110,9 @@ class PaginasController < ApplicationController
         next unless nombre_cientifico.include?(termino_busqueda)
       end
     
-      # Determinar nombre para ordenar (solo esto, no todo el procesamiento)
       nombre = row['Nombre cientifico'] || row['Nombre científico'] || ''
       nombre_para_ordenar = nombre.to_s.downcase.strip
     
-      # Guardar mínimo de información para ordenar
       todos_datos << {
         nombre_ordenar: nombre_para_ordenar,
         row_data: row,
@@ -102,16 +120,13 @@ class PaginasController < ApplicationController
       }
     end
     
-    # ORDENAR solo la lista ligera de nombres
     todos_datos.sort_by! { |item| item[:nombre_ordenar] }
   
     @totales = todos_datos.size
   
-    # Calcular qué filas mostrar en esta página
     inicio = (@pagina - 1) * @por_pagina
     fin = [inicio + @por_pagina - 1, @totales - 1].min
   
-    # Segunda pasada: procesar solo las filas de la página actual
     filas_a_procesar = todos_datos[inicio..fin] || []
   
     filas_a_procesar.each_with_index do |item, page_index|
@@ -119,15 +134,13 @@ class PaginasController < ApplicationController
       datos = []
 
       rutas = []
-
       rutas << 'Liberación intencional' if row['Ruta_Liberación intencional'] == 'x'
       rutas << 'Escapes' if row['Ruta_Escapes'] == 'x'
       rutas << 'Contaminante' if row['Ruta_Contaminante'] == 'x'
       rutas << 'Polizón' if row['Ruta_Polizón'] == 'x'
-      rutas << 'Corredores' if row['Ruta_Creación de Corredores'] == 'x'
+      rutas << 'Creación de Corredores' if row['Ruta_Creación de Corredores'] == 'x'
       rutas << 'Independiente' if row['Ruta_Independiente'] == 'x'
       
-      # Buscar en Especie si existe
       t = if row['enciclovida_id'].present?
         begin
           Especie.find(row['enciclovida_id'])
@@ -136,14 +149,12 @@ class PaginasController < ApplicationController
         end
       end
       
-      # Determinar nombre final
       nombre = if t
         t.nombre_cientifico
       else
         row['Nombre cientifico'] || row['Nombre científico'] || ''
       end
       
-      # Procesar como antes, pero solo para estas filas
       if t
         datos << t.adicional.try(:foto_principal)
         datos << t
@@ -156,7 +167,6 @@ class PaginasController < ApplicationController
         end
         datos << row['Grupo']
       else
-        # Foto alternativa
         creditos_fotos = row['Creditos Fotos'] || row['Créditos Fotos'] || row['Creditos fotos']
         if creditos_fotos.present?
           nombre_foto = "#{nombre}.jpg"
@@ -176,95 +186,82 @@ class PaginasController < ApplicationController
         datos << row['Grupo']
       end
     
-      # ============================================
-      # BUSCAR PDFs EN LAS 3 CARPETAS
-      # ============================================
+      # BUSCAR PDFs
       pdfs_encontrados = []
     
       if nombre.present?
-        # Normalizar nombre para búsqueda
         nombre_busqueda = nombre.to_s.strip
       
-        # BUSCAR EN MERI (estructura plana) - puede haber múltiples
         if File.directory?(meri_dir)
           pdfs_meri = buscar_pdfs_en_carpeta_plana(nombre_busqueda, meri_dir, meri_url, 'MERI')
           pdfs_encontrados.concat(pdfs_meri) if pdfs_meri.any?
         end
       
-        # BUSCAR EN MERI_Extenso (con subcarpetas) - puede haber múltiples
         if File.directory?(meri_extenso_dir)
           pdfs_meri_extenso = buscar_pdfs_en_carpeta_con_subcarpetas(nombre_busqueda, meri_extenso_dir, meri_extenso_url)
           pdfs_encontrados.concat(pdfs_meri_extenso) if pdfs_meri_extenso.any?
         end
       
-        # BUSCAR EN Extenso (estructura plana) - puede haber múltiples
         if File.directory?(extenso_dir)
           pdfs_extenso = buscar_pdfs_en_carpeta_plana(nombre_busqueda, extenso_dir, extenso_url, 'Extenso')
           pdfs_encontrados.concat(pdfs_extenso) if pdfs_extenso.any?
         end
         
-        # Ordenar los PDFs encontrados por tipo para consistencia
         pdfs_encontrados.sort_by! { |pdf| pdf[:tipo] }
       end
     
-      # ============================================
-      # FIN DE BÚSQUEDA DE PDFs
-      # ============================================
-    
-      # Resto de campos
       datos << (row['Ambiente'] || row['ambiente'])
       datos << (row['Origen'] || row['origen'])
       datos << (row['Presencia'] || row['presencia'])
       datos << (row['Estatus'] || row['estatus'])
     
-      # Instrumentos
+      # Instrumentos legales - Manteniendo (género) con encoding correcto
       instrumentos = []
       regulada_por = row['Regulada por otros instrumentos'] || row['Instrumento legal'] || row['instrumento legal']
       if regulada_por.present?
         regulada_por.split('/').each do |inst|
           inst = inst.strip
+          # Solo corregir encoding, NO eliminar (género)
+          inst = corregir_codificacion(inst)
           pdf_inst_path = File.join(inst_dir, "#{inst}.pdf")
           if File.exist?(pdf_inst_path)
             pdf_inst = File.join(instrumentos_url, "#{inst}.pdf")
             instrumentos << { nombre: inst, pdf: pdf_inst }
           else
-            instrumentos << { nombre: 'No existe pdf', pdf: nil }
+            # Intentar con nombre normalizado (sin espacios extras)
+            inst_normalizado = inst.gsub(/\s+/, ' ')
+            pdf_inst_path2 = File.join(inst_dir, "#{inst_normalizado}.pdf")
+            if File.exist?(pdf_inst_path2)
+              pdf_inst = File.join(instrumentos_url, "#{inst_normalizado}.pdf")
+              instrumentos << { nombre: inst, pdf: pdf_inst }
+            else
+              instrumentos << { nombre: inst, pdf: nil }
+            end
           end
         end
       end
     
       datos << instrumentos
-      datos << pdfs_encontrados  # Array de PDFs encontrados
+      datos << pdfs_encontrados
       datos << rutas.join(', ')
 
       @tabla_exoticas[:datos] << datos
     end
   
     @paginas = (@totales % @por_pagina).zero? ? @totales / @por_pagina : (@totales / @por_pagina) + 1
-  
-    # Cache para mejor performance si es necesario
-    Rails.cache.write("exoticas_ordenadas_#{@filtros_cache_key}", todos_datos, expires_in: 1.hour) if @filtros_cache_key
   end
-
-  # ============================================
-  # MÉTODOS HELPER PARA BÚSQUEDA DE PDFs
-  # ============================================
 
   private
 
-  # Método para buscar TODOS los PDFs en carpeta plana (MERI y Extenso)
   def buscar_pdfs_en_carpeta_plana(nombre_especie, carpeta_dir, carpeta_url, tipo_pdf)
     pdfs_encontrados = []
     
-    # Normalizar nombre para búsqueda
     nombre_busqueda_normalizado = nombre_especie.downcase.gsub(/[^a-z0-9]/, '')
     
-    # Buscar TODOS los PDFs que coincidan
     Dir.glob(File.join(carpeta_dir, "*.pdf")).each do |ruta_pdf|
       nombre_archivo = File.basename(ruta_pdf, '.pdf')
       nombre_archivo_normalizado = nombre_archivo.downcase.gsub(/[^a-z0-9]/, '')
       
-      # Coincidencia exacta o parcial
       if nombre_busqueda_normalizado == nombre_archivo_normalizado ||
          nombre_busqueda_normalizado.include?(nombre_archivo_normalizado) ||
          nombre_archivo_normalizado.include?(nombre_busqueda_normalizado)
@@ -279,9 +276,7 @@ class PaginasController < ApplicationController
       end
     end
     
-    # Si no se encontraron coincidencias, intentar con posibles variantes del nombre
     if pdfs_encontrados.empty?
-      # Generar posibles nombres de archivo
       nombres_posibles = [
         nombre_especie,
         nombre_especie.gsub(' ', '_'),
@@ -289,13 +284,12 @@ class PaginasController < ApplicationController
         nombre_especie.downcase,
         nombre_especie.downcase.gsub(' ', '_'),
         nombre_especie.downcase.gsub(' ', '-'),
-        nombre_especie.split(' ').first,  # Solo género
+        nombre_especie.split(' ').first,
         nombre_especie.split(' ').first.downcase,
         nombre_especie.split(' ').map(&:downcase).join('_'),
         nombre_especie.split(' ').map(&:downcase).join('-')
       ].uniq
       
-      # Buscar por cada variante posible
       nombres_posibles.each do |nombre_posible|
         ruta_pdf = File.join(carpeta_dir, "#{nombre_posible}.pdf")
         if File.exist?(ruta_pdf)
@@ -313,15 +307,11 @@ class PaginasController < ApplicationController
     pdfs_encontrados
   end
 
-  # Método para buscar TODOS los PDFs en carpeta con subcarpetas (MERI_Extenso)
-  # Ahora identifica si es MERI o Extenso basado en el nombre del archivo
   def buscar_pdfs_en_carpeta_con_subcarpetas(nombre_especie, carpeta_dir, carpeta_url)
     pdfs_encontrados = []
     
-    # Normalizar nombre para búsqueda
     nombre_busqueda_normalizado = nombre_especie.downcase.gsub(/[^a-z0-9]/, '')
     
-    # Generar posibles nombres de subcarpeta
     nombres_subcarpeta_posibles = [
       nombre_especie,
       nombre_especie.gsub(' ', '_'),
@@ -335,21 +325,17 @@ class PaginasController < ApplicationController
       nombre_especie.split(' ').map(&:downcase).join('-')
     ].uniq
     
-    # Buscar en cada posible subcarpeta
     nombres_subcarpeta_posibles.each do |nombre_subcarpeta|
       ruta_subcarpeta = File.join(carpeta_dir, nombre_subcarpeta)
       
       if File.directory?(ruta_subcarpeta)
-        # Buscar TODOS los PDFs dentro de la subcarpeta
         Dir.glob(File.join(ruta_subcarpeta, "*.pdf")).each do |ruta_pdf|
           nombre_archivo = File.basename(ruta_pdf)
-          
-          # Determinar si es MERI o Extenso basado en el nombre del archivo
           tipo_documento = determinar_tipo_documento(nombre_archivo)
           
           pdfs_encontrados << {
             tipo: tipo_documento,
-            carpeta: 'MERI_Extenso',  # Mantenemos la carpeta original para referencia
+            carpeta: 'MERI_Extenso',
             ruta: File.join(carpeta_url, nombre_subcarpeta, nombre_archivo),
             nombre_archivo: nombre_archivo,
             encontrado: true,
@@ -359,7 +345,6 @@ class PaginasController < ApplicationController
       end
     end
     
-    # Si no se encontró en subcarpetas exactas, buscar en todas las subcarpetas
     if pdfs_encontrados.empty?
       Dir.glob(File.join(carpeta_dir, "*")).each do |ruta_item|
         next unless File.directory?(ruta_item)
@@ -367,20 +352,16 @@ class PaginasController < ApplicationController
         nombre_subcarpeta = File.basename(ruta_item)
         nombre_subcarpeta_normalizado = nombre_subcarpeta.downcase.gsub(/[^a-z0-9]/, '')
         
-        # Coincidencia parcial con el nombre de la subcarpeta
         if nombre_busqueda_normalizado.include?(nombre_subcarpeta_normalizado) ||
            nombre_subcarpeta_normalizado.include?(nombre_busqueda_normalizado)
           
-          # Buscar TODOS los PDFs dentro de esta subcarpeta
           Dir.glob(File.join(ruta_item, "*.pdf")).each do |ruta_pdf|
             nombre_archivo = File.basename(ruta_pdf)
-            
-            # Determinar si es MERI o Extenso basado en el nombre del archivo
             tipo_documento = determinar_tipo_documento(nombre_archivo)
             
             pdfs_encontrados << {
               tipo: tipo_documento,
-              carpeta: 'MERI_Extenso',  # Mantenemos la carpeta original para referencia
+              carpeta: 'MERI_Extenso',
               ruta: File.join(carpeta_url, nombre_subcarpeta, nombre_archivo),
               nombre_archivo: nombre_archivo,
               encontrado: true,
@@ -394,53 +375,20 @@ class PaginasController < ApplicationController
     pdfs_encontrados
   end
 
-  # Método para determinar si un documento es MERI o Extenso basado en su nombre
   def determinar_tipo_documento(nombre_archivo)
     nombre_archivo_lower = nombre_archivo.downcase
     
-    # Patrones comunes para identificar MERI
-    patrones_meri = [
-      'meri',
-      '_m.',
-      '_m_',
-      '-m.',
-      '-m_',
-      ' meri',
-      '_meri',
-      '-meri',
-      'meri_',
-      'meri-'
-    ]
+    patrones_meri = ['meri', '_m.', '_m_', '-m.', '-m_', ' meri', '_meri', '-meri', 'meri_', 'meri-']
+    patrones_extenso = ['extenso', '_e.', '_e_', '-e.', '-e_', ' extenso', '_extenso', '-extenso', 'extenso_', 'extenso-']
     
-    # Patrones comunes para identificar Extenso
-    patrones_extenso = [
-      'extenso',
-      '_e.',
-      '_e_',
-      '-e.',
-      '-e_',
-      ' extenso',
-      '_extenso',
-      '-extenso',
-      'extenso_',
-      'extenso-'
-    ]
-    
-    # Verificar si contiene patrones de MERI
     patrones_meri.each do |patron|
       return 'MERI' if nombre_archivo_lower.include?(patron)
     end
     
-    # Verificar si contiene patrones de Extenso
     patrones_extenso.each do |patron|
       return 'Extenso' if nombre_archivo_lower.include?(patron)
     end
     
-    # Si no se puede determinar por patrones, usar heurísticas adicionales
-    # Normalmente los documentos MERI son más cortos o tienen nombres específicos
-    # Aquí puedes agregar más lógica según cómo estén nombrados tus archivos
-    
-    # Por defecto, si no se puede determinar, usar 'MERI_Extenso'
     'MERI_Extenso'
   end
 
@@ -449,21 +397,17 @@ class PaginasController < ApplicationController
     @select[:grupos] = ['Algas y protoctistas', 'Anfibios', 'Arácnidos', 'Aves', 'Crustáceos', 'Hongos', 'Insectos', 'Mamíferos', 'Moluscos', 'Otros invertebrados', 'Peces', 'Plantas', 'Reptiles', 'Virus y bacterias']
     @select[:origenes] = ['Criptogénica', 'Exótica', 'Nativa', 'Se desconoce']
     @select[:presencias] = ['Ausente', 'Presente', 'Se desconoce']
-    
-    # CORREGIDO: Leer instrumentos del CSV con manejo de codificación
     @select[:instrumentos_legales] = obtener_instrumentos_desde_csv
-    
     @select[:ambientes] = ['Dulceacuícola', 'Marino', 'Salobre', 'Terrestre', 'Se desconoce']
     @select[:estatus] = ['Invasora']
     @select[:fichas] = ['Sí', 'No']
     @select[:rutas] = [
-      'Ruta_Liberación intencional',
-      'Ruta_Escapes',
-      'Ruta_Contaminante',
-      'Ruta_Polizón',
-      'Ruta_Creación de Corredores',
-      'Ruta_Independiente',
-      'Acuerdo SEMARNAT'
+      'Liberación intencional',
+      'Escapes',
+      'Contaminante',
+      'Polizón',
+      'Creación de Corredores',
+      'Independiente'
     ]
   end
   
@@ -471,34 +415,29 @@ class PaginasController < ApplicationController
     csv_path = Rails.root.join('public', 'exoticas_invasoras', 'exoticas-invasoras.csv')
     instrumentos = Set.new
     
-    # Intentar diferentes codificaciones
     encodings_to_try = ['UTF-8', 'ISO-8859-1:UTF-8', 'Windows-1252:UTF-8']
     
     encodings_to_try.each do |encoding|
       begin
         CSV.foreach(csv_path, headers: true, encoding: encoding) do |row|
-          # Buscar en la columna correcta
           valor = row['Regulada por otros instrumentos'] || row['Instrumento legal'] || row['instrumento legal']
           
           if valor.present?
-            # Separar por / si hay múltiples valores
             valor.to_s.split('/').each do |inst|
               inst = inst.strip
-              # Corregir posibles problemas de codificación
+              # Solo corregir encoding, NO eliminar (género)
               inst = corregir_codificacion(inst)
               instrumentos.add(inst) unless inst.blank?
             end
           end
         end
-        break # Si llegamos aquí, la codificación funcionó
+        break
       rescue ArgumentError, Encoding::InvalidByteSequenceError => e
         puts "Error con encoding #{encoding}: #{e.message}"
         next
       end
     end
     
-    # Si después de intentar todas las codificaciones no se obtuvo nada,
-    # usar el array manual como fallback
     if instrumentos.empty?
       instrumentos = Set.new([
         'Acuerdo EEI SEMARNAT, Plagas bajo vigilancia Senasica 2025',
@@ -529,221 +468,190 @@ class PaginasController < ApplicationController
   def corregir_codificacion(texto)
     return texto if texto.blank?
     
-    # Correcciones comunes para UTF-8 mal interpretado como Latin-1
-    texto = texto.gsub('MÃ©xico', 'México')
-                 .gsub('Ã©', 'é').gsub('Ã¡', 'á').gsub('Ã³', 'ó')
-                 .gsub('Ã±', 'ñ').gsub('Ãº', 'ú').gsub('Ã¼', 'ü')
-                 .gsub('Ã', 'Á').gsub('Ã', 'É').gsub('Ã', 'Ó')
-                 .gsub('Ã', 'Ñ').gsub('Ã', 'Ú')
+    # Asegurar encoding UTF-8
+    texto = texto.dup.force_encoding('UTF-8')
+    
+    # Corregir caracteres comunes mal codificados
+    correcciones = {
+      'Ã©' => 'é',
+      'Ã¡' => 'á',
+      'Ã³' => 'ó',
+      'Ãº' => 'ú',
+      'Ã±' => 'ñ',
+      'Ã¼' => 'ü',
+      'Ã' => 'Á',
+      'Ã' => 'É',
+      'Ã' => 'Ó',
+      'Ã' => 'Ú',
+      'Ã' => 'Ñ',
+      'Â' => '',
+      'Ã' => 'á',
+      '©' => 'é',
+      '°' => 'ó',
+      'º' => 'ú'
+    }
+    
+    correcciones.each do |mal, bien|
+      texto = texto.gsub(mal, bien)
+    end
+    
+    # Asegurar que (género) se vea correctamente (pero NO se elimina)
+    texto = texto.gsub(/\(g[Ã©©]nero\)/i, '(género)')
+    texto = texto.gsub(/\(g[eé]nero\)/i, '(género)')
     
     texto.strip
   end
 
   def opciones_seleccionadas
-  @selected = {}
-  if params[:ruta].present?
-    @selected[:ruta] = {
-      valor: params[:ruta].to_s.strip,
-      nom_campo: params[:ruta].to_s.strip
-    }
-  end
-
-  if params[:nombre_cientifico].present?
-    @selected[:nombre_cientifico] = {
-      valor: params[:nombre_cientifico].to_s.strip,
-      nom_campo: 'Nombre cientifico'
-    }
-  end
-  
-  if params[:grupo].present?
-    @selected[:grupo] = {
-      valor: params[:grupo].to_s.strip,
-      nom_campo: 'Grupo'
-    }
-  end
-
-  if params[:origen].present?
-    @selected[:origen] = {
-      valor: params[:origen].to_s.strip,
-      nom_campo: 'Origen'
-    }
-  end
-
-  if params[:presencia].present?
-    @selected[:presencia] = {
-      valor: params[:presencia].to_s.strip,
-      nom_campo: 'Presencia'
-    }
-  end
-
-  # ¡CORRECCIÓN AQUÍ! Usar 'Instrumento legal' en lugar de 'Regulada por otros instrumentos'
-  if params[:instrumento].present?
-    @selected[:instrumento] = {
-      valor: params[:instrumento].to_s.strip,
-      nom_campo: 'Instrumento legal'  # ← CAMBIADO
-    }
-  end
-
-  if params[:ambiente].present?
-    @selected[:ambiente] = {
-      valor: params[:ambiente].to_s.strip,
-      nom_campo: 'Ambiente'
-    }
-  end
-
-  if params[:estatus].present?
-    @selected[:estatus] = {
-      valor: params[:estatus].to_s.strip,
-      nom_campo: 'Estatus'
-    }
-  end
-
-  if params[:ficha].present?
-    @selected[:ficha] = {
-      valor: params[:ficha].to_s.strip,
-      nom_campo: 'Ficha'
-    }
-  end
-end
-
- def condiciones_filtros(row)
- 
-  
-  return true if @selected.empty?
-  
-  @selected.each do |campo, v|
-    if campo == :ruta
-      columna = v[:nom_campo]
-      valor = row[columna].to_s.strip.downcase
-
-      # Solo pasar si tiene "x"
-      return false unless valor == 'x'
-      next
+    @selected = {}
+    
+    if params[:ruta].present?
+      @selected[:ruta] = {
+        valor: params[:ruta].to_s.strip,
+        nom_campo: params[:ruta].to_s.strip
+      }
     end
-    if campo == :nombre_cientifico
-      termino = v[:valor].to_s.downcase.strip
-      nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase.strip
-      
-      next if termino.blank?
-      puts "  Buscando '#{termino}' en '#{nombre_cientifico}'"
-      if nombre_cientifico.include?(termino)
-        puts "  ✓ ENCONTRADO"
-      else
-        puts "  ✗ NO ENCONTRADO - RECHAZANDO FILA"
-        return false
-      end
-      next
+
+    if params[:nombre_cientifico].present?
+      @selected[:nombre_cientifico] = {
+        valor: params[:nombre_cientifico].to_s.strip,
+        nom_campo: 'Nombre cientifico'
+      }
     end
     
-    if v[:nom_campo] == 'Ficha'
-      puts "  Procesando campo Ficha"
-      if v[:valor] == 'Sí'
-        if row[v[:nom_campo]].blank?
-          puts "  ✗ Ficha vacía cuando debería tener - RECHAZANDO FILA"
-          return false
+    if params[:grupo].present?
+      @selected[:grupo] = {
+        valor: params[:grupo].to_s.strip,
+        nom_campo: 'Grupo'
+      }
+    end
+
+    if params[:origen].present?
+      @selected[:origen] = {
+        valor: params[:origen].to_s.strip,
+        nom_campo: 'Origen'
+      }
+    end
+
+    if params[:presencia].present?
+      @selected[:presencia] = {
+        valor: params[:presencia].to_s.strip,
+        nom_campo: 'Presencia'
+      }
+    end
+
+    if params[:instrumento].present?
+      @selected[:instrumento] = {
+        valor: params[:instrumento].to_s.strip,
+        nom_campo: 'Regulada por otros instrumentos'
+      }
+    end
+
+    if params[:ambiente].present?
+      @selected[:ambiente] = {
+        valor: params[:ambiente].to_s.strip,
+        nom_campo: 'Ambiente'
+      }
+    end
+
+    if params[:estatus].present?
+      @selected[:estatus] = {
+        valor: params[:estatus].to_s.strip,
+        nom_campo: 'Estatus'
+      }
+    end
+
+    if params[:ficha].present?
+      @selected[:ficha] = {
+        valor: params[:ficha].to_s.strip,
+        nom_campo: 'Ficha'
+      }
+    end
+  end
+
+  def condiciones_filtros(row)
+    return true if @selected.empty?
+    
+    @selected.each do |campo, v|
+      if campo == :ruta
+        ruta_real = case v[:valor]
+        when 'Liberación intencional'
+          'Ruta_Liberación intencional'
+        when 'Escapes'
+          'Ruta_Escapes'
+        when 'Contaminante'
+          'Ruta_Contaminante'
+        when 'Polizón'
+          'Ruta_Polizón'
+        when 'Creación de Corredores'
+          'Ruta_Creación de Corredores'
+        when 'Independiente'
+          'Ruta_Independiente'
         else
-          puts "  ✓ Ficha tiene valor"
+          v[:valor]
         end
-      else
-        if row[v[:nom_campo]].present?
-          puts "  ✗ Ficha tiene valor cuando debería estar vacía - RECHAZANDO FILA"
-          return false
-        else
-          puts "  ✓ Ficha vacía como se esperaba"
-        end
-      end
-    elsif v[:nom_campo] == 'Regulada por otros instrumentos'
-      puts "  === PROCESANDO INSTRUMENTO ==="
-      valor_seleccionado = v[:valor].to_s.strip
-      valor_csv = row[v[:nom_campo]].to_s.strip
-      
-      puts "  Valor seleccionado: '#{valor_seleccionado}'"
-      puts "  Valor en CSV: '#{valor_csv}'"
-      
-      # Si no se seleccionó nada de instrumento, continuar
-      if valor_seleccionado.blank?
         
+        valor_csv = row[ruta_real].to_s.strip.downcase
+        return false unless valor_csv == 'x'
         next
       end
       
-      # Si el valor CSV está vacío y se seleccionó algo, rechazar
-      if valor_csv.blank?
-        return false
-      end
-      
-      # DEBUG adicional: mostrar longitud y caracteres
-   
-      
-      # Convertir a minúsculas para comparación
-      seleccionado_lower = valor_seleccionado.downcase
-      csv_lower = valor_csv.downcase
-      
-      # Opción 1: Comparación exacta
-      if csv_lower == seleccionado_lower
+      if campo == :nombre_cientifico
+        termino = v[:valor].to_s.downcase.strip
+        nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase.strip
+        next if termino.blank?
+        return false unless nombre_cientifico.include?(termino)
         next
       end
       
-      # Opción 2: Buscar si está contenido
-      if csv_lower.include?('/')
-        partes_csv = csv_lower.split('/').map(&:strip)
-        if partes_csv.include?(seleccionado_lower)
-          next
+      if v[:nom_campo] == 'Ficha'
+        if v[:valor] == 'Sí'
+          return false if row['Ficha'].blank?
+        else
+          return false if row['Ficha'].present?
         end
-      end
-      
-      # Opción 3: Búsqueda inversa (por si el CSV es parte del seleccionado)
-      if seleccionado_lower.include?(csv_lower)
         next
       end
       
-      # Opción 4: Búsqueda de palabras clave
-      palabras_seleccionadas = seleccionado_lower.split(/[ ,.;:]/).reject(&:blank?)
-      palabras_csv = csv_lower.split(/[ ,.;:]/).reject(&:blank?)
-      
-      # Verificar si al menos algunas palabras coinciden
-      coincidencias = palabras_seleccionadas & palabras_csv
-      if coincidencias.any?
+      if campo == :instrumento
+        valor_seleccionado = v[:valor].to_s.strip
+        valor_csv = (row['Regulada por otros instrumentos'] || row['Instrumento legal'] || '').to_s.strip
+        
+        next if valor_seleccionado.blank?
+        return false if valor_csv.blank?
+        
+        # Normalizar para comparación (sin eliminar género)
+        seleccionado_norm = normalizar_para_comparacion(valor_seleccionado)
+        csv_norm = normalizar_para_comparacion(valor_csv)
+        
+        return false unless csv_norm.include?(seleccionado_norm) || seleccionado_norm.include?(csv_norm)
         next
       end
-      return false
       
-    else
-      # Para otros campos
       valor_seleccionado = v[:valor].to_s.strip.downcase
       valor_csv = row[v[:nom_campo]].to_s.strip.downcase
       
-      if valor_csv.blank?
-        return false
-      end
+      return false if valor_csv.blank?
       
       if valor_csv.include?('/')
         valores_csv = valor_csv.split('/').map(&:strip)
+        return false unless valores_csv.include?(valor_seleccionado)
       else
-        if valor_csv == valor_seleccionado
-          puts "  ✓ COINCIDENCIA EXACTA"
-        else
-          puts "  ✗ NO COINCIDE - RECHAZANDO FILA"
-          return false
-        end
+        return false unless valor_csv == valor_seleccionado
       end
     end
+    
+    true
   end
-  true
-end
   
   def normalizar_para_comparacion(texto)
     return '' if texto.blank?
     
-    # Convertir a minúsculas
-    texto = texto.downcase
-    
-    # Quitar espacios al inicio y final
-    texto = texto.strip
-    
-    # Quitar espacios múltiples
+    # Normalizar para comparación pero mantener la esencia del texto
+    texto = texto.to_s.dup
+    texto = corregir_codificacion(texto)
+    texto = texto.downcase.strip
     texto = texto.gsub(/\s+/, ' ')
-    
-    # Quitar puntuación extra al final
     texto = texto.gsub(/[.,;:]$/, '')
     
     texto

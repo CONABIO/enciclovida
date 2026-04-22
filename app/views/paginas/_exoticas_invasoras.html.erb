@@ -1,7 +1,6 @@
 <%
   totales = @totales
-  resultados = @tabla_exoticas[:datos].count  # Los que trae por pagina
-
+  resultados = @tabla_exoticas[:datos].count
   por_pagina = @por_pagina
   comienzo = por_pagina*(@pagina-1) + 1
   final = comienzo + resultados - 1
@@ -9,108 +8,77 @@
 
 <% @tabla_exoticas[:datos].each do |row| %>
   <tr>
-    <% row.each_with_index do |col, index| %>
-      <td>
-        <% case index %>
-        <% when 0  # Foto %>
-          <%= image_tag(col, class: 'img rounded', style: "width: 15em") if col.present? %>
-
-        <% when 1  # Nombre científico %>
-          <% if col.present? %>
-            <% if col.is_a?(String) %>
-              <%= col %>
-            <% else %>
-              <%= link_to col.nombre_cientifico, especie_path(col), target: :_blank %>
-            <% end %>
-          <% else %>
-            <em>Nombre no disponible</em>
-          <% end %>
-
-        <% when 2  # Familia %>
-          <%= col %>
-
-        <% when 3  # Grupo %>
-          <%= col %>
-
-        <% when 4  # Ambiente %>
-          <%= col %>
-
-        <% when 5  # Origen %>
-          <%= col %>
-
-        <% when 6  # Presencia %>
-          <%= col %>
-
-        <% when 7  # Estatus %>
-          <%= col %>
-
-        <% when 8  # PDF instrumentos legales %>
-          <% if col.present? && col.is_a?(Enumerable) %>
-            <% col.each do |instrumento| %>
-              <p><%= link_to instrumento[:nombre], instrumento[:pdf] if instrumento[:pdf].present? %></p>
-            <% end %>
-          <% end %>
-
-        <% when 9  # Ahora es un ARRAY de PDFs encontrados %>
-          <% if col.present? && col.is_a?(Array) && col.any? %>
-            <div class="pdf-links-container">
-              <% 
-                # Ordenar los PDFs: MERI, MERI_Extenso, Extenso
-                pdfs_ordenados = col.sort_by do |pdf_info| 
-                  case pdf_info[:tipo]
-                  when 'MERI' then 1
-                  when 'MERI Extenso' then 2
-                  when 'Extenso' then 3
-                  else 4
-                  end
-                end
-              %>
-              
-              <% pdfs_ordenados.each do |pdf_info| %>
-                <% if pdf_info && pdf_info[:encontrado] %>
-                  <div class="pdf-link-item mb-2">
-                    <% 
-                      # Determinar clase CSS según el tipo
-                      clase_boton = case pdf_info[:tipo]
-                      when 'MERI'
-                        'btn-success'
-                      when 'MERI Extenso'
-                        'btn-info'
-                      when 'Extenso'
-                        'btn-warning'
-                      else
-                        'btn-secondary'
-                      end
-                      
-                      # Texto del botón
-                      texto_boton = pdf_info[:tipo]
-                    %>
-                    
-                    <%= link_to(texto_boton.html_safe, pdf_info[:ruta], 
-                          target: :_blank,
-                          class: "btn btn-sm #{clase_boton}",
-                          title: "Ver #{texto_boton}: #{pdf_info[:nombre_archivo]}") %>
-                  </div>
-                <% end %>
-              <% end %>
-            </div>
-          <% else %>
-            <span class="text-muted small">
-              <i class="fas fa-file-pdf"></i> Sin documentos
-            </span>
-          <% end %>
-
-        <% else %>
-          <%= col %>
-        <% end %>
-      </td>
-    <% end %>
+    <%# Foto %>
+    <td><%= image_tag(row[0], class: 'img rounded', style: "width: 10em") if row[0].present? %></td>
     
+    <%# Nombre científico %>
+    <td>
+      <% if row[1].present? %>
+        <% if row[1].is_a?(String) %>
+          <%= row[1] %>
+        <% else %>
+          <%= link_to row[1].nombre_cientifico, especie_path(row[1]), target: :_blank %>
+        <% end %>
+      <% else %>
+        <em>Nombre no disponible</em>
+      <% end %>
+    </td>
+    
+    <%# Familia %>
+    <td><%= row[2] %></td>
+    
+    <%# Grupo %>
+    <td><%= row[3] %></td>
+    
+    <%# Ambiente %>
+    <td><%= row[4] %></td>
+    
+    <%# Origen %>
+    <td><%= row[5] %></td>
+    
+    <%# Presencia %>
+    <td><%= row[6] %></td>
+    
+    <%# Estatus %>
+    <td><%= row[7] %></td>
+    
+    <%# Rutas de Introducción (sin prefijo Ruta_) %>
+    <td>
+      <% if row[12].present? %>
+        <%= row[12].gsub(/Ruta_/, '') %>
+      <% end %>
+    </td>
+    
+    <%# Análisis de riesgo (Ficha) - Solo mostrar si hay MERI o Extenso %>
+    <td>
+      <% if row[11].present? && row[11].is_a?(Array) && row[11].any? %>
+        <% row[11].each do |pdf_info| %>
+          <% if pdf_info[:encontrado] && (pdf_info[:tipo] == 'MERI' || pdf_info[:tipo] == 'Extenso') %>
+            <%= link_to pdf_info[:tipo], pdf_info[:ruta], target: :_blank, 
+                class: "btn btn-sm #{pdf_info[:tipo] == 'MERI' ? 'btn-success' : 'btn-warning'} mr-1 mb-1" %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </td>
+    
+    <%# Acuerdo SEMARNAT (columna vacía por ahora) %>
+    <td></td>
+    
+    <%# Instrumento legal - Manteniendo (género) con encoding correcto %>
+    <td>
+      <% if row[10].present? && row[10].is_a?(Array) %>
+        <% row[10].each do |instrumento| %>
+          <% if instrumento[:pdf].present? %>
+            <%= link_to instrumento[:nombre], instrumento[:pdf], target: :_blank, class: "d-block small" %>
+          <% else %>
+            <span class="text-muted small"><%= instrumento[:nombre] %></span>
+          <% end %>
+        <% end %>
+      <% end %>
+    </td>
   </tr>
 <% end %>
 
 <script>
-  $(document).ready(function() {
-    $('#num-res-exoticas').html("Mostrando del <%= comienzo %> al <%= final %> de <%= totales %> resultados");
-  });
+  $('#num-res-exoticas').html("Mostrando del <%= comienzo %> al <%= final %> de <%= totales %> resultados");
 </script>
