@@ -874,21 +874,34 @@ module CacheServices
   end
 
   # REVISADO: Suma la visita de una ficha en la tabla estadisticas
-  def suma_visita
-    Rails.logger.debug "\n\nGuardo conteo de visitas #{id} ..."
-
+  # REVISADO: Suma la visita de una ficha en la tabla estadisticas
+def suma_visita
+  Rails.logger.debug "\n\nGuardo conteo de visitas #{id} ..."
+  
+  begin
     if estadistica = especie_estadisticas.where(estadistica_id: 1).first
-      estadistica.conteo+= 1
+      estadistica.conteo += 1
       estadistica.save
-      return
+    else
+      # Quiere decir que no existia la estadistica
+      estadistica = especie_estadisticas.new
+      estadistica.estadistica_id = 1
+      estadistica.conteo = 1
+      estadistica.save
     end
-
-    # Quiere decir que no existia la estadistica
-    estadistica = especie_estadisticas.new
-    estadistica.estadistica_id = 1
-    estadistica.conteo = 1
-    estadistica.save
+  rescue => e
+    Rails.logger.error "Error en suma_visita para especie #{id}: #{e.message}"
+    # Intentar crear/actualizar directamente en la tabla si falla la asociación
+    begin
+      EstadisticaEspecie.where(especie_id: id, estadistica_id: 1).first_or_create do |est|
+        est.conteo = (est.conteo || 0) + 1
+      end
+    rescue => e2
+      Rails.logger.error "Error directo también falló: #{e2.message}"
+      # No hacer nada, solo registrar el error
+    end
   end
+end
 
   # Para el conteo del home
   def Especie.conteo_especies_home
