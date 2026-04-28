@@ -68,26 +68,34 @@ class BDIService
 
    def consulta_api(opts={})
 
-    if opts[:archives]
-      url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/?#{campo}=#{nombre_cientifico}"
-      accept = 'application/json'
-    else
-      url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{album}/?#{campo}=#{nombre_cientifico}"
-      accept = 'application/vnd.fotoware.assetlist+json'
-    end
-
-    url << "&#{autor_campo}=#{autor}" if autor_campo.present? && autor.present?
-
-    begin
-      url_escape = URI::DEFAULT_PARSER.escape(url)
-      res = RestClient.get url_escape, accept: accept
-      jres = JSON.parse(res.body)
-      self.jres = jres["data"]
-      self.num_assets = jres.count if !opts[:archives] && !opts[:no_contar]    
-    rescue => e
-      Rails.logger.error "Falló en la consulta con #{url_escape}: #{e.inspect} "
-    end
+  if opts[:archives]
+    url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/?#{campo}=#{nombre_cientifico}"
+    accept = 'application/json'
+  else
+    url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{album}/?#{campo}=#{nombre_cientifico}"
+    accept = 'application/vnd.fotoware.assetlist+json'
   end
+
+  url << "&#{autor_campo}=#{autor}" if autor_campo.present? && autor.present?
+
+  begin
+    url_escape = URI::DEFAULT_PARSER.escape(url)
+
+    res = RestClient::Request.execute(
+      method: :get,
+      url: url_escape,
+      headers: { accept: accept },
+      verify_ssl: OpenSSL::SSL::VERIFY_NONE
+    )
+
+    jres = JSON.parse(res.body)
+    self.jres = jres["data"]
+    self.num_assets = jres.count if !opts[:archives] && !opts[:no_contar]
+
+  rescue => e
+    Rails.logger.error "Falló en la consulta con #{url_escape}: #{e.inspect} "
+  end
+end
 
   def fotos_album
     case album.to_s.downcase
