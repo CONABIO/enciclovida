@@ -3,6 +3,9 @@ class Catalogo < ActiveRecord::Base
   self.table_name = "#{CONFIG.bases.cat}.CatalogoNombre"
   self.primary_key = 'IdCatNombre'
 
+  has_many :rel_nombre_catalogos, foreign_key: 'IdCatNombre', class_name: 'RelNombreCatalogo', dependent: :restrict_with_error
+  has_many :transforma_nombres, through: :rel_nombre_catalogos, source: :transforma_nombre
+
   attr_accessor :sigla
 
   # Los alias con las tablas de catalogos
@@ -25,6 +28,8 @@ class Catalogo < ActiveRecord::Base
   scope :usos, -> { where(id: USOS).order(:descripcion) }
   scope :evaluacion_conabio, -> { where(nivel1: 4, nivel2: 6).where("#{attribute_alias(:nivel3)} > 0").where("#{attribute_alias(:nivel3)} < 4") }
   scope :formas_crecimiento, -> { where(nivel1: 18, nivel3: 0).where("#{attribute_alias(:nivel2)} > 0").order(:descripcion) }
+  
+  scope :con_taxones, -> { includes(:transforma_nombres) }
 
   AMBIENTE_EQUIV_MARINO = ['Nerítico', 'Nerítico y oceánico', 'Oceánico']
   USOS = [1216, 1217, 464, 1058, 465, 468, 469, 470, 471, 1055, 1057, 1056, 2381, 2386]
@@ -108,3 +113,4 @@ class Catalogo < ActiveRecord::Base
   end
 end
   
+

@@ -1,0 +1,27 @@
+<div class="card border-success mb-4">
+  <div class="card-header bg-success text-white">
+    <h6 class="mb-0"><strong>🐝 Búsqueda de polinizadores y néctar-políníferas</strong></h6>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <h6><strong>Tipo:</strong></h6>
+        <%= select_tipo_polinizador %>
+      </div>
+      <div class="col-md-3">
+        <h6><strong>Resultados por página:</strong></h6>
+        <select id="por_pagina_polinizadores" class="form-control">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button type="button" class="btn btn-success btn-block" onclick="buscarPolinizadores()">
+          <i class="fa fa-search"></i> Buscar
+        </button>
+      </div>
+    </div> 
+  </div>
+</div>

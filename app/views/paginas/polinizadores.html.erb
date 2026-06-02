@@ -1,0 +1,79 @@
+<% content_for(:extrajs) do %>
+  <%= javascript_include_tag 'jquery-ui', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'lib/scrolling', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'busquedas/avanzada/basica', 'data-turbolinks-track' => true %>
+
+  <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
+      offset = [2];
+
+      settings.cat = 0;
+      settings.offset = offset[0];
+      settings.url = "<%= request.url %>";
+      settings.url_original = "<%= request.url %>";
+      settings.totales = <%= @totales %>;
+      settings.nop = (settings.totales/10) + 1;
+
+      POR_CATEGORIA = <%=raw @por_categoria.to_json %>;
+      
+      datos_descarga = {};
+      datos_descarga.url = settings.url_original;
+      datos_descarga.cuantos = settings.totales;
+  </script>
+<% end %>
+
+<script>
+  function buscarPolinizadores() {
+    var tipo = $('#tipo_polinizador_select').val();
+    var porPagina = $('#por_pagina_polinizadores').val();
+
+    if (!tipo) {
+      alert('Selecciona un tipo');
+      return;
+    }
+
+    $('#resultados-0').html(
+      '<div class="text-center p-5">' +
+      '<i class="fa fa-spinner fa-spin fa-2x"></i>' +
+      '<p>Cargando...</p>' +
+      '</div>'
+    );
+
+    var nuevaUrl = '<%= polinizadores_path %>?tipo_polinizador=' + tipo + '&por_pagina=' + porPagina;
+
+    $.ajax({
+      url: nuevaUrl,
+      type: 'GET',
+      data: {
+        tipo_polinizador: tipo,
+        por_pagina: porPagina,
+        pagina: 1
+      },
+      success: function(html, status, xhr) {
+        $('#resultados-container').html(html);
+        
+        var totales = xhr.getResponseHeader('x-total-entries');
+        
+        if (totales && typeof settings !== 'undefined') {
+          settings.totales = parseInt(totales);
+          settings.nop = Math.ceil(settings.totales / (porPagina || 20));
+          settings.offset = 2;
+          settings.cargando = false;
+          settings.no_mas_resultados = false;
+          settings.url = nuevaUrl;
+          settings.url_original = nuevaUrl;
+        }
+        
+        window.scrollTo(0, 0);
+      },
+      error: function(xhr) {
+        $('#resultados-container').html(
+          '<div class="alert alert-danger">Error al cargar resultados</div>'
+        );
+      }
+    });
+  }
+</script>
+
+<div id="resultados-container">
+  <%= render 'paginas/contenedor_polinizadores' %>
+</div>

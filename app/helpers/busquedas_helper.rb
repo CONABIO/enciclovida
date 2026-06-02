@@ -534,4 +534,44 @@ end
     html.present? ? "<b>Filtros aplicados: </b>" << html : "<b>No se ha aplicado ningún filtro aún</b>"
   end
 
+  #Polinizadores
+  def select_tipo_polinizador(opciones = {})
+    selected = params[:tipo_polinizador].presence
+
+    opciones_default = {
+      class: 'form-control',
+      id: 'tipo_polinizador_select'
+    }
+
+    opciones = opciones_default.merge(opciones)
+
+    opciones_select = [
+      ['-- Selecciona --', ''],
+      ['📋 Todos', 'todos_interaccion'],
+      ['🐝 Visitantes florales (VF) y Polinizadores (P)', 'visitantes_polinizadores'],
+      ['🌺 Plantas néctar-políníferas (Melíferas)', 'plantas_meliferas']
+    ]
+
+    select_tag(
+      'tipo_polinizador',
+      options_for_select(opciones_select, selected),
+      opciones
+    )
+  end
+  
+  # Badge para tipo de polinizador
+  def badge_tipo_polinizador(observaciones)
+    return '' unless observaciones.present?
+    case observaciones
+    when 'VF'
+      content_tag(:span, '🌸 Visitante Floral', class: 'badge badge-success')
+    when 'P'
+      content_tag(:span, '🐝 Polinizador', class: 'badge badge-info')
+    when /Melíferas/i
+      content_tag(:span, '🌺 Planta Melífera', class: 'badge badge-warning')
+    else
+      content_tag(:span, observaciones, class: 'badge badge-secondary')
+    end
+  end
+
 end

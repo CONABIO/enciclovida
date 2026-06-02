@@ -4,6 +4,31 @@ class PaginasController < ApplicationController
 
   layout Proc.new{['exoticas_invasoras_paginado'].include?(action_name) ? false : 'application'}
 
+
+  def polinizadores
+  tipo = params[:tipo_polinizador] || 'todos_interaccion'
+  pagina = (params[:pagina] || 1).to_i
+  por_pagina = (params[:por_pagina] || 20).to_i
+
+  @taxones = TransformaNombre.buscar_polinizadores_por_tipo(tipo, pagina, por_pagina)
+  @totales = TransformaNombre.contar_polinizadores_por_tipo(tipo)
+  @por_categoria = []
+
+  response.headers['x-total-entries'] = @totales.to_s if @totales > 0
+
+  # Detectar si es scroll (página > 1) o nueva búsqueda
+  if params[:pagina].to_i > 1
+    # Scroll: solo las tarjetas
+    render partial: 'paginas/resultados_polinizadores', layout: false
+  elsif request.xhr?
+    # Nueva búsqueda: formulario + tarjetas
+    render partial: 'paginas/contenedor_polinizadores', layout: false
+  else
+    # Primera carga: página completa
+    render 'paginas/polinizadores'
+  end
+end
+
   # La pagina cuando entran por get
   def exoticas_invasoras
     lee_csv

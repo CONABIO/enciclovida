@@ -116,6 +116,7 @@ class BusquedasController < ApplicationController
     render 'busquedas/clasificacion/por_clasificacion_hojas'
   end
 
+  
 
   private
 

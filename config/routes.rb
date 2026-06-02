@@ -142,6 +142,9 @@ Buscador::Application.routes.draw do
   get 'exoticas-invasoras-paginado' => 'paginas#exoticas_invasoras_paginado'
   get 'exoticas-invasoras/buscar', to: 'paginas#buscar_especies'
 
+  #polinizadores
+  get '/polinizadores', to: 'paginas#polinizadores'
+
 
   # Busquedas por region
   #get 'explora-por-ubicacion' => 'busquedas_regiones#ubicacion'
@@ -166,6 +169,7 @@ Buscador::Application.routes.draw do
   get "busquedas/avanzada"
   get "busquedas/resultados"
   get "busquedas/nombres_comunes"
+   
 
   # Rutas de comentarios
   get 'comentarios/administracion' => 'comentarios#admin', as: :admin
