@@ -1,17 +1,12 @@
 <% content_for(:extrajs) do %>
   <%= javascript_include_tag 'jquery-ui', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'lib/scrolling', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'busquedas/avanzada/basica', 'data-turbolinks-track' => true %>
 
   <script type="text/javascript" charset="utf-8" data-turbolinks-track="true">
-      offset = [2];
-
       settings.cat = 0;
-      settings.offset = offset[0];
       settings.url = "<%= request.url %>";
       settings.url_original = "<%= request.url %>";
       settings.totales = <%= @totales %>;
-      settings.nop = (settings.totales/10) + 1;
 
       POR_CATEGORIA = <%=raw @por_categoria.to_json %>;
       
@@ -60,14 +55,10 @@
         
         var totales = xhr.getResponseHeader('x-total-entries');
         
-        if (totales && typeof settings !== 'undefined') {
-          settings.totales = parseInt(totales);
-          settings.nop = Math.ceil(settings.totales / (porPagina || 20));
-          settings.offset = 2;
-          settings.cargando = false;
-          settings.no_mas_resultados = false;
-          settings.url = nuevaUrl;
-          settings.url_original = nuevaUrl;
+        if (totales) {
+          var porPaginaVal = parseInt($('#por_pagina_polinizadores').val()) || 20;
+          reiniciarScrollPolinizadores(parseInt(totales), porPaginaVal, nuevaUrl);
+          $("#resultados-0").scrollPaginationPolinizadores();
         }
         
         window.scrollTo(0, 0);
@@ -91,10 +82,129 @@
     }
   }
   
+  // ==========================================
+  // Configuración específica para polinizadores
+  // ==========================================
+  
+  var polinizadoresSettings = {
+    nop     : 100,
+    offset  : 2,
+    error   : '¡Has llegado al final de los resultados!',
+    delay   : 500,
+    scroll  : true,
+    url     : '<%= polinizadores_path %>',
+    busy    : false,
+    cat     : 0,
+    totalPaginas: <%= (@totales.to_f / (params[:por_pagina] || 20).to_i).ceil %>,
+    paginaActual: 1
+  };
+
+  (function($) {
+
+    $.fn.scrollPaginationPolinizadores = function(options) {
+
+      if(options) {
+        $.extend(polinizadoresSettings, options);
+      }
+
+      return this.each(function() {
+
+        if(polinizadoresSettings.scroll == true) {
+          var initmessage = 'Cargando... Por favor, espera <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>';
+        } else {
+          var initmessage = 'Clic para cargar más';
+        }
+
+        function getData() {
+          var nextPage = polinizadoresSettings.paginaActual + 1;
+          
+          // Verificar si ya no hay más páginas
+          if (nextPage > polinizadoresSettings.totalPaginas) {
+            $('#loading-bar-' + polinizadoresSettings.cat).remove();
+            $('#resultados-' + polinizadoresSettings.cat).append(
+              '<div class="col-12 text-center p-3">' +
+              '<small class="text-muted">✨ No hay más resultados ✨</small>' +
+              '</div>'
+            );
+            polinizadoresSettings.busy = false;
+            return;
+          }
+          
+          var $this = $("#resultados-" + polinizadoresSettings.cat);
+          $('#loading-bar-' + polinizadoresSettings.cat).remove();
+          $this.append("<div class='loading-bar col-xs-12 col-sm-12 col-md-12 col-lg-12' id='loading-bar-" + polinizadoresSettings.cat + "'>" + initmessage + '</div>');
+
+          $.get(polinizadoresSettings.url, {
+            pagina: nextPage,
+            por_pagina: $('#por_pagina_polinizadores').val(),
+            tipo_polinizador: $('#tipo_polinizador_select').val(),
+            clase_polinizador: $('#clase_polinizador_select').val() || ''
+          }, function(data) {
+            $('#loading-bar-' + polinizadoresSettings.cat).html(initmessage);
+
+            if(data == "" || !data) {
+              $('#loading-bar-' + polinizadoresSettings.cat).html(polinizadoresSettings.error);
+              polinizadoresSettings.busy = false;
+            } else {
+              polinizadoresSettings.paginaActual = nextPage;
+              $this.append(data);
+              $('#loading-bar-' + polinizadoresSettings.cat).remove();
+              polinizadoresSettings.busy = false;
+            }
+          }).fail(function() {
+            $('#loading-bar-' + polinizadoresSettings.cat).html(polinizadoresSettings.error);
+            polinizadoresSettings.busy = false;
+          });
+        }
+
+        var $this = $("#resultados-" + polinizadoresSettings.cat);
+
+        if(polinizadoresSettings.scroll == true) {
+          $(window).scroll(function() {
+            if($(window).scrollTop() + $(window).height() + 400 > $(document).height() && !polinizadoresSettings.busy) {
+              polinizadoresSettings.busy = true;
+              $('#loading-bar-' + polinizadoresSettings.cat).html('Cargando... Por favor, espera <i class="spin3-ev-icon animate-spin" style="font-size: 3em; color: rgba(128, 0, 0, 0.75);"></i>');
+              setTimeout(function() {
+                getData();
+              }, polinizadoresSettings.delay);
+            }
+          });
+        }
+
+        $this.find("#resultados-" + polinizadoresSettings.cat + '.loading-bar').click(function() {
+          if(polinizadoresSettings.busy == false) {
+            polinizadoresSettings.busy = true;
+            getData();
+          }
+        });
+      });
+    }
+
+  })(jQuery);
+
+  // Inicializar al cargar la página
   $(document).ready(function() {
     $(document).on('change', '#tipo_polinizador_select', toggleClaseFilter);
     toggleClaseFilter();
+    
+    // Actualizar total de páginas según los resultados actuales
+    var porPagina = parseInt($('#por_pagina_polinizadores').val()) || 20;
+    polinizadoresSettings.totalPaginas = Math.ceil(<%= @totales %> / porPagina);
+    polinizadoresSettings.paginaActual = 1;
+    polinizadoresSettings.url = '<%= polinizadores_path %>';
+    polinizadoresSettings.busy = false;
+    
+    $("#resultados-0").scrollPaginationPolinizadores();
   });
+
+  // Función para reiniciar después de una nueva búsqueda
+  function reiniciarScrollPolinizadores(totales, porPagina, nuevaUrl) {
+    polinizadoresSettings.totalPaginas = Math.ceil(totales / porPagina);
+    polinizadoresSettings.paginaActual = 1;
+    polinizadoresSettings.url = nuevaUrl;
+    polinizadoresSettings.busy = false;
+    $('#loading-bar-0').remove();
+  }
 </script>
 
 <div class="row">

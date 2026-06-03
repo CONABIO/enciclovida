@@ -548,7 +548,7 @@ end
     opciones_select = [
       ['-- Selecciona --', ''],
       ['📋 Todos', 'todos_interaccion'],
-      ['🐝 Visitantes florales (VF) y Polinizadores (P)', 'visitantes_polinizadores'],
+      ['🐝 Polinizadores', 'visitantes_polinizadores'],
       ['🌺 Plantas néctar-políníferas ', 'plantas_meliferas']
     ]
 
