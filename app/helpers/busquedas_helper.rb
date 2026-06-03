@@ -558,20 +558,29 @@ end
       opciones
     )
   end
-  
-  # Badge para tipo de polinizador
-  def badge_tipo_polinizador(observaciones)
-    return '' unless observaciones.present?
-    case observaciones
-    when 'VF'
-      content_tag(:span, '🌸 Visitante Floral', class: 'badge badge-success')
-    when 'P'
-      content_tag(:span, '🐝 Polinizador', class: 'badge badge-info')
-    when /Melíferas/i
-      content_tag(:span, '🌺 Planta Melífera', class: 'badge badge-warning')
-    else
-      content_tag(:span, observaciones, class: 'badge badge-secondary')
-    end
+
+  def select_clase_polinizador(opciones = {})
+    selected = params[:clase_polinizador].presence
+
+    opciones_default = {
+      class: 'form-control',
+      id: 'clase_polinizador_select'
+    }
+
+    opciones = opciones_default.merge(opciones)
+
+    opciones_select = [
+      ['-- Todas las clases --', ''],
+      ['🐦 Aves', 'Aves'],
+      ['🐝 Insecta', 'Insecta'],
+      ['🐭 Mammalia', 'Mammalia']
+    ]
+
+    select_tag(
+      'clase_polinizador',
+      options_for_select(opciones_select, selected),
+      opciones
+    )
   end
 
 end

@@ -3,19 +3,20 @@
     <em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>
   </p>
 <% else %>
-  
   <div class="row">
     <% @taxones.each do |taxon| %>
       <div class="col-6 col-sm-4 col-md-3 col-lg-2 my-3 px-1">
-        <div class="result-img-container text-center">
-          <% if taxon.foto_principal.present? %>
-            <%= link_to image_tag(taxon.foto_principal, class: 'img-fluid', style: 'width: 100%; height: 150px; object-fit: cover;'), especie_path(taxon), target: "_self" %>
-          <% else %>
-            <%= link_to "<i class='ev1-ev-icon' style='font-size: 80px; line-height: 150px;'></i>".html_safe, especie_path(taxon), target: "_self" %>
-          <% end %>
-        </div>
-        <div class="result-nombre-container text-center mt-2">
-          <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_self"}).html_safe %>
+        <div class="card h-100">
+          <div class="result-img-container text-center p-2">
+            <% if taxon.foto_principal.present? %>
+              <%= link_to image_tag(taxon.foto_principal, class: 'img-fluid', style: 'width: 100%; height: 150px; object-fit: cover;'), especie_path(taxon), target: "_self" %>
+            <% else %>
+              <%= link_to "<i class='ev1-ev-icon' style='font-size: 80px;'></i>".html_safe, especie_path(taxon), target: "_self" %>
+            <% end %>
+          </div>
+          <div class="result-nombre-container text-center p-2">
+            <%= tituloNombreCientifico(taxon, {render: 'link'}, {target: "_self"}).html_safe %>
+          </div>
         </div>
       </div>
     <% end %>

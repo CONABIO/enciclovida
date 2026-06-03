@@ -25,6 +25,7 @@
   function buscarPolinizadores() {
     var tipo = $('#tipo_polinizador_select').val();
     var porPagina = $('#por_pagina_polinizadores').val();
+    var clase = $('#clase_polinizador_select').val();
 
     if (!tipo) {
       alert('Selecciona un tipo');
@@ -38,18 +39,24 @@
       '</div>'
     );
 
-    var nuevaUrl = '<%= polinizadores_path %>?tipo_polinizador=' + tipo + '&por_pagina=' + porPagina;
+    var params = {
+      tipo_polinizador: tipo,
+      por_pagina: porPagina,
+      pagina: 1
+    };
+    
+    if (clase && clase !== '') {
+      params.clase_polinizador = clase;
+    }
+
+    var nuevaUrl = '<%= polinizadores_path %>?' + $.param(params);
 
     $.ajax({
       url: nuevaUrl,
       type: 'GET',
-      data: {
-        tipo_polinizador: tipo,
-        por_pagina: porPagina,
-        pagina: 1
-      },
+      data: params,
       success: function(html, status, xhr) {
-        $('#resultados-container').html(html);
+        $('#resultados-0').html(html);
         
         var totales = xhr.getResponseHeader('x-total-entries');
         
@@ -66,14 +73,37 @@
         window.scrollTo(0, 0);
       },
       error: function(xhr) {
-        $('#resultados-container').html(
+        $('#resultados-0').html(
           '<div class="alert alert-danger">Error al cargar resultados</div>'
         );
       }
     });
   }
+  
+  function toggleClaseFilter() {
+    var tipo = $('#tipo_polinizador_select').val();
+    var claseContainer = $('#clase_container');
+    
+    if (tipo === 'visitantes_polinizadores' || tipo === 'todos_interaccion') {
+      claseContainer.show();
+    } else {
+      claseContainer.hide();
+    }
+  }
+  
+  $(document).ready(function() {
+    $(document).on('change', '#tipo_polinizador_select', toggleClaseFilter);
+    toggleClaseFilter();
+  });
 </script>
 
-<div id="resultados-container">
-  <%= render 'paginas/contenedor_polinizadores' %>
+<div class="row">
+  <div class="col-4">
+    <%= render 'paginas/formulario_polinizadores' %>
+  </div>
+  <div class="col-8">
+    <div class="tab-pane panel-body panel-resultados active" id="resultados-0">
+      <%= render 'paginas/resultados_polinizadores' %>
+    </div>
+  </div>
 </div>
