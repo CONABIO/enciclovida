@@ -17,6 +17,23 @@
 <% end %>
 
 <script>
+  // Función para actualizar el contador
+  function actualizarContador(mostrados, totales) {
+    var contadorHtml = '<div id="contador-resultados" class="col-12">' +
+        '<div class="row mb-3">' +
+        '<small class="text-muted">' +
+        'Mostrando ' + mostrados + ' de ' + totales + ' resultados' +
+        '</small>' +
+        '</div>' +
+        '</div>';
+    
+    if ($('#contador-resultados').length > 0) {
+      $('#contador-resultados').replaceWith(contadorHtml);
+    } else {
+      $('#resultados-0').prepend(contadorHtml);
+    }
+  }
+  
   function buscarPolinizadores() {
     var tipo = $('#tipo_polinizador_select').val();
     var porPagina = $('#por_pagina_polinizadores').val();
@@ -57,8 +74,20 @@
         
         if (totales) {
           var porPaginaVal = parseInt($('#por_pagina_polinizadores').val()) || 20;
-          reiniciarScrollPolinizadores(parseInt(totales), porPaginaVal, nuevaUrl);
+          var nuevosTotales = parseInt(totales);
+          
+          polinizadoresSettings.totales = nuevosTotales;
+          polinizadoresSettings.totalPaginas = Math.ceil(nuevosTotales / porPaginaVal);
+          polinizadoresSettings.paginaActual = 1;
+          
+          reiniciarScrollPolinizadores(nuevosTotales, porPaginaVal, nuevaUrl);
           $("#resultados-0").scrollPaginationPolinizadores();
+          
+          // Actualizar contador inicial después de la búsqueda
+          setTimeout(function() {
+            var resultadosMostrados = $('#resultados-0 .card').length;
+            actualizarContador(resultadosMostrados, nuevosTotales);
+          }, 100);
         }
         
         window.scrollTo(0, 0);
@@ -96,7 +125,8 @@
     busy    : false,
     cat     : 0,
     totalPaginas: <%= (@totales.to_f / (params[:por_pagina] || 20).to_i).ceil %>,
-    paginaActual: 1
+    paginaActual: 1,
+    totales: <%= @totales %>
   };
 
   (function($) {
@@ -150,6 +180,10 @@
               $this.append(data);
               $('#loading-bar-' + polinizadoresSettings.cat).remove();
               polinizadoresSettings.busy = false;
+              
+              // Actualizar el contador después de cargar más resultados
+              var totalTarjetas = $this.find('.card').length;
+              actualizarContador(totalTarjetas, polinizadoresSettings.totales);
             }
           }).fail(function() {
             $('#loading-bar-' + polinizadoresSettings.cat).html(polinizadoresSettings.error);
@@ -187,14 +221,20 @@
     $(document).on('change', '#tipo_polinizador_select', toggleClaseFilter);
     toggleClaseFilter();
     
-    // Actualizar total de páginas según los resultados actuales
     var porPagina = parseInt($('#por_pagina_polinizadores').val()) || 20;
     polinizadoresSettings.totalPaginas = Math.ceil(<%= @totales %> / porPagina);
     polinizadoresSettings.paginaActual = 1;
     polinizadoresSettings.url = '<%= polinizadores_path %>';
     polinizadoresSettings.busy = false;
+    polinizadoresSettings.totales = <%= @totales %>;
     
     $("#resultados-0").scrollPaginationPolinizadores();
+    
+    // Contador inicial
+    setTimeout(function() {
+      var resultadosIniciales = $('#resultados-0 .card').length;
+      actualizarContador(resultadosIniciales, <%= @totales %>);
+    }, 100);
   });
 
   // Función para reiniciar después de una nueva búsqueda
@@ -203,6 +243,7 @@
     polinizadoresSettings.paginaActual = 1;
     polinizadoresSettings.url = nuevaUrl;
     polinizadoresSettings.busy = false;
+    polinizadoresSettings.totales = totales;
     $('#loading-bar-0').remove();
   }
 </script>

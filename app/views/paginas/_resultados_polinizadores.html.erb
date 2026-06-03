@@ -1,16 +1,8 @@
-
 <% if @taxones.blank? %>
   <p class="enlaces_acciones">
     <em>Tu búsqueda no dio ningún resultado, verifica tus filtros.</em>
   </p>
 <% else %>
-  <div class="col-12">
-    <div class="row mb-3">
-      <small class="text-muted">
-        Mostrando <%= @totales %> resultados
-      </small>
-    </div>
-  </div>
   <div class="row">
     <% @taxones.each do |taxon| %>
       <div class="col-6 col-sm-4 col-md-3 col-lg-2 my-3 px-1">
