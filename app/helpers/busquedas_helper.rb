@@ -549,7 +549,7 @@ end
       ['-- Selecciona --', ''],
       ['📋 Todos', 'todos_interaccion'],
       ['🐝 Visitantes florales (VF) y Polinizadores (P)', 'visitantes_polinizadores'],
-      ['🌺 Plantas néctar-políníferas (Melíferas)', 'plantas_meliferas']
+      ['🌺 Plantas néctar-políníferas ', 'plantas_meliferas']
     ]
 
     select_tag(
