@@ -25,7 +25,7 @@ set :output, {
   error: "log/cron_error.log"
 }
 
-set path:, '/home/enciclovida/buscador'
+set :path, '/home/enciclovida/buscador'
 
 every 1.day, at: '4:30 am' do
   runner 'UpdatePhoto.update_peces'
