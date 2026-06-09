@@ -10,7 +10,8 @@ $(which mongo) --verbose enciclovida_production $(pwd)/tools/levantaServicios/cl
 
 nohup $(which ruby) $(pwd)/bin/delayed_job -i validaciones --queue=validaciones run &
 nohup $(which ruby) $(pwd)/bin/delayed_job -i descargar_taxa --queue=descargar_taxa run &
-nohup $(which ruby) $(pwd)/bin/delayed_job -i estadisticas --queue=estadisticas run &
+nohup $(which ruby) $(pwd)/bin/delayed_job -i estadisticas_1 --queue=estadisticas run &
+nohup $(which ruby) $(pwd)/bin/delayed_job -i estadisticas_2 --queue=estadisticas run &
 nohup $(which ruby) $(pwd)/bin/delayed_job -i redis --queue=redis run &
 nohup $(which ruby) $(pwd)/bin/delayed_job -i peces --queue=peces run &
 echo "El cron de los delayed_jobs corrio en $(date)" >> $(pwd)/log/cron_delayed_jobs.log;
