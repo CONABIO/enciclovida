@@ -4,7 +4,7 @@ module CacheServices
   def servicios
     if Rails.env.production?
       guarda_redis_servicio
-      guarda_estadisticas_servicio
+      #guarda_estadisticas_servicio
       guarda_pez_servicios
       # estadisticas_naturalista_servicio
       # estadisticas_conabio_servicio
