@@ -189,6 +189,9 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)
   BAJO_GENERO = %w(género subgénero sección subsección serie subserie)
 
+  after_commit :actualizar_redis, on: [:create, :update]
+
+
   def self.update_geoserver_info(proveedores_hash)
     ts_req = Tropicos_Service.new
 
@@ -802,6 +805,12 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end
 
     geodatos
+  end
+
+  private
+
+  def actualizar_redis
+    guarda_redis_servicio
   end
 
 end

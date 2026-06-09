@@ -16,7 +16,7 @@ class EspeciesController < ApplicationController
   before_action :only => [:new, :create, :edit, :update, :destroy, :destruye_seleccionados, :cambia_id_naturalista] do
     tiene_permiso?('Administrador')  # Minimo administrador
   end
-
+  
   layout false, :only => [:media, :descripcion, :observaciones_naturalista, :edit_photos, :descripcion_catalogos,
                           :comentarios,
                           :fotos_referencia, :bdi_photos, :media_cornell, :xeno_canto, :media_tropicos, :fotos_naturalista, :nombres_comunes_naturalista,
