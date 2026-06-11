@@ -20,7 +20,7 @@
           <%= link_to row[1].nombre_cientifico, especie_path(row[1]), target: :_blank %>
         <% end %>
       <% else %>
-        <em>Nombre no disponible</em>
+        <em>No disponible</em>
       <% end %>
     </td>
     
@@ -51,9 +51,10 @@
     
     <%# Análisis de riesgo (Ficha) - Solo mostrar si hay MERI o Extenso %>
     <td>
-      <% if row[11].present? && row[11].is_a?(Array) && row[11].any? %>
-        <% row[11].each do |pdf_info| %>
-          <% if pdf_info[:encontrado] && (pdf_info[:tipo] == 'MERI' || pdf_info[:tipo] == 'Extenso') %>
+      
+      <% if row[9].present? && row[9].is_a?(Array) && row[9].any? %>
+        <% row[9].uniq { |pdf| [pdf[:tipo], pdf[:nombre_archivo]] }.each do |pdf_info| %>
+            <% if pdf_info[:encontrado] && (pdf_info[:tipo] == 'MERI' || pdf_info[:tipo] == 'Extenso') %>
             <%= link_to pdf_info[:tipo], pdf_info[:ruta], target: :_blank, 
                 class: "btn btn-sm #{pdf_info[:tipo] == 'MERI' ? 'btn-success' : 'btn-warning'} mr-1 mb-1" %>
           <% end %>

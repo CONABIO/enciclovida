@@ -1,9 +1,7 @@
 # Este controlador tiene la finalidad de hacer contenido por paginas, ej la lista de invasoras
 class PaginasController < ApplicationController
   skip_before_action :set_locale
-
   layout Proc.new{['exoticas_invasoras_paginado'].include?(action_name) ? false : 'application'}
-
 
   def polinizadores
     tipo = params[:tipo_polinizador] || 'todos_interaccion'
@@ -23,12 +21,11 @@ class PaginasController < ApplicationController
       render 'paginas/polinizadores'
     end
   end
-  # La pagina cuando entran por get
+
   def exoticas_invasoras
     lee_csv
   end
 
-  # La resultados que provienen del paginado
   def exoticas_invasoras_paginado
     lee_csv
     render partial: 'exoticas_invasoras'
@@ -37,73 +34,47 @@ class PaginasController < ApplicationController
  def buscar_especies
   termino = params[:q].to_s.downcase.strip
   limite = (params[:limit] || 10).to_i
-  
-  Rails.logger.info "=== BUSCAR ESPECIES ==="
-  Rails.logger.info "Término: #{termino}"
-  
   return render json: {resultados: [], total: 0} if termino.length < 2
-  
   file = File.join(Rails.root, 'public', 'exoticas_invasoras', 'exoticas-invasoras.csv')
-  
+  csv = CSV.read(file, headers: true)
+  nombre_columna = csv.headers.find do |h|
+    h.to_s.downcase.include?('nombre')
+  end
   unless File.exist?(file)
-    Rails.logger.error "ARCHIVO NO ENCONTRADO: #{file}"
     return render json: {resultados: [], total: 0, error: "Archivo no encontrado"}
   end
-  
   resultados = []
-  
   begin
-    # USAR EL MISMO ENCODING que en lee_csv
     CSV.foreach(file, headers: true) do |row|
-      # Usar los mismos nombres de columnas que en lee_csv
-      nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s
-      nombre_comun = (row['Nombre común'] || row['Nombre comun'] || '').to_s
-      
-      # Depuración: mostrar primeros 5 nombres
-      if resultados.empty? && rand < 0.01 # Solo ocasionalmente para no llenar logs
-        Rails.logger.info "Ejemplo de nombre: #{nombre_cientifico}"
-      end
-      
+      nombre_cientifico = row[nombre_columna].to_s
       if nombre_cientifico.downcase.include?(termino)
-        resultados << {
-          nombre_cientifico: nombre_cientifico,
-          nombre_comun: nombre_comun
-        }
-        
-        Rails.logger.info "✓ Encontrado: #{nombre_cientifico}"
+        resultados << {nombre_cientifico: nombre_cientifico}
         break if resultados.size >= limite
       end
-    end
-    
-    Rails.logger.info "Total resultados: #{resultados.size}"
-    
+    end    
     render json: {
       resultados: resultados,
       total: resultados.size,
       query: termino
     }
-    
-  rescue => e
-    Rails.logger.error "ERROR: #{e.message}"
-    Rails.logger.error e.backtrace.first(5)
-    render json: {resultados: [], total: 0, error: e.message}
+    rescue => e
+      render json: {resultados: [], total: 0, error: e.message}
+    end
   end
-end
 
   protected
 
   def lee_csv
     termino_busqueda = params[:nombre_cientifico].to_s.downcase.strip
-
     @tabla_exoticas = {}
     @tabla_exoticas[:datos] = []
-
     opciones_posibles
     opciones_seleccionadas
-
     file = File.join(Rails.root, 'public', 'exoticas_invasoras', 'exoticas-invasoras.csv')
-  
-    # RUTAS PARA LAS 3 CARPETAS DE PDFs
+    csv = CSV.read(file, headers: true)
+    col_nombre_cientifico = csv.headers.find do |h|
+      h.to_s.downcase.include?('nombre')
+    end
     meri_url = '/pdfs/exoticas_invasoras/MERI'
     meri_dir = File.join(Rails.root, 'public', meri_url)
 
@@ -118,40 +89,58 @@ end
 
     @por_pagina = 30
     @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-  
+
     todos_datos = []
-  
+    grupos = Hash.new(0)
+    CSV.foreach(csv_path, headers: true) do |row|
+      puts row['ficha'] if row['ficha'].present?
+    end
     CSV.foreach(file, headers: true) do |row|
+      nombre_cientifico = row[col_nombre_cientifico].to_s.downcase.strip
       next unless condiciones_filtros(row)
-    
       if termino_busqueda.present?
-        nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase
+        nombre_cientifico = (row[col_nombre_cientifico] || row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase
         next unless nombre_cientifico.include?(termino_busqueda)
       end
-    
-      nombre = row['Nombre cientifico'] || row['Nombre científico'] || ''
+      nombre = row[col_nombre_cientifico] || row['Nombre cientifico'] || row['Nombre científico'] || ''
       nombre_para_ordenar = nombre.to_s.downcase.strip
-    
+      if @selected[:ficha].present?
+        nombre = row[col_nombre_cientifico] || ''
+        pdfs_tmp = []
+        if nombre.present?
+          pdfs_tmp.concat(
+            buscar_pdfs_en_carpeta_plana(nombre, meri_dir, meri_url, 'MERI')
+          ) if File.directory?(meri_dir)
+
+          pdfs_tmp.concat(
+            buscar_pdfs_en_carpeta_con_subcarpetas(nombre, meri_extenso_dir, meri_extenso_url)
+          ) if File.directory?(meri_extenso_dir)
+
+          pdfs_tmp.concat(
+            buscar_pdfs_en_carpeta_plana(nombre, extenso_dir, extenso_url, 'Extenso')
+          ) if File.directory?(extenso_dir)
+        end
+        tiene_ficha = pdfs_tmp.any? { |pdf| pdf[:encontrado] }
+        if @selected[:ficha][:valor] == 'Sí'
+          next unless tiene_ficha
+        else
+          next if tiene_ficha
+        end
+      end
       todos_datos << {
         nombre_ordenar: nombre_para_ordenar,
         row_data: row,
         row_index: todos_datos.size
       }
     end
-    
     todos_datos.sort_by! { |item| item[:nombre_ordenar] }
-  
     @totales = todos_datos.size
-  
     inicio = (@pagina - 1) * @por_pagina
     fin = [inicio + @por_pagina - 1, @totales - 1].min
-  
     filas_a_procesar = todos_datos[inicio..fin] || []
-  
     filas_a_procesar.each_with_index do |item, page_index|
       row = item[:row_data]
       datos = []
-
       rutas = []
       rutas << 'Liberación intencional' if row['Ruta_Liberación intencional'] == 'x'
       rutas << 'Escapes' if row['Ruta_Escapes'] == 'x'
@@ -159,7 +148,6 @@ end
       rutas << 'Polizón' if row['Ruta_Polizón'] == 'x'
       rutas << 'Creación de Corredores' if row['Ruta_Creación de Corredores'] == 'x'
       rutas << 'Independiente' if row['Ruta_Independiente'] == 'x'
-      
       t = if row['enciclovida_id'].present?
         begin
           Especie.find(row['enciclovida_id'])
@@ -167,17 +155,14 @@ end
           nil
         end
       end
-      
       nombre = if t
         t.nombre_cientifico
       else
-        row['Nombre cientifico'] || row['Nombre científico'] || ''
+       row[col_nombre_cientifico] ||  row['Nombre cientifico'] || row['Nombre científico'] || ''
       end
-      
       if t
         datos << t.adicional.try(:foto_principal)
         datos << t
-      
         if familia = t.ancestors.left_joins(:categoria_taxonomica)
                     .where("#{CategoriaTaxonomica.attribute_alias(:nombre_categoria_taxonomica)} = 'familia'")
           datos << familia.first.nombre_cientifico
@@ -205,12 +190,9 @@ end
         datos << row['Grupo']
       end
     
-      # BUSCAR PDFs
       pdfs_encontrados = []
-    
       if nombre.present?
         nombre_busqueda = nombre.to_s.strip
-      
         if File.directory?(meri_dir)
           pdfs_meri = buscar_pdfs_en_carpeta_plana(nombre_busqueda, meri_dir, meri_url, 'MERI')
           pdfs_encontrados.concat(pdfs_meri) if pdfs_meri.any?
@@ -225,14 +207,13 @@ end
           pdfs_extenso = buscar_pdfs_en_carpeta_plana(nombre_busqueda, extenso_dir, extenso_url, 'Extenso')
           pdfs_encontrados.concat(pdfs_extenso) if pdfs_extenso.any?
         end
-        
         pdfs_encontrados.sort_by! { |pdf| pdf[:tipo] }
       end
     
-      datos << (row['Ambiente'] || row['ambiente'])
-      datos << (row['Origen'] || row['origen'])
-      datos << (row['Presencia'] || row['presencia'])
-      datos << (row['Estatus'] || row['estatus'])
+      datos << corregir_codificacion(row['Ambiente'] || row['ambiente'])
+      datos << corregir_codificacion(row['Origen'] || row['origen'])
+      datos << corregir_codificacion(row['Presencia'] || row['presencia'])
+      datos << corregir_codificacion(row['Estatus'] || row['estatus'])
     
       # Instrumentos legales - Manteniendo (género) con encoding correcto
       instrumentos = []
@@ -259,18 +240,46 @@ end
           end
         end
       end
-    
       datos << instrumentos
       datos << pdfs_encontrados
       datos << rutas.join(', ')
-
       @tabla_exoticas[:datos] << datos
     end
-  
     @paginas = (@totales % @por_pagina).zero? ? @totales / @por_pagina : (@totales / @por_pagina) + 1
   end
 
   private
+
+  def csv_path
+    Rails.root.join(
+      'public',
+      'exoticas_invasoras',
+      'exoticas-invasoras.csv'
+    )
+  end
+
+  def obtener_rutas_desde_csv
+    csv = CSV.read(csv_path, headers: true)
+    csv.headers
+      .select { |h| h.to_s.start_with?('Ruta_') }
+      .map do |h|
+        corregir_codificacion(
+          h.sub('Ruta_', '')
+        )
+      end
+      .sort
+  end
+
+  def obtener_valores_unicos_csv(columna)
+    valores = Set.new
+    CSV.foreach(csv_path, headers: true) do |row|
+      valor = corregir_codificacion(
+        row[columna].to_s.strip
+      )
+      valores.add(valor) unless valor.blank?
+    end
+    valores.to_a.sort
+  end
 
   def buscar_pdfs_en_carpeta_plana(nombre_especie, carpeta_dir, carpeta_url, tipo_pdf)
     pdfs_encontrados = []
@@ -328,9 +337,7 @@ end
 
   def buscar_pdfs_en_carpeta_con_subcarpetas(nombre_especie, carpeta_dir, carpeta_url)
     pdfs_encontrados = []
-    
     nombre_busqueda_normalizado = nombre_especie.downcase.gsub(/[^a-z0-9]/, '')
-    
     nombres_subcarpeta_posibles = [
       nombre_especie,
       nombre_especie.gsub(' ', '_'),
@@ -343,7 +350,6 @@ end
       nombre_especie.split(' ').map(&:downcase).join('_'),
       nombre_especie.split(' ').map(&:downcase).join('-')
     ].uniq
-    
     nombres_subcarpeta_posibles.each do |nombre_subcarpeta|
       ruta_subcarpeta = File.join(carpeta_dir, nombre_subcarpeta)
       
@@ -413,76 +419,23 @@ end
 
   def opciones_posibles
     @select = {}
-    @select[:grupos] = ['Algas y protoctistas', 'Anfibios', 'Arácnidos', 'Aves', 'Crustáceos', 'Hongos', 'Insectos', 'Mamíferos', 'Moluscos', 'Otros invertebrados', 'Peces', 'Plantas', 'Reptiles', 'Virus y bacterias']
-    @select[:origenes] = ['Criptogénica', 'Exótica', 'Nativa', 'Se desconoce']
-    @select[:presencias] = ['Ausente', 'Presente', 'Se desconoce']
-    @select[:instrumentos_legales] = obtener_instrumentos_desde_csv
-    @select[:ambientes] = ['Dulceacuícola', 'Marino', 'Salobre', 'Terrestre', 'Se desconoce']
-    @select[:estatus] = ['Invasora']
+    @select.merge!(cargar_opciones_desde_csv)
     @select[:fichas] = ['Sí', 'No']
-    @select[:rutas] = [
-      'Liberación intencional',
-      'Escapes',
-      'Contaminante',
-      'Polizón',
-      'Creación de Corredores',
-      'Independiente'
-    ]
+        
+
   end
-  
-  def obtener_instrumentos_desde_csv
-    csv_path = Rails.root.join('public', 'exoticas_invasoras', 'exoticas-invasoras.csv')
-    instrumentos = Set.new
-    
-    encodings_to_try = ['UTF-8', 'ISO-8859-1:UTF-8', 'Windows-1252:UTF-8']
-    
-    encodings_to_try.each do |encoding|
-      begin
-        CSV.foreach(csv_path, headers: true, encoding: encoding) do |row|
-          valor = row['Regulada por otros instrumentos'] || row['Instrumento legal'] || row['instrumento legal']
-          
-          if valor.present?
-            valor.to_s.split('/').each do |inst|
-              inst = inst.strip
-              # Solo corregir encoding, NO eliminar (género)
-              inst = corregir_codificacion(inst)
-              instrumentos.add(inst) unless inst.blank?
-            end
-          end
-        end
-        break
-      rescue ArgumentError, Encoding::InvalidByteSequenceError => e
-        puts "Error con encoding #{encoding}: #{e.message}"
-        next
-      end
-    end
-    
-    if instrumentos.empty?
-      instrumentos = Set.new([
-        'Acuerdo EEI SEMARNAT, Plagas bajo vigilancia Senasica 2025',
-        'LISTA DE PLAGAS BAJO VIGILANCIA, 2025',
-        'Lista oficial invasoras México',
-        'Lista oficial invasoras México NOM-002-FITO-2000',
-        'Lista oficial invasoras México NOM-013-SEMARNAT-2020',
-        'Lista oficial invasoras México NOM-016-SEMARNAT-2013',
-        'Lista oficial invasoras México NOM-043-FITO-1999',
-        'Lista oficial invasoras México NOM-059-SEMARNAT-2010',
-        'Lista oficial invasoras México Plagas bajo vigilancia Senasica 2025',
-        'Lista plagas bajo vigilancia 2025',
-        'Lista Plagas en Vigilancia Activa Senasica',
-        'NOM-005-FITO-1995; LISTA DE PLAGAS BAJO VIGILANCIA, 2025',
-        'NOM-010-FITO-1995, LISTA DE PLAGAS BAJO VIGILANCIA, 2025',
-        'NOM-013-SEMARNAT-2020',
-        'NOM-013-SEMARNAT-2020; Lista Plagas en Vigilancia Activa Senasica 2025',
-        'NOM-014-FITO-1995',
-        'NOM-016-SEMARNAT-2013',
-        'NOM-043-FITO-1999',
-        'Plagas bajo vigilancia Senasica 2025'
-      ])
-    end
-    
-    instrumentos.to_a.sort
-  end
+
+ def cargar_opciones_desde_csv
+  {
+    grupos:      obtener_valores_unicos_csv('Grupo'),
+    ambientes:   obtener_valores_unicos_csv('Ambiente'),
+    origenes:    obtener_valores_unicos_csv('Origen'),
+    presencias:  obtener_valores_unicos_csv('Presencia'),
+    estatus:     obtener_valores_unicos_csv('Estatus'),
+    instrumentos_legales: obtener_valores_unicos_csv('Instrumento legal'),
+    rutas: obtener_rutas_desde_csv
+  }
+end
   
   def corregir_codificacion(texto)
     return texto if texto.blank?
@@ -528,13 +481,6 @@ end
       @selected[:ruta] = {
         valor: params[:ruta].to_s.strip,
         nom_campo: params[:ruta].to_s.strip
-      }
-    end
-
-    if params[:nombre_cientifico].present?
-      @selected[:nombre_cientifico] = {
-        valor: params[:nombre_cientifico].to_s.strip,
-        nom_campo: 'Nombre cientifico'
       }
     end
     
@@ -589,6 +535,7 @@ end
   end
 
   def condiciones_filtros(row)
+  
     return true if @selected.empty?
     
     @selected.each do |campo, v|
@@ -614,21 +561,11 @@ end
         return false unless valor_csv == 'x'
         next
       end
-      
+
       if campo == :nombre_cientifico
-        termino = v[:valor].to_s.downcase.strip
-        nombre_cientifico = (row['Nombre cientifico'] || row['Nombre científico'] || '').to_s.downcase.strip
-        next if termino.blank?
-        return false unless nombre_cientifico.include?(termino)
         next
       end
-      
-      if v[:nom_campo] == 'Ficha'
-        if v[:valor] == 'Sí'
-          return false if row['Ficha'].blank?
-        else
-          return false if row['Ficha'].present?
-        end
+      if campo == :ficha
         next
       end
       
@@ -647,9 +584,9 @@ end
         next
       end
       
-      valor_seleccionado = v[:valor].to_s.strip.downcase
-      valor_csv = row[v[:nom_campo]].to_s.strip.downcase
-      
+      valor_seleccionado = corregir_codificacion(v[:valor].to_s.strip).downcase
+      valor_csv = corregir_codificacion(row[v[:nom_campo]].to_s.strip).downcase
+            
       return false if valor_csv.blank?
       
       if valor_csv.include?('/')
