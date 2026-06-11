@@ -65,6 +65,8 @@ class PaginasController < ApplicationController
   protected
 
   def lee_csv
+    puts "PARAM nombre_cientifico: #{params[:nombre_cientifico].inspect}"
+    inicio_total = Time.current
     termino_busqueda = params[:nombre_cientifico].to_s.downcase.strip
     @tabla_exoticas = {}
     @tabla_exoticas[:datos] = []
@@ -92,9 +94,6 @@ class PaginasController < ApplicationController
 
     todos_datos = []
     grupos = Hash.new(0)
-    CSV.foreach(csv_path, headers: true) do |row|
-      puts row['ficha'] if row['ficha'].present?
-    end
     CSV.foreach(file, headers: true) do |row|
       nombre_cientifico = row[col_nombre_cientifico].to_s.downcase.strip
       next unless condiciones_filtros(row)
@@ -103,6 +102,9 @@ class PaginasController < ApplicationController
         next unless nombre_cientifico.include?(termino_busqueda)
       end
       nombre = row[col_nombre_cientifico] || row['Nombre cientifico'] || row['Nombre científico'] || ''
+
+      puts "CSV nombre: #{nombre}"
+
       nombre_para_ordenar = nombre.to_s.downcase.strip
       if @selected[:ficha].present?
         nombre = row[col_nombre_cientifico] || ''
