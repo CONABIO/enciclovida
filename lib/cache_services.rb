@@ -136,7 +136,7 @@ module CacheServices
     end
 
   # Los taxones eliminados no deben aparecer en el autocomplete
-  unless EstadoRegistro == 1
+  unless self.EstadoRegistro == 1
     borra_redis(loader)
     borra_fuzzy_match
     return
