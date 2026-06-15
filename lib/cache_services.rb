@@ -143,7 +143,7 @@ module CacheServices
   end
 
   # Le suma la visita del usuario para que no truene corriendolo como un proceso separado
-  suma_visita
+  suma_visita unless opc[:sin_visita]
 
   # Pone en nil las variables para guardar los servicios y no consultarlos de nuevo
   self.x_foto_principal = nil
