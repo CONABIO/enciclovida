@@ -22,12 +22,16 @@ def guarda_redis
 
   Rails.logger.debug 'Procesando los nombres cientificos...' if OPTS[:debug]
   ultima_corrida = false
-  
   Especie.where(EstadoRegistro: 1).find_each(batch_size: 1000) do |t|
-    puts "#{t.id}-#{t.nombre_cientifico}"
-    t.guarda_redis(sin_visita: true)
+    begin
+      puts "Procesando #{t.id} - #{t.nombre_cientifico}"
+      t.guarda_redis(sin_visita: true)
+    rescue => e
+      puts "ERROR EN #{t.id} - #{t.nombre_cientifico}"
+      puts e.full_message
+      break
+    end
   end
-
 end
 start_time = Time.now
 guarda_redis
