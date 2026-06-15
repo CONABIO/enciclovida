@@ -27,16 +27,20 @@ class BDIService
     return if num_assets == 0
 
     jres.each do |f|
-      foto = Photo.new
-      foto.large_url = bdi_rp + f['previews'][3]['href']
-      foto.medium_url = bdi_rp + f['previews'][7]['href']
-      foto.native_page_url = bdi_url + f['href']
-      foto.license = f['metadata']['340'].present? ? f['metadata']['340']['value'] : 'Sin licencia'
-      foto.square_url = bdi_rp + f['previews'][10]['href']
-      foto.native_realname = f['metadata']['80'].present? ? f['metadata']['80']['value'].first : "Anónimo"
-      self.assets << foto
+      pp f if f.nil?
+
+      unless f.is_a?(Hash)
+        puts "OBJETO INVALIDO"
+        pp f
+        next
+      end
+
+      unless f['previews']
+        puts "SIN PREVIEWS"
+        pp f
+        next
+      end
     end
-    
   end
 
   def dame_num_fotos
