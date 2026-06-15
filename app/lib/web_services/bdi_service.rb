@@ -22,24 +22,47 @@ class BDIService
   def dame_fotos
     bdi_rp = CONFIG.enciclovida_url
     bdi_url = CONFIG.bdi_imagenes
+
     limpia_nombre_cientifico
     fotos_album
+
     return if num_assets == 0
 
     jres.each do |f|
-      pp f if f.nil?
+      next unless f.is_a?(Hash)
 
-      unless f.is_a?(Hash)
-        puts "OBJETO INVALIDO"
-        pp f
-        next
-      end
+      previews = f['previews']
 
-      unless f['previews']
-        puts "SIN PREVIEWS"
-        pp f
-        next
-      end
+      # Algunos resultados de BDI son carpetas o registros incompletos
+      next if previews.blank?
+
+      # El código asume que existen estos índices
+      next unless previews[3]
+      next unless previews[7]
+      next unless previews[10]
+
+      foto = Photo.new
+
+      foto.large_url       = bdi_rp + previews[3]['href']
+      foto.medium_url      = bdi_rp + previews[7]['href']
+      foto.square_url      = bdi_rp + previews[10]['href']
+      foto.native_page_url = bdi_url + f['href']
+
+      foto.license =
+        if f.dig('metadata', '340').present?
+          f['metadata']['340']['value']
+        else
+          'Sin licencia'
+        end
+
+      foto.native_realname =
+        if f.dig('metadata', '80').present?
+          f['metadata']['80']['value'].first
+        else
+          'Anónimo'
+        end
+
+      self.assets << foto
     end
   end
 
