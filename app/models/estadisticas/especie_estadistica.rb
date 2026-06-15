@@ -6,6 +6,6 @@ class EspecieEstadistica < ActiveRecord::Base
   belongs_to :estadistica, inverse_of: :especie_estadisticas
   belongs_to :especie, :foreign_key => Especie.attribute_alias(:id), inverse_of: :especie_estadisticas
 
-  scope :visitas, -> { where(estadistica_id: 1).first.conteo }
+  scope :visitas, -> { find_by(estadistica_id: 1)&.conteo || 0 }
 
 end
