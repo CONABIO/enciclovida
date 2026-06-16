@@ -33,6 +33,6 @@ every 1.day, at: '4:30 am' do
   
 end
 
-every 1.day, at: '3:00 am' do
-  runner "EstadisticasService.actualizar_masivo"
-end
+#every 1.day, at: '3:00 am' do
+#  runner "EstadisticasService.actualizar_masivo"
+#end
