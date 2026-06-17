@@ -9,9 +9,18 @@ module EspeciesHelper
     fichaTecnica << dameEspecieBibliografias(taxon)
     fichaTecnica << dameOtrosAtributos(taxon)
     fichaTecnica << dameNomComunesBiblio(taxon)
+    fichaTecnica << dameAnotacion(taxon)
+    fichaTecnica << dameNota(taxon)
     #{distribucion_literatura: dameDistribucionLiteratura(taxon, opc = {})}
-    fichaTecnica.flatten
-
+    fichaTecnica.compact.flatten
+  end
+  def dameAnotacion(taxon)
+    return nil if taxon.anotacion.blank?
+    {nombre_catalogo: "Anotación al taxón",descripciones: [taxon.anotacion]}
+  end
+  def dameNota(taxon)
+    return nil if taxon.otrasobservaciones.blank?
+    { nombre_catalogo: "Nota",descripciones: [taxon.otrasobservaciones]}
   end
 
 #########################################################################################################################################
