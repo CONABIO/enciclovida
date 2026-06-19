@@ -167,7 +167,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       [2, 'válido'],
       [1, 'sinónimo'],
       [6, 'No disponible'],
-      [9, 'No aplica']
+      [9, 'No aplica'],
+      [-9, 'No aplica']
   ]
 
   ESTATUS_BUSQUEDA = [
@@ -184,7 +185,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
       2 => 'válido',
       1 => 'sinónimo',
       6 => 'No disponible',
-      9 => 'No aplica'
+      9 => 'No aplica',
+      -9 => 'No aplica'
   }
 
   SPECIES_OR_LOWER = %w(especie subespecie variedad subvariedad forma subforma)

@@ -28,11 +28,11 @@ module ApplicationHelper
 		end
 		
 		if I18n.locale.to_s == 'es-cientifico'
-			if taxon.IdCategoriaTaxonomica < 25 && taxon.IdNombre != 1 
-				estatus = 'aceptado'
-			else 
-				estatus = 'válido'
-			end
+			if taxon.estatus == 2
+        estatus = taxon.IdCategoriaTaxonomica < 25 && taxon.IdNombre != 1 ? 'aceptado' : 'válido'
+      else
+        estatus = Especie::ESTATUS_SIGNIFICADO[taxon.estatus] || 'No aplica'
+      end
 			case params[:render]
 				when 'title'
 					taxon.nombre_cientifico.sanitize.html_safe
