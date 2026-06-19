@@ -789,16 +789,16 @@ class EspeciesController < ApplicationController
   def set_especie
     id = params[:id].split('-').first
 
-    if id.numeric?  # Quiere decir que es un ID de la centralizacion o del antiguo de millones
+    if id.numeric?
       begin
-        @especie = Especie.find(id)  # Coincidio y es el ID de la centralizacion
+        @especie = Especie.find(id)
       rescue
         id_millon = Adicional.where(idMillon: id).first
-        @especie = Especie.find(id_millon.especie_id) if id_millon  # Es el ID viejo de millones
+        @especie = Especie.find(id_millon.especie_id) if id_millon
       end
 
     elsif idCAT = Scat.where(catalogo_id: id).first
-      @especie = idCAT.especie  # Es el IdCAT de la tabla SCAT
+      @especie = idCAT.especie
     end
 
     unless @especie.present?
@@ -808,16 +808,18 @@ class EspeciesController < ApplicationController
         render :_error and return
       end
     end
-    
-    # seteo pedir el taxon valido ANTES de correr los servicios debido a que debo actualizar el valido en vez del sinonimo
-    @especie = @especie.dame_taxon_valido
+
+    # Intenta obtener el taxón válido, pero conserva el original si no existe
+    taxon_valido = @especie.dame_taxon_valido
+    @especie = taxon_valido if taxon_valido.present?
+
+    Rails.logger.info "ID recibido: #{params[:id]}"
+    Rails.logger.info "Especie encontrada: #{@especie.inspect}"
 
     # Si llego aqui quiere decir que encontro un id en la centralizacion valido
     @especie.servicios if params[:action] == 'show' && params[:format].blank?
 
-    render :_error and return unless @especie
-
-    if params[:action] == 'resultados'  # Mando directo al valido, por si viene de resulados
+    if params[:action] == 'resultados'
       redirect_to especie_path(@especie) and return
     end
   end
