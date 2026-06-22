@@ -19,6 +19,7 @@ class Especie < ActiveRecord::Base
   alias_attribute :cita_nomenclatural, :CitaNomenclatural
   alias_attribute :sist_clas_cat_dicc, :SistClasCatDicc
   alias_attribute :anotacion, :Anotacion
+  alias_attribute :otrasobservaciones, :OtrasObservaciones
   alias_attribute :ancestry_ascendente_directo, :Ascendentes
   alias_attribute :ancestry_ascendente_obligatorio, :AscendentesObligatorios
   alias_attribute :nombre_cientifico, :TaxonCompleto
