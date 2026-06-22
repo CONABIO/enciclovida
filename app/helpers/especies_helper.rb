@@ -9,18 +9,14 @@ module EspeciesHelper
     fichaTecnica << dameEspecieBibliografias(taxon)
     fichaTecnica << dameOtrosAtributos(taxon)
     fichaTecnica << dameNomComunesBiblio(taxon)
-    fichaTecnica << dameAnotacion(taxon)
     fichaTecnica << dameNota(taxon)
     #{distribucion_literatura: dameDistribucionLiteratura(taxon, opc = {})}
     fichaTecnica.compact.flatten
   end
-  def dameAnotacion(taxon)
-    return nil if taxon.anotacion.blank?
-    {nombre_catalogo: "Anotación al taxón",descripciones: [taxon.anotacion]}
-  end
+
   def dameNota(taxon)
     return nil if taxon.otrasobservaciones.blank?
-    { nombre_catalogo: "Nota",descripciones: [taxon.otrasobservaciones]}
+    { nombre_catalogo: "Notas:",descripciones: [taxon.otrasobservaciones]}
   end
 
 #########################################################################################################################################
@@ -51,7 +47,6 @@ module EspeciesHelper
     taxones.each do |taxon|
       nombre = '&nbsp;' + tituloNombreCientifico(taxon, render: 'inline')
       bibliografias = taxon.bibliografias.map(&:cita_completa)
-
       if bibliografias.any?
         biblio_html = "<ul>#{bibliografias.map{ |b| "<li>#{b.gsub("\"","'")}</li>" }.join('')}</ul>"
         nombre << "<a href='' tabindex='0' class='biblio-cat btn btn-link' data-toggle='popover' data-trigger='focus' data-placement='top' title='Bibliografía' data-content=\"#{biblio_html}\" onClick='return false;'><i class='fa fa-book'></i></a>"
@@ -117,7 +112,7 @@ module EspeciesHelper
 # REVISADO: Otros atributos simples del modelo especie
   def dameOtrosAtributos(taxon)
     otros_attr = {'Cita nomenclatural' => 'cita_nomenclatural', 'Fuente de la información' => 'sist_clas_cat_dicc',
-                  'Anotación' => 'anotacion', 'Fecha de ultima modificación' => 'updated_at'}
+                  'Anotación al taxón' => 'anotacion', 'Fecha de ultima modificación' => 'updated_at'}
     lista = []
 
     otros_attr.each do |nom, attr|
