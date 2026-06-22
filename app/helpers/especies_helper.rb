@@ -116,7 +116,7 @@ module EspeciesHelper
 # REVISADO: Otros atributos simples del modelo especie
   def dameOtrosAtributos(taxon)
     otros_attr = {'Cita nomenclatural' => 'cita_nomenclatural', 'Fuente de la información' => 'sist_clas_cat_dicc',
-                  'Anotación' => 'anotacion', 'Fecha de ultima modificación' => 'updated_at'}
+                  'Anotación del taxón' => 'anotacion', 'Fecha de ultima modificación' => 'updated_at'}
     lista = []
 
     otros_attr.each do |nom, attr|
