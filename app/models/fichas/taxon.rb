@@ -60,7 +60,7 @@ class Fichas::Taxon < Ficha
 
 	# Los datos para armar la ficha de la DGCC
 	def dgcc
-		resumen = {}
+		resumen = {} 
 
 		# Descripcion
 		resumen['Descripción'] = descEspecie.a_HTML if descEspecie.present?
@@ -81,6 +81,15 @@ class Fichas::Taxon < Ficha
 				resumen['Vegetación'] << "Algunos tipos de vegetación donde se desarrolla son: #{tipos_vegetacion.join(', ')}."
 			end	
 		end
+
+    # Uso del hábitat
+    if habitat = habitats.first
+      if habitat.uso.present? &&
+        habitat.uso != '<br>' &&
+        !habitat.uso.include?('No Disponible')
+        resumen['Hábitat'] = habitat.uso.a_HTML
+      end
+    end
 		
 		# NOM
 		if nom = especie.catalogos.nom.first
