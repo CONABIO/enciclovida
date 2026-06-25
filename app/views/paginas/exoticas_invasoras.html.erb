@@ -223,19 +223,20 @@ $(document).ready(function() {
 
   <!-- BUSCADOR -->
   <div style="margin: 10px 0;">
-    <div>
-      <label style="display: block; margin-bottom: 5px;">Buscar nombre científico:</label>
+    <div style="background:grey; padding:2em;">
+      <h2 style="display: block; margin-bottom: 5px; color:white;">Busqueda por nombre científico:</h2>
       <div style="position: relative; display: inline-block;">
         <input type="text" id="buscadorCientifico" placeholder="Ej: Canis lupus..."
           value="<%= params[:nombre_cientifico] %>"
-          style="padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px; width: 250px;">
+          style="padding: 6px 12px; border: 1px solid green; border-radius: 50px; width: 500px;" 
+          class="form-control">
         <% if params[:nombre_cientifico].present? %>
           <button onclick="limpiarBusqueda()"
             style="margin-left: 5px; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; background: #f8f9fa; cursor: pointer;">×</button>
         <% end %>
         <div id="sugerencias"></div>
       </div>
-      <div style="font-size: 12px; color: #666; margin-top: 3px;">
+      <div style="font-size: 12px; color: white; margin-top: 3px;">
         Presiona Enter para buscar. Escribe 2+ caracteres para sugerencias.
       </div>
     </div>
