@@ -4,17 +4,19 @@
   </div>
   <div class="card-body">
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-7">
         <h6><strong>Tipo:</strong></h6>
         <%= select_tipo_polinizador %>
       </div>
-      
-      <div class="col-md-3" id="clase_container" style="display: none;">
+    </div>
+    <div class="row">
+      <div class="col-md-7 mt-3" id="clase_container" style="display: none;">
         <h6><strong>Clase:</strong></h6>
         <%= select_clase_polinizador %>
       </div>
-      
-      <div class="col-md-3">
+    </div>
+    <div class= "row">
+      <div class="col-md-3 mt-3">
         <h6><strong>Resultados por página:</strong></h6>
         <select id="por_pagina_polinizadores" class="form-control">
           <option value="10">10</option>
@@ -23,10 +25,11 @@
           <option value="100">100</option>
         </select>
       </div>
-      
-      <div class="col-md-2 d-flex align-items-end">
+    </div>
+    <div class="row">
+      <div class="col-md-3 d-flex align-items-end mt-3">
         <button type="button" class="btn btn-success btn-block" onclick="buscarPolinizadores()">
-          <i class="fa fa-search"></i> 
+          <i class="fa fa-search"></i> Buscar
         </button>
       </div>
     </div>
