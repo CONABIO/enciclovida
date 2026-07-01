@@ -93,6 +93,7 @@ module EspeciesHelper
       descripciones_unicas = items.flat_map { |item| item[:descripciones] }.uniq
       # Usar las observaciones del primer item 
       observaciones = items.first[:observaciones]
+      observaciones = observaciones.gsub("ver Otras observaciones", "ver notas")
 
       # Crear un hash unificado por cada catálogo
       { nombre_catalogo: catalogo, descripciones: descripciones_unicas, observaciones: observaciones }
