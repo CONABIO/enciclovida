@@ -73,7 +73,9 @@ module EspeciesHelper
       valores[:datos].each do |dato|
         biblio = dato[:bibliografias].any? ? "<ul>#{dato[:bibliografias].map{ |b| "<li>#{b}</li>" }.join('')}</ul>" : ''
         biblio_html = creaPopOverBibliografia(biblio) if biblio.present?
-        observaciones = dato[:observaciones] if dato[:observaciones].present?
+        observaciones = dato[:observaciones]
+        observaciones = observaciones&.gsub("ver Otras observaciones", "ver notas")
+        
         dato[:descripciones].each do |l|
           if contador == 0 
             html << "&nbsp;#{l} #{biblio_html}"
@@ -82,7 +84,11 @@ module EspeciesHelper
           end
           contador += 1
         end
-        lista << {nombre_catalogo: valores[:nombre_catalogo], descripciones: [html], observaciones: observaciones}
+        lista << {
+          nombre_catalogo: valores[:nombre_catalogo],
+          descripciones: [html],
+          observaciones: observaciones
+        }
       end
     end
     agrupados = lista.group_by { |item| item[:nombre_catalogo] }
@@ -93,7 +99,7 @@ module EspeciesHelper
       descripciones_unicas = items.flat_map { |item| item[:descripciones] }.uniq
       # Usar las observaciones del primer item 
       observaciones = items.first[:observaciones]
-      Rails.logger.debug items.first[:observaciones].inspect
+
       # Crear un hash unificado por cada catálogo
       { nombre_catalogo: catalogo, descripciones: descripciones_unicas, observaciones: observaciones }
     end
