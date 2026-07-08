@@ -16,8 +16,15 @@ end
 
 def exporta_a_blurrilly
   Rails.logger.debug 'Exportando nombres cientificos ... ' if OPTS[:debug]
-  client_cientifico = Blurrily::Client.new(:host => IP, :db_name => 'nombres_cientificos')
-  client_comun = Blurrily::Client.new(:host => IP, :db_name => 'nombres_comunes')
+  client_cientifico = Blurrily::Client.new(
+  host: ENV.fetch('BLURRILY_HOST', '127.0.0.1'),
+  db_name: 'nombres_cientificos'
+  )
+
+  client_comun = Blurrily::Client.new(
+    host: ENV.fetch('BLURRILY_HOST', '127.0.0.1'),
+    db_name: 'nombres_comunes'
+  )
 
   Especie.find_each do |taxon|
     Rails.logger.debug "#{taxon.id}-#{taxon.nombre_cientifico}"

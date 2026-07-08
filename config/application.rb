@@ -24,8 +24,17 @@ SITE_NAME_SHORT = CONFIG.site_name_short || SITE_NAME
 
 
 require 'blurrily/client.rb'  #para el fuzzy match
-FUZZY_NOM_COM = Blurrily::Client.new(:host => IP, :db_name => 'nombres_comunes')
-FUZZY_NOM_CIEN = Blurrily::Client.new(:host => IP, :db_name => 'nombres_cientificos')
+BLURRILY_HOST = ENV.fetch('BLURRILY_HOST', '127.0.0.1')
+
+FUZZY_NOM_COM = Blurrily::Client.new(
+  host: BLURRILY_HOST,
+  db_name: 'nombres_comunes'
+)
+
+FUZZY_NOM_CIEN = Blurrily::Client.new(
+  host: BLURRILY_HOST,
+  db_name: 'nombres_cientificos'
+)
 
 
 module Buscador
