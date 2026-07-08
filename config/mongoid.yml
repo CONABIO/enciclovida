@@ -164,7 +164,7 @@ production:
     default:
       database: enciclovida_production
       hosts:
-        - 172.18.0.1:27017
+        - mongodb:27017
       options:
         read:
           mode: :primary
