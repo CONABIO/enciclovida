@@ -5,8 +5,12 @@ $(document).ready(function () {
         $.ajax({
             url: "/especies/" + opciones.taxon + "/descripcion?from=" + opciones.cual_ficha,
             method: 'get',
-            success: function (data, status) {
+           success: function (data, status) {
+                console.log("SUCCESS DESCRIPCION", opciones.cual_ficha);
+
                 $('.taxon_description').replaceWith(data);
+
+                console.log($('.biblio-cat').length);
 
                 $('.biblio-cat').popover({
                     html: true
