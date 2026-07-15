@@ -22,11 +22,11 @@ Buscador::Application.routes.draw do
       end
     end
     
-    #resources :bibliografias, except: [:index, :show] do
-    #  collection do
-    #    get :autocompleta
-    #  end
-    # end
+    resources :bibliografias, except: [:index, :show] do
+      collection do
+        get :autocompleta
+      end
+    end
   end
 
   # metamares, alias infoceanos
