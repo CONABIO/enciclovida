@@ -10,6 +10,12 @@ def guarda_redis
       contador += 1
       puts "#{contador} especies indexadas..." if (contador % 1000).zero?
     rescue => e
+      puts "ERROR #{t.id}: #{e.message}"
+      puts "=================================="
+      puts "ESPECIE: #{t.id}"
+      puts "#{e.class}: #{e.message}"
+      puts e.backtrace.first(20)
+      puts "=================================="
       errores += 1
       File.open("errores_reindex.log", "a") do |f|
         f.puts "#{t.id}|#{t.nombre_cientifico}|#{e.class}|#{e.message}"
