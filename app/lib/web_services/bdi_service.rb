@@ -112,6 +112,7 @@ class BDIService
       method: :get,
       url: url_escape,
       headers: { accept: accept },
+      verify_ssl: OpenSSL::SSL::VERIFY_PEER
     )
 
     jres = JSON.parse(res.body)
