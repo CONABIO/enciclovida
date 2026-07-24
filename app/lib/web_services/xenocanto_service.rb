@@ -20,7 +20,11 @@ class XenoCantoService
                 recordings << {msg: "No hay resultados para #{taxon.capitalize.gsub('+', ' ')}"}
             end
         rescue => e
-            [{msg: "Hubo algun error en la solicitud: #{e}. Intente de nuevo más tarde"}]
+          Rails.logger.error e.class
+          Rails.logger.error e.message
+          Rails.logger.error e.backtrace.join("\n")
+
+          [{ msg: "Hubo un error: #{e.class} - #{e.message}" }]
         end
         recordings
     end
