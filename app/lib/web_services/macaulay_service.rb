@@ -12,12 +12,6 @@ class MacaulayService
     begin
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_PEER
-
-      if File.exist?('/etc/ssl/certs/ca-certificates.crt')
-        http.ca_file = '/etc/ssl/certs/ca-certificates.crt'
-      end
-
       res = http.request(req)
 
       if res.body.present?
