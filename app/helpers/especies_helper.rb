@@ -293,31 +293,45 @@ module EspeciesHelper
 
 
   def imprime_media_bdi(item, type)
-    cc = item.license.match('/licenses\/(.*?)\/')
-    copyright = "BDI - CONABIO, <a href='#{item.license}' target='_blank'>#{cc[1].upcase}</a>"
-    ccphoto = "#{item.native_realname}, #{cc[1].upcase}"
+    license = item.license.to_s
+
+    cc = license.match(%r{/licenses/(.*?)/})
+
+    if cc
+      copyright = "BDI - CONABIO, <a href='#{license}' target='_blank'>#{cc[1].upcase}</a>"
+      ccphoto = "#{item.native_realname}, #{cc[1].upcase}"
+    else
+      copyright = "BDI - CONABIO"
+      ccphoto = item.native_realname.to_s
+    end
+
     case type
     when 'photo'
       link_to("<img src='#{item.medium_url}' class='rounded-sm border-light' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
+              "data-toggle" => "modal",
+              "data-target" => "#modal_reproduce",
+              class: "m-1 modal-buttons",
               "data-type" => 'photo',
               "data-copyright" => copyright,
               "data-url" => item.medium_url,
               "data-author" => item.native_realname,
-              "data-locality" =>  "No disponible",
-              "data-observation"=> item.native_page_url,
+              "data-locality" => "No disponible",
+              "data-observation" => item.native_page_url,
               "title" => ccphoto
       )
-    when 'video' # Datos fasos por ahora
+
+    when 'video'
       link_to("<img src='#{item.preview_img}' class='rounded-sm border-light' />".html_safe, '',
-              "data-toggle" => "modal", "data-target" => "#modal_reproduce", :class => "m-1 modal-buttons",
+              "data-toggle" => "modal",
+              "data-target" => "#modal_reproduce",
+              class: "m-1 modal-buttons",
               "data-type" => 'video',
               "data-copyright" => item.licencia.present? ? "<a href='#{item.licencia}' target='_blank'>#{copyright}</a>" : copyright,
-              "data-observation"=> item.href_info,
+              "data-observation" => item.href_info,
               "data-url" => item.url_acces,
               "data-author" => item.autor,
-              "data-locality" =>  item.localidad.present? ? item.localidad : "No disponible",
-              "data-state" =>  item.municipio.present? ? item.municipio : nil
+              "data-locality" => item.localidad.present? ? item.localidad : "No disponible",
+              "data-state" => item.municipio.present? ? item.municipio : nil
       )
     end
   end
