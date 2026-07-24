@@ -18,10 +18,6 @@ class MacaulayService
         http.ca_file = '/etc/ssl/certs/ca-certificates.crt'
       end
 
-      # Recomendado
-      http.open_timeout = 10
-      http.read_timeout = 30
-
       res = http.request(req)
 
       if res.body.present?
