@@ -1,31 +1,44 @@
 class XenoCantoService
-    def obtener_cantos(taxon)
-        taxon_escape = ERB::Util.url_encode(taxon)
-        url = "https://www.xeno-canto.org/api/2/recordings?query=#{taxon_escape}"
-        recordings = []
-        begin
-            resp = RestClient.get url
-            jres = JSON.parse(resp)
+  def obtener_cantos(taxon)
+    recordings = []
 
-            if jres['numRecordings'].to_i > 0 # 
-                i = 0
-                while i < 24
-                    file = jres['recordings'][i]['url']
-                    file = file[2..file.length]
-                    jres['recordings'][i]['url'] = file
-                    recordings.push(jres['recordings'][i])
-                    i+=1
-                end
-            else
-                recordings << {msg: "No hay resultados para #{taxon.capitalize.gsub('+', ' ')}"}
-            end
-        rescue => e
-          Rails.logger.error e.class
-          Rails.logger.error e.message
-          Rails.logger.error e.backtrace.join("\n")
+    begin
+      genero, especie = taxon.to_s.strip.split(/\s+/, 2)
 
-          [{ msg: "Hubo un error: #{e.class} - #{e.message}" }]
+      if genero.blank? || especie.blank?
+        return [{ msg: "Taxón inválido: #{taxon}" }]
+      end
+
+      query = ERB::Util.url_encode("gen:#{genero} sp:#{especie}")
+
+      url = "#{CONFIG.xeno_canto.api}?query=#{query}&key=#{CONFIG.xeno_canto.api_key}"
+
+      resp = RestClient.get(url)
+      jres = JSON.parse(resp.body)
+
+      if jres['numRecordings'].to_i > 0
+        jres['recordings'].first(24).each do |recording|
+          # Utilizar el enlace directo al audio
+          if recording['file'].present?
+            recording['url'] = recording['file']
+          elsif recording['url'].present?
+            recording['url'] = recording['url'].sub(%r{^//}, '')
+          end
+
+          recordings << recording
         end
-        recordings
+      else
+        recordings << { msg: "No hay resultados para #{taxon.capitalize.gsub('+', ' ')}" }
+      end
+
+    rescue => e
+      Rails.logger.error e.class
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace.join("\n")
+
+      recordings << { msg: "Hubo un error: #{e.class} - #{e.message}" }
     end
+
+    recordings
+  end
 end
