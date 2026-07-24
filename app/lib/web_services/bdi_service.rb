@@ -108,11 +108,12 @@ class BDIService
   begin
     url_escape = URI::DEFAULT_PARSER.escape(url)
 
-    res = RestClient::Request.execute(
+   res = RestClient::Request.execute(
       method: :get,
       url: url_escape,
       headers: { accept: accept },
-      verify_ssl: OpenSSL::SSL::VERIFY_PEER
+      verify_ssl: OpenSSL::SSL::VERIFY_PEER,
+      ssl_ca_file: '/etc/ssl/certs/ca-certificates.crt'
     )
 
     jres = JSON.parse(res.body)
