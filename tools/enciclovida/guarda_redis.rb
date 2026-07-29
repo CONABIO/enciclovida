@@ -1,5 +1,5 @@
-# REVISADO: Guarda los nombres comunes y científico en Redis
-def guarda_redis(opc = {})
+# REVISADO: Guarda los nombres comunes y científico en redis
+def guarda_redis(opc={})
   # Determina el loader a utilizar
   loader =
     if opc[:loader].present?
@@ -13,16 +13,18 @@ def guarda_redis(opc = {})
     end
 
   # Los taxones eliminados no deben aparecer en el autocomplete
-  unless EstadoRegistro == 1
+  unless self.EstadoRegistro == 1
     borra_redis(loader)
     borra_fuzzy_match
     return
   end
 
-  # Suma la visita solamente cuando corresponda
+  # Le suma la visita del usuario para que no truene
+  # corriéndolo como un proceso separado
   suma_visita unless opc[:sin_visita]
 
-  # Limpia variables temporales
+  # Pone en nil las variables para guardar los servicios
+  # y no consultarlos de nuevo
   self.x_foto_principal = nil
   self.x_nombre_comun_principal = nil
   self.x_lengua = nil
@@ -36,7 +38,7 @@ def guarda_redis(opc = {})
     FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
   end
 
-  # Borra los registros actuales de Redis
+  # Borra los registros actuales
   borra_redis(loader)
 
   # Guarda el nombre científico
@@ -46,9 +48,15 @@ def guarda_redis(opc = {})
     )
   )
 
-  # Obtiene explícitamente los nombres comunes de los catálogos.
-  # No dependemos de que x_nombres_comunes_todos haya sido llenado
-  # previamente por una visita a la especie.
+  # Obtiene explícitamente los nombres comunes desde los catálogos.
+  #
+  # Antes se recorría x_nombres_comunes_todos, pero arriba esta variable
+  # se inicializa como [], por lo que durante una reindexación masiva
+  # podía no contener ningún nombre común.
+  #
+  # dame_nombres_comunes_catalogos devuelve directamente los nombres
+  # disponibles en los catálogos sin depender de una visita previa
+  # a la especie.
   nombres_comunes = dame_nombres_comunes_catalogos || []
 
   # Guarda los nombres comunes
@@ -58,6 +66,7 @@ def guarda_redis(opc = {})
     lengua = nombres.keys.first
 
     nombres.values.flatten.each do |nombre|
+      # Evita crear entradas vacías
       next if nombre.blank?
 
       num_nombre += 1
@@ -75,7 +84,10 @@ def guarda_redis(opc = {})
         )
       )
 
-      FUZZY_NOM_COM.put(nombre, id_referencia) if opc[:loader].nil?
+      # Actualiza fuzzy match de nombres comunes
+      if opc[:loader].nil?
+        FUZZY_NOM_COM.put(nombre, id_referencia)
+      end
     end
   end
 end
