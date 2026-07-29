@@ -124,17 +124,19 @@ module CacheServices
     Rails.cache.delete("#{recurso}_#{id}")
   end
 
-  # REVISADO: Gurada los nombres comunes y cientifico en redis
-  def guarda_redis(opc={})
-    # Determina el loader a utilizar
-    loader =
-      if opc[:loader].present?
-        Soulmate::Loader.new(opc[:loader])
-      else
-        categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
-        Soulmate::Loader.new(categoria)
-      end
+  # REVISADO: Guarda los nombres comunes y científico en redis
+def guarda_redis(opc={})
+  # Determina el loader a utilizar
+  loader =
+    if opc[:loader].present?
+      Soulmate::Loader.new(opc[:loader])
+    else
+      categoria = I18n.transliterate(
+        categoria_taxonomica.nombre_categoria_taxonomica
+      ).gsub(' ', '_')
 
+      Soulmate::Loader.new(categoria)
+    end
     # Los taxones eliminados no deben aparecer en el autocomplete
     unless self.EstadoRegistro == 1
       borra_redis(loader)
@@ -142,10 +144,10 @@ module CacheServices
       return
     end
 
-    # Le suma la visita del usuario para que no truene corriendolo como un proceso separado
+    # Suma la visita únicamente cuando corresponde
     suma_visita unless opc[:sin_visita]
 
-    # Pone en nil las variables para guardar los servicios y no consultarlos de nuevo
+    # Limpia variables temporales/cacheadas
     self.x_foto_principal = nil
     self.x_nombre_comun_principal = nil
     self.x_lengua = nil
@@ -159,19 +161,32 @@ module CacheServices
       FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
     end
 
-    # Borra los registros actuales
+    # Borra los registros actuales de esta especie
     borra_redis(loader)
 
-    # Guarda el nombre científico
-    loader.add(asigna_redis(opc.merge(consumir_servicios: true)))
+    # Guarda el nombre científico.
+    # consumir_servicios mantiene el comportamiento existente de asigna_redis.
+    loader.add(
+      asigna_redis(
+        opc.merge(consumir_servicios: true)
+      )
+    )
 
-    # Guarda los nombres comunes
+    # IMPORTANTE:
+    # No usamos x_nombres_comunes_todos porque arriba se inicializa como []
+    # y durante una reindexación masiva no necesariamente fue poblado.
+    #
+    # Obtenemos explícitamente los nombres comunes de los catálogos.
+    nombres_comunes = dame_nombres_comunes_catalogos || []
+
     num_nombre = 0
 
-    x_nombres_comunes_todos.each do |nombres|
+    nombres_comunes.each do |nombres|
       lengua = nombres.keys.first
 
       nombres.values.flatten.each do |nombre|
+        next if nombre.blank?
+
         num_nombre += 1
         id_referencia = nombre_comun_a_id_referencia(num_nombre)
 
@@ -181,8 +196,13 @@ module CacheServices
           lengua: lengua
         )
 
-        loader.add(asigna_redis(opc.merge(nombre_comun: nombre_obj)))
+        loader.add(
+          asigna_redis(
+            opc.merge(nombre_comun: nombre_obj)
+          )
+        )
 
+        # Mantiene también el fuzzy match de nombres comunes
         FUZZY_NOM_COM.put(nombre, id_referencia) if opc[:loader].nil?
       end
     end
