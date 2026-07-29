@@ -526,57 +526,86 @@ class EspeciesController < ApplicationController
     render 'especies/descripciones/descripcion_iucn'
   end
 
-  # Descarga los registros de naturalista, snib y en el formato solicitado. Tambien se incluye para el app
-  def consulta_registros
-    if params[:coleccion].present? && params[:formato].present?
-      respond_to do |format|
-        @especie.coleccion = params[:coleccion]
-        @especie.formato = params[:formato]
-        @especie.descarga_registros
+  # Descarga los registros de naturalista, snib y en el formato solicitado.
+# Tambien se incluye para el app
+def consulta_registros
+  if params[:coleccion].present? && params[:formato].present?
+    respond_to do |format|
+      @especie.coleccion = params[:coleccion]
+      @especie.formato = params[:formato]
+      @especie.descarga_registros
 
-        format.json do
-          headers['Access-Control-Allow-Origin'] = '*'
-          headers['Access-Control-Allow-Methods'] = 'GET'
-          headers['Access-Control-Request-Method'] = '*'
-          headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-          
-          if @especie.jres[:estatus]
-            if params[:formato] == 'json'
-              archivo = File.read(@especie.jres[:ruta_archivo])
-              send_data archivo, :filename => @especie.jres[:ruta_archivo].split('/').last
-            elsif params[:formato] == 'mapa-app'
-              render json: @especie.jres[:registros]
-            else
-              render json: { estatus: false, msg: 'Parámetros incorrectos' }
+      format.json do
+        headers['Access-Control-Allow-Origin'] = '*'
+        headers['Access-Control-Allow-Methods'] = 'GET'
+        headers['Access-Control-Request-Method'] = '*'
+        headers['Access-Control-Allow-Headers'] =
+          'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+
+        if @especie.jres[:estatus]
+          if params[:formato] == 'json'
+            archivo = File.read(@especie.jres[:ruta_archivo])
+
+            send_data archivo,
+                      filename: @especie.jres[:ruta_archivo].split('/').last
+
+          elsif params[:formato] == 'mapa-app'
+            registros = @especie.jres[:registros] || []
+            limite = 2000
+
+            # Para la app móvil no enviamos más de 2000 puntos.
+            # Si existen más registros, tomamos una muestra distribuida
+            # a lo largo del conjunto completo.
+            if registros.length > limite
+              paso = registros.length.to_f / limite
+
+              registros = Array.new(limite) do |i|
+                registros[(i * paso).floor]
+              end
             end
-          else
-            render json: @especie.jres
-          end
-        end
 
-        format.kml do
-          if @especie.jres[:estatus]
-            archivo = File.read(@especie.jres[:ruta_archivo])
-            send_data archivo, :filename => @especie.jres[:ruta_archivo].split('/').last
-          else
-            render json: @especie.jres
-          end
-        end
+            render json: registros
 
-        format.kmz do
-          if @especie.jres[:estatus]
-            archivo = File.read(@especie.jres[:ruta_archivo])
-            send_data archivo, :filename => @especie.jres[:ruta_archivo].split('/').last
           else
-            render json: @especie.jres
+            render json: {
+              estatus: false,
+              msg: 'Parámetros incorrectos'
+            }
           end
+        else
+          render json: @especie.jres
         end
+      end
 
-      end  # End respond_to
-    else
-      render json: { estaus: false, msg: 'Parámetros incorrectos' }
+      format.kml do
+        if @especie.jres[:estatus]
+          archivo = File.read(@especie.jres[:ruta_archivo])
+
+          send_data archivo,
+                    filename: @especie.jres[:ruta_archivo].split('/').last
+        else
+          render json: @especie.jres
+        end
+      end
+
+      format.kmz do
+        if @especie.jres[:estatus]
+          archivo = File.read(@especie.jres[:ruta_archivo])
+
+          send_data archivo,
+                    filename: @especie.jres[:ruta_archivo].split('/').last
+        else
+          render json: @especie.jres
+        end
+      end
     end
+  else
+    render json: {
+      estaus: false,
+      msg: 'Parámetros incorrectos'
+    }
   end
+end
 
   # Muestra los comentarios relacionados a la especie, viene de la ficha de la especie
   def comentarios
