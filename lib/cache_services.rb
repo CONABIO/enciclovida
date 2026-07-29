@@ -126,68 +126,67 @@ module CacheServices
 
   # REVISADO: Gurada los nombres comunes y cientifico en redis
   def guarda_redis(opc={})
-  # Determina el loader a utilizar
-  loader =
-    if opc[:loader].present?
-      Soulmate::Loader.new(opc[:loader])
-    else
-      categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
-      Soulmate::Loader.new(categoria)
+    # Determina el loader a utilizar
+    loader =
+      if opc[:loader].present?
+        Soulmate::Loader.new(opc[:loader])
+      else
+        categoria = I18n.transliterate(categoria_taxonomica.nombre_categoria_taxonomica).gsub(' ','_')
+        Soulmate::Loader.new(categoria)
+      end
+
+    # Los taxones eliminados no deben aparecer en el autocomplete
+    unless self.EstadoRegistro == 1
+      borra_redis(loader)
+      borra_fuzzy_match
+      return
     end
 
-  # Los taxones eliminados no deben aparecer en el autocomplete
-  unless self.EstadoRegistro == 1
+    # Le suma la visita del usuario para que no truene corriendolo como un proceso separado
+    suma_visita unless opc[:sin_visita]
+
+    # Pone en nil las variables para guardar los servicios y no consultarlos de nuevo
+    self.x_foto_principal = nil
+    self.x_nombre_comun_principal = nil
+    self.x_lengua = nil
+    self.x_fotos_totales = 0
+    self.x_nombres_comunes = nil
+    self.x_nombres_comunes_todos = []
+
+    # Actualiza fuzzy match para nombres científicos
+    if opc[:loader].nil?
+      borra_fuzzy_match
+      FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
+    end
+
+    # Borra los registros actuales
     borra_redis(loader)
-    borra_fuzzy_match
-    return
-  end
 
-  # Le suma la visita del usuario para que no truene corriendolo como un proceso separado
-  suma_visita unless opc[:sin_visita]
+    # Guarda el nombre científico
+    loader.add(asigna_redis(opc.merge(consumir_servicios: true)))
 
-  # Pone en nil las variables para guardar los servicios y no consultarlos de nuevo
-  self.x_foto_principal = nil
-  self.x_nombre_comun_principal = nil
-  self.x_lengua = nil
-  self.x_fotos_totales = 0
-  self.x_nombres_comunes = nil
-  self.x_nombres_comunes_todos = []
+    # Guarda los nombres comunes
+    num_nombre = 0
 
-  # Actualiza fuzzy match para nombres científicos
-  if opc[:loader].nil?
-    borra_fuzzy_match
-    FUZZY_NOM_CIEN.put(nombre_cientifico.strip, id)
-  end
+    x_nombres_comunes_todos.each do |nombres|
+      lengua = nombres.keys.first
 
-  # Borra los registros actuales
-  borra_redis(loader)
+      nombres.values.flatten.each do |nombre|
+        num_nombre += 1
+        id_referencia = nombre_comun_a_id_referencia(num_nombre)
 
-  # Guarda el nombre científico
-  loader.add(asigna_redis(opc.merge(consumir_servicios: true)))
+        nombre_obj = NombreComun.new(
+          id: id_referencia,
+          nombre_comun: nombre,
+          lengua: lengua
+        )
 
-  # Guarda los nombres comunes
-  num_nombre = 0
+        loader.add(asigna_redis(opc.merge(nombre_comun: nombre_obj)))
 
-  x_nombres_comunes_todos.each do |nombres|
-    lengua = nombres.keys.first
-
-    nombres.values.flatten.each do |nombre|
-      num_nombre += 1
-
-      id_referencia = nombre_comun_a_id_referencia(num_nombre)
-
-      nombre_obj = NombreComun.new(
-        id: id_referencia,
-        nombre_comun: nombre,
-        lengua: lengua
-      )
-
-      loader.add(asigna_redis(opc.merge(nombre_comun: nombre_obj)))
-
-      FUZZY_NOM_COM.put(nombre, id_referencia) if opc[:loader].nil?
+        FUZZY_NOM_COM.put(nombre, id_referencia) if opc[:loader].nil?
+      end
     end
   end
-end
 
   def estadisticas_naturalista_servicio
     # No hacer nada si aún es vigente el caché

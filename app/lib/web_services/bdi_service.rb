@@ -17,7 +17,7 @@ class BDIService
     self.jres              = nil
     self.assets            = []
     self.num_assets        = 0
-  end
+  end 
 
   def dame_fotos
     bdi_rp = CONFIG.enciclovida_url
