@@ -97,7 +97,7 @@ end
     info.each do |mapa, d|
       geoserver_descarga_url = "#{CONFIG.geoserver_descarga_url}/#{d['layers']}.zip"
       geoserver_origen_url = "#{CONFIG.geoserver_origen_url}#{d['layers']}:1"
-      datos = { nombre_cientifico: d['nombre_cientifico'], layers: d['layers'],  anio: d['anio'], autor: d['autor'], styles: d['styles'], bbox: d['bbox'], mapa: mapa }
+      datos = { titulo: d['titulo'], nombre_cientifico: d['nombre_cientifico'], layers: d['layers'],  anio: d['anio'], autor: d['autor'], styles: d['styles'], bbox: d['bbox'], mapa: mapa }
       geoserver_urls << { datos: datos, geoserver_descarga_url: geoserver_descarga_url, geoserver_origen_url: geoserver_origen_url }
     end
 

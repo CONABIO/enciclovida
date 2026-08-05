@@ -46,7 +46,7 @@ var capaDistribucionGeoserver = function () {
 
     geoserver_control.addOverlay(
       window[geo.datos.layers],
-      geo.datos.nombre_cientifico + ", " + geo.datos.autor + " " + geo.datos.anio
+      geo.datos.titulo
     );
   });
 
@@ -59,7 +59,7 @@ var capaDistribucionGeoserver = function () {
 var tituloControlLayerGeoserver = function () {
   $(".leaflet-control-layers:nth-child(1) a").remove();
   $(".leaflet-control-layers:nth-child(1)").prepend(
-    '<div class="text-center m-2"><span class="font-weight-bold mr-2">Mapas de distribución</span><sub>' +
+    '<div class="text-center m-2"><span class="font-weight-bold mr-2">Mapas</span><sub>' +
       opciones.geodatos.geoserver_urls.length +
       "</sub><div>"
   );
