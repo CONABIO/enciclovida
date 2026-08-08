@@ -229,10 +229,14 @@
             this.xhr = null;
             this.suggestions = new SuggestionCollection(renderCallback, selectCallback);
             this.query = new Query(minQueryLength);
-            if ($('ul#soulmate').length > 0) {
-                this.container = $('ul#soulmate');
+            var containerId = "soulmate-" + this.input.attr("id");
+            if ($("#" + containerId).length > 0) {
+                this.container = $("#" + containerId);
             } else {
-                this.container = $('<ul id="soulmate" class="bg-light shadow-sm">').insertAfter(this.input);
+                this.container = $('<ul>', {
+                    id: containerId,
+                    class: "bg-light shadow-sm"
+                }).insertAfter(this.input);
             }
             this.container.delegate('.soulmate-suggestion', {
                 mouseover: function() {

@@ -1,0 +1,89 @@
+<div class="card mt-3">
+  <div class="card-header">
+    Documentos
+  </div>
+  <div class="card-body">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th width="30%">Tipo</th>
+          <th width="60%">Archivo</th>
+          <th width="10%"></th>
+        </tr>
+      </thead>
+      <tbody id="documentos">
+        <%= f.fields_for :documentos do |d| %>
+          <tr>
+            <td>
+              <%= d.collection_select :tipo_documento_id, @tipos_documento, :id, :nombre, { include_blank: true }, class: "form-control" %>
+            </td>
+            <td>
+              <%= d.file_field :archivo, class: "form-control-file" %>
+            </td>
+            <td></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-primary btn-sm" id="agregar-documento">
+      Agregar documento
+    </button>
+    <template id="documento-template">
+      <tr>
+        <td>
+          <select name="exotica_invasora[documentos_attributes][__INDEX__][tipo_documento_id]" class="form-control">
+            <option value=""></option>
+            <% @tipos_documento.each do |tipo| %>
+              <option value="<%= tipo.id %>">
+                <%= tipo.nombre %>
+              </option>
+            <% end %>
+          </select>
+        </td>
+        <td>
+          <input type="file" name="exotica_invasora[documentos_attributes][__INDEX__][archivo]" class="form-control-file">
+        </td>
+        <td class="text-center">
+          <button type="button" class="btn btn-danger btn-sm eliminar-documento">
+          ×
+          </button>
+        </td>
+      </tr>
+    </template>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const boton = document.getElementById("agregar-documento");
+
+  if (!boton) return;
+
+  boton.addEventListener("click", function () {
+
+    const tbody = document.getElementById("documentos");
+
+    const template = document.getElementById("documento-template").innerHTML;
+
+    const indice = tbody.querySelectorAll("tr").length;
+
+    tbody.insertAdjacentHTML(
+      "beforeend",
+      template.replace(/__INDEX__/g, indice)
+    );
+
+  });
+
+  document.addEventListener("click", function (e) {
+
+    if (e.target.classList.contains("eliminar-documento")) {
+
+      e.target.closest("tr").remove();
+
+    }
+
+  });
+
+});
+</script>

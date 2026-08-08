@@ -1,0 +1,135 @@
+<h1>Especies Exóticas Invasoras</h1>
+
+<p>
+  <%= link_to "Nueva especie",
+              new_admin_exotica_invasora_path,
+              class: "btn btn-primary" %>
+</p>
+
+<table class="table table-striped table-hover table-bordered">
+
+  <thead>
+
+    <tr>
+      <th>Foto</th>
+      <th>Nombre científico</th>
+      <th>Grupo</th>
+      <th>Ambiente</th>
+      <th>Origen</th>
+      <th>Presencia</th>
+      <th>Estatus</th>
+      <th>Rutas</th>
+      <th>Instrumentos</th>
+      <th>Créditos</th>
+      <th>Observaciones</th>
+      <th>Análisis de riesgo</th>
+      <th width="180">Acciones</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <% @exoticas.each do |e| %>
+
+      <tr>
+
+        <td class="text-center">
+          <% if e.especie&.adicional&.foto_principal.present? %>
+
+            <%= image_tag e.especie.adicional.foto_principal,
+                          class: "img rounded",
+                          style: "width: 8em" %>
+
+          <% end %>
+        </td>
+
+        <td>
+          <%= e.especie.nombre_cientifico %>
+        </td>
+
+        <td>
+          <%= e.grupo&.nombre %>
+        </td>
+
+        <td>
+          <%= e.ambiente&.nombre %>
+        </td>
+
+        <td>
+          <%= e.origen&.nombre %>
+        </td>
+
+        <td>
+          <%= e.presencia&.nombre %>
+        </td>
+
+        <td>
+          <%= e.estatus&.nombre %>
+        </td>
+
+        <td>
+
+          <% e.catalogos_por_tipo("ruta").each do |ruta| %>
+
+            <span class="badge badge-info">
+              <%= ruta.nombre %>
+            </span>
+            <br>
+
+          <% end %>
+
+        </td>
+
+        <td>
+
+          <% e.catalogos_por_tipo("instrumento").each do |instrumento| %>
+
+            <span class="badge badge-secondary">
+              <%= instrumento.nombre %>
+            </span>
+            <br>
+
+          <% end %>
+
+        </td>
+
+        <td>
+          <%= e.creditos_fotos %>
+        </td>
+
+        <td>
+          <%= truncate(e.observaciones, length: 60) %>
+        </td>
+        <td>
+          <% e.documentos.each do |documento| %>
+            <%= link_to documento.tipo_documento.nombre,
+                        documento.ruta,
+                        target: "_blank",
+                        rel: "noopener",
+                        class: "badge badge-info" %>
+          <% end %>
+        </td>
+        <td>
+
+          <%= link_to "Editar",
+                      edit_admin_exotica_invasora_path(e),
+                      class: "btn btn-sm btn-primary" %>
+
+          <%= link_to "Eliminar",
+                      admin_exotica_invasora_path(e),
+                      method: :delete,
+                      data: {
+                        confirm: "¿Está seguro de eliminar esta especie?"
+                      },
+                      class: "btn btn-sm btn-danger" %>
+
+        </td>
+
+      </tr>
+
+    <% end %>
+
+  </tbody>
+
+</table>

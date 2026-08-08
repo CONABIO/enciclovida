@@ -5,6 +5,10 @@ Buscador::Application.routes.draw do
   # Administracion de los catalogos
   namespace :admin do
 
+    resources :exoticas_invasoras
+    resources :exoticas_catalogos
+    resources :exoticas_documentos
+
     get 'update_maps/upload'
     post 'import_file', to: "update_maps#process_file"
     

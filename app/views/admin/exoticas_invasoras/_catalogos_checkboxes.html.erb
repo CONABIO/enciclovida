@@ -1,0 +1,43 @@
+<% seleccionados = exotica.catalogo_ids_por_tipo(tipo) %>
+
+<div class="card mt-3">
+
+  <div class="card-header">
+    <%= titulo %>
+  </div>
+
+  <div class="card-body">
+
+    <div class="row">
+
+      <% catalogos.each do |catalogo| %>
+
+        <div class="col-md-4 mb-2">
+
+          <div class="form-check">
+
+            <%= check_box_tag(
+                  "exotica_invasora[#{tipo}_ids][]",
+                  catalogo.id,
+                  seleccionados.include?(catalogo.id),
+                  id: "#{tipo}_#{catalogo.id}",
+                  class: "form-check-input"
+                ) %>
+
+            <%= label_tag(
+                  "#{tipo}_#{catalogo.id}",
+                  catalogo.nombre,
+                  class: "form-check-label"
+                ) %>
+
+          </div>
+
+        </div>
+
+      <% end %>
+
+    </div>
+
+  </div>
+
+</div>

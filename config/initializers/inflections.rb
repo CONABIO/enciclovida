@@ -32,4 +32,8 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'especie_catalogo', 'especies_catalogos'
   inflect.irregular 'api', 'api'
   inflect.irregular 'descripcion', 'descripciones'
+  inflect.irregular 'exotica_invasora', 'exoticas_invasoras'
+  inflect.irregular 'exotica_catalogo', 'exoticas_catalogos'
+  inflect.irregular 'exotica_documento', 'exoticas_documentos'
+  inflect.irregular 'exotica_invasora_catalogo', 'exoticas_invasoras_catalogos'
 end
