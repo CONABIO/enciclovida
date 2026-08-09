@@ -1,13 +1,12 @@
 var Hapi = require("hapi");
 const Joi = require("joi");
-_ = require("lodash");
 const query = require("./controller/query.js");
 
 var server = new Hapi.Server({
   connections: {
     routes: {
       timeout: {
-        server: 1000 * 60 * 10,
+        server: 1000 * 30,
         socket: false,
       },
       cors: true,
@@ -79,11 +78,12 @@ server.register(
           },
         },
         handler: function (request, reply) {
-          var url =
-            SERVER +
-            "/busquedas/resultados.json?busqueda=basica&nombre=" +
-            request.params.q;
-          query.ajaxRequest(url, reply);
+          const url = new URL(
+            `${SERVER}/busquedas/resultados.json?busqueda=basica'`
+          );
+          url.searchParams.set("nombre", req.params.q);
+
+          query.ajaxRequest(url.toString(), reply);
         },
       },
     });
@@ -101,25 +101,14 @@ server.register(
             id: Joi.number()
               .integer()
               .description("El identificador de la especie"),
-            cat: Joi.string()
-              .default("7100")
+            cat: Joi.number()
+              .integer()
+              .default(7100)
               .valid([
-                "1100",
-                "2100",
-                "3100",
-                "4100",
-                "5100",
-                "6100",
-                "7100",
-                "1000",
-                "2000",
-                "3000",
-                "4000",
-                "5000",
-                "6000",
-                "7000",
+                1100, 2100, 3100, 4100, 5100, 6100, 7100, 1000, 2000, 3000,
+                4000, 5000, 6000, 7000,
               ])
-              .description("Solo taxones con la categoria taxonómica ..."),
+              .description("Solo taxones con la categoria taxonómica"),
             nivel: Joi.string()
               .default("=")
               .valid(["=", ">=", ">", "<=", "<"])
@@ -127,7 +116,9 @@ server.register(
             edo_cons: Joi.array().description(
               "La categoría de riesgo,<br />NOM: 17,15,14,16<br />IUCN: 29,28,27,26,25<br />CITES: 22,23,24"
             ),
-            dist: Joi.array().description("El tipo de distribución: 3,7,10,6"),
+            dist: Joi.array()
+              .items(Joi.number().integer())
+              .description("El tipo de distribución: 3,7,10,6"),
             prior: Joi.array().description(
               "Valor de la especie, proiritaria para la conservación: 1033,1034,1035"
             ),
@@ -135,51 +126,54 @@ server.register(
               .integer()
               .default(1)
               .description("El número de pagina"),
-            por_pagina: Joi.string()
-              .default("50")
-              .valid(["50", "100", "200", "500", "1000"])
+            por_pagina: Joi.number()
+              .integer()
+              .default(50)
+              .valid([50, 100, 200, 500, 1000])
               .description("Los resultados por pagina"),
           },
         },
         handler: function (request, reply) {
-          var url =
-            SERVER +
-            "/busquedas/resultados.json?busqueda=avanzada&por_pagina=50&commit=Buscar";
-          var req = request.query;
+          const url = new URL(
+            `${SERVER}/busquedas/resultados.json?busqueda=avanzada&commit=Buscar`
+          );
 
-          if (req.id !== undefined) {
-            url += "&id=" + req.id;
-            if (req.cat !== undefined && req.nivel !== undefined)
-              url += "&cat=" + req.cat + "&nivel=" + req.nivel;
-          } else if (req.cat !== undefined && req.nivel !== undefined) {
-            url += "&cat=" + req.cat + "&nivel=" + req.nivel;
-          } else {
-            if (req.nombre !== undefined) url += "&nombre=" + req.nombre;
+          const {
+            id,
+            cat,
+            nivel,
+            nombre,
+            edo_cons,
+            dist,
+            prior,
+            pagina,
+            por_pagina,
+          } = request.query;
+
+          url.searchParams.set("por_pagina", por_pagina.por_pagina ?? 50);
+
+          if (id || (cat && nivel)) {
+            if (id) url.searchParams.set("id", id);
+
+            if (cat && nivel) {
+              url.searchParams.set("cat", cat);
+              url.searchParams.set("nivel", nivel);
+            }
+          } else if (nombre) {
+            url.searchParams.set("nombre", nombre);
           }
 
-          if (req.edo_cons !== undefined) {
-            _.forEach(req.edo_cons, function (value) {
-              url += "&edo_cons[]=" + value;
-            });
-          }
+          edo_cons?.forEach((edoItem) =>
+            url.searchParams.set("edo_cons[]", edoItem)
+          );
+          dist?.forEach((distItem) => url.searchParams.set("dist[]", distItem));
+          prior?.forEach((priorItem) =>
+            url.searchParams.set("prior[]", priorItem)
+          );
 
-          if (req.dist !== undefined) {
-            _.forEach(req.dist, function (value) {
-              url += "&dist[]=" + value;
-            });
-          }
+          if (pagina) url.searchParams.set("pagina", pagina);
 
-          if (req.prior !== undefined) {
-            _.forEach(req.prior, function (value) {
-              url += "&prior[]=" + value;
-            });
-          }
-
-          if (req.pagina !== undefined) url += "&pagina=" + req.pagina;
-          if (req.por_pagina !== undefined)
-            url += "&por_pagina=" + req.por_pagina;
-
-          query.ajaxRequest(url, reply);
+          query.ajaxRequest(url.toString(), reply);
         },
       },
     });
@@ -196,7 +190,7 @@ server.register(
             especie_id: Joi.number()
               .integer()
               .description(
-                "El identificador de la especie, si tambien se anota el grupo taxónomico, este id tiene presedencia"
+                "El identificador de la especie, si tambien se anota el grupo taxónomico, este id tiene precedencia"
               ),
             region_id: Joi.number()
               .integer()
@@ -212,7 +206,9 @@ server.register(
             edo_cons: Joi.array().description(
               "La categoría de riesgo,<br />NOM: 17,15,14,16<br />IUCN: 29,28,27,26,25<br />CITES: 22,23,24"
             ),
-            dist: Joi.array().description("El tipo de distribución: 3,7,10,6"),
+            dist: Joi.array()
+              .items(Joi.number().integer())
+              .description("El tipo de distribución: 3,7,10,6"),
             uso: Joi.array().description(
               "El uso: 11-4-0-0-0-0-0, 11-16-0-0-0-0-0, 11-5-0-0-0-0-0, 11-40-1-0-0-0-0, 11-40-2-0-0-0-0, 11-8-0-0-0-0-0, 11-9-0-0-0-0-0, 11-10-0-0-0-0-0, 11-11-0-0-0-0-0, 11-13-0-0-0-0-0, 11-15-0-0-0-0-0, 11-14-0-0-0-0-0"
             ),
@@ -226,36 +222,31 @@ server.register(
           },
         },
         handler: function (request, reply) {
-          var url = SERVER + "/explora-por-region/especies.json?";
-          var req = request.query;
+          const url = new URL(`${SERVER}/explora-por-region/especies.json`);
 
-          if (req.pagina !== undefined) url += "&pagina=" + req.pagina;
-          else url += "&pagina=1";
+          const {
+            pagina,
+            especie_id,
+            region_id,
+            tipo_region,
+            grupo,
+            edo_cons,
+            dist,
+          } = request.query;
 
-          if (req.especie_id !== undefined)
-            url += "&especie_id=" + req.especie_id;
+          url.searchParams.set("pagina", pagina ?? 1);
 
-          if (req.region_id !== undefined) url += "&region_id=" + req.region_id;
+          if (especie_id) url.searchParams.set("especie_id", especie_id);
+          if (grupo && especie_id) url.searchParams.set("grupo", grupo);
+          if (region_id) url.searchParams.set("region_id", region_id);
+          if (tipo_region) url.searchParams.set("tipo_region", tipo_region);
 
-          if (req.tipo_region !== undefined)
-            url += "&tipo_region=" + req.tipo_region;
+          edo_cons?.forEach((edoItem) =>
+            url.searchParams.set("edo_cons[]", edoItem)
+          );
+          dist?.forEach((distItem) => url.searchParams.set("dist[]", distItem));
 
-          if (req.grupo !== undefined && req.especie_id === undefined)
-            url += "&especie_id=" + req.grupo;
-
-          if (req.edo_cons !== undefined) {
-            _.forEach(req.edo_cons, function (value) {
-              url += "&edo_cons[]=" + value;
-            });
-          }
-
-          if (req.dist !== undefined) {
-            _.forEach(req.dist, function (value) {
-              url += "&dist[]=" + value;
-            });
-          }
-
-          query.ajaxRequest(url, reply);
+          query.ajaxRequest(url.toString(), reply);
         },
       },
     });
@@ -284,18 +275,15 @@ server.register(
           },
         },
         handler: function (request, reply) {
-          var url = SERVER + "/explora-por-region/ejemplares?";
-          var req = request.query;
+          const url = new URL(`${SERVER}/explora-por-region/ejemplares`);
 
-          if (req.catalogo_id !== undefined)
-            url += "catalogo_id=" + req.catalogo_id;
+          const { catalogo_id, region_id, tipo_region } = request.query;
 
-          if (req.region_id !== undefined) url += "&region_id=" + req.region_id;
+          if (catalogo_id) url.searchParams.set("catalogo_id", catalogo_id);
+          if (region_id) url.searchParams.set("region_id", region_id);
+          if (tipo_region) url.searchParams.set("tipo_region", tipo_region);
 
-          if (req.tipo_region !== undefined)
-            url += "&tipo_region=" + req.tipo_region;
-
-          query.ajaxRequest(url, reply);
+          query.ajaxRequest(url.toString(), reply);
         },
       },
     });
@@ -314,9 +302,9 @@ server.register(
           },
         },
         handler: function (request, reply) {
-          var url =
-            SERVER + "/especies/" + request.params.id + ".json";
-          query.ajaxRequest(url, reply);
+          const url = new URL(`${SERVER}/especies/${request.params.id}.json`);
+
+          query.ajaxRequest(url.toString(), reply);
         },
       },
     });
@@ -334,11 +322,11 @@ server.register(
           },
         },
         handler: function (request, reply) {
-          var url =
-            SERVER + "/explora-por-clasificacion.json?especie_id=" +
-            request.params.id +
-            "/arbol_nodo_inicial";
-          query.ajaxRequest(url, reply);
+          const url = new URL(
+            `${SERVER}/explora-por-clasificacion.json?especie_id=${request.params.id}`
+          );
+
+          query.ajaxRequest(url.toString(), reply);
         },
       },
     });
@@ -356,12 +344,11 @@ server.register(
           },
         },
         handler: function (request, reply) {
-          var url =
-            SERVER + "/especies/" +
-            request.params.id +
-            "/resumen-wikipedia";
-          console.log(url)
-          query.ajaxRequest(url, reply);
+          const url = new URL(
+            `${SERVER}/especies/${request.params.id}/resumen-wikipedia`
+          );
+
+          query.ajaxRequest(url.toString(), reply);
         },
       },
     });
@@ -379,11 +366,12 @@ server.register(
           },
         },
         handler: function (request, reply) {
-          var url =
-            SERVER + "/sm/search?term=" +
-            request.params.q +
+          const defaultQueryParams =
             "&types%5B%5D=especie&types%5B%5D=subespecie&types%5B%5D=variedad&types%5B%5D=subvariedad&types%5B%5D=forma&types%5B%5D=subforma&types%5B%5D=Reino&types%5B%5D=subreino&types%5B%5D=superphylum&types%5B%5D=division&types%5B%5D=subdivision&types%5B%5D=phylum&types%5B%5D=subphylum&types%5B%5D=superclase&types%5B%5D=grado&types%5B%5D=clase&types%5B%5D=subclase&types%5B%5D=infraclase&types%5B%5D=superorden&types%5B%5D=orden&types%5B%5D=suborden&types%5B%5D=infraorden&types%5B%5D=superfamilia&types%5B%5D=familia&types%5B%5D=subfamilia&types%5B%5D=supertribu&types%5B%5D=tribu&types%5B%5D=subtribu&types%5B%5D=genero&types%5B%5D=subgenero&types%5B%5D=seccion&types%5B%5D=subseccion&types%5B%5D=serie&types%5B%5D=subserie&limit=5";
-          query.ajaxRequest(url, reply);
+          const url = new URL(`${SERVER}/sm/search?${defaultQueryParams}`);
+          url.searchParams.set("term", request.params.q);
+
+          query.ajaxRequest(url.toString(), reply);
         },
       },
     });
@@ -401,10 +389,11 @@ server.register(
           },
         },
         handler: function (request, reply) {
-          var url =
-            SERVER + "/explora-por-region/ejemplar?ejemplar_id=" +
-            request.params.id;
-          query.ajaxRequest(url, reply);
+          const url = new URL(
+            `${SERVER}/explora-por-region/ejemplar?ejemplar_id=${request.params.id}`
+          );
+
+          query.ajaxRequest(url.toString(), reply);
         },
       },
     });
@@ -452,8 +441,8 @@ server.register(
           });
         },
       },
-    });    
-    
+    });
+
     server.start(function () {
       console.log("started on " + SERVER);
     });
