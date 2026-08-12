@@ -1,6 +1,7 @@
 <%= form_for([:admin, @exotica], html: { multipart: true }) do |f| %>
   <div class="form-group">
-    <%= text_field_tag :nombre_cientifico, @exotica.especie&.nombre_cientifico, id: "nombre_cientifico", class: "form-control", placeholder: "Buscar especie" %>
+    <%= text_field_tag :nombre_cientifico, @exotica.especie&.nombre_cientifico, id: "exotica_nombre_cientifico", class: "form-control", placeholder: "Buscar especie" %>
+    <ul id="soulmate-exoticas" class="bg-light shadow-sm"></ul>
     <%= f.hidden_field :especie_id %>
   </div>
   
