@@ -313,10 +313,10 @@ class Geoportal::Snib < GeoportalAbs
   end
 
   # REVISADO: Comprime el kml a kmz
-  def kmz(ruta)
-    archvo_zip = "#{ruta}.zip"
-    system "zip -j #{archvo_zip} #{ruta}.kml"
-    File.rename(archvo_zip, "#{ruta}.kmz")
+ def kmz(ruta)
+    archivo_kmz = "#{ruta}.kmz"
+    Zip::File.open(archivo_kmz, Zip::File::CREATE) do |zipfile|
+      zipfile.add(File.basename("#{ruta}.kml"), "#{ruta}.kml")
+    end
   end
-
 end
