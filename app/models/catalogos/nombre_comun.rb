@@ -13,7 +13,7 @@ class NombreComun < ActiveRecord::Base
   has_many :bibliografias, :through => :nombres_regiones_bibliografias, :source => :bibliografia
 
   has_many :nombres_regiones, :class_name => 'NombreRegion'
-  has_many :especies, :through => :nombres_regiones, :class_name => 'Especie', :foreign_key => Especie.attribute_alias(:id)
+  has_many :especies, :through => :nombres_regiones, :source => :especie
 
   scope :caso_insensitivo, ->(columna, valor) { where("LOWER(#{columna}) LIKE LOWER('%#{valor}%')") }
   scope :caso_empieza_con, ->(columna, valor) { where("#{columna} LIKE '#{valor}%'") }

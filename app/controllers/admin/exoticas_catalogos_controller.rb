@@ -1,11 +1,12 @@
 class Admin::ExoticasCatalogosController < Admin::AdminController
-
+   before_action :set_tipo_catalogo, only:[:new,:edit]
   def index
     @catalogos = ExoticaCatalogo.order(:tipo, :orden, :nombre)
   end
 
   def new
     @catalogo = ExoticaCatalogo.new
+    @nuevo_tipo = params[:tipo] == "nuevo"
   end
 
   def create
@@ -43,6 +44,10 @@ class Admin::ExoticasCatalogosController < Admin::AdminController
   end
 
   private
+
+  def set_tipo_catalogo
+    @tipos_catalogo = ExoticaCatalogo.distinct.order(:tipo).pluck(:tipo)
+  end
 
   def catalogo_params
     params.require(:exotica_catalogo).permit(

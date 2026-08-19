@@ -1,6 +1,7 @@
 <h1>Catálogos de Especies Exóticas Invasoras</h1>
 <p>
-  <%= link_to "Nuevo catálogo", new_admin_exotica_catalogo_path, class: "btn btn-primary" %>
+  <%= link_to "Nuevo catálogo", new_admin_exotica_catalogo_path(tipo: "nuevo"), class: "btn btn-primary" %>
+  <%= link_to "Agregar opción a catálogo", new_admin_exotica_catalogo_path(tipo: "existente"), class: "btn btn-secondary" %>
   <%= link_to "Regresar a especies", admin_exoticas_invasoras_path, class: "btn btn-secondary" %>
 </p>
 <% @catalogos.group_by(&:tipo).each do |tipo, catalogos| %>
