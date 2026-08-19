@@ -95,17 +95,18 @@ class Validacion
         return
 
       else  # Lo buscamos con el fuzzy match y despues con el algoritmo levenshtein
-        Rails.logger.debug "Tratando de encontrar concidencias con el fuzzy match"
-
+        Rails.logger.info "FUZZY: buscando #{nombre_cientifico.inspect}"    
         ids = FUZZY_NOM_CIEN.find(nombre_cientifico.limpia, limit=CONFIG.limit_fuzzy).map{ |t| t.first}
-        
+        Rails.logger.info "FUZZY: ids encontrados #{ids.inspect}"
         if ids.present?
           taxones = Especie.solo_publicos.where(id: ids)
           taxones_con_distancia = []
-
+          Rails.logger.info "FUZZY: taxones encontrados #{taxones.map { |t| [t.id, t.nombre_cientifico] }.inspect}"
           taxones.each do |taxon|
             # Si la distancia entre palabras es menor a 3 que muestre la sugerencia
             distancia = Levenshtein.distance(nombre_cientifico.limpia.downcase, taxon.nombre_cientifico.limpia.downcase)
+            Rails.logger.info "FUZZY: #{nombre_cientifico.inspect} -> #{taxon.nombre_cientifico.inspect} distancia=#{distancia}"
+
             next if distancia > 2  # No cumple con la distancia
             taxones_con_distancia << taxon
           end
