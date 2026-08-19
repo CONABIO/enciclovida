@@ -4,7 +4,8 @@ class Admin::ExoticasInvasorasController < Admin::AdminController
   before_action :set_exotica, only: [:edit, :update, :destroy]
 
   def index
-    @exoticas = ExoticaInvasora.includes(:especie, :grupo, :ambiente, :origen, :presencia, :estatus, :catalogos ).order(created_at: :desc)
+    @exoticas = ExoticaInvasora.includes(:especie, :catalogos, :documentos).order(created_at: :desc)
+    @catalogos = ExoticaCatalogo.activos.where.not(tipo: "tipo_documento").group_by(&:tipo) 
   end
 
  def new
@@ -46,32 +47,19 @@ end
   end
 
   def guardar_catalogos
-    @exotica.guardar_catalogos( "ruta", params.dig(:exotica_invasora, :ruta_ids))
-    @exotica.guardar_catalogos( "instrumento", params.dig(:exotica_invasora, :instrumento_ids))
+    @catalogos.each_key do |tipo|
+      ids = params.dig(:exotica_invasora, "#{tipo}_ids")
+      @exotica.guardar_catalogos(tipo, ids)
+    end
   end
 
   def carga_catalogos
-    @grupos        = ExoticaCatalogo.grupos
-    @ambientes     = ExoticaCatalogo.ambientes
-    @origenes      = ExoticaCatalogo.origenes
-    @presencias    = ExoticaCatalogo.presencias
-    @estatuses     = ExoticaCatalogo.estatuses
-    @rutas         = ExoticaCatalogo.rutas
-    @instrumentos  = ExoticaCatalogo.instrumentos
+    @catalogos = ExoticaCatalogo.activos.where.not(tipo: "tipo_documento").group_by(&:tipo)
     @tipos_documento = ExoticaCatalogo.tipos_documento
   end
 
   def exotica_params
-    params.require(:exotica_invasora).permit(
-      :especie_id,
-      :grupo_id,
-      :ambiente_id,
-      :origen_id,
-      :presencia_id,
-      :estatus_id,
-      :creditos_fotos,
-      :observaciones,
-
+    params.require(:exotica_invasora).permit(:especie_id, :creditos_fotos, :observaciones,
       documentos_attributes: [
         :id,
         :tipo_documento_id,

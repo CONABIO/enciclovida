@@ -1,0 +1,52 @@
+<h1>Catálogos de Especies Exóticas Invasoras</h1>
+<p>
+  <%= link_to "Nuevo catálogo", new_admin_exotica_catalogo_path, class: "btn btn-primary" %>
+  <%= link_to "Regresar a especies", admin_exoticas_invasoras_path, class: "btn btn-secondary" %>
+</p>
+<% @catalogos.group_by(&:tipo).each do |tipo, catalogos| %>
+  <div class="card mt-4">
+    <div class="card-header">
+      <h4 class="mb-0">
+        <%= tipo.humanize %>
+      </h4>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>Clave</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Orden</th>
+            <th>Activo</th>
+            <th width="180">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% catalogos.each do |catalogo| %>
+            <tr>
+              <td> <%= catalogo.clave %> </td>
+              <td> <%= catalogo.nombre %> </td>
+              <td> <%= catalogo.descripcion %> </td>
+              <td> <%= catalogo.orden %> </td>
+              <td> 
+                <% if catalogo.activo? %>
+                  <span class="badge badge-success">
+                    Sí
+                  </span>
+                <% else %>
+                  <span class="badge badge-secondary">
+                    No
+                  </span>
+                <% end %>
+              </td>
+              <td><%= link_to "Editar", edit_admin_exotica_catalogo_path(catalogo), class: "btn btn-sm btn-primary" %>
+                <%= link_to "Eliminar", admin_exotica_catalogo_path(catalogo), method: :delete, data: { confirm: "¿Está seguro de eliminar este catálogo?" }, class: "btn btn-sm btn-danger" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>

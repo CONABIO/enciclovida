@@ -1,0 +1,118 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="mb-0">Información del catálogo</h4>
+  </div>
+
+  <div class="card-body">
+
+    <%= form_for([:admin, @catalogo]) do |f| %>
+
+      <% if @catalogo.errors.any? %>
+        <div class="alert alert-danger">
+          <strong>No se pudo guardar el catálogo:</strong>
+
+          <ul class="mb-0">
+            <% @catalogo.errors.full_messages.each do |mensaje| %>
+              <li><%= mensaje %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-row">
+
+        <div class="form-group col-md-6">
+          <%= f.label :tipo, "Tipo" %>
+
+          <%= f.text_field :tipo,
+                           class: "form-control",
+                           placeholder: "Ej. ambiente, grupo, impacto..." %>
+
+          <small class="form-text text-muted">
+            Define el grupo al que pertenecerá este catálogo.
+          </small>
+        </div>
+
+        <div class="form-group col-md-6">
+          <%= f.label :clave, "Clave" %>
+
+          <%= f.text_field :clave,
+                           class: "form-control",
+                           placeholder: "Ej. terrestre" %>
+
+          <small class="form-text text-muted">
+            Identificador único dentro del tipo.
+          </small>
+        </div>
+
+      </div>
+
+      <div class="form-group">
+        <%= f.label :nombre, "Nombre" %>
+
+        <%= f.text_field :nombre,
+                         class: "form-control",
+                         placeholder: "Ej. Terrestre" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :descripcion, "Descripción" %>
+
+        <%= f.text_area :descripcion,
+                        rows: 4,
+                        class: "form-control",
+                        placeholder: "Descripción opcional del catálogo..." %>
+      </div>
+
+      <div class="form-row">
+
+        <div class="form-group col-md-6">
+          <%= f.label :orden, "Orden" %>
+
+          <%= f.number_field :orden,
+                             class: "form-control",
+                             min: 0 %>
+
+          <small class="form-text text-muted">
+            Define el orden en que aparecerá dentro de su tipo.
+          </small>
+        </div>
+
+        <div class="form-group col-md-6">
+
+          <label>Estado</label>
+
+          <div class="form-check mt-2">
+            <%= f.check_box :activo,
+                            class: "form-check-input" %>
+
+            <%= f.label :activo,
+                        "Catálogo activo",
+                        class: "form-check-label" %>
+          </div>
+
+          <small class="form-text text-muted">
+            Los catálogos inactivos no aparecerán en los formularios.
+          </small>
+
+        </div>
+
+      </div>
+
+      <hr>
+
+      <div class="d-flex justify-content-between">
+
+        <%= link_to "Cancelar",
+                    admin_exoticas_catalogos_path,
+                    class: "btn btn-secondary" %>
+
+        <%= f.submit "Guardar catálogo",
+                     class: "btn btn-success" %>
+
+      </div>
+
+    <% end %>
+
+  </div>
+</div>

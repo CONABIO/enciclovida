@@ -54,8 +54,7 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-
+$(document).on("turbolinks:load", function () {
   const boton = document.getElementById("agregar-documento");
 
   if (!boton) return;

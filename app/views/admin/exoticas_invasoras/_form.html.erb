@@ -1,50 +1,18 @@
 <%= form_for([:admin, @exotica], html: { multipart: true }) do |f| %>
+
   <div class="form-group">
     <%= text_field_tag :nombre_cientifico, @exotica.especie&.nombre_cientifico, id: "exotica_nombre_cientifico", class: "form-control", placeholder: "Buscar especie" %>
     <ul id="soulmate-exoticas" class="bg-light shadow-sm"></ul>
     <%= f.hidden_field :especie_id %>
   </div>
-  
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <%= f.label :grupo_id %>
-      <%= f.collection_select :grupo_id, @grupos, :id, :nombre, { include_blank: true }, class: "form-control" %>
-    </div>
-  
-    <div class="form-group col-md-6">
-      <%= f.label :ambiente_id %>
-      <%= f.collection_select :ambiente_id, @ambientes, :id, :nombre, { include_blank: true }, class: "form-control" %>
-    </div>
-  </div>
-
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <%= f.label :origen_id %>
-      <%= f.collection_select :origen_id, @origenes, :id, :nombre, { include_blank: true }, class: "form-control" %>
-    </div>
-
-    <div class="form-group col-md-6">
-      <%= f.label :presencia_id %>
-      <%= f.collection_select :presencia_id, @presencias, :id, :nombre, { include_blank: true }, class: "form-control" %>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :estatus_id %>
-    <%= f.collection_select :estatus_id, @estatuses, :id, :nombre, { include_blank: true }, class: "form-control" %>
-  </div>
-
-  <div class="form-group">
+  <% @catalogos.each do |tipo, catalogos| %>
+    <%= render "catalogos_checkboxes", titulo: tipo.humanize, tipo: tipo, catalogos: catalogos, exotica: @exotica %>
+  <% end %>
+  <div class="form-group mt-3">
     <%= f.label :observaciones %>
     <%= f.text_area :observaciones, rows: 4, class: "form-control" %>
   </div>
-  
-  <%= render "catalogos_checkboxes", titulo: "Rutas de introducción", tipo: "ruta", catalogos: @rutas, exotica: @exotica %>
-  <%= render "catalogos_checkboxes", titulo: "Instrumentos legales", tipo: "instrumento", catalogos: @instrumentos, exotica: @exotica %>
-  
   <%= render "documentos", f: f %>
-  
   <%= link_to "Cancelar", admin_exoticas_invasoras_path, class: "btn btn-secondary" %>
   <%= f.submit "Guardar", class: "btn btn-success" %>
-
 <% end %>

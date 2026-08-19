@@ -116,7 +116,7 @@ function soulmateExoticas() {
 
         var data = resultado.data;
 
-        $("#exotica_especie_id").val(data.id);
+        $("#exotica_invasora_especie_id").val(data.id);
 
         input.val(data.nombre_cientifico);
 

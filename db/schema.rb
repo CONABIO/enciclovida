@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20260805193206) do
+ActiveRecord::Schema.define(version: 20260819185046) do
 
   create_table "EliminarMapaDistribucion", id: false, force: :cascade, options: "ENGINE=Aria DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci PAGE_CHECKSUM=1" do |t|
     t.integer "IdNombre", default: 0, null: false, comment: "Identificador único del taxón  (asignación de un número consecutivo para cada registro adicionado)."
@@ -228,21 +228,11 @@ ActiveRecord::Schema.define(version: 20260805193206) do
 
   create_table "exoticas_invasoras", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.integer "especie_id", null: false
-    t.integer "grupo_id"
-    t.integer "ambiente_id"
-    t.integer "origen_id"
-    t.integer "presencia_id"
-    t.integer "estatus_id"
     t.string "creditos_fotos"
     t.text "observaciones"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["ambiente_id"], name: "index_exoticas_invasoras_on_ambiente_id"
     t.index ["especie_id"], name: "index_exoticas_invasoras_on_especie_id", unique: true
-    t.index ["estatus_id"], name: "index_exoticas_invasoras_on_estatus_id"
-    t.index ["grupo_id"], name: "index_exoticas_invasoras_on_grupo_id"
-    t.index ["origen_id"], name: "index_exoticas_invasoras_on_origen_id"
-    t.index ["presencia_id"], name: "index_exoticas_invasoras_on_presencia_id"
   end
 
   create_table "exoticas_invasoras_catalogos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
