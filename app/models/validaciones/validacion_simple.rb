@@ -37,7 +37,7 @@ class ValidacionSimple < Validacion
     return {estatus: false, msg: 'Solo pueden ser 200 observaciones para validar en el área de texto, si requieres validar más por favor sube un archivo.'} if lista.length > 200
 
     lista.each do |nombre|
-      self.nombre_cientifico = nombre
+      self.nombre_cientifico = nombre.strip
       encuentra_por_nombre
       quita_sinonimos_coincidencias if validacion[:taxones].present?
       taxon_estatus
