@@ -454,12 +454,15 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
   # REVISADO: Devuelve todas las fotos de diferentes proveedores  en diferentes formatos
   def dame_fotos_todas
+
+    self.x_fotos_totales = 0
+
     # Fotos de naturalista
     if p = proveedor
       p.fotos_naturalista
       self.jres = p.jres
 
-      if jres[:estatus]
+      if jres[:estatus] && jres[:fotos].present?
         self.x_fotos_totales = jres[:fotos].count
 
         if jres[:fotos].count > 0
@@ -471,7 +474,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
     # Fotos de bdi
     bdi = fotos_bdi
-    self.x_fotos_totales+= bdi.num_assets
+    self.x_fotos_totales += bdi.num_assets
   end
 
   # REVISADO: regresa todos los nombres comunes de catalogos
