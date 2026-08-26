@@ -67,33 +67,58 @@
 
       <% if @pagina > 1 %>
         <li class="page-item">
-          <%= link_to "Anterior",
+          <%= link_to "«",
               admin_exoticas_invasoras_path(pagina: @pagina - 1),
               class: "page-link" %>
         </li>
-      <% else %>
-        <li class="page-item disabled">
-          <span class="page-link">Anterior</span>
-        </li>
       <% end %>
 
-      <% (1..@paginas).each do |pagina| %>
-        <li class="page-item <%= 'active' if pagina == @pagina %>">
-          <%= link_to pagina,
-              admin_exoticas_invasoras_path(pagina: pagina),
-              class: "page-link" %>
-        </li>
+      <% paginas_a_mostrar = [] %>
+
+      <% paginas_a_mostrar << 1 %>
+
+      <% if @pagina > 4 %>
+        paginas_a_mostrar << :ellipsis
+      end %>
+
+      <% inicio = [@pagina - 1, 2].max %>
+      <% fin = [@pagina + 1, @paginas - 1].min %>
+
+      <% (inicio..fin).each do |p| %>
+        paginas_a_mostrar << p
+      end %>
+
+      <% if @pagina < @paginas - 3 %>
+        paginas_a_mostrar << :ellipsis
+      end %>
+
+      <% paginas_a_mostrar << @paginas if @paginas > 1 %>
+
+      <% paginas_a_mostrar.uniq.each do |p| %>
+
+        <% if p == :ellipsis %>
+
+          <li class="page-item disabled">
+            <span class="page-link">…</span>
+          </li>
+
+        <% else %>
+
+          <li class="page-item <%= 'active' if p == @pagina %>">
+            <%= link_to p,
+                admin_exoticas_invasoras_path(pagina: p),
+                class: "page-link" %>
+          </li>
+
+        <% end %>
+
       <% end %>
 
       <% if @pagina < @paginas %>
         <li class="page-item">
-          <%= link_to "Siguiente",
+          <%= link_to "»",
               admin_exoticas_invasoras_path(pagina: @pagina + 1),
               class: "page-link" %>
-        </li>
-      <% else %>
-        <li class="page-item disabled">
-          <span class="page-link">Siguiente</span>
         </li>
       <% end %>
 
