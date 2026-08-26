@@ -61,6 +61,7 @@
     <% end %>
   </tbody>
 </table>
+
 <% if @paginas > 1 %>
   <nav aria-label="Paginación">
     <ul class="pagination justify-content-center">
@@ -78,19 +79,19 @@
       <% paginas_a_mostrar << 1 %>
 
       <% if @pagina > 4 %>
-        paginas_a_mostrar << :ellipsis
-      end %>
+        <% paginas_a_mostrar << :ellipsis %>
+      <% end %>
 
       <% inicio = [@pagina - 1, 2].max %>
       <% fin = [@pagina + 1, @paginas - 1].min %>
 
       <% (inicio..fin).each do |p| %>
-        paginas_a_mostrar << p
-      end %>
+        <% paginas_a_mostrar << p %>
+      <% end %>
 
       <% if @pagina < @paginas - 3 %>
-        paginas_a_mostrar << :ellipsis
-      end %>
+        <% paginas_a_mostrar << :ellipsis %>
+      <% end %>
 
       <% paginas_a_mostrar << @paginas if @paginas > 1 %>
 
