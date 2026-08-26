@@ -14,8 +14,16 @@ class Admin::ExoticasInvasorasController < Admin::AdminController
   end
 
   def index
-    @exoticas = ExoticaInvasora.includes(:especie, :catalogos, :documentos).order(created_at: :desc)
-    @catalogos = ExoticaCatalogo.activos.where.not(tipo: "tipo_documento").group_by(&:tipo) 
+    @por_pagina = 30
+    @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
+
+    @totales = ExoticaInvasora.count
+
+    inicio = (@pagina - 1) * @por_pagina
+
+    @exoticas = ExoticaInvasora.includes(:especie, :catalogos, :documentos).order(created_at: :desc).limit(@por_pagina).offset(inicio)
+    @paginas = (@totales % @por_pagina).zero? ? @totales / @por_pagina : (@totales / @por_pagina) + 1
+    @catalogos = ExoticaCatalogo.activos.where.not(tipo: "tipo_documento").group_by(&:tipo)
   end
 
  def new

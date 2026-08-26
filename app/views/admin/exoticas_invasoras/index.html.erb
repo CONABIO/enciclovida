@@ -61,3 +61,42 @@
     <% end %>
   </tbody>
 </table>
+<% if @paginas > 1 %>
+  <nav aria-label="Paginación">
+    <ul class="pagination justify-content-center">
+
+      <% if @pagina > 1 %>
+        <li class="page-item">
+          <%= link_to "Anterior",
+              admin_exoticas_invasoras_path(pagina: @pagina - 1),
+              class: "page-link" %>
+        </li>
+      <% else %>
+        <li class="page-item disabled">
+          <span class="page-link">Anterior</span>
+        </li>
+      <% end %>
+
+      <% (1..@paginas).each do |pagina| %>
+        <li class="page-item <%= 'active' if pagina == @pagina %>">
+          <%= link_to pagina,
+              admin_exoticas_invasoras_path(pagina: pagina),
+              class: "page-link" %>
+        </li>
+      <% end %>
+
+      <% if @pagina < @paginas %>
+        <li class="page-item">
+          <%= link_to "Siguiente",
+              admin_exoticas_invasoras_path(pagina: @pagina + 1),
+              class: "page-link" %>
+        </li>
+      <% else %>
+        <li class="page-item disabled">
+          <span class="page-link">Siguiente</span>
+        </li>
+      <% end %>
+
+    </ul>
+  </nav>
+<% end %>
