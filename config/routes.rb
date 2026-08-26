@@ -5,7 +5,11 @@ Buscador::Application.routes.draw do
   # Administracion de los catalogos
   namespace :admin do
 
-    resources :exoticas_invasoras
+    resources :exoticas_invasoras do 
+      collection do 
+        get :especies_registradas
+      end
+    end
     resources :exoticas_catalogos
     resources :exoticas_documentos
 

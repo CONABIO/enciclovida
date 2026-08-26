@@ -3,6 +3,16 @@ class Admin::ExoticasInvasorasController < Admin::AdminController
   before_action :carga_catalogos, only: [:new, :create, :edit, :update]
   before_action :set_exotica, only: [:edit, :update, :destroy]
 
+  def especies_registradas
+    ids = Array(params[:ids]).reject(&:blank?).map(&:to_i).uniq
+
+    registradas = ExoticaInvasora
+      .where(especie_id: ids)
+      .pluck(:especie_id)
+
+    render json: registradas
+  end
+
   def index
     @exoticas = ExoticaInvasora.includes(:especie, :catalogos, :documentos).order(created_at: :desc)
     @catalogos = ExoticaCatalogo.activos.where.not(tipo: "tipo_documento").group_by(&:tipo) 

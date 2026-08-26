@@ -52,57 +52,125 @@ function soulmateExoticas() {
         return foto + " " + nombres;
     };
 
+    function marcarEspeciesRegistradas(data) {
+
+      var ids = [];
+
+      $.each(data.results, function(type, resultados) {
+
+          if (!resultados || resultados.length === 0) {
+              return;
+          }
+
+          $.each(resultados, function(i, resultado) {
+
+              if (resultado.data && resultado.data.id) {
+                  ids.push(resultado.data.id);
+              }
+
+          });
+
+      });
+
+      ids = [...new Set(ids)];
+
+      if (ids.length === 0) {
+          mostrarResultados(data);
+          return;
+      }
+
+      $.ajax({
+
+          url: SITE_URL + "admin/exoticas_invasoras/especies_registradas",
+
+          dataType: "json",
+
+          data: {
+              ids: ids
+          },
+
+          success: function(registradas) {
+
+              data.especies_registradas = {};
+
+              $.each(registradas, function(i, id) {
+                  data.especies_registradas[id] = true;
+              });
+
+              mostrarResultados(data);
+              
+          },
+
+          error: function() {
+
+              // Si falla la consulta, el autocomplete
+              // continúa funcionando normalmente.
+              data.especies_registradas = {};
+              mostrarResultados(data);
+          }
+
+      });
+    }
 
     function mostrarResultados(data) {
 
-        var html = "";
-        resultadosActuales = [];
+      var html = "";
+      resultadosActuales = [];
 
-        var index = 0;
+      var index = 0;
 
-        $.each(data.results, function(type, resultados) {
+      $.each(data.results, function(type, resultados) {
 
-            if (!resultados || resultados.length === 0) {
-                return;
-            }
+          if (!resultados || resultados.length === 0) {
+              return;
+          }
 
-            html +=
-                '<li class="soulmate-type-container">' +
-                    '<ul class="soulmate-type-suggestions">';
+          html +=
+              '<li class="soulmate-type-container">' +
+                  '<ul class="soulmate-type-suggestions">';
 
-            $.each(resultados, function(i, resultado) {
+          $.each(resultados, function(i, resultado) {
 
-                resultadosActuales.push(resultado);
+              resultadosActuales.push(resultado);
 
-                html +=
-                    '<li id="' + index +
-                    '-soulmate-exotica-suggestion" ' +
-                    'class="soulmate-suggestion clearfix p-2 border-bottom" ' +
-                    'data-index="' + index + '">' +
-                        render(resultado.term, resultado.data) +
-                    '</li>';
+              var registrada =
+                  data.especies_registradas &&
+                  data.especies_registradas[resultado.data.id];
 
-                index++;
-            });
+              var marca = registrada
+                  ? '<span class="ml-2 text-success">✓ Registrada</span>'
+                  : '';
 
-            html +=
-                    "</ul>" +
-                    '<div class="soulmate-type p-2 h5 font-weight-bold">' +
-                        typesDiacritics(type) +
-                    "</div>" +
-                "</li>";
-        });
+              html +=
+                  '<li id="' + index +
+                  '-soulmate-exotica-suggestion" ' +
+                  'class="soulmate-suggestion clearfix p-2 border-bottom" ' +
+                  'data-index="' + index + '">' +
+                      render(resultado.term, resultado.data) +
+                      marca +
+                  '</li>';
 
-        if (html.length > 0) {
+              index++;
+          });
 
-            container.html(html);
-            container.show();
+          html +=
+                  "</ul>" +
+                  '<div class="soulmate-type p-2 h5 font-weight-bold">' +
+                      typesDiacritics(type) +
+                  "</div>" +
+              "</li>";
+      });
 
-        } else {
+      if (html.length > 0) {
 
-            resultadosActuales = [];
-            container.empty().hide();
-        }
+          container.html(html);
+          container.show();
+
+      } else {
+
+          resultadosActuales = [];
+          container.empty().hide();
+      }
     }
 
 
@@ -250,7 +318,7 @@ function soulmateExoticas() {
                     return;
                 }
 
-                mostrarResultados(data);
+              marcarEspeciesRegistradas(data);
             }
         });
 
