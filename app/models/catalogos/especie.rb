@@ -196,52 +196,51 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
 
   def self.update_geoserver_info(proveedores_hash)
-
     proveedores_hash.each do |id_cat, data|
-
       scientific_name = data.dig("mapas", "Mapa 1", "nombre_cientifico")
 
       if scientific_name.blank?
-        puts "No se encontró el nombre científico para IdCat #{id_cat}"
+        puts "No se encontro nombre cientifico para IdCat #{id_cat}"
         next
       end
 
       begin
-
-        # Buscar la relación entre IDCAT e IdNombre
         scat_record = Scat.find_by(IDCAT: id_cat)
 
         unless scat_record
-          puts "No se encontró un registro en SCAT con IdCat: #{id_cat}"
+          puts "No se encontro SCAT para IdCat #{id_cat}"
           next
         end
 
-        # Buscar o crear el proveedor
-        proveedor = Proveedor.find_or_initialize_by(
-          especie_id: scat_record.IdNombre
-        )
+        especie = Especie.find_by(id: scat_record.IdNombre)
 
-        # Convertir los mapas a JSON
-        mapas_json = data["mapas"].to_json
+        unless especie
+          puts "No se encontro Especie para IdNombre #{scat_record.IdNombre}"
+          next
+        end
 
-        # Actualizar únicamente la información de GeoServer
-        proveedor.geoserver_info = mapas_json
+        taxon_valido = especie.dame_taxon_valido
 
-        # Mantener actualizado el IDCAT
+        unless taxon_valido
+          puts "No se encontro taxon valido para IdCat #{id_cat}"
+          next
+        end
+
+        proveedor = Proveedor.find_or_initialize_by(especie_id: taxon_valido.id)
+
+        proveedor.geoserver_info = data["mapas"].to_json
         proveedor.IdCAT = id_cat
 
         if proveedor.save
-          puts "Mapas actualizados para IdCat #{id_cat} - #{scientific_name}"
+          puts "Mapas actualizados: #{id_cat} -> #{taxon_valido.id} #{taxon_valido.nombre_cientifico}"
         else
-          puts "Error al guardar IdCat #{id_cat}: #{proveedor.errors.full_messages.join(', ')}"
+          puts "Error guardando #{id_cat}: #{proveedor.errors.full_messages.join(', ')}"
         end
 
       rescue StandardError => e
-        puts "Error general con IdCat #{id_cat}: #{e.class} - #{e.message}"
+        puts "Error con #{id_cat}: #{e.class} - #{e.message}"
       end
-
     end
-
   end
 
   # Sobre escribiendo este metodo para las rutas mas legibles
