@@ -1,0 +1,85 @@
+<h1>Especies Exóticas Invasoras</h1>
+<%= render "buscadores"%>
+</div>
+<table class="table table-striped table-hover table-bordered mt-4">
+  <thead>
+    <tr>
+      <th>Foto</th>
+      <th>Nombre científico</th>
+      <th>Familia</th>
+      <% @catalogos.each do |tipo, opciones| %>
+        <th><%= tipo.humanize %></th>
+      <% end %>
+      <th>Créditos</th>
+      <th>Observaciones</th>
+      <th>Análisis de riesgo</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  <% if @exoticas.any? %>
+    <% @exoticas.each do |exotica| %>
+      <tr>
+        <td class="text-center">
+          <% if exotica.especie&.adicional&.foto_principal.present? %>
+            <%= image_tag exotica.especie.adicional.foto_principal, class: "img rounded", style: "width: 8em" %>
+          <% end %>
+        </td>
+        <td><%= link_to exotica.especie.nombre_cientifico, "/especies/#{exotica.especie.id}" %></td>
+        <td>
+          <%= exotica.especie.x_familia %>
+        </td>
+        <% @catalogos.each do |tipo, opciones| %>
+          <td><% exotica.catalogos_por_tipo(tipo).each do |catalogo| %><span class="badge badge-info"><%= catalogo.nombre %></span><br><% end %></td>
+        <% end %>
+        <td><%= exotica.creditos_fotos %></td>
+        <td><%= truncate(exotica.observaciones, length: 60) %></td>
+        <td><% exotica.documentos.each do |documento| %><%= link_to documento.tipo_documento.nombre, documento.ruta, target: "_blank", rel: "noopener", class: "badge badge-info" %><% end %></td>
+      </tr>
+    <% end %>
+  <% else %>
+    <tr><td colspan="100%" class="text-center py-4">No se encontraron especies con los criterios seleccionados.</td></tr>
+  <% end %>
+</tbody>
+</table>
+<% if @paginas > 1 %>
+  <nav aria-label="Paginación">
+    <ul class="pagination justify-content-center">
+      <% if @pagina > 1 %>
+        <li class="page-item">
+          <%= link_to "«", exoticas_invasoras_path(request.query_parameters.merge(pagina: @pagina - 1)), class: "page-link" %>
+        </li>
+      <% end %>
+      <% paginas_a_mostrar = [] %>
+      <% paginas_a_mostrar << 1 %>
+      <% if @pagina > 4 %>
+        <% paginas_a_mostrar << :ellipsis %>
+      <% end %>
+      <% inicio = [@pagina - 1, 2].max %>
+      <% fin = [@pagina + 1, @paginas - 1].min %>
+      <% (inicio..fin).each do |p| %>
+        <% paginas_a_mostrar << p %>
+      <% end %>
+      <% if @pagina < @paginas - 3 %>
+        <% paginas_a_mostrar << :ellipsis %>
+      <% end %>
+      <% paginas_a_mostrar << @paginas if @paginas > 1 %>
+      <% paginas_a_mostrar.uniq.each do |p| %>
+        <% if p == :ellipsis %>
+          <li class="page-item disabled">
+            <span class="page-link">…</span>
+          </li>
+        <% else %>
+          <li class="page-item <%= 'active' if p == @pagina %>">
+            <%= link_to p, exoticas_invasoras_path(request.query_parameters.merge(pagina: p)), class: "page-link" %>
+          </li>
+        <% end %>
+      <% end %>
+      <% if @pagina < @paginas %>
+        <li class="page-item">
+          <%= link_to "»", exoticas_invasoras_path( request.query_parameters.merge(pagina: @pagina + 1)),class: "page-link" %>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+<% end %>

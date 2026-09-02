@@ -146,9 +146,10 @@ Buscador::Application.routes.draw do
   end
 
   # Pagina de exoticas, mal quitar en eun futuro
-  get 'exoticas-invasoras' => 'paginas#exoticas_invasoras'
-  get 'exoticas-invasoras-paginado' => 'paginas#exoticas_invasoras_paginado'
-  get 'exoticas-invasoras/buscar', to: 'paginas#buscar_especies'
+  #get 'exoticas-invasoras' => 'paginas#exoticas_invasoras'
+  #get 'exoticas-invasoras-paginado' => 'paginas#exoticas_invasoras_paginado'
+  #get 'exoticas-invasoras/buscar', to: 'paginas#buscar_especies'
+  resources :exoticas_invasoras, path: "exoticas-invasoras", only: [:index]
 
   #polinizadores
   get '/polinizadores', to: 'paginas#polinizadores'

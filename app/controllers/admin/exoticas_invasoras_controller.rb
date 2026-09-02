@@ -26,10 +26,10 @@ class Admin::ExoticasInvasorasController < Admin::AdminController
     @catalogos = ExoticaCatalogo.activos.where.not(tipo: "tipo_documento").group_by(&:tipo)
   end
 
- def new
-  @exotica = ExoticaInvasora.new
-  @exotica.documentos.build
-end
+  def new
+    @exotica = ExoticaInvasora.new
+    @exotica.documentos.build
+  end
 
   def create
     @exotica = ExoticaInvasora.new(exotica_params)

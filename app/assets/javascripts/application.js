@@ -22,3 +22,4 @@
 //= require i18n/translations
 //= require shared/general
 //= require shared/soulmate
+//= require admin/exoticas_invasoras

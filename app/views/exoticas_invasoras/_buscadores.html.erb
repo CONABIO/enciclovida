@@ -1,0 +1,45 @@
+<div style="background: #e9ecef; padding: 20px; border: 1px solid #d6d8db; border-radius: 4px;">
+  <%= form_with url: exoticas_invasoras_path, method: :get, local: true do %>
+
+    <div class="form-group">
+      <label for="exotica_nombre_cientifico_publico">Nombre científico</label>
+      <%= text_field_tag :q, params[:q], class: "form-control", id: "exotica_nombre_cientifico_publico", placeholder: "Buscar por nombre científico..." %>
+      <div id="soulmate-exoticas-publico"></div>
+      <%= hidden_field_tag :especie_id, params[:especie_id], id: "exotica_especie_id_publico" %>
+    </div>
+
+    <div class="row">
+      <% @catalogos.each do |tipo, opciones| %>
+
+        <div class="col-md-4 mb-3">
+
+          <label for="<%= tipo %>_id">
+            <%= tipo.humanize %>
+          </label>
+
+          <%= select_tag "#{tipo}_id",
+              options_from_collection_for_select(
+                opciones,
+                :id,
+                :nombre,
+                params["#{tipo}_id"]
+              ),
+              include_blank: "Seleccionar...",
+              class: "form-control",
+              id: "#{tipo}_id" %>
+
+        </div>
+
+      <% end %>
+
+    </div>
+
+    <%= submit_tag "Buscar", class: "btn btn-primary" %>
+
+    <%= link_to "Limpiar filtros",
+        exoticas_invasoras_path,
+        class: "btn btn-secondary" %>
+
+  <% end %>
+
+</div>
