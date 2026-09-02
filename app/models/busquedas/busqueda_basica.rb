@@ -66,6 +66,7 @@ class BusquedaBasica < Busqueda
 
     taxones_fuzzy.each do |taxon|
 
+      # Para el nombre cientifico
       distancia = Levenshtein.distance(
         params[:nombre].limpiar.downcase,
         taxon.nombre_cientifico.limpiar.downcase
@@ -73,6 +74,7 @@ class BusquedaBasica < Busqueda
 
       ids_totales << taxon if distancia < 3
 
+      # Para los nombres comunes
       if taxon.nombres_comunes_adicionales.present?
         taxon.nombre_comun_principal = []
 
@@ -91,19 +93,16 @@ class BusquedaBasica < Busqueda
         taxon.nombre_comun_principal = taxon.nombre_comun_principal.join(', ')
       end
     end
-    self.taxones = ids_totales.uniq
-    self.totales = taxones.length
-
-    if totales > 0
-      self.taxones = taxones.first(por_pagina)
-    end
-
-    self.fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?' if totales > 0
-  end
 
     # Para mantener el valor en taxones
     self.taxones = ids_totales.uniq
     self.totales = taxones.length
+
+    # Aplicamos la paginacion despues del filtro fuzzy
+    if totales > 0
+      self.taxones = taxones.first(por_pagina)
+    end
+
     self.fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?' if totales > 0
   end
 
