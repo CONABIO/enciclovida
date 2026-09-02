@@ -184,7 +184,7 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
   ESTATUS_SIGNIFICADO = {
       2 => 'válido',
       1 => 'sinónimo',
-      6 => 'No disponible',
+      6 => 'No disponible', 
       9 => 'No aplica',
       -9 => 'No aplica'
   }
@@ -196,63 +196,52 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
 
   def self.update_geoserver_info(proveedores_hash)
-    ts_req = Tropicos_Service.new
 
     proveedores_hash.each do |id_cat, data|
+
       scientific_name = data.dig("mapas", "Mapa 1", "nombre_cientifico")
-      if scientific_name.nil?
+
+      if scientific_name.blank?
         puts "No se encontró el nombre científico para IdCat #{id_cat}"
         next
       end
-      begin 
-        response = TaxonNaturalistaClient.fetch_taxa(scientific_name)
-        if response.success? 
-          taxa = response.parsed_response['resultados']
-          if taxa.any?
-            id_naturalista = taxa.first['id']
-            puts id_naturalista
-            # Encuentra el registro en la tabla SCAT donde el IdCat coincida
-            scat_record = Scat.find_by(IDCAT: id_cat)
-            if scat_record
-              resultado = ts_req.get_id_name(scientific_name)
-              if resultado[0].is_a?(Hash) && resultado[0][:msg].present?
-                puts resultado[0][:msg]
-              else
-                name_id = resultado[0]["NameId"]
-                puts "El NameId es: #{name_id}"
-              end
-              # Busca o inicializa un registro en proveedores con el especie_id correspondiente
-              proveedor = Proveedor.find_or_initialize_by(especie_id: scat_record.IdNombre)
-              # Convierte la colección de mapas a una cadena JSON
-              mapas_json = data["mapas"].to_json
-              # Actualiza el campo geoserver_info  y naturalista_id
-              proveedor.geoserver_info = mapas_json
-              proveedor.naturalista_id = id_naturalista
-              proveedor.IdCAT = id_cat
-              proveedor.tropico_id = name_id
-              # Guarda el registro en la base de datos
-              if proveedor.save
-                puts "Registro para IdCat #{id_cat} actualizado/creado exitosamente."
-              else
-                puts "Error al guardar el registro para IdCat #{id_cat}: #{proveedor.errors.full_messages.join(", ")}"
-              end
-            else
-              puts "No se encontró un registro en SCAT con IdCat: #{id_cat}"   
-            end
-          else
-            puts "No se encontró ningún taxón con el nombre científico: #{scientific_name}"
-            nil
-          end
-        else
-          puts "Error en la solicitud: #{response.code} - #{response.message}"
-          nil
+
+      begin
+
+        # Buscar la relación entre IDCAT e IdNombre
+        scat_record = Scat.find_by(IDCAT: id_cat)
+
+        unless scat_record
+          puts "No se encontró un registro en SCAT con IdCat: #{id_cat}"
+          next
         end
-      rescue HTTParty::Error => e
-        puts "Error en HTTParty: #{e.message}"
+
+        # Buscar o crear el proveedor
+        proveedor = Proveedor.find_or_initialize_by(
+          especie_id: scat_record.IdNombre
+        )
+
+        # Convertir los mapas a JSON
+        mapas_json = data["mapas"].to_json
+
+        # Actualizar únicamente la información de GeoServer
+        proveedor.geoserver_info = mapas_json
+
+        # Mantener actualizado el IDCAT
+        proveedor.IdCAT = id_cat
+
+        if proveedor.save
+          puts "Mapas actualizados para IdCat #{id_cat} - #{scientific_name}"
+        else
+          puts "Error al guardar IdCat #{id_cat}: #{proveedor.errors.full_messages.join(', ')}"
+        end
+
       rescue StandardError => e
-        puts "Error general: #{e.message}"
+        puts "Error general con IdCat #{id_cat}: #{e.class} - #{e.message}"
       end
+
     end
+
   end
 
   # Sobre escribiendo este metodo para las rutas mas legibles
