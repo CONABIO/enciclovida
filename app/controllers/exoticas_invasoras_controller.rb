@@ -32,10 +32,12 @@ class ExoticasInvasorasController < ApplicationController
     @paginas = (@totales.to_f / POR_PAGINA).ceil
 
     @pagina = @paginas if @paginas > 0 && @pagina > @paginas
-
+    
     @exoticas = @exoticas
       .limit(POR_PAGINA)
       .offset((@pagina - 1) * POR_PAGINA)
+
+    @exoticas.each { |exotica| exotica.especie.asigna_categorias }
   end
 
   private
