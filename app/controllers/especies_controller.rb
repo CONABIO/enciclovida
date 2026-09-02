@@ -26,6 +26,16 @@ class EspeciesController < ApplicationController
   # Pone en cache el webservice que carga por default
   caches_action :descripcion, :expires_in => eval(CONFIG.cache.fichas), :cache_path => Proc.new { |c| "especies/#{c.params[:id]}/#{c.params[:from]}" }, :if => :params_from_conabio_present?
 
+  #descarga de mapas
+  def descarga_mapa
+    url = "#{CONFIG.geoserver_descarga_url}/#{params[:layer]}.zip"
+    archivo = URI.open(url)
+    send_data archivo.read, filename: "#{params[:layer]}.zip", type: 'application/zip'
+  rescue => e
+    Rails.logger.error "Error descargando mapa #{params[:layer]}: #{e.message}"
+    render plain: "No se pudo descargar el mapa.", status: :bad_gateway
+  end
+  
   # GET /especies
   # GET /especies.json
   def index
