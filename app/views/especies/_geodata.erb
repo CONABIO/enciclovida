@@ -54,8 +54,10 @@
         <%= geo[:datos][:titulo] %>
       </small><br />
       
-      <%= link_to "DESCARGAR ZIP", descarga_mapa_especie_path(@especie, geo[:datos][:layers]), class: "dropdown-item" %>      
-      
+      <%= link_to "(Descarga #{geo[:datos][:anio]}) #{icono_descarga}".html_safe,
+            descarga_mapa_especie_path(@especie, geo[:datos][:layers]),
+            target: :_blank,
+            class: "dropdown-item" %>      
       
       <%= link_to(
             "Ver en el geoportal <i class='fa fa-external-link-square'></i>".html_safe,

@@ -30,12 +30,12 @@ class EspeciesController < ApplicationController
   def descarga_mapa
     url = "#{CONFIG.geoserver_descarga_url}/#{params[:layer]}.zip"
     archivo = URI.open(url)
-    send_data archivo.read, filename: "#{params[:layer]}.zip", type: 'application/zip'
+    send_data archivo.read, filename: "#{params[:layer]}.zip", type: 'application/zip', disposition: 'attachment'
   rescue => e
     Rails.logger.error "Error descargando mapa #{params[:layer]}: #{e.message}"
     render plain: "No se pudo descargar el mapa.", status: :bad_gateway
   end
-  
+
   # GET /especies
   # GET /especies.json
   def index
