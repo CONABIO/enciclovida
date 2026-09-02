@@ -50,22 +50,10 @@
 
   <% @datos[:geodatos][:geoserver_urls].each do |geo| %>
     <p class="ml-3">
-
       <small class="font-weight-bold">
         <%= geo[:datos][:titulo] %>
       </small><br />
-
-      <small>
-        <%= geo[:datos][:autor] %>
-      </small><br />
-
-      <%= link_to(
-            "(Descarga #{geo[:datos][:anio]}) #{icono_descarga}".html_safe,
-            geo[:geoserver_descarga_url],
-            target: :_blank,
-            class: 'dropdown-item',
-            style: 'width: auto!important;'
-          ) %>
+      <%= link_to "(Descarga #{geo[:datos][:anio]}) #{icono_descarga}".html_safe, geo[:geoserver_descarga_url], target: "_blank", class: "dropdown-item" %>
 
       <%= link_to(
             "Ver en el geoportal <i class='fa fa-external-link-square'></i>".html_safe,
