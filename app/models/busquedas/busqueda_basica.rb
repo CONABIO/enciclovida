@@ -47,61 +47,38 @@ class BusquedaBasica < Busqueda
       limit=CONFIG.limit_fuzzy
     ).map(&:first).flatten.compact.uniq
 
-    ids_totales = []
+    ids_totales = (ids_comun + ids_cientifico).uniq
 
-    if ids_comun.empty? && ids_cientifico.empty?
+    if ids_totales.empty?
       self.taxones = Especie.none
       self.totales = 0
       return
     end
 
-    ids_busqueda = (ids_comun + ids_cientifico).uniq
-
-    taxones_fuzzy = Especie.
+    self.taxones = Especie.
       left_joins(:categoria_taxonomica, :adicional).
       select_basico.
-      where(id: ids_busqueda).
-      order(:nombre_cientifico).
+      where(id: ids_totales).
       distinct
 
-    taxones_fuzzy.each do |taxon|
-
-      # Para el nombre cientifico
-      distancia = Levenshtein.distance(
-        params[:nombre].limpiar.downcase,
-        taxon.nombre_cientifico.limpiar.downcase
-      )
-
-      ids_totales << taxon if distancia < 3
-
-      # Para los nombres comunes
+    # Para los nombres comunes
+    taxones.each do |taxon|
       if taxon.nombres_comunes_adicionales.present?
         taxon.nombre_comun_principal = []
 
         taxon.nombres_comunes_adicionales.split(',').each do |nombre|
-          distancia = Levenshtein.distance(
-            params[:nombre].limpiar.downcase,
-            nombre.downcase
-          )
-
-          if distancia < 3
-            ids_totales << taxon
-            taxon.nombre_comun_principal << nombre
-          end
+          taxon.nombre_comun_principal << nombre
         end
 
         taxon.nombre_comun_principal = taxon.nombre_comun_principal.join(', ')
       end
     end
 
-    # Para mantener el valor en taxones
-    self.taxones = ids_totales.uniq
+    self.taxones = taxones.order(:nombre_cientifico)
     self.totales = taxones.length
 
-    # Aplicamos la paginacion despues del filtro fuzzy
-    if totales > 0
-      self.taxones = taxones.first(por_pagina)
-    end
+    # Aplicamos la paginación al final
+    self.taxones = taxones.first(por_pagina)
 
     self.fuzzy_match = '¿Quizás quiso decir algunos de los siguientes taxones?' if totales > 0
   end
