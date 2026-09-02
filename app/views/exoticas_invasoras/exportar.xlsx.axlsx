@@ -1,0 +1,258 @@
+wb = xlsx_package.workbook
+
+# ============================================================
+# ESTILOS
+# ============================================================
+
+estilo_marca = wb.styles.add_style(
+  b: true,
+  font_name: "Arial",
+  sz: 18,
+  alignment: {
+    horizontal: :center,
+    vertical: :center
+  }
+)
+
+estilo_titulo = wb.styles.add_style(
+  bold: true,
+  font_name: "Arial",
+  font_size: 18,
+  alignment: {
+    horizontal: :center,
+    vertical: :center
+  }
+)
+
+estilo_subtitulo = wb.styles.add_style(
+  font_name: "Arial",
+  font_size: 10,
+  italic: true,
+  alignment: {
+    horizontal: :center,
+    vertical: :center
+  }
+)
+
+estilo_encabezado = wb.styles.add_style(
+  bold: true,
+  font_name: "Arial",
+  font_size: 10,
+  alignment: {
+    horizontal: :center,
+    vertical: :center,
+    wrap_text: true
+  },
+  border: {
+    style: :thin,
+    color: "D9E1E8"
+  }
+)
+
+estilo_celda = wb.styles.add_style(
+  font_name: "Arial",
+  font_size: 10,
+  alignment: {
+    vertical: :top,
+    wrap_text: true
+  },
+  border: {
+    style: :thin,
+    color: "E5E7EB"
+  }
+)
+
+estilo_cientifico = wb.styles.add_style(
+  font_name: "Arial",
+  font_size: 10,
+  italic: true,
+  alignment: {
+    vertical: :top,
+    wrap_text: true
+  },
+  border: {
+    style: :thin,
+    color: "E5E7EB"
+  }
+)
+
+estilo_familia = wb.styles.add_style(
+  font_name: "Arial",
+  font_size: 10,
+  bold: true,
+  alignment: {
+    vertical: :top,
+    wrap_text: true
+  },
+  border: {
+    style: :thin,
+    color: "E5E7EB"
+  }
+)
+
+estilo_fecha = wb.styles.add_style(
+  font_name: "Arial",
+  font_size: 9,
+  alignment: {
+    horizontal: :center,
+    vertical: :center
+  }
+)
+
+# ============================================================
+# HOJA
+# ============================================================
+
+wb.add_worksheet(name: "Especies Exóticas") do |sheet|
+
+  # ----------------------------------------------------------
+  # Columnas dinámicas
+  # ----------------------------------------------------------
+
+  headers = ["Foto", "Nombre científico", "Familia"]
+
+  @catalogos.each do |tipo, opciones|
+    headers << tipo.humanize
+  end
+
+  headers += [
+    "Créditos",
+    "Observaciones",
+    "Análisis de riesgo"
+  ]
+
+  ultima_columna = if headers.length <= 26
+                     (64 + headers.length).chr
+                   else
+                     # Conversión sencilla a columnas Excel
+                     n = headers.length
+                     letras = ""
+                     while n > 0
+                       n -= 1
+                       letras = (65 + (n % 26)).chr + letras
+                       n /= 26
+                     end
+                     letras
+                   end
+
+  # ----------------------------------------------------------
+  # Encabezado institucional
+  # ----------------------------------------------------------
+
+  sheet.merge_cells("A1:#{ultima_columna}1")
+  sheet.add_row ["ENCICLOVIDA • CONABIO"], style: estilo_marca, height: 30
+
+  sheet.merge_cells("A2:#{ultima_columna}2")
+  sheet.add_row(
+    ["ESPECIES EXÓTICAS INVASORAS"],
+    style: estilo_titulo,
+    height: 34
+  )
+
+  sheet.merge_cells("A3:#{ultima_columna}3")
+  sheet.add_row(
+    ["Catálogo público"],
+    style: estilo_subtitulo,
+    height: 20
+  )
+
+  sheet.merge_cells("A4:#{ultima_columna}4")
+  sheet.add_row(
+    ["Generado: #{Time.current.strftime('%d/%m/%Y %H:%M')}"],
+    style: estilo_fecha,
+    height: 20
+  )
+
+  # ----------------------------------------------------------
+  # Encabezados de la tabla
+  # ----------------------------------------------------------
+
+  sheet.add_row(
+    headers,
+    style: estilo_encabezado,
+    height: 32
+  )
+
+  # ----------------------------------------------------------
+  # Datos
+  # ----------------------------------------------------------
+
+  @exoticas.each do |exotica|
+
+    especie = exotica.especie
+
+    foto = especie&.adicional&.foto_principal
+
+    row = [
+      foto,
+      especie&.nombre_cientifico,
+      especie&.x_familia
+    ]
+
+    @catalogos.each do |tipo, opciones|
+      nombres = exotica.catalogos_por_tipo(tipo).map(&:nombre).join(", ")
+      row << nombres
+    end
+
+    documentos = exotica.documentos.map do |documento|
+      documento.tipo_documento&.nombre
+    end.compact.join(", ")
+
+    row += [
+      exotica.creditos_fotos,
+      exotica.observaciones,
+      documentos
+    ]
+
+    estilos = Array.new(headers.length, estilo_celda)
+
+    # Nombre científico
+    estilos[1] = estilo_cientifico
+
+    # Familia
+    estilos[2] = estilo_familia
+
+    sheet.add_row row, style: estilos, height: 42
+  end
+
+  # ----------------------------------------------------------
+  # Filtros
+  # ----------------------------------------------------------
+
+  ultima_fila = sheet.rows.length
+
+  sheet.auto_filter = "A5:#{ultima_columna}#{ultima_fila}"
+
+  # ----------------------------------------------------------
+  # Congelar encabezados
+  # ----------------------------------------------------------
+
+  sheet.sheet_view.pane do |pane|
+    pane.top_left_cell = "A6"
+    pane.state = :frozen
+    pane.y_split = 5
+  end
+
+  # ----------------------------------------------------------
+  # Anchos
+  # ----------------------------------------------------------
+
+  sheet.column_info[0].width = 22
+  sheet.column_info[1].width = 34
+  sheet.column_info[2].width = 24
+
+  # Columnas dinámicas
+  (3...headers.length - 3).each do |i|
+    sheet.column_info[i].width = 25
+  end
+
+  # Créditos
+  sheet.column_info[headers.length - 3].width = 25
+
+  # Observaciones
+  sheet.column_info[headers.length - 2].width = 45
+
+  # Análisis de riesgo
+  sheet.column_info[headers.length - 1].width = 30
+
+end

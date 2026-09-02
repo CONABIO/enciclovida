@@ -149,7 +149,11 @@ Buscador::Application.routes.draw do
   #get 'exoticas-invasoras' => 'paginas#exoticas_invasoras'
   #get 'exoticas-invasoras-paginado' => 'paginas#exoticas_invasoras_paginado'
   #get 'exoticas-invasoras/buscar', to: 'paginas#buscar_especies'
-  resources :exoticas_invasoras, path: "exoticas-invasoras", only: [:index]
+  resources :exoticas_invasoras, path: "exoticas-invasoras", only: [:index] do
+    collection do
+      get :exportar
+    end
+  end
   #descarga zip mapas
   get 'especies/:id/descarga-mapa/:layer', to: 'especies#descarga_mapa', as: :descarga_mapa_especie
 
