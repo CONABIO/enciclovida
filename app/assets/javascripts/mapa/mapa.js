@@ -10,13 +10,13 @@ var cargaMapa = function (id, opc) {
 		
 		// Google Hybrid
 		var GHM_layer = L.tileLayer(
-				"https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
-				{
-						subdomains: ["mt0", "mt1", "mt2", "mt3"],
-						zIndex: 1,
-						noWrap: true,
-				}
-		);
+        "https://{s}.google.com/vt/lyrs=y&hl=es&gl=mx&x={x}&y={y}&z={z}",
+        {
+            subdomains: ["mt0", "mt1", "mt2", "mt3"],
+            zIndex: 1,
+            noWrap: true,
+        }
+    );
 		
 		/*
 			// El default de leaflet
