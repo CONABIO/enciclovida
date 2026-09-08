@@ -12,8 +12,8 @@ class TipoDistribucion < ActiveRecord::Base
   scope :distribuciones_vista_general, -> { where(descripcion: DISTRIBUCIONES_VISTA_GENERAL) }
   scope :distribuciones_vista_especialistas, -> { where(descripcion: DISTRIBUCIONES_VISTA_ESPECIALISTAS) }
 
-  DISTRIBUCIONES_VISTA_GENERAL = %w(Endémica Nativa Exótica Exótica-Invasora)
-  DISTRIBUCIONES_VISTA_ESPECIALISTAS = DISTRIBUCIONES_VISTA_GENERAL + %w(Cuasiendémica Semiendémica)
+DISTRIBUCIONES_VISTA_GENERAL = %w(Endémica Nativa Exótica Exótica-Invasora Criptogénica Criptogénica-Invasora )
+DISTRIBUCIONES_VISTA_ESPECIALISTAS = DISTRIBUCIONES_VISTA_GENERAL + %w( Cuasiendémica Semiendémica)
 
   # REVISADO: Los tipos de distribucion de acuerdo a la vista y tambien en el show de especies en la simbologia de ayuda
   def self.distribuciones(vista_especialistas = true)
