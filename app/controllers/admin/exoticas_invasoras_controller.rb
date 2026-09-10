@@ -1,5 +1,5 @@
-class Admin::ExoticasInvasorasController < Admin::AdminController
-  
+class Admin::ExoticasInvasorasController < Admin::ExoticasController
+    
   before_action :carga_catalogos, only: [:new, :create, :edit, :update]
   before_action :set_exotica, only: [:edit, :update, :destroy]
 

@@ -1,5 +1,7 @@
-class Admin::ExoticasCatalogosController < Admin::AdminController
-   before_action :set_tipo_catalogo, only:[:new,:edit]
+class Admin::ExoticasCatalogosController < Admin::ExoticasController
+  
+  before_action :set_tipo_catalogo, only:[:new,:edit]
+  
   def index
     @catalogos = ExoticaCatalogo.order(:tipo, :orden, :nombre)
   end
