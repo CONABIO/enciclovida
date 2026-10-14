@@ -10,8 +10,6 @@
       <% @catalogos.each do |tipo, opciones| %>
         <th><%= tipo.humanize %></th>
       <% end %>
-      <th>Créditos</th>
-      <th>Observaciones</th>
       <th>Análisis de riesgo</th>
     </tr>
   </thead>
@@ -32,8 +30,7 @@
         <% @catalogos.each do |tipo, opciones| %>
           <td><% exotica.catalogos_por_tipo(tipo).each do |catalogo| %><span class="badge badge-info"><%= catalogo.nombre %></span><br><% end %></td>
         <% end %>
-        <td><%= exotica.creditos_fotos %></td>
-        <td><%= truncate(exotica.observaciones, length: 60) %></td>
+     
         <td><% exotica.documentos.each do |documento| %><%= link_to documento.tipo_documento.nombre, documento.ruta, target: "_blank", rel: "noopener", class: "badge badge-info" %><% end %></td>
       </tr>
     <% end %>

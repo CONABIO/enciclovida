@@ -15,8 +15,7 @@
           <%= tipo.humanize %>
         </th>
       <% end %>
-      <th>Créditos</th>
-      <th>Observaciones</th>
+     
       <th>Análisis de riesgo</th>
       <th width="180">Acciones</th>
     </tr>
@@ -42,12 +41,7 @@
             <% end %>
           </td>
         <% end %>
-        <td>
-          <%= e.creditos_fotos %>
-        </td>
-        <td>
-          <%= truncate(e.observaciones, length: 60) %>
-        </td>
+      
         <td>
           <% e.documentos.each do |documento| %>
             <%= link_to documento.tipo_documento.nombre, documento.ruta, target: "_blank", rel: "noopener", class: "badge badge-info" %>

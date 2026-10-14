@@ -12,17 +12,13 @@ class Admin::ExoticasInvasorasController < Admin::ExoticasController
 
     render json: registradas
   end
-
   def index
     @por_pagina = 30
-    @pagina = params[:pagina].present? ? params[:pagina].to_i : 1
-
+    @pagina = [params[:pagina].to_i, 1].max
     @totales = ExoticaInvasora.count
-
     inicio = (@pagina - 1) * @por_pagina
-
-    @exoticas = ExoticaInvasora.includes(:especie, :catalogos, :documentos).order(created_at: :desc).limit(@por_pagina).offset(inicio)
-    @paginas = (@totales % @por_pagina).zero? ? @totales / @por_pagina : (@totales / @por_pagina) + 1
+    @exoticas = ExoticaInvasora.joins(:especie).includes(:especie, :catalogos, :documentos).order('`catalogocentralizado`.`Nombre`.`NombreCompleto` ASC, `exoticas_invasoras`.`id` ASC').limit(@por_pagina).offset(inicio)
+    @paginas = (@totales.to_f / @por_pagina).ceil
     @catalogos = ExoticaCatalogo.activos.where.not(tipo: "tipo_documento").group_by(&:tipo)
   end
 

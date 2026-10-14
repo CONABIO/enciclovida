@@ -11,7 +11,8 @@ class ExoticasInvasorasController < ApplicationController
     else
       aplicar_filtros_catalogos
     end
-    @exoticas = @exoticas.distinct.order(created_at: :desc)
+
+    @exoticas = @exoticas.distinct.reorder( '`catalogocentralizado`.`Nombre`.`NombreCompleto` ASC, `exoticas_invasoras`.`id` ASC')
     @totales = @exoticas.count
     @paginas = (@totales.to_f / POR_PAGINA).ceil
     @pagina = @paginas if @paginas > 0 && @pagina > @paginas
