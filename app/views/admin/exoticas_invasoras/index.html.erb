@@ -1,5 +1,20 @@
 <h1>Especies Exóticas Invasoras</h1>
+<div class="card mb-4">
+  <div class="card-body">
+    <%= form_tag admin_exoticas_invasoras_path, method: :get, class: "form-inline" do %>
+      <div class="form-group mr-2">
+        <%= text_field_tag :buscar, params[:buscar], class: "form-control", placeholder: "Buscar nombre científico...", style: "min-width: 320px;" %>
+      </div>
+      <%= submit_tag "Buscar",class: "btn btn-primary mr-2",
+                     name: nil %>
 
+      <%= link_to "Limpiar",
+                  admin_exoticas_invasoras_path,
+                  class: "btn btn-secondary" %>
+
+    <% end %>
+  </div>
+</div>
 <p>
   <%= link_to "Nueva especie", new_admin_exotica_invasora_path, class: "btn btn-primary" %>
   <%= link_to "Administrar catálogos", admin_exoticas_catalogos_path, class: "btn btn-secondary" %>
