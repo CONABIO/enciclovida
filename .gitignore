@@ -88,3 +88,8 @@ vendor/SNIBappRest/controller/config.js
 
 .DS_Store
 *.rdb.env
+
+# Variables de entorno y credenciales
+.env
+.env.*
+!.env.example
