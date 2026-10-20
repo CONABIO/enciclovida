@@ -87,4 +87,4 @@ vendor/SNIBappRest/node_modules
 vendor/SNIBappRest/controller/config.js
 
 .DS_Store
-*.rdb
+*.rdb.env

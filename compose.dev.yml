@@ -1,0 +1,81 @@
+name: enciclovida-dev
+
+x-rails-base: &rails-base
+  image: enciclovida:legacy-dev
+  build:
+    context: .
+    dockerfile: docker/development/Dockerfile
+  platform: linux/amd64
+  working_dir: /workspace/enciclovida
+  volumes:
+    - .:/workspace/enciclovida
+    - legacy_bundle:/usr/local/bundle
+  environment: &rails-env
+    RAILS_ENV: development
+    RACK_ENV: development
+    BLURRILY_HOST: blurrily
+    REDIS_URL: redis://redis:6379
+    BUNDLE_JOBS: '2'
+    BUNDLE_RETRY: '3'
+  restart: 'no'
+
+services:
+  web:
+    <<: *rails-base
+    ports:
+      - '127.0.0.1:3000:3000'
+    command: ["bundle", "exec", "rails", "server", "-e", "development", "-b", "0.0.0.0"]
+    depends_on:
+      - redis
+      - mongodb
+      - postgres
+
+  mongodb:
+    image: mongo:6.0
+    platform: linux/amd64
+    volumes:
+      - mongodb_data:/data/db
+    restart: 'no'
+
+  postgres:
+    image: postgres:9.6
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: geoportal2026
+      POSTGRES_USER: enciclovida
+      POSTGRES_PASSWORD: ${DEV_POSTGRES_PASSWORD:?Define DEV_POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: 'no'
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    restart: 'no'
+
+  blurrily:
+    <<: *rails-base
+    environment:
+      <<: *rails-env
+      BLURRILY_BIND_HOST: 0.0.0.0
+    command: ["bundle", "exec", "rails", "runner", "eval(File.read('tools/levantaServicios/levantaBlurrily.rb'))"]
+    depends_on:
+      - redis
+    profiles: ["search"]
+
+  delayed-job:
+    <<: *rails-base
+    command: ["bundle", "exec", "rake", "jobs:work"]
+    depends_on:
+      - mongodb
+      - postgres
+      - redis
+    profiles: ["jobs"]
+
+volumes:
+  legacy_bundle:
+  mongodb_data:
+  postgres_data:
+  redis_data:
