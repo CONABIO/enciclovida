@@ -2,7 +2,7 @@ class Admin::Catalogo < Catalogo
 
   attr_accessor :ajax, :especie_id, :catalogo_id, :nombre_cientifico
 
-  has_many :especies_catalogo, class_name: Admin::EspecieCatalogo, foreign_key: attribute_alias(:id), inverse_of: :catalogo
+  has_many :especies_catalogo, class_name: 'Admin::EspecieCatalogo', foreign_key: attribute_alias(:id), inverse_of: :catalogo
   has_many :especies, -> { order(:nombre_cientifico) }, through: :especies_catalogo, source: :especie
 
   before_save :verifica_niveles

@@ -10,7 +10,7 @@ gem 'bootstrap', '~> 4.5.0'
 gem 'carrierwave'  # Form file upload
 gem 'cocoon'  # Anida las formas de diferentes o del mismo modelo
 gem 'coffee-rails', '~> 4.2'
-gem 'composite_primary_keys'  # Multiples llaves primarias
+gem 'composite_primary_keys', '11.3.1'  # Multiples llaves primarias
 gem 'daemons', '1.0.10'  # para hacer ejecutables bash
 gem 'delayed_job'
 gem 'delayed_job_mongoid'
@@ -39,7 +39,7 @@ gem 'httparty'
 gem 'pg'
 gem 'puma', '>= 3.12.4' # Use Puma as the app server
 gem 'rack-contrib'
-gem 'rails', '5.1.6.2'
+gem 'rails', '5.2.8.1'
 gem 'rails-erd'
 gem 'railties'
 gem 'rake', '>= 12.3.3'
