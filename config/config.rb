@@ -8,7 +8,14 @@ class BuscadorConfig
     if config_file.is_a? Hash
       @config = config_file
     else
-      @config = YAML.load_file(config_file)[Rails.env]
+      opciones = {}
+
+      # Psych 4+ requiere habilitar explícitamente los alias YAML.
+      if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('4.0')
+        opciones[:aliases] = true
+      end
+
+      @config = YAML.load_file(config_file, **opciones)[Rails.env]
     end
 
     @config = HashWithIndifferentAccess.new(@config)
@@ -20,7 +27,7 @@ class BuscadorConfig
 
   def method_missing(method_id, *args, &block)
     if @config.key? method_id
-      value =  @config.fetch(method_id)
+      value = @config.fetch(method_id)
       if value.is_a? Hash
         value = BuscadorConfig.new(value)
       end

@@ -1,0 +1,30 @@
+services:
+  web:
+    image: enciclovida:ruby31-dev
+    build:
+      context: .
+      dockerfile: docker/development/Dockerfile.ruby31
+    volumes:
+      - .:/workspace/enciclovida
+      - ruby31_bundle:/usr/local/bundle
+
+  blurrily:
+    image: enciclovida:ruby31-dev
+    build:
+      context: .
+      dockerfile: docker/development/Dockerfile.ruby31
+    volumes:
+      - .:/workspace/enciclovida
+      - ruby31_bundle:/usr/local/bundle
+
+  delayed-job:
+    image: enciclovida:ruby31-dev
+    build:
+      context: .
+      dockerfile: docker/development/Dockerfile.ruby31
+    volumes:
+      - .:/workspace/enciclovida
+      - ruby31_bundle:/usr/local/bundle
+
+volumes:
+  ruby31_bundle:
