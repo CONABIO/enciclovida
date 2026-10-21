@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'actionpack-action_caching'  # Fue removido del core en 4.0
+gem 'actionpack-action_caching', '1.2.2'  # Fue removido del core en 4.0
 gem 'activerecord-session_store'  # Pasa los request con POST a traves de la base (para request muy largos)
 gem 'activerecord-import' # Para inserciones masivas eficientes
 gem 'ancestry', git: 'https://github.com/calonsot/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
@@ -10,16 +10,17 @@ gem 'bootstrap', '~> 4.5.0'
 gem 'carrierwave'  # Form file upload
 gem 'cocoon'  # Anida las formas de diferentes o del mismo modelo
 gem 'coffee-rails', '~> 4.2'
-gem 'composite_primary_keys', '12.0.10'
+gem 'composite_primary_keys', '13.0.9'
 gem 'daemons', '1.0.10'  # para hacer ejecutables bash
-gem 'delayed_job'
+gem 'delayed_job', '4.1.13'
+gem 'mongoid', '7.5.4'
 gem 'delayed_job_mongoid'
 gem 'delayed-web'
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
 gem 'devise', '>= 4.7.1'
 gem 'exifr'
-gem 'font-awesome-rails'
+gem 'font-awesome-rails', '4.7.0.9'
 gem 'fontello_rails_converter', git: 'https://github.com/railslove/fontello_rails_converter.git'
 gem 'formtastic'
 gem 'haml'
@@ -40,7 +41,7 @@ gem 'httparty'
 gem 'pg'
 gem 'puma', '>= 3.12.4' # Use Puma as the app server
 gem 'rack-contrib'
-gem 'rails', '6.0.6.1'
+gem 'rails', '~> 6.1.7'
 gem 'rails-erd'
 gem 'railties'
 gem 'rake', '>= 12.3.3'
