@@ -19,3 +19,7 @@ busquedas/region/por_region.scss metamares/metamares.css metamares/metamares_b4.
 jquery-ui.js
 busquedas/busquedas.css busquedas/avanzada/checklist.css
 application_guias.scss)
+Rails.application.config.assets.precompile.reject! do |asset|
+  asset.is_a?(Regexp) &&
+    asset.source == '\.(?:svg|eot|woff|woff2|ttf)$'
+end

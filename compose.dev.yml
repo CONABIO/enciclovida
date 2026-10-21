@@ -24,7 +24,7 @@ services:
     <<: *rails-base
     ports:
       - '127.0.0.1:3000:3000'
-    command: ["bundle", "exec", "rails", "server", "-e", "development", "-b", "0.0.0.0"]
+    command: ["bundle", "exec", "ruby", "-rlogger", "bin/rails", "server", "-e", "development", "-b", "0.0.0.0"]
     depends_on:
       - redis
       - mongodb
@@ -55,15 +55,16 @@ services:
       - redis_data:/data
     restart: 'no'
 
+  
   blurrily:
     <<: *rails-base
     environment:
       <<: *rails-env
       BLURRILY_BIND_HOST: 0.0.0.0
-    command: ["bundle", "exec", "rails", "runner", "eval(File.read('tools/levantaServicios/levantaBlurrily.rb'))"]
+    command: ["bundle", "exec", "ruby", "-rlogger", "bin/rails", "runner", "eval(File.read('tools/levantaServicios/levantaBlurrily.rb'))"]
     depends_on:
       - redis
-    profiles: ["search"]
+   
 
   delayed-job:
     <<: *rails-base

@@ -10,7 +10,7 @@ gem 'bootstrap', '~> 4.5.0'
 gem 'carrierwave'  # Form file upload
 gem 'cocoon'  # Anida las formas de diferentes o del mismo modelo
 gem 'coffee-rails', '~> 4.2'
-gem 'composite_primary_keys', '11.3.1'  # Multiples llaves primarias
+gem 'composite_primary_keys', '12.0.10'
 gem 'daemons', '1.0.10'  # para hacer ejecutables bash
 gem 'delayed_job'
 gem 'delayed_job_mongoid'
@@ -29,17 +29,18 @@ gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'levenshtein-ffi', :require => 'levenshtein'
+gem 'ffi', '1.15.5'
 gem 'mail'
 gem 'mime-types'
 gem 'mini_racer', git: 'https://github.com/rubyjs/mini_racer', branch: 'refs/pull/186/head'
 gem 'mysql2'
-gem 'nokogiri', '>= 1.10.8'  # Hacer un parse con xml
+gem 'nokogiri', '1.12.5'  # Hacer un parse con xml
 gem 'optimist'
 gem 'httparty'
 gem 'pg'
 gem 'puma', '>= 3.12.4' # Use Puma as the app server
 gem 'rack-contrib'
-gem 'rails', '5.2.8.1'
+gem 'rails', '6.0.6.1'
 gem 'rails-erd'
 gem 'railties'
 gem 'rake', '>= 12.3.3'
@@ -49,7 +50,7 @@ gem 'rinku', :require => 'rails_rinku'  # extiende el metodo auto_link
 gem 'roo', :require => 'roo'  # Solo lectura excel, open office, google docs
 gem 'rubyXL', :require => 'rubyXL'  # Crea archivos xlsx, con formato
 gem 'rubyzip', :require => 'zip'
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '~> 6.0'
 gem 'savon'  # Para consumir webservices con SOAP y WSDL
 gem 'seed_dump'  # Extrae las tuplas de un modelo o de toda la base
 gem 'simple_form', '>= 5.0.0'
