@@ -16,24 +16,22 @@ class Admin::ExoticasInvasorasController < Admin::ExoticasController
     @por_pagina = 30
     @pagina = [params[:pagina].to_i, 1].max
     @exoticas = ExoticaInvasora.joins(:especie).includes(:especie, :catalogos, :documentos)
-
     # Buscar por nombre científico
     if params[:buscar].present?
       termino = params[:buscar].to_s.strip
-      termino = termino.gsub(/[\\%_]/) { |caracter| "\\#{caracter}" }
-      @exoticas = @exoticas.where("#{Especie.table_name}.TaxonCompleto LIKE ?", "%#{termino}%" )
+      termino = ActiveRecord::Base.send(:sanitize_sql_like, termino)
+      @exoticas = @exoticas.where("#{Especie.table_name}.TaxonCompleto LIKE ?", "%#{termino}%")
     end
 
     # Total de resultados filtrados
     @totales = @exoticas.count
+
     # Paginación
     @paginas = (@totales.to_f / @por_pagina).ceil
     @pagina = [@pagina, [@paginas, 1].max].min
-
     inicio = (@pagina - 1) * @por_pagina
-
-    # Orden alfabético
-    @exoticas = @exoticas.order("#{Especie.table_name}.TaxonCompleto ASC, exoticas_invasoras.id ASC" ).limit(@por_pagina).offset(inicio)
+    # Orden alfabético por nombre científico
+    @exoticas = @exoticas.order(Arel.sql("#{Especie.table_name}.TaxonCompleto ASC, exoticas_invasoras.id ASC")).limit(@por_pagina).offset(inicio)
     # Catálogos
     @catalogos = ExoticaCatalogo.activos.where.not(tipo: "tipo_documento").group_by(&:tipo)
   end

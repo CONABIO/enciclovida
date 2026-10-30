@@ -1,41 +1,60 @@
-class MacaulayService
 
-  def dameMedia_nc(taxonNC, type, page=1, min_page_size = 20)
-    cornell = Rails.env.production? ? CONFIG.cornell.api : CONFIG.cornell.api_rp
+class WebServices::MacaulayService < WebServices::BaseService
 
-    taxon_escape = ERB::Util.url_encode(taxonNC)
-    url = "#{cornell}sciName=#{taxon_escape}&mediaType=#{type}&taxaLocale=es&count=#{min_page_size}"
-    uri = URI.parse(url)
-    req = Net::HTTP::Get.new(uri.to_s)
-    req['key'] = CONFIG.cornell.key
-    
-    begin
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+  def dameMedia_nc(taxonNC, type, page = 1, min_page_size = 20)
+    cornell = CONFIG.cornell.api_rp.presence || CONFIG.cornell.api
 
-      if File.exist?('/etc/ssl/certs/ca-certificates.crt')
-        http.ca_file = '/etc/ssl/certs/ca-certificates.crt'
-      end
-
-      # Recomendado
-      http.open_timeout = 10
-      http.read_timeout = 30
-
-      res = http.request(req)
-
-      if res.body.present?
-        jres = JSON.parse(res.body) 
-        #Si la  especie no es encontrada, Macaulay arroja un 404 :D
-        jres = [{msg: "No se encontró coincidencia para #{taxonNC}"}] if jres.class == Hash && jres["message"].present?
-      else
-        jres = [{msg: "No se encontró coincidencia para #{taxonNC}"}]
-      end
-
-      jres
-    rescue => e
-      [{msg: "Hubo algun error en la solicitud: #{e} \n intente de nuevo más tarde"}]
+    if cornell.blank?
+      return [{ msg: "El servicio de Macaulay Library no está configurado" }]
     end
+
+    uri = URI.parse(cornell)
+
+    parametros = URI.decode_www_form(uri.query.to_s)
+    parametros.reject! { |clave, _| %w[sciName mediaType taxaLocale count].include?(clave) }
+
+    parametros += [
+      ["sciName", taxonNC.to_s],
+      ["mediaType", type.to_s],
+      ["taxaLocale", "es"],
+      ["count", min_page_size.to_i.to_s]
+    ]
+
+    uri.query = URI.encode_www_form(parametros)
+
+    respuesta = get_json(
+      uri.to_s,
+      headers: { "key" => CONFIG.cornell.key.to_s }
+    )
+
+    if respuesta.is_a?(Hash) && respuesta["message"].present?
+      return [{ msg: "No se encontró coincidencia para #{taxonNC}" }]
+    end
+
+    respuesta
+
+  rescue WebServices::BaseService::RequestError => e
+    Rails.logger.warn(
+      "[MacaulayService] Error consultando #{taxonNC}: #{e.message}"
+    )
+
+    mensaje = case e.status
+              when 401, 403
+                "Macaulay Library no autorizó la consulta"
+              when 404
+                "No se encontró coincidencia para #{taxonNC}"
+              else
+                "Macaulay Library no está disponible temporalmente"
+              end
+
+    [{ msg: mensaje }]
+
+  rescue URI::InvalidURIError, ArgumentError => e
+    Rails.logger.error(
+      "[MacaulayService] Configuración inválida: #{e.class}"
+    )
+
+    [{ msg: "No fue posible consultar Macaulay Library" }]
   end
 
 end

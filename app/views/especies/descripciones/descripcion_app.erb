@@ -9,7 +9,7 @@
   <% if @descripcion.blank? %>
     <p class="nocontent meta">
       <% if params[:from].present? %>
-        <% api = eval("Api::#{params[:from].camelize}").new.nombre %>
+        <% api = Api::Descripcion.clase_descripcion(params[:from]).new.nombre %>
         <%= t :sin_descripcion_en_x_para_y, x: api, y: @especie.nombre_cientifico %>
       <% else %>
         <%= t :sin_descripcion_para_y, y: @especie.nombre_cientifico %>

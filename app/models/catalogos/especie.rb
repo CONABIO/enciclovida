@@ -340,7 +340,8 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
     end }
 
     if opc[:iucn_ws]
-      iucn_ws = IUCNService.new.dameRiesgo(:nombre => nombre_cientifico, id: id)
+
+      iucn_ws = WebServices::IUCNService.new.dameRiesgo(nombre: nombre_cientifico,id: id)
 
       if iucn_ws.present?
         response[:grupo2] << {'IUCN Red List of Threatened Species 2017-1' => [iucn_ws]}
@@ -429,14 +430,14 @@ nombre_autoridad, estatus").categoria_taxonomica_join }
 
   # REVISADO: Servicio que trae la respuesta de bdi
   def fotos_bdi(opts={})
-    bdi = BDIService.new({nombre_cientifico: nombre_cientifico}.merge(opts))
+    bdi = WebServices::BDIService.new({nombre_cientifico: nombre_cientifico}.merge(opts))
     bdi.dame_fotos
     bdi
   end
 
   # Servicio que trae la respuesta de bdi para videos
   def videos_bdi(opts={})
-    bdi = BDIService.new
+    bdi = WebServices::BDIService.new
     bdi.dame_videos(opts.merge({taxon: self}))
   end
 

@@ -1,7 +1,6 @@
 $(document).ready(function () {
     $('#descripcion').on('change', '#from', function () {
         opciones.cual_ficha = $(this).val();
-
         $.ajax({
             url: "/especies/" + opciones.taxon + "/descripcion?from=" + opciones.cual_ficha,
             method: 'get',
@@ -37,15 +36,28 @@ $(document).ready(function () {
 					$('#mediaBDI_u').load('/especies/' + opciones.taxon + '/bdi-photos?album=usos', function () {
 						if ($("#" + this.id + " img").length != 0) $(this).removeClass("d-none");
 						tooltip("#" + this.id + " .btn-title");
-					});					
-					
-					if (opciones.ancestry.includes(",22655,")) {  // Si es una ave
-						$("#xenocanto").load('/especies/' + opciones.taxon + "/xeno-canto?type=audio", function () {
-							if ($("#" + this.id + " img").length != 0) $(this).removeClass("d-none");
-							tooltip("#" + this.id + " .btn-title");
-						});
-					}
-					
+					});					   
+          // Cargar grabaciones de Xeno-canto
+          $("#xenocanto").load(
+              "/especies/" + opciones.taxon + "/xeno-canto.html?type=audio",
+              function (response, status, xhr) {
+                  if (status === "error") {
+                      console.error("Error cargando Xeno-canto:", xhr.status);
+                      return;
+                  }
+
+                  const total = $(this).find(".modal-buttons").length;
+
+                  console.log("Xeno-canto: grabaciones encontradas:", total);
+
+                  if (total > 0) {
+                      $(this).removeClass("d-none");
+                      tooltip("#" + this.id + " .btn-title");
+                  } else {
+                      $(this).addClass("d-none");
+                  }
+              }
+          );
 					// $('#mediaBDI_v').load('/especies/' + opciones.taxon + '/bdi-videos?type=video', function () {
 					// });
 					$('#mediaCornell_p').load('/especies/' + opciones.taxon + '/media-cornell?type=photo', function () {

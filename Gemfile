@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'actionpack-action_caching', '1.2.2'  # Fue removido del core en 4.0
-gem 'activerecord-session_store'  # Pasa los request con POST a traves de la base (para request muy largos)
+gem 'activerecord-session_store', '~> 2.0'  # Pasa los request con POST a traves de la base (para request muy largos)
 gem 'activerecord-import' # Para inserciones masivas eficientes
 gem 'ancestry', git: 'https://github.com/calonsot/ancestry.git', :ref => 'bfadb2c'  # lee los ancestros en modo de arbol
 gem 'caxlsx'#, git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
@@ -10,7 +10,7 @@ gem 'bootstrap', '~> 4.5.0'
 gem 'carrierwave'  # Form file upload
 gem 'cocoon'  # Anida las formas de diferentes o del mismo modelo
 gem 'coffee-rails', '~> 4.2'
-gem 'composite_primary_keys', '13.0.9'
+gem 'composite_primary_keys', '~> 14.0'
 gem 'daemons', '1.0.10'  # para hacer ejecutables bash
 gem 'delayed_job', '4.1.13'
 gem 'mongoid', '7.5.4'
@@ -18,7 +18,7 @@ gem 'delayed_job_mongoid'
 gem 'delayed-web'
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
-gem 'devise', '>= 4.7.1'
+gem 'devise', '~> 4.9'
 gem 'exifr'
 gem 'font-awesome-rails', '4.7.0.9'
 #gem 'fontello_rails_converter', git: 'https://github.com/railslove/fontello_rails_converter.git'
@@ -35,13 +35,13 @@ gem 'mail'
 gem 'mime-types'
 gem 'mini_racer', '~> 0.8.0'
 gem 'mysql2'
-gem 'nokogiri', '1.12.5'  # Hacer un parse con xml
+gem 'nokogiri', '>= 1.13.9', '< 2.0'  # Hacer un parse con xml
 gem 'optimist'
 gem 'httparty'
 gem 'pg'
 gem 'puma', '>= 3.12.4' # Use Puma as the app server
 gem 'rack-contrib'
-gem 'rails', '~> 6.1.7'
+gem 'rails', '~> 7.0.0'
 gem 'rails-erd'
 gem 'railties'
 gem 'rake', '>= 12.3.3'
@@ -52,7 +52,7 @@ gem 'roo', :require => 'roo'  # Solo lectura excel, open office, google docs
 gem 'rubyXL', :require => 'rubyXL'  # Crea archivos xlsx, con formato
 gem 'rubyzip', :require => 'zip'
 gem 'sass-rails', '~> 6.0'
-gem 'savon'  # Para consumir webservices con SOAP y WSDL
+gem 'savon', '~> 2.17.5'
 gem 'seed_dump'  # Extrae las tuplas de un modelo o de toda la base
 gem 'simple_form', '>= 5.0.0'
 gem 'soulmate', :require => 'soulmate/server'

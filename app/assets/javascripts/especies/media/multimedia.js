@@ -3,6 +3,10 @@ $(document).ready(function(){
     $('#modal_reproduce').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var media;
+        if (button.data('type') === 'audio') {
+            $('#img-container').css('height', 'auto');
+            $('#modalTamanio').css('width', '');
+        }
 
         var ubicacion = [];
         [button.data('state'), button.data('country')].forEach(function(cValue){
@@ -44,11 +48,29 @@ $(document).ready(function(){
             resizeImgContainer(button.data('url'));
             /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-        }else{
-            var video = $(document.createElement("video")).attr('controls','').attr('controlsList', 'nodownload').attr('autoplay','');
-            var source = $(document.createElement("source")).attr('src', button.data('url'));
+                }
+        else if (button.data('type') === 'audio') {
+            // Reproductor HTML5 para Xeno-Canto
+            var audio = $('<audio>', {
+                controls: true,
+                autoplay: true
+            }).css({
+                width: '100%'
+            });
+            audio.attr('controlsList', 'nodownload');
+            var source = $('<source>').attr('src', button.data('url'));
+            media = audio.append(source);
+        } else {
+            // Mantener el reproductor de video existente
+            var video = $('<video>', {
+                controls: true,
+                autoplay: true
+            });
+            video.attr('controlsList', 'nodownload');
+            var source = $('<source>').attr('src', button.data('url'));
             media = video.append(source);
         }
+
         $('#modal_reproduce_body .embed-responsive').append(media);
     });
 

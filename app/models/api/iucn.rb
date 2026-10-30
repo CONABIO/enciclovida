@@ -10,7 +10,7 @@ class Api::Iucn < Api::Descripcion
   end
 
   def dame_descripcion
-    iucn = IUCNService.new
+    iucn = WebServices::IUCNService.new
     iucn.taxon = Especie.find(taxon.id)
     iucn.encuentra_descripcion
     return nil unless iucn.datos[:estatus]

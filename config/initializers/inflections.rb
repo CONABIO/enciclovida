@@ -16,6 +16,9 @@
 # end
 
 ActiveSupport::Inflector.inflections do |inflect|
+  inflect.acronym 'BDI'
+  inflect.acronym 'IUCN'
+
   inflect.irregular 'usuario_rol', 'usuarios_roles'
   inflect.irregular 'usuario_especie', 'usuarios_especie'
   inflect.irregular 'rol_categorias_contenido', 'roles_categorias_contenido'

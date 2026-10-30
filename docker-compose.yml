@@ -1,0 +1,104 @@
+name: enciclovida
+
+x-rails-base: &rails-base
+  image: enciclovida:rails7-dev
+  platform: linux/amd64
+  build:
+    context: .
+    dockerfile: Dockerfile
+  working_dir: /workspace/enciclovida
+  volumes:
+    - .:/workspace/enciclovida
+    - rails7_bundle:/usr/local/bundle
+  env_file:
+    - .env
+  environment: &rails-env
+    RAILS_ENV: development
+    RACK_ENV: development
+    BLURRILY_HOST: blurrily
+    REDIS_URL: redis://redis:6379
+    BUNDLE_JOBS: "2"
+    BUNDLE_RETRY: "3"
+  restart: "no"
+
+services:
+  web:
+    <<: *rails-base
+    ports:
+      - "127.0.0.1:3000:3000"
+    command:
+      - sh
+      - -c
+      - |
+        rm -f tmp/pids/server.pid
+        exec bundle exec rails server -b 0.0.0.0 -p 3000
+    depends_on:
+      - postgres
+      - mongodb
+      - redis
+      - blurrily
+
+  postgres:
+    image: postgres:9.6
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: geoportal2026
+      POSTGRES_USER: enciclovida
+      POSTGRES_PASSWORD: ${DEV_POSTGRES_PASSWORD:?Define DEV_POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: "no"
+
+  mongodb:
+    image: mongo:6.0
+    platform: linux/amd64
+    volumes:
+      - mongodb_data:/data/db
+    restart: "no"
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    restart: "no"
+
+  blurrily:
+    <<: *rails-base
+    environment:
+      <<: *rails-env
+      BLURRILY_BIND_HOST: 0.0.0.0
+    command:
+      - bundle
+      - exec
+      - ruby
+      - -rlogger
+      - bin/rails
+      - runner
+      - eval(File.read('tools/levantaServicios/levantaBlurrily.rb'))
+    depends_on:
+      - redis
+
+  delayed-job:
+    <<: *rails-base
+    command: ["bundle", "exec", "rake", "jobs:work"]
+    depends_on:
+      - mongodb
+      - postgres
+      - redis
+    profiles: ["jobs"]
+
+volumes:
+  rails7_bundle:
+
+  postgres_data:
+    external: true
+    name: enciclovida-dev_postgres_data
+
+  mongodb_data:
+    external: true
+    name: enciclovida-dev_mongodb_data
+
+  redis_data:
+    external: true
+    name: enciclovida-dev_redis_data

@@ -299,40 +299,54 @@ class EspeciesController < ApplicationController
   end
 
   # Servicio de lib/bdi_service.rb
+  
   def bdi_photos
-    bdi = @especie.fotos_bdi({album: params[:album]})
+    bdi = @especie.fotos_bdi(album: params[:album])
     respond_to do |format|
       format.json do
-        if params[:api] == "1" && bdi.num_assets == 0 # Si viene de la API y NO hay resultados
-          jres = {estatus: false, msg: "No se encontraron fotos en el Banco de imágenes de CONABIO."}
-          render json: jres
-        elsif params[:api] == "1" # Si hay resultados pero viene de la API 
-          jres = bdi.assets.map{|f| { thumb_url: f.medium_url, large_url: f.large_url, atribucion: "#{f.native_realname}, BDI - CONABIO" } }
-          render json: jres
-        else # Si NO viene de la API
-          render json: { fotos: bdi.assets, albumes: bdi.albumes, num_fotos: bdi.num_assets } 
+        if params[:api] == "1"
+          if bdi.assets.empty?
+            render json: {
+              estatus: false,
+              msg: "No se encontraron fotos en el Banco de Imágenes de CONABIO."
+            }
+          else
+            render json: bdi.assets.map { |foto|
+              {
+                thumb_url: foto.medium_url,
+                large_url: foto.large_url,
+                atribucion: "#{foto.native_realname}, BDI - CONABIO"
+              }
+            }
+          end
+        else
+          render json: {
+            fotos: bdi.assets,
+            albumes: bdi.albumes,
+            num_fotos: bdi.num_assets
+          }
         end
       end
+
       format.html do
         @fotos = bdi.assets
         @albumes = bdi.albumes
         @num_fotos = bdi.num_assets
-        # Caso especicial para el icono de usos
-        type = params[:album].present? && params[:album] == "usos" ? "usos" : "photo"
 
-        render 'especies/media/bdi_photos', locals: { type: type }
-      end  # End format html
-    end  # End respond
-    
+        type = params[:album] == "usos" ? "usos" : "photo"
 
+        render "especies/media/bdi_photos", locals: { type: type }
+      end
+    end
   end
+
 
   #servicio Macaulay Library (eBird)
   def media_cornell
     type = params['type']
     page = params['page']
     taxonNC = Especie.find(params['id']).nombre_cientifico
-    mc = MacaulayService.new
+    mc = WebServices::MacaulayService.new
     @array = mc.dameMedia_nc(taxonNC, type, page)
 
     respond_to do |format|
@@ -359,28 +373,39 @@ class EspeciesController < ApplicationController
   end
 
   #Servicio Xeno-Canto
-  def xeno_canto
-    type = params['type']
-    taxon = Especie.find(params['id']).nombre_cientifico
-    xeno_c = XenoCantoService.new
-    @cantos = xeno_c.obtener_cantos(taxon)
+  
+def xeno_canto
+  type = params[:type]
+  taxon = Especie.find(params[:id]).nombre_cientifico
 
-    respond_to do |format|
-      format.html do
-        render 'especies/media/xeno_canto', :locals => {type: type}
+  @cantos = WebServices::XenoCantoService.new.obtener_cantos(taxon)
+
+  respond_to do |format|
+    format.html do
+      render "especies/media/xeno_canto", locals: { type: type }
+    end
+
+    format.json do
+      mensaje = @cantos.first[:msg] if @cantos.one?
+
+      if mensaje.present?
+        render json: {
+          estatus: false,
+          msg: mensaje
+        }
+      else
+        render json: @cantos.map { |canto|
+          {
+            thumb_url: canto.dig("sono", "med"),
+            audio: canto["file"],
+            atribucion: "#{canto['rec']}, Xeno-Canto"
+          }
+        }
       end
-
-      format.json do
-        if @cantos.length == 1 && @cantos[0][:msg].present? # Esta vacio
-          jres = {estatus: false, msg: "No hay imagenes en Xeno-Canto."} 
-        else
-          jres = @cantos.map{|c| { thumb_url: "https:#{c["sono"]["med"]}", audio: c["file"], atribucion: "#{c["rec"]}, Xeno-Canto" } }
-        end
-
-        render json: jres
-      end
-    end    
+    end
   end
+end
+
 
   # Servicio Tropicos
   def media_tropicos
@@ -388,7 +413,7 @@ class EspeciesController < ApplicationController
     page = params['page']
 
     # Crear instancia de servicio trópicos:
-    ts_req = Tropicos_Service.new
+    ts_req = WebServices::TropicosService.new
 
     # Para saber si tiene proveedor asociado
     prov = @especie.proveedor
@@ -434,24 +459,29 @@ class EspeciesController < ApplicationController
     end
 
     respond_to do |format|
+      sin_imagenes = @array.blank? || @array.first.is_a?(Hash) && (@array.first["Error"].present? || @array.first[:msg].present?)
       format.html do
-        @array = [{msg: "Aún no hay imágenes para esta especie :/ "}] if @array[0]["Error"].present?
-        render 'especies/media/media_tropicos', :locals => {type: type, page: page}
+        if sin_imagenes
+          @array = [{ msg: "Aún no hay imágenes para esta especie :/" }]
+        end
+        render "especies/media/media_tropicos", locals: { type: type, page: page }
       end
 
       format.json do
-        if @array[0]["Error"].present? || (@array.length == 1 && @array[0][:msg].present?) # No hay imagenes
-          @array = {estatus: false, msg: "No hay imagenes en Tropicos."} 
-          render json: @array
+        if sin_imagenes 
+          render json: { estatus: false, msg: "No hay imágenes en Tropicos." }
         else
-          jres = @array.map{|f| { thumb_url: f["DetailJpgUrl"], large_url: f["DetailJpgUrl"], atribucion: "#{f["Copyright"]}, Tropicos" } }
+          jres = @array.map do |f|
+            {
+              thumb_url: f["DetailJpgUrl"],
+              large_url: f["DetailJpgUrl"],
+              atribucion: "#{f['Copyright']}, Tropicos"
+            }
+          end
           render json: jres
         end
-        
       end
-    end      
-
-
+    end
   end
 
   def fotos_naturalista
@@ -526,7 +556,7 @@ class EspeciesController < ApplicationController
 
   # La descripcion proveniente de IUCN redlist
   def descripcion_iucn
-    iucn = IUCNService.new
+    iucn = WebServices::IUCNService.new
     iucn.taxon = @especie
     iucn.encuentra_descripcion
 
@@ -660,167 +690,6 @@ end
     end
   end
 
-
-  def show_bioteca_record_info
-
-    # Variable fianl que contendrá los detalles de X ficha seleccionada
-    @detalle_ficha_janium
-    @status_detalle_ficha_janium = false
-    @etiquetas = {}
-
-    # Crear el cliente Savon
-    client = Savon.client(
-        endpoint: CONFIG.janium.location,
-        namespace: CONFIG.janium.namespace,
-        ssl_version: :TLSv1,
-        pretty_print_xml: true
-    )
-
-    request_message = {
-        :method => "RegistroBib/Detalle",
-        :arg => {
-            a: "ficha",
-            v: params[:id]
-        }
-    }
-
-    # Invocar el servicio web
-    begin
-      # La respuesta será un SAVON response
-      response = client.call(CONFIG.janium.request, soap_action: "#{CONFIG.janium.namespace}##{CONFIG.janium.request}", message: request_message)
-
-      # La respuesta pasa a ser un XML
-      doc = Nokogiri::XML.parse(response.to_xml)
-
-      # Extraemos el estatus de la respuesta
-      @status_detalle_ficha_janium = doc.xpath('//soap:status', 'soap' => CONFIG.janium.namespace).text
-      # Extraer el padre etiquetas
-      @detalle_ficha_janium = Nokogiri::XML(doc.xpath('//soap:etiquetas', 'soap' => CONFIG.janium.namespace).to_s)
-      @url_detalle_ficha_janium = doc.xpath('//soap:url_asociada', 'soap' => CONFIG.janium.namespace).text
-
-      # Si el estatus es 'OK'
-      if @status_detalle_ficha_janium
-        # Iterar las etiquetas y extraer los titulos y textos
-        @detalle_ficha_janium.xpath("//etiquetas/etiqueta").each do |etiqueta|
-          content = Nokogiri::XML(etiqueta.to_s)
-          titulo = content.xpath("//etiqueta/etiqueta").text
-          texto = content.xpath("//etiqueta/texto").text
-          if @etiquetas[titulo].nil?
-            @etiquetas[titulo] = []
-            @etiquetas[titulo] << texto
-          else
-            @etiquetas[titulo] << texto
-          end
-        end
-      end
-
-      Rails.logger.debug "[DEBUG] La ficha final es: #{doc}"
-
-    rescue => ex
-      # Si surge un error durante la invocación al WS, @registros_janium quedará vacío
-      @status_detalle_ficha_janium = false
-      logger.error ex.message
-    end
-
-    respond_to do |format|
-      format.html {
-        render :partial => 'bioteca_info_record'
-      }
-    end
-  end
-
-  # Función que invocará al servicio web "Janium"
-  def show_bioteca_records
-
-    # Variable que contendrá todas las respuestas para la vista
-    @bioteca_response = {}
-
-    # Crear el cliente Savon
-    client = Savon.client(
-        endpoint: CONFIG.janium.location,
-        namespace: CONFIG.janium.namespace,
-        ssl_version: :TLSv1,
-        pretty_print_xml: true
-    )
-
-    # Invocar el servicio web
-    begin
-      # En la url, se recibe el id de la especie, se procede a buscarlo
-      especie = Especie.find(params[:id])
-
-      # Extraer nombres
-      @bioteca_response = {
-          :id => especie.id,
-          :nombre => {
-              "comun" => especie.adicional.nombre_comun_principal,
-              "cientifico" => especie.nombre_cientifico
-          },
-          :tipo_busqueda_actual => params[:t_name].present? ? params[:t_name] : "cientifico" # Por default, buscará por nombre científico
-      }
-
-      # Recuperar parámetro de paginado
-      params[:n_page].present? ? @bioteca_curent_page = params[:n_page].to_i : @bioteca_curent_page = 1
-
-      # Crear la solicitud (el mensaje) para generar un soap request
-      request_message = {
-          :method => "RegistroBib/BuscarPorPalabraClaveGeneral",
-          :arg => {
-              a: "terminos",
-              v: @bioteca_response[:nombre][@bioteca_response[:tipo_busqueda_actual]]
-          },
-          :arg2 => {
-              a: "numero_de_pagina",
-              v: @bioteca_curent_page
-          }
-      }
-
-      # La respuesta será un SAVON response
-      response = client.call(CONFIG.janium.request, soap_action: "#{CONFIG.janium.namespace}##{CONFIG.janium.request}", message: request_message)
-
-      # La respuesta pasa a ser un XML
-      doc = Nokogiri::XML.parse(response.to_xml)
-
-      # Extraer el estatus de la consulta:
-      @bioteca_response[:status_fichas] = doc.xpath('//soap:status', 'soap' => CONFIG.janium.namespace).text
-
-      if @bioteca_response[:status_fichas] = 'ok'
-        @bioteca_response[:registros_janium] = []
-        @registros_janium = []
-        # Extraer los registros:
-        @bioteca_response[:registros_fichas_janium] = doc.xpath('//soap:total_de_registros', 'soap' => CONFIG.janium.namespace).text.to_i
-        @bioteca_response[:registros_x_pagina_janium] = doc.xpath('//soap:registros_por_pagina', 'soap' => CONFIG.janium.namespace).text.to_i
-
-        # Iterar registros registros
-        doc.xpath('//soap:registro', 'soap' => CONFIG.janium.namespace).each do |registro|
-          @bioteca_response[:registros_janium] << Nokogiri::XML(registro.to_s)
-          #Rails.logger.debug "[DEBUG] registro agregado: #{@registros_janium.last.xpath("//titulo").text}"
-        end
-      else
-        @bioteca_response[:status_fichas] = 'error'
-      end
-
-    rescue => ex
-      # Si surge un error durante la invocación al WS, @registros_janium quedará vacío
-      @bioteca_response[:status_fichas] = 'error'
-      @bioteca_response[:registros_fichas_janium] = 0
-      logger.error ex.message
-    end
-
-    # Si hay fichas que mostrar:
-    if @bioteca_response[:registros_fichas_janium] > 0
-      # Mostrar las páginas sólo si la pagina solicitada es nula (la 1) ( como la base)
-      !params[:n_page].present? || params[:n_page] == '1' ? @show_pagination = true : @show_pagination = false
-      !params[:n_page].present? && !params[:t_name].present? ? @show_find_by = true : @show_find_by = false
-      # Responder con la plantilla hecha
-      respond_to do |format|
-        format.html {
-          render :partial => 'bioteca_records'
-        }
-      end
-    else
-      render plain: nil
-    end
-  end
 
 
   private

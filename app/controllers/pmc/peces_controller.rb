@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class Pmc::PecesController < Pmc::PmcController
 
   before_action do
@@ -11,19 +13,22 @@ class Pmc::PecesController < Pmc::PmcController
   end
 
   def index
-    @doc = Nokogiri::HTML(open("https://www.biodiversidad.gob.mx/diversidad/alimentos/peces/")).css('#introenciclovida, #introenciclovida2')
+    url = 'https://www.biodiversidad.gob.mx/diversidad/alimentos/peces/'
+    html = URI.open(url, open_timeout: 5, read_timeout: 10 )
+    @doc = Nokogiri::HTML(html).css('#introenciclovida, #introenciclovida2')
     @doc.xpath('//comment()').remove
-
     @doc.each do |el|
       el.traverse do |n|
-        if n.matches?('img')
-          n.attribute('src').value = "https://www.biodiversidad.gob.mx/" + n.attribute('src').value unless  n.attribute('src').value.include?('biodiversidad.gob.mx')
-          n['class'] = n['class'].present? ? (n['class'] + ' img-fluid') : 'img-fluid'
+        next unless n.matches?('img')
+        src = n['src']
+        next if src.blank?
+        unless src.include?('biodiversidad.gob.mx')
+          n['src'] = URI.join('https://www.biodiversidad.gob.mx/', src).to_s
         end
+        n['class'] = [n['class'], 'img-fluid'].compact.join(' ')
       end
     end
     @doc = @doc.to_html
-
   end
 
   # Busqueda por pez y marisco

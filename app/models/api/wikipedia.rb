@@ -81,7 +81,8 @@ class Api::Wikipedia < Api::Descripcion
   end
 
   def valida_uri
-    uri = URI.parse(URI.encode("#{servidor}&page=#{taxon.nombre_cientifico.limpiar.limpia}"))
+    pagina = taxon.nombre_cientifico.limpiar.limpia
+    uri = URI.parse("#{servidor}&page=#{ERB::Util.url_encode(pagina)}")
     Rails.logger.debug "[DEBUG] Invocando URL: #{uri}" if debug
 
     uri

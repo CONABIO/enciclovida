@@ -1,4 +1,4 @@
-require "#{Rails.root}/lib/geo_a_topo.rb"
+require Rails.root.join('lib', 'geo_atopo').to_s
 namespace :geoportal do
 
   # Todos los rakes del redis en el groportal

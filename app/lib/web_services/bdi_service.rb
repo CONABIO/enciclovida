@@ -1,175 +1,269 @@
-class BDIService
-  ALBUM_ILUSTRACIONES = '5035-Ilustraciones'.freeze
-  ALBUM_USOS = '5010-Usos'.freeze
-  ALBUM_VIDEOS = '5121-Video'.freeze
 
-  attr_accessor :assets, :num_assets, :jres, :campo, :type,
-                :nombre_cientifico, :album, :albumes, :autor_campo, :autor, :solo_num_assets
+module WebServices
+  class BDIService < BaseService
+    ALBUM_ILUSTRACIONES = "5035-Ilustraciones".freeze
+    ALBUM_USOS          = "5010-Usos".freeze
+    ALBUM_VIDEOS        = "5121-Video".freeze
 
-  def initialize(opts = {})
-    self.campo              = opts[:campo] || 'q'
-    self.nombre_cientifico  = opts[:nombre_cientifico]
-    self.album              = opts[:album]
-    self.albumes           = []
-    self.autor_campo       = opts[:autor_campo]
-    self.autor             = opts[:autor]
-    self.type              = opts[:type]
-    self.jres              = nil
-    self.assets            = []
-    self.num_assets        = 0
-  end 
+    attr_accessor :assets, :num_assets, :jres, :campo, :type,
+                  :nombre_cientifico, :album, :albumes,
+                  :autor_campo, :autor, :solo_num_assets
 
-  def dame_fotos
-    bdi_rp = CONFIG.enciclovida_url
-    bdi_url = CONFIG.bdi_imagenes
+    def initialize(opts = {})
+      @campo             = opts[:campo].presence || "q"
+      @nombre_cientifico = opts[:nombre_cientifico]
+      @album             = opts[:album]
+      @autor_campo       = opts[:autor_campo]
+      @autor             = opts[:autor]
+      @type              = opts[:type]
+      @solo_num_assets   = opts[:solo_num_assets]
 
-    limpia_nombre_cientifico
-    fotos_album
+      @albumes    = []
+      @assets     = []
+      @jres       = []
+      @num_assets = 0
+    end
 
-    return if num_assets == 0
+    def dame_fotos
+      reiniciar_resultados
+      limpia_nombre_cientifico
+      fotos_album
 
-    jres.each do |f|
-      next unless f.is_a?(Hash)
+      return assets if jres.blank?
 
-      previews = f['previews']
+      jres.each do |item|
+        next unless item.is_a?(Hash)
 
-      # Algunos resultados de BDI son carpetas o registros incompletos
-      next if previews.blank?
+        foto = construir_foto(item)
+        assets << foto if foto
+      end
 
-      # El código asume que existen estos índices
-      next unless previews[3]
-      next unless previews[7]
-      next unless previews[10]
+      assets
+    end
+
+    def dame_num_fotos
+      reiniciar_resultados
+      limpia_nombre_cientifico
+      lista_albumes
+      fotos_totales
+    end
+
+    private
+
+    def bdi_url
+      ENV.fetch("BDI_API_URL") {
+        CONFIG.bdi_imagenes
+      }.to_s.chomp("/")
+    end
+
+    def bdi_recursos_url
+      ENV.fetch("BDI_RECURSOS_URL") {
+        CONFIG.enciclovida_url
+      }.to_s.chomp("/")
+    end
+
+    def reiniciar_resultados
+      self.assets = []
+      self.albumes = []
+      self.jres = []
+      self.num_assets = 0
+    end
+
+    def consulta_api(opts = {})
+      archives = opts[:archives] == true
+
+      path =
+        if archives
+          "/fotoweb/archives/"
+        else
+          return [] if album.blank?
+
+          "/fotoweb/archives/#{album}/"
+        end
+
+      uri = URI.parse("#{bdi_url}#{path}")
+
+      parametros = {
+        campo => nombre_cientifico.to_s
+      }
+
+      if autor_campo.present? && autor.present?
+        parametros[autor_campo] = autor
+      end
+
+      uri.query = URI.encode_www_form(parametros)
+
+      accept =
+        if archives
+          "application/json"
+        else
+          "application/vnd.fotoware.assetlist+json"
+        end
+
+      respuesta = get_json(
+        uri.to_s,
+        headers: { "Accept" => accept }
+      )
+
+      self.jres =
+        if respuesta.is_a?(Hash)
+          respuesta["data"].is_a?(Array) ? respuesta["data"] : []
+        elsif respuesta.is_a?(Array)
+          respuesta
+        else
+          []
+        end
+
+      self.num_assets = jres.size unless archives || opts[:no_contar]
+
+      jres
+
+    rescue BaseService::RequestError, URI::InvalidURIError => e
+      Rails.logger.error(
+        "[BDI] Error consultando #{path}: #{e.class} - #{e.message}"
+      )
+
+      self.jres = []
+      self.num_assets = 0 unless opts[:no_contar]
+
+      []
+    end
+
+    def lista_albumes
+      self.albumes = []
+
+      respuesta = consulta_api(archives: true)
+
+      respuesta.each do |item|
+        next unless item.is_a?(Hash)
+
+        cantidad = item["assetCount"].to_i
+        next if cantidad.zero?
+        next if item["name"].to_s.casecmp("Usos").zero?
+
+        href = item["href"]
+        next if href.blank?
+
+        albumes << {
+          nombre_album: item["name"],
+          url: construir_url(bdi_url, href),
+          num_assets: cantidad
+        }
+      end
+
+      albumes.sort_by! { |item| -item[:num_assets] }
+      albumes
+    end
+
+    def fotos_album
+      case album.to_s.downcase
+      when "usos"
+        self.album = ALBUM_USOS
+        consulta_api
+
+      when "ilustraciones"
+        self.album = ALBUM_ILUSTRACIONES
+        consulta_api
+
+      else
+        lista_albumes
+        fotos_totales
+
+        primer_album = albumes.first
+        return if primer_album.blank?
+
+        self.album = extraer_album_id(primer_album[:url])
+        return if album.blank?
+
+        consulta_api(no_contar: true)
+        albumes.shift
+      end
+    end
+
+    def construir_foto(item)
+      previews = item["previews"]
+      return nil unless previews.is_a?(Array)
+
+      vistas = previews.select do |preview|
+        preview.is_a?(Hash) && preview["href"].present?
+      end
+
+      return nil if vistas.empty?
+
+      grande  = previews.dig(3, "href") rescue nil
+      mediana = previews.dig(7, "href") rescue nil
+      pequena = previews.dig(10, "href") rescue nil
+
+      grande  ||= vistas.last["href"]
+      mediana ||= vistas[vistas.length / 2]["href"]
+      pequena ||= vistas.first["href"]
 
       foto = Photo.new
 
-      foto.large_url       = bdi_rp + previews[3]['href']
-      foto.medium_url      = bdi_rp + previews[7]['href']
-      foto.square_url      = bdi_rp + previews[10]['href']
-      foto.native_page_url = bdi_url + f['href']
+      foto.large_url = construir_url(bdi_recursos_url, grande)
+      foto.medium_url = construir_url(bdi_recursos_url, mediana)
+      foto.square_url = construir_url(bdi_recursos_url, pequena)
 
-      foto.license =
-        if f.dig('metadata', '340').present?
-          f['metadata']['340']['value']
-        else
-          'Sin licencia'
-        end
+      foto.native_page_url = construir_url(
+        bdi_url,
+        item["href"]
+      )
+
+      metadata = item["metadata"] || {}
+
+      foto.license = valor_metadata(metadata, "340") || "Sin licencia"
 
       foto.native_realname =
-        if f.dig('metadata', '80').present?
-          f['metadata']['80']['value'].first
-        else
-          'Anónimo'
-        end
+        valor_metadata(metadata, "80") || "Anónimo"
 
-      self.assets << foto
-    end
-  end
-
-  def dame_num_fotos
-    limpia_nombre_cientifico
-    lista_albumes
-    fotos_totales
-  end
-
-  private
-
-  def lista_albumes
-    consulta_api(archives: true)
-    return [] unless jres.is_a?(Array) && jres.present?
-
-    jres.each do |a|
-      asset_count = a['assetCount'].to_i rescue 0
-      next if asset_count.zero? || a['name'] == "Usos"
-
-      href = a['href'] || next
-      self.albumes << {
-        nombre_album: a['name'],
-        url:          "#{CONFIG.bdi_imagenes}#{href}",
-        num_assets:   asset_count
-      }
+      foto
     end
 
-    albumes.sort_by! { |k| -k[:num_assets] }
-  end
-
-   def consulta_api(opts={})
-
-  if opts[:archives]
-    url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/?#{campo}=#{nombre_cientifico}"
-    accept = 'application/json'
-  else
-    url = "#{CONFIG.bdi_imagenes}/fotoweb/archives/#{album}/?#{campo}=#{nombre_cientifico}"
-    accept = 'application/vnd.fotoware.assetlist+json'
-  end
-
-  url << "&#{autor_campo}=#{autor}" if autor_campo.present? && autor.present?
-
-  begin
-    url_escape = URI::DEFAULT_PARSER.escape(url)
-
-   res = RestClient::Request.execute(
-      method: :get,
-      url: url_escape,
-      headers: { accept: accept },
-      verify_ssl: OpenSSL::SSL::VERIFY_PEER,
-      ssl_ca_file: '/etc/ssl/certs/ca-certificates.crt'
-    )
-
-    jres = JSON.parse(res.body)
-    self.jres = jres["data"]
-    self.num_assets = jres.count if !opts[:archives] && !opts[:no_contar]
-
-  rescue => e
-    Rails.logger.error "Falló en la consulta con #{url_escape}: #{e.inspect} "
-  end
-end
-
-  def fotos_album
-    case album.to_s.downcase
-    when "usos"
-      self.album = ALBUM_USOS
-      consulta_api
-    when "ilustraciones"
-      self.album = ALBUM_ILUSTRACIONES
-      consulta_api
-      return if num_assets.to_i > 0
-    else
-      lista_albumes
-      fotos_totales
-      return if num_assets.to_i.zero?
-
-      first = albumes.first
-      return unless first
-
-      dame_album_id(first[:url])
-      consulta_api(no_contar: true)
-      albumes.shift
+    def valor_metadata(metadata, codigo)
+      valor = metadata.dig(codigo, "value")
+      valor = valor.first if valor.is_a?(Array)
+      valor.presence
     end
-  end
+    
+    def construir_url(base, ruta)
+      return nil if ruta.blank?
+      ruta = ruta.to_s.strip
+      uri = URI.parse(ruta)
+      if uri.absolute?
+        return uri.to_s if uri.is_a?(URI::HTTPS)
+        return nil
+      end
+      if ruta.start_with?("//")
+        return "https:#{ruta}"
+      end
+      URI.join("#{base}/", ruta.sub(%r{\A/+}, "")).to_s
+    rescue URI::InvalidURIError, ArgumentError
+      nil
+    end
 
-  def build_url(base, hash_or_nil, key)
-    path = hash_or_nil&.[](key)
-    path.present? ? "#{base}#{path}" : nil
-  end
+    def extraer_album_id(url)
+      uri = URI.parse(url.to_s)
 
-  def dame_album_id(url)
-    # ejemplo: /fotoweb/archives/5035-Ilustraciones/
-    parts = url.split("/")
-    self.album = parts[5]
-  rescue
-    self.album = nil
-  end
+      match = uri.path.match(
+        %r{/fotoweb/archives/([^/]+)}
+      )
 
-  def limpia_nombre_cientifico
-    nombre_cientifico&.limpiar(tipo: 'ssp')
-  end
+      match && match[1]
+    rescue URI::InvalidURIError
+      nil
+    end
 
-  def fotos_totales
-    self.num_assets = albumes.map { |k| k[:num_assets].to_i }.sum
-  end
+    def limpia_nombre_cientifico
+      return if nombre_cientifico.blank?
 
-  def api_accept_header(opts)
-    opts[:archives] ? 'application/json' : 'application/vnd.fotoware.assetlist+json'
+      self.nombre_cientifico =
+        nombre_cientifico.to_s.limpiar(tipo: "ssp")
+    end
+
+    def fotos_totales
+      self.num_assets = albumes.sum do |item|
+        item[:num_assets].to_i
+      end
+    end
   end
 end

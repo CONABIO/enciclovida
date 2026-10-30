@@ -1,4 +1,4 @@
-class IUCNService
+class WebServices::IUCNService
 
   attr_accessor :datos, :row, :validacion, :taxon
 
@@ -56,10 +56,10 @@ class IUCNService
     @iucn = CONFIG.iucn.api
     @token = CONFIG.iucn.token
 
-    url = "#{@iucn}/api/v3/species/#{opts[:nombre].limpiar(tipo: 'ssp')}?token=#{@token}"
-    url_escape = URI.escape(url)
-    uri = URI.parse(url_escape)
-    req = Net::HTTP::Get.new(uri.to_s)
+    nombre = opts[:nombre].limpiar(tipo: 'ssp')
+    uri = URI.parse("#{@iucn}/api/v3/species/#{ERB::Util.url_encode(nombre)}?token=#{@token}")
+    req = Net::HTTP::Get.new(uri)
+    
     begin
       res = Net::HTTP.start(uri.host, uri.port, :read_timeout => CONFIG.iucn.timeout ) {|http| http.request(req) }
       jres = JSON.parse(res.body)['result']

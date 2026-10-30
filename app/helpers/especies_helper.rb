@@ -360,32 +360,47 @@ module EspeciesHelper
     end
   end
 
-  def imprime_canto(item)
-    copyright = "Xeno Canto: Sharing bird sounds from around the world"
+  
+def imprime_canto(item)
+  copyright = "Xeno Canto: Sharing bird sounds from around the world"
 
-    link_to image_tag(item['sono']['med']), "", class: "m-1 modal-buttons", data: {
+  espectrograma = item.dig("sono", "med")
+  archivo = item["file"]
+
+  return "".html_safe if archivo.blank?
+
+  contenido = if espectrograma.present?
+    image_tag(espectrograma, alt: "Espectrograma de #{item['gen']} #{item['sp']}")
+  else
+    content_tag(:span, "Escuchar grabación", class: "btn btn-outline-primary")
+  end
+
+  link_to contenido, "#",
+    class: "m-1 modal-buttons",
+    data: {
       toggle: "modal",
       target: "#modal_reproduce",
-      type: "video",
-      url: item['file'],
-      observation: item['url'],
-      file: item['file'],
-      generic_name: item['gen'],
-      specific_name: item['sp'],
-      subspecies_name: item['ssp'],
-      english_name: item['en'],
-      country_recording: item['cnt'],
-      locality: item['loc'],
-      file_name: item['file-name'],
-      license: item['lic'],
-      length: item['length'],
-      time: item['time'],
-      date: item['date'],
-      remarks: item['rmk'],
+      type: "audio",
+      url: archivo,
+      observation: item["url"],
+      file: archivo,
+      generic_name: item["gen"],
+      specific_name: item["sp"],
+      subspecies_name: item["ssp"],
+      english_name: item["en"],
+      country_recording: item["cnt"],
+      locality: item["loc"],
+      file_name: item["file-name"],
+      license: item["lic"],
+      length: item["length"],
+      time: item["time"],
+      date: item["date"],
+      remarks: item["rmk"],
       copyright: copyright,
-      author: item['rec']
+      author: item["rec"]
     }
-  end
+end
+
 
   def imprime_img_tropicos(item)
     copyright = "Missouri Botanical Garden"

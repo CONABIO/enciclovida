@@ -4,20 +4,43 @@ class ExoticasInvasorasController < ApplicationController
 
   def index
     @pagina = [params[:pagina].to_i, 1].max
-    @catalogos = ExoticaCatalogo.activos.where.not(tipo: "tipo_documento").group_by(&:tipo)
-    @exoticas = ExoticaInvasora.joins(:especie).includes(:catalogos, :documentos, especie: :adicional)
+
+    @catalogos = ExoticaCatalogo.activos
+                                .where.not(tipo: "tipo_documento")
+                                .group_by(&:tipo)
+
+    @exoticas = ExoticaInvasora
+      .joins(:especie)
+      .includes(:catalogos, :documentos, especie: :adicional)
+
     if params[:especie_id].present?
       aplicar_busqueda
     else
       aplicar_filtros_catalogos
     end
 
-    @exoticas = @exoticas.distinct.reorder( '`catalogocentralizado`.`Nombre`.`NombreCompleto` ASC, `exoticas_invasoras`.`id` ASC')
-    @totales = @exoticas.count
+    # Orden alfabético por nombre científico
+    @exoticas = @exoticas.distinct.reorder(
+      Arel.sql(
+        '`Nombre`.`NombreCompleto` ASC, `exoticas_invasoras`.`id` ASC'
+      )
+    )
+
+    # Total de registros
+    @totales = @exoticas.except(:order).count
+
+    # Paginación
     @paginas = (@totales.to_f / POR_PAGINA).ceil
+
     @pagina = @paginas if @paginas > 0 && @pagina > @paginas
-    @exoticas = @exoticas.limit(POR_PAGINA).offset((@pagina - 1) * POR_PAGINA)
-    @exoticas.each { |exotica| exotica.especie.asigna_categorias }
+
+    @exoticas = @exoticas
+      .limit(POR_PAGINA)
+      .offset((@pagina - 1) * POR_PAGINA)
+
+    @exoticas.each do |exotica|
+      exotica.especie.asigna_categorias
+    end
   end
 
   def exportar

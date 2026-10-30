@@ -10,6 +10,25 @@ class Comentario < ActiveRecord::Base
 
   has_ancestry
 
+  scope :ordered_by_ancestry, -> {
+    columna = "#{table_name}.#{ancestry_column}"
+    reorder(Arel.sql("(CASE WHEN #{columna} IS NULL THEN 0 ELSE 1 END), #{columna}" )
+    )
+  }
+
+  scope :ordered_by_ancestry_and, ->(orden) {
+    columna = "#{table_name}.#{ancestry_column}"
+
+    direccion = orden.to_s.upcase
+    raise ArgumentError, 'Orden inválido' unless %w[ASC DESC].include?(direccion)
+
+    reorder(
+      Arel.sql(
+        "(CASE WHEN #{columna} IS NULL THEN 0 ELSE 1 END), #{columna}, #{primary_key} #{direccion}"
+      )
+    )
+  }
+
   has_one :general, :class_name => 'ComentarioGeneral', :foreign_key => 'comentario_id'
   has_one :comentario_proveedor, :class_name => 'ComentarioProveedor', :foreign_key => 'comentario_id'
 

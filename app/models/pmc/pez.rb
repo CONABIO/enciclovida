@@ -143,7 +143,7 @@ class Pmc::Pez < ActiveRecord::Base
         end
       end
     else  # Para el servicio de IUCN
-      iucn = IUCNService.new
+      iucn = WebServices::IUCNService.new
       if resp = iucn.dameRiesgo(nombre: especie.nombre_cientifico.strip, id: especie_id)
         if prop = Pmc::Propiedad.where(nombre_propiedad: resp).first
           if crit = prop.criterios.where('anio=?', 2012).first
