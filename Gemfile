@@ -64,6 +64,8 @@ gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary', '0.12.4'  # Actualizando la version truena (TODO)
 gem 'zip-zip' # Needed by axlsx
 
+gem 'redis-activesupport', '~> 5.3'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
